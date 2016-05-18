@@ -1,5 +1,29 @@
+'use strict';
+
 var webpack = require('webpack');
 var path = require('path');
+var colors = require('colors');
+
+const dhisConfigPath = process.env.DHIS2_HOME && `${process.env.DHIS2_HOME}/config.json`;
+let dhisConfig;
+
+try {
+    dhisConfig = require(dhisConfigPath);
+    console.log('\nLoaded DHIS config:');
+} catch (e) {
+    // Failed to load config file - use default config
+    console.warn('\nWARNING! Failed to load DHIS config:', e.message);
+    console.info('Using default config');
+    dhisConfig = {
+        baseUrl: 'http://localhost:9090/dhis',
+        authorization: 'Basic YWRtaW46ZGlzdHJpY3Q=' // admin:district
+    };
+}
+console.log(JSON.stringify(dhisConfig, null, 2), '\n');
+
+function bypass(req, res, opt) {
+    req.headers.Authorization = dhisConfig.authorization;
+}
 
 module.exports = {
     context: __dirname,
@@ -31,49 +55,15 @@ module.exports = {
         colors: true,
         port: 8081,
         inline: true,
-        proxy: {
-            '/api/*': {
-                target: 'http://localhost:9090/dhis/',
-                rewrite: function(req) {
-                    req.headers.Authorization = 'Basic YWRtaW46ZGlzdHJpY3Q=';
-                }
-            },
-            '/dhis-web-commons-ajax-json/*': {
-                target: 'http://localhost:9090/dhis/',
-                rewrite: function(req) {
-                    req.headers.Authorization = 'Basic YWRtaW46ZGlzdHJpY3Q=';
-                }
-            },
-            '/dhis-web-commons-stream/*': {
-                target: 'http://localhost:9090/dhis/',
-                rewrite: function(req) {
-                    req.headers.Authorization = 'Basic YWRtaW46ZGlzdHJpY3Q=';
-                }
-            },
-            '/dhis-web-commons/*': {
-                target: 'http://localhost:9090/dhis/',
-                rewrite: function(req) {
-                    req.headers.Authorization = 'Basic YWRtaW46ZGlzdHJpY3Q=';
-                }
-            },
-            '/main.js': {
-                target: 'http://localhost:9090/dhis/',
-                rewrite: function(req) {
-                    req.headers.Authorization = 'Basic YWRtaW46ZGlzdHJpY3Q=';
-                }
-            },
-            '/icons/*': {
-                target: 'http://localhost:9090/dhis/',
-                rewrite: function(req) {
-                    req.headers.Authorization = 'Basic YWRtaW46ZGlzdHJpY3Q=';
-                }
-            },
-            '/images/*': {
-                target: 'http://localhost:9090/dhis/',
-                rewrite: function(req) {
-                    req.headers.Authorization = 'Basic YWRtaW46ZGlzdHJpY3Q=';
-                }
-            }
-        }
+        compress: true,
+        proxy: [
+            { path: '/api/*', target: dhisConfig.baseUrl, bypass },
+            { path: '/dhis-web-commons-ajax-json/*', target: dhisConfig.baseUrl, bypass },
+            { path: '/dhis-web-commons-stream/*', target: dhisConfig.baseUrl, bypass },
+            { path: '/dhis-web-commons/*', target: dhisConfig.baseUrl, bypass },
+            { path: '/icons/*', target: dhisConfig.baseUrl, bypass },
+            { path: '/images/*', target: dhisConfig.baseUrl, bypass },
+            { path: '/main.js', target: dhisConfig.baseUrl, bypass }
+        ]
     },
 };
