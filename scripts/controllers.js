@@ -1,13 +1,5 @@
-/* global angular */
-
-'use strict';
-
-/* Controllers */
 var trackerCapture = angular.module('trackerCapture');
-//var trackerCaptureControllers = angular.module('trackerCaptureControllers', [])
 
-    //Controller for settings page
-var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('SelectionController',
         function($rootScope,
                  $scope,
