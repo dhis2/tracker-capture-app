@@ -1,5 +1,6 @@
 /* global angular, trackerCapture */
 
+var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RuleBoundController',
         function(
                 $rootScope,

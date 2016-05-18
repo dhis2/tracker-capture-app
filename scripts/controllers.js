@@ -3,10 +3,12 @@
 'use strict';
 
 /* Controllers */
-var trackerCaptureControllers = angular.module('trackerCaptureControllers', [])
+var trackerCapture = angular.module('trackerCapture');
+//var trackerCaptureControllers = angular.module('trackerCaptureControllers', [])
 
     //Controller for settings page
-    .controller('SelectionController',
+var trackerCapture = angular.module('trackerCapture');
+trackerCapture.controller('SelectionController',
         function($rootScope,
                  $scope,
                  $modal,

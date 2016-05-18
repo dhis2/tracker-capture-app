@@ -1,6 +1,7 @@
 /* global trackerCapture, angular */
 
 //conroller for tei report
+var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('TeiReportController',
         function($scope,
                 $filter,

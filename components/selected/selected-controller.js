@@ -1,5 +1,6 @@
 /* global trackerCapture */
 
+var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('SelectedInfoController',
         function($scope,                
                 SessionStorageService,

@@ -1,5 +1,6 @@
 /* global trackerCapture */
 
+var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('UpcomingEventsController',
          function($scope,
                 $modal,

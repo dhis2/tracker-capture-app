@@ -1,3 +1,4 @@
+var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('MakeReferralController', function($scope, $modalInstance, stage, OrgUnitFactory){
     $scope.stage = stage;
     $scope.cancel = function(){

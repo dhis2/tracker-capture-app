@@ -1,5 +1,6 @@
 /* global trackerCapture, angular */
 
+var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('TEIAddController', 
     function($scope, 
             $rootScope,

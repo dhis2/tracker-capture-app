@@ -1,7 +1,4 @@
-'use strict';
-
 /* App Module */
-
 var trackerCapture = angular.module('trackerCapture',
         ['ui.bootstrap', 
          'ngRoute', 
@@ -10,8 +7,7 @@ var trackerCapture = angular.module('trackerCapture',
          'ngMessages',
          'trackerCaptureServices',
          'trackerCaptureFilters',
-         'trackerCaptureDirectives', 
-         'trackerCaptureControllers',
+         'trackerCaptureDirectives',
          'd2Directives',
          'd2Filters',
          'd2Services',
@@ -70,5 +66,4 @@ var trackerCapture = angular.module('trackerCapture',
     $http.get('components/dataentry/section-inner-form.html').then(function(page){        
         $templateCache.put('components/dataentry/section-inner-form.html', page.data);
     });
-})
-;
+});

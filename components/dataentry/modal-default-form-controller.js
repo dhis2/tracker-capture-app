@@ -1,3 +1,4 @@
+var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('ModalDefaultFormController', function($scope){
     
     var defaultRequestError = "Server error. Please try again later.";

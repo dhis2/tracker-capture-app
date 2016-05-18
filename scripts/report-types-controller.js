@@ -1,4 +1,5 @@
 //Controller for the header section
+var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('ReportTypesController',
         function($scope,
                 $location) {    

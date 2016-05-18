@@ -1,5 +1,6 @@
 /* global trackerCapture */
 
+var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('EventCategoryComboController', 
         function($scope, 
                 $modalInstance, 

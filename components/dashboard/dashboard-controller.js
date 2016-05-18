@@ -1,6 +1,7 @@
 /* global trackerCapture, angular */
 
 //Controller for dashboard
+var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('DashboardController',
         function($rootScope,
                 $scope,

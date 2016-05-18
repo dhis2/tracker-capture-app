@@ -1,4 +1,5 @@
 //Controller for column show/hide
+var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('LeftBarMenuController',
         function($scope,
                 $location) {
