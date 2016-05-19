@@ -519,7 +519,7 @@ trackerCapture.controller('DataEntryController',
         $scope.currentEvent = $scope.currentEvent ? $scope.currentEvent : {};
 
         //If the events is displayed in a table, it is necessary to run the rules for all visible events.        
-        if ($scope.currentStage.displayEventsInTable && angular.isUndefined($scope.currentStage.rulesExecuted)){
+        if ($scope.currentStage && $scope.currentStage.displayEventsInTable && angular.isUndefined($scope.currentStage.rulesExecuted)){
             angular.forEach($scope.currentStageEvents, function (event) {
                 TrackerRulesExecutionService.executeRules($scope.allProgramRules, event, evs, $scope.prStDes, $scope.selectedTei, $scope.selectedEnrollment, flag);
                 $scope.currentStage.rulesExecuted = true;
@@ -776,6 +776,10 @@ trackerCapture.controller('DataEntryController',
     };
     
     $scope.stageNeedsEvent = function (stage, completeRequired, errorResponseContainer) {
+        
+        if(!stage){
+            return false;
+        }
         
         var calculatedCompleteRequired = (angular.isDefined(completeRequired) && completeRequired) || (angular.isDefined(stage.onlyOneIncompleteEvent) && stage.onlyOneIncompleteEvent);
         
