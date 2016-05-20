@@ -18,6 +18,7 @@
        class="btn btn-danger">{{'delete'| translate}}</a>
     <a href ng-click="showCreateEvent(null, eventCreationActions.add, currentStage)" 
        ng-if="stageNeedsEvent(currentStage) && selectedEnrollment.status === 'ACTIVE'"
+       ng-disabled="selectedEntity.inactive"
        class="btn btn-primary">{{'add_new_event'| translate}}</a>    
     <a href class="btn btn-info" ng-click="print('print-div');">{{'print_form'| translate}}</a>
 </div>
