@@ -64,11 +64,15 @@
                         {{currentStage.excecutionDateLabel}}
                     </th>
                     <th class="" ng-repeat="prStDe in currentStage.programStageDataElements">
-                        <d2-info display-name="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
-                                 data-content='[{"name":"{{"description" | translate}}", "data":"{{prStDe.dataElement.description}}"},
-                                                {"name":"{{"url" | translate}}", "data":"{{prStDe.dataElement.url}}"}]'
-                                 data-title="Details">
-                        </d2-info>
+                        <span d2-pop-over
+                              class="popover-label"
+                              details="{{'details'| translate}}"
+                              content="prStDe.dataElement"
+                              template="dataelement-details.html"
+                              trigger="click"
+                              placement="right">
+                            <a href title="{{'details'| translate}}">{{prStDe.dataElement.displayFormName}}</a>
+                        </span>
                         <span ng-if="prStDe.compulsory" class="required">*</span>
                     </th>
                     <th class="" style="text-align: right">Status</th>

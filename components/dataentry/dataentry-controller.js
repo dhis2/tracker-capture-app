@@ -191,7 +191,7 @@ trackerCapture.controller('DataEntryController',
     var processRuleEffect = function(event){
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
-        if(event === 'registration' || event === 'dataEntryInit') return;
+        if(event === 'registration' || event === 'dataEntryInit' || !affectedEvent || !affectedEvent.event) return;
 
         //In most cases the updated effects apply to the current event. In case the affected event is not the current event, fetch the correct event to affect:
         if (event !== affectedEvent.event) {
