@@ -609,6 +609,8 @@ trackerCapture.controller('DataEntryController',
                     $scope.currentStage = $scope.programStages[0];
                 }
                 
+                $scope.setCurrentStage($scope.currentStage);                
+                
                 if($scope.useMainMenu){
                     $scope.buildMainMenuStages();
                 }
@@ -630,8 +632,7 @@ trackerCapture.controller('DataEntryController',
                     $scope.allProgramRules = rules;
                     $scope.getEvents();                    
                     broadcastDataEntryControllerData();
-                });    
-                
+                });                
             });
         }
     });
@@ -1053,6 +1054,14 @@ trackerCapture.controller('DataEntryController',
             });
     };
 
+    $scope.setCurrentStage = function(stage){
+        $scope.currentStage = stage;
+        $scope.eventGridColumns = EventUtils.getGridColumns($scope.currentStage, $scope.prStDes);        
+        if( $scope.eventsByStage[stage.id].length > 0 ){
+            $scope.currentEvent = $scope.eventsByStage[stage.id][0];
+        }
+    };
+
     $scope.showDataEntry = function (event, suppressToggling) {
         if (event) {
             if ($scope.currentEvent && !suppressToggling && $scope.currentEvent.event === event.event) {
@@ -1093,7 +1102,7 @@ trackerCapture.controller('DataEntryController',
     };
     
     $scope.deSelectCurrentEvent = function(){
-        $scope.currentStage = null;
+        //$scope.currentStage = null;
         $scope.currentEvent = null;
         $scope.currentElement = {id: '', saved: false};
         $scope.showDataEntryDiv = !$scope.showDataEntryDiv;
@@ -1115,7 +1124,7 @@ trackerCapture.controller('DataEntryController',
     };
     
     $scope.tableEditModes = { form: 0, table: 1, tableAndForm: 2 };
-    $scope.tableEditMode = $scope.tableEditModes.form;
+    $scope.tableEditMode = $scope.tableEditModes.table;
     
     $scope.toggleTableEditMode = function(){        
         $scope.tableEditMode = $scope.tableEditMode === $scope.tableEditModes.tableAndForm ? $scope.tableEditModes.form : $scope.tableEditModes.tableAndForm;
@@ -1759,8 +1768,8 @@ trackerCapture.controller('DataEntryController',
     $scope.completeIncompleteEvent = function (inTableView, outerDataEntryForm) {
         
         if($scope.currentEvent.status !== 'COMPLETED'){
-            outerDataEntryForm.$setSubmitted();
-            if(outerDataEntryForm.$invalid){
+            $scope.outerDataEntryForm.submitted = true;
+            if($scope.outerDataEntryForm.$invalid){
                 var dialogOptions = {
                     headerText: 'error',
                     bodyText: 'form_invalid'

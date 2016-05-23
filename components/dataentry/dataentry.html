@@ -13,8 +13,8 @@
             </span>
             
         </div>
-        <div ng-if="!useMainMenu">            
-            {{'dataentry' | translate}}
+        <div ng-if="!useMainMenu">
+            {{dataentryWidget.title | translate}}
             <span class="pull-right widget-link">               
                 <a href ng-click="model.showEventSearch = !model.showEventSearch" title="{{'search'| translate}}" ng-if="allEventsSorted.length > eventPageSize" class="small-horizontal-spacing"><span ng-class="{true: 'red'} [model.eventSearchText.length > 0]"><i class="fa fa-search vertical-center"></i></span></a>
                 <a href ng-click="model.showLegend = !model.showLegend" title="{{'event_color_legend'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-info-circle vertical-center"></i></a>
@@ -25,7 +25,7 @@
                     <span ng-show="dataentryWidget.expand"><i class="fa fa-chevron-up vertical-center" title="{{collapseLabel}}"></i></span>
                     <span ng-show="!dataentryWidget.expand"><i class="fa fa-chevron-down vertical-center" title="{{expandLabel}}"></i></span>
                 </a>
-                <a class="small-horizontal-spacing" href ng-click="removeWidget(dataentryWidget)" title="{{removeLabel}}" ng-if="dataentryWidget.showHideAllowed"><i class="fa fa-times-circle vertical-center"></i></a>            
+                <a class="small-horizontal-spacing" href ng-click="removeWidget(dataentryWidget)" title="{{removeLabel}}"><i class="fa fa-times-circle vertical-center"></i></a>
             </span>
         </div>
         <div ng-if="mainMenuStageSelected()">            

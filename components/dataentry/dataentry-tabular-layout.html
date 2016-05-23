@@ -1,0 +1,74 @@
+<div class="panel panel-info" ng-controller="DataEntryController">    
+    <div class="panel-heading handle bold">        
+        <div ng-include="'components/dataentry/dataentry-print.html'"></div>
+        {{dataentryTabularWidget.title | translate}}
+        <span class="pull-right widget-link">
+            <a href ng-click="model.showLegend = !model.showLegend" title="{{'event_color_legend'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-info-circle vertical-center"></i></a>
+            <d2-audit name-id-map="prStDes" event-id="{{currentEvent.event}}" data-type="dataElement" ng-if="currentEvent.event"></d2-audit>
+            <a class="small-horizontal-spacing" href ng-click="expandCollapse(dataentryTabularWidget)">
+                <span ng-show="dataentryTabularWidget.expand"><i class="fa fa-chevron-up vertical-center" title="{{collapseLabel}}"></i></span>
+                <span ng-show="!dataentryTabularWidget.expand"><i class="fa fa-chevron-down vertical-center" title="{{expandLabel}}"></i></span>
+            </a>
+            <a class="small-horizontal-spacing" href ng-click="removeWidget(dataentryTabularWidget)" title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>
+        </span>
+    </div>
+
+    <div ng-show="dataentryTabularWidget.expand && showSelf" class="panel-body dashboard-widget-container">
+
+        <div ng-if="!dashboardReady">
+            <img id="ouwt_loader" src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
+        </div>
+
+        <div ng-if="dashboardReady">
+            <div class="col-sm-2 list-group">
+                <a ng-repeat="stage in programStages| orderBy:'sortOrder':reverse" class="list-group-item cursor-pointer" ng-class="{true: 'active'} [stage.id === currentStage.id]" ng-click="setCurrentStage(stage)">
+                    {{stage.name}}
+                </a>
+            </div>
+            <div class="col-sm-10 bordered-div min-box-container">
+                <div ng-if="model.showLegend">
+                    <span class='bold'>{{'legend'| translate}}</span>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td ng-class="eventStyle.color" ng-repeat="eventStyle in eventStyles | filter:filterLegend()">
+                                <span class="bold">{{getLegendText(eventStyle.description)}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div>
+                    <div ng-if="currentStage && currentStage.id">
+                        <table class="table table-bordered dhis2-table-hover">
+                            <thead>
+                                <tr>
+                                    <th ng-repeat="col in eventGridColumns">
+                                        {{col.name}}                                        
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody ng-repeat="dhis2Event in eventsByStage[currentStage.id]">
+                                <tr ng-click="showDataEntry(dhis2Event, false)">
+                                    <td ng-class="getEventStyle(dhis2Event)" ng-repeat="col in eventGridColumns">
+                                        {{dhis2Event[col.id]}}                                    
+                                    </td>
+                                </tr>
+                                <tr ng-if="currentEvent && currentEvent.programStage === currentStage.id && dhis2Event.event === currentEvent.event">
+                                    <td colspan="{{eventGridColumns.length}}">
+                                        <div ng-include="'components/dataentry/main-dataentry-form.html'"></div>
+                                    </td>
+                                </tr>
+                            </tbody>                            
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="!showSelf">
+        <br/>
+        <div class="col-xs-12">
+            <div class="alert alert-warning">{{'no_active_enrollment'| translate}}</div>
+        </div>        
+        <br/>
+    </div>
+</div>

@@ -26,7 +26,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     w.enrollmentWidget = {title: 'enrollment', view: "components/enrollment/enrollment.html", show: true, expand: true, parent: 'biggerWidget', order: 0};
     w.indicatorWidget = {title: 'indicators', view: "components/rulebound/rulebound.html", show: true, expand: true, parent: 'biggerWidget', order: 1};
     w.dataentryWidget = {title: 'dataentry', view: "components/dataentry/dataentry.html", show: true, expand: true, parent: 'biggerWidget', order: 2};
-    w.reportWidget = {title: 'report', view: "components/report/tei-report.html", show: true, expand: true, parent: 'biggerWidget', order: 3};
+    w.dataentryTabularWidget = {title: 'dataentryTabular', view: "components/dataentry/dataentry-tabular-layout.html", show: true, expand: true, parent: 'biggerWidget', order: 3};
+    w.reportWidget = {title: 'report', view: "components/report/tei-report.html", show: true, expand: true, parent: 'biggerWidget', order: 4};
     w.selectedWidget = {title: 'current_selections', view: "components/selected/selected.html", show: false, expand: true, parent: 'smallerWidget', order: 0};
     w.feedbackWidget = {title: 'feedback', view: "components/rulebound/rulebound.html", show: true, expand: true, parent: 'smallerWidget', order: 1};
     w.profileWidget = {title: 'profile', view: "components/profile/profile.html", show: true, expand: true, parent: 'smallerWidget', order: 2};    
@@ -1970,6 +1971,25 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             }
             return event;
+        },
+        getGridColumns: function(stage, prStDes){
+            var columns = [];
+            columns.push({id: 'sortingDate', name: $translate.instant('date')});
+            columns.push({id: 'orgUnitName', name: $translate.instant('org_unit')});
+            
+            var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});            
+            if( displayInReports.length > 0 ){
+                angular.forEach(displayInReports, function(c){
+                    columns.push({id: c.id, name: prStDes[c.id].dataElement.displayFormName});
+                });
+            }
+            else{
+                for(var i=0; i<stage.programStageDataElements.length && i<7; i++){
+                    columns.push({id: stage.programStageDataElements[i].dataElement.id, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
+                }
+            }
+            
+            return columns;
         }
     };
     

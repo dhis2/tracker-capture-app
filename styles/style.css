@@ -396,8 +396,6 @@ div.paging a.active
     border: 1px solid #c2c2c2;
     border-radius: 5px;
     padding: 5px 10px;
-    margin-top: 20px;
-    margin-bottom: 20px;
 }
 
 .nav, .pagination, .carousel, .panel-title a {
@@ -638,6 +636,10 @@ table.table-striped tr td.optionset {
 
 .empty-dashboard-container{
     min-height: 100px;
+}
+
+.min-box-container{
+    min-height: 400px;
 }
 
 .handle {

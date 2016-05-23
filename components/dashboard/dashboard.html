@@ -39,21 +39,21 @@
             <div ng-class="widgetSize.bigger">
                 
                 <!-- dashboard buttons begin -->
-		<div ng-if="!useTopBar" class="vertical-spacing">
-                    <button type="button" class="btn btn-default" ng-click="back()">{{getBackButtonText()}}</button>
+                <div ng-if="!useTopBar" class="vertical-spacing">
+                            <button type="button" class="btn btn-default" ng-click="back()">{{getBackButtonText()}}</button>
 
-                    <button ng-disabled="!previousTeiExists" type="button" class="btn btn-default small-horizontal-spacing" ng-click="fetchTei('PREV')" title="{{'previous'| translate}}"><i class="fa fa-caret-left"></i></button>
+                            <button ng-disabled="!previousTeiExists" type="button" class="btn btn-default small-horizontal-spacing" ng-click="fetchTei('PREV')" title="{{'previous'| translate}}"><i class="fa fa-caret-left"></i></button>
 
-                    <button ng-disabled="!nextTeiExists" type="button" class="btn btn-default small-horizontal-spacing" ng-click="fetchTei('NEXT')" title="{{'next'| translate}}"><i class="fa fa-caret-right"></i></button>
+                            <button ng-disabled="!nextTeiExists" type="button" class="btn btn-default small-horizontal-spacing" ng-click="fetchTei('NEXT')" title="{{'next'| translate}}"><i class="fa fa-caret-right"></i></button>
 
-                    <select ng-model="selectedProgram"
-                            class="form-control-program"
-                            ng-options="program as program.displayName for program in programs | orderBy: 'displayName'" 
-                            ng-disabled="programs.length < 1"
-                            ng-change="applySelectedProgram(selectedProgram)">
-                        <option value="">{{programs.length > 0 ? 'please_select_a_program' : 'no_program_exists' | translate}}</option>
-                    </select>
-		</div>
+                            <select ng-model="selectedProgram"
+                                    class="form-control-program"
+                                    ng-options="program as program.displayName for program in programs | orderBy: 'displayName'"
+                                    ng-disabled="programs.length < 1"
+                                    ng-change="applySelectedProgram(selectedProgram)">
+                                <option value="">{{programs.length > 0 ? 'please_select_a_program' : 'no_program_exists' | translate}}</option>
+                            </select>
+                </div>
                 <!-- dashboard buttons end -->
         
                 <div id="biggerWidget" class="row connectedSortable empty-dashboard-container" d2-sortable bigger-widgets={{dashboardWidgets | filter: {parent: 'biggerWidget'}}} smaller-widgets={{ dashboardWidgets | filter: {parent: 'smallerWidget'}}}>
