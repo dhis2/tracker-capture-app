@@ -25,7 +25,7 @@
                     {{stage.name}}
                 </a>
             </div>
-            <div class="col-sm-10 bordered-div min-box-container">
+            <div class="col-sm-10 min-box-container">
                 <div ng-if="model.showLegend">
                     <span class='bold'>{{'legend'| translate}}</span>
                     <table class="table table-bordered">
@@ -47,7 +47,7 @@
                                 </tr>
                             </thead>
                             <tbody ng-repeat="dhis2Event in eventsByStage[currentStage.id]">
-                                <tr ng-click="showDataEntry(dhis2Event, false)">
+                                <tr ng-click="showDataEntry(dhis2Event, false, false)">
                                     <td ng-class="getEventStyle(dhis2Event)" ng-repeat="col in eventGridColumns">
                                         {{dhis2Event[col.id]}}                                    
                                     </td>

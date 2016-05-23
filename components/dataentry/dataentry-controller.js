@@ -642,7 +642,7 @@ trackerCapture.controller('DataEntryController',
             var stage = $scope.stagesById[event.programStage];
             $scope.openStageFromMenu(stage);
         }else{
-            $scope.showDataEntry(event, true);
+            $scope.showDataEntry(event, true, true);
         }
     };
     
@@ -708,7 +708,7 @@ trackerCapture.controller('DataEntryController',
             $scope.fileNames = CurrentSelection.getFileNames();            
             $scope.allEventsSorted = orderByFilter($scope.allEventsSorted, '-sortingDate').reverse();
             sortEventsByStage(null);
-            $scope.showDataEntry($scope.currentEvent, true);
+            $scope.showDataEntry($scope.currentEvent, true, true);
             $scope.eventsLoaded = true;
         }
     };
@@ -1046,7 +1046,7 @@ trackerCapture.controller('DataEntryController',
                             $scope.addNewEvent(newEvent, true);
                             
                             $scope.currentEvent = null;
-                            $scope.showDataEntry(newEvent, true);
+                            $scope.showDataEntry(newEvent, true, true);
 
                         }
                     }
@@ -1057,16 +1057,16 @@ trackerCapture.controller('DataEntryController',
     $scope.setCurrentStage = function(stage){
         $scope.currentStage = stage;
         $scope.eventGridColumns = EventUtils.getGridColumns($scope.currentStage, $scope.prStDes);        
-        if( $scope.eventsByStage[stage.id].length > 0 ){
+        /*if( $scope.eventsByStage[stage.id].length > 0 ){
             $scope.currentEvent = $scope.eventsByStage[stage.id][0];
-        }
+        }*/
     };
 
-    $scope.showDataEntry = function (event, suppressToggling) {
+    $scope.showDataEntry = function (event, suppressToggling, resetStage) {
         if (event) {
             if ($scope.currentEvent && !suppressToggling && $scope.currentEvent.event === event.event) {
                 //clicked on the same stage, do toggling
-                $scope.deSelectCurrentEvent();
+                $scope.deSelectCurrentEvent(resetStage);
             }
             else {
                 $scope.currentElement = {};                
@@ -1101,8 +1101,10 @@ trackerCapture.controller('DataEntryController',
         }
     };
     
-    $scope.deSelectCurrentEvent = function(){
-        //$scope.currentStage = null;
+    $scope.deSelectCurrentEvent = function(resetStage){
+        if( resetStage ){
+            $scope.currentStage = null;
+        }
         $scope.currentEvent = null;
         $scope.currentElement = {id: '', saved: false};
         $scope.showDataEntryDiv = !$scope.showDataEntryDiv;
@@ -1176,7 +1178,7 @@ trackerCapture.controller('DataEntryController',
     
     $scope.switchToEventRowDeselected = function(event){
         if($scope.currentEvent !== event) {
-            $scope.showDataEntry(event,false);
+            $scope.showDataEntry(event,false, true);
         }
         $scope.currentEvent = {};
     };
@@ -1184,7 +1186,7 @@ trackerCapture.controller('DataEntryController',
     $scope.switchToEventRow = function (event) {
         if($scope.currentEvent !== event) {
             $scope.reSortStageEvents = false;
-            $scope.showDataEntry(event,false);
+            $scope.showDataEntry(event,false, true);
             $scope.reSortStageEvents = true;
         }
     };
@@ -1932,7 +1934,7 @@ trackerCapture.controller('DataEntryController',
                     if($scope.displayCustomForm !== "TABLE" && $scope.displayCustomForm !== "COMPARE") {
                         //Close the event when the event is completed, to make it 
                         //more clear that the completion went through.
-                        $scope.showDataEntry($scope.currentEvent, false);
+                        $scope.showDataEntry($scope.currentEvent, false, true);
                     }
                 }
             }
@@ -2219,7 +2221,7 @@ trackerCapture.controller('DataEntryController',
         }
 
         if (event) {
-            $scope.showDataEntry(event, false);
+            $scope.showDataEntry(event, false, true);
         }
         
     };
@@ -2299,7 +2301,7 @@ trackerCapture.controller('DataEntryController',
             $scope.eventPagingEnd -= $scope.eventPageSize;
         }
         
-        $scope.showDataEntry($scope.topLineEvents[$scope.eventPagingStart], false);
+        $scope.showDataEntry($scope.topLineEvents[$scope.eventPagingStart], false, true);
     };   
     
     $scope.getEventPageForEvent = function(event){
