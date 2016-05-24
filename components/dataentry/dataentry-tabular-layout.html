@@ -13,57 +13,55 @@
         </span>
     </div>
 
-    <div ng-show="dataentryTabularWidget.expand && showSelf" class="panel-body dashboard-widget-container">
-
-        <div ng-if="!dashboardReady">
-            <img id="ouwt_loader" src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
-        </div>
-
-        <div ng-if="dashboardReady">
-            <div class="col-sm-2 list-group">
-                <a ng-repeat="stage in programStages| orderBy:'sortOrder':reverse" class="list-group-item cursor-pointer" ng-class="{true: 'active'} [stage.id === currentStage.id]" ng-click="setCurrentStage(stage)">
-                    {{stage.name}}
-                </a>
+    <div ng-show="dataentryTabularWidget.expand" class="panel-body dashboard-widget-container">
+        <div ng-if="showSelf">
+            <div ng-if="!dashboardReady">
+                <img id="ouwt_loader" src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
             </div>
-            <div class="col-sm-10 min-box-container">
-                <div ng-if="model.showLegend">
-                    <div ng-include="'components/dataentry/event-legend.html'"></div>
+            <div ng-if="dashboardReady">
+                <div class="col-sm-2 list-group">
+                    <a ng-repeat="stage in programStages| orderBy:'sortOrder':reverse" class="list-group-item cursor-pointer" ng-class="{true: 'active'} [stage.id === currentStage.id]" ng-click="setCurrentStage(stage)">
+                        {{stage.name}}
+                    </a>
                 </div>
-                <div ng-class="getTopLineColumnStyle(1)">                                    
-                    <div ng-if="currentStage && currentStage.id" class="row">
-                        <table class="table table-bordered dhis2-table-hover" ng-if="eventsByStage[currentStage.id].length > 0">
-                            <thead>
-                                <tr>
-                                    <th ng-repeat="col in eventGridColumns">
-                                        {{col.name}}                                        
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody ng-repeat="dhis2Event in eventsByStage[currentStage.id]">
-                                <tr ng-click="showDataEntry(dhis2Event, false, false)">
-                                    <td ng-class="getEventStyle(dhis2Event)" ng-repeat="col in eventGridColumns">
-                                        {{dhis2Event[col.id]}}                                    
-                                    </td>
-                                </tr>
-                                <tr ng-if="currentEvent && currentEvent.programStage === currentStage.id && dhis2Event.event === currentEvent.event">
-                                    <td colspan="{{eventGridColumns.length}}">
-                                        <div ng-include="'components/dataentry/main-dataentry-form.html'"></div>
-                                    </td>
-                                </tr>
-                            </tbody>                            
-                        </table>
-                        <div ng-if="!eventsByStage[currentStage.id] || eventsByStage[currentStage.id].length === 0">
-                            <div class="alert alert-warning">{{'no_events_exist'| translate}}</div>
+                <div class="col-sm-10 min-box-container">
+                    <div ng-if="model.showLegend">
+                        <div ng-include="'components/dataentry/event-legend.html'"></div>
+                    </div>
+                    <div ng-class="getTopLineColumnStyle(1)">                                    
+                        <div ng-if="currentStage && currentStage.id" class="row">
+                            <table class="table table-bordered dhis2-table-hover" ng-if="eventsByStage[currentStage.id].length > 0">
+                                <thead>
+                                    <tr>
+                                        <th ng-repeat="col in eventGridColumns">
+                                            {{col.name}}                                        
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody ng-repeat="dhis2Event in eventsByStage[currentStage.id]">
+                                    <tr ng-click="showDataEntry(dhis2Event, false, false)">
+                                        <td ng-class="getEventStyle(dhis2Event)" ng-repeat="col in eventGridColumns">
+                                            {{dhis2Event[col.id]}}                                    
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="currentEvent && currentEvent.programStage === currentStage.id && dhis2Event.event === currentEvent.event">
+                                        <td colspan="{{eventGridColumns.length}}">
+                                            <div ng-include="'components/dataentry/main-dataentry-form.html'"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>                            
+                            </table>
+                            <div ng-if="!eventsByStage[currentStage.id] || eventsByStage[currentStage.id].length === 0">
+                                <div class="alert alert-warning">{{'no_event_exists'| translate}}</div>
+                            </div>
                         </div>
                     </div>
+                    <div ng-include="'components/dataentry/new-event-menu.html'"></div>
                 </div>
-                <div ng-include="'components/dataentry/new-event-menu.html'"></div>
             </div>
         </div>
-    </div>
-    <div ng-if="!showSelf">
-        <div class="col-sm-12">
+        <div ng-if="!showSelf">
             <div class="alert alert-warning">{{'no_active_enrollment'| translate}}</div>
-        </div>
-    </div>
+        </div>        
+    </div>    
 </div>
