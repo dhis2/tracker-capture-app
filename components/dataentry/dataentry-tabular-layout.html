@@ -1,7 +1,7 @@
 <div class="panel panel-info" ng-controller="DataEntryController">    
     <div class="panel-heading handle bold">        
         <div ng-include="'components/dataentry/dataentry-print.html'"></div>
-        {{dataentryTabularWidget.title | translate}}
+        {{dataentryTabularWidget.title| translate}}
         <span class="pull-right widget-link">
             <a href ng-click="model.showLegend = !model.showLegend" title="{{'event_color_legend'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-info-circle vertical-center"></i></a>
             <d2-audit name-id-map="prStDes" event-id="{{currentEvent.event}}" data-type="dataElement" ng-if="currentEvent.event"></d2-audit>
@@ -27,18 +27,11 @@
             </div>
             <div class="col-sm-10 min-box-container">
                 <div ng-if="model.showLegend">
-                    <span class='bold'>{{'legend'| translate}}</span>
-                    <table class="table table-bordered">
-                        <tr>
-                            <td ng-class="eventStyle.color" ng-repeat="eventStyle in eventStyles | filter:filterLegend()">
-                                <span class="bold">{{getLegendText(eventStyle.description)}}</span>
-                            </td>
-                        </tr>
-                    </table>
+                    <div ng-include="'components/dataentry/event-legend.html'"></div>
                 </div>
-                <div>
-                    <div ng-if="currentStage && currentStage.id">
-                        <table class="table table-bordered dhis2-table-hover">
+                <div ng-class="getTopLineColumnStyle(1)">                                    
+                    <div ng-if="currentStage && currentStage.id" class="row">
+                        <table class="table table-bordered dhis2-table-hover" ng-if="eventsByStage[currentStage.id].length > 0">
                             <thead>
                                 <tr>
                                     <th ng-repeat="col in eventGridColumns">
@@ -59,16 +52,18 @@
                                 </tr>
                             </tbody>                            
                         </table>
+                        <div ng-if="!eventsByStage[currentStage.id] || eventsByStage[currentStage.id].length === 0">
+                            <div class="alert alert-warning">{{'no_events_exist'| translate}}</div>
+                        </div>
                     </div>
                 </div>
+                <div ng-include="'components/dataentry/new-event-menu.html'"></div>
             </div>
         </div>
     </div>
     <div ng-if="!showSelf">
-        <br/>
-        <div class="col-xs-12">
+        <div class="col-sm-12">
             <div class="alert alert-warning">{{'no_active_enrollment'| translate}}</div>
-        </div>        
-        <br/>
+        </div>
     </div>
 </div>

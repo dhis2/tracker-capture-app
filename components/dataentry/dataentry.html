@@ -58,14 +58,7 @@
         <div ng-if="dashboardReady"> 
             
             <div ng-if="model.showLegend">
-                <span class='bold'>{{'legend'| translate}}</span>
-                <table class="table table-bordered" style="width: 100%;">
-                    <tr>
-                        <td ng-class="eventStyle.color" ng-repeat="eventStyle in eventStyles | filter:filterLegend()">
-                            <span class="bold">{{getLegendText(eventStyle.description)}}</span>
-                        </td>
-                    </tr>
-                </table>
+                <div ng-include="'components/dataentry/event-legend.html'"></div>
             </div>
             <div ng-if="useMainMenu && !mainMenuStageSelected() && eventsLoaded">
                     <div class="">
