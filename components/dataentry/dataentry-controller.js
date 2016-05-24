@@ -1057,6 +1057,9 @@ trackerCapture.controller('DataEntryController',
     $scope.setCurrentStage = function(stage){
         $scope.currentStage = stage;
         $scope.eventGridColumns = EventUtils.getGridColumns($scope.currentStage, $scope.prStDes);
+        if( $scope.eventsByStage[stage.id].length === 1 ){
+            $scope.currentEvent = $scope.eventsByStage[stage.id][0];
+        }
     };
 
     $scope.showDataEntry = function (event, suppressToggling, resetStage) {

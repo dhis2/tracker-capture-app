@@ -24,12 +24,12 @@
                         {{stage.name}}
                     </a>
                 </div>
-                <div class="col-sm-10 min-box-container">
+                <div class="col-sm-10">
                     <div ng-if="model.showLegend">
                         <div ng-include="'components/dataentry/event-legend.html'"></div>
                     </div>
-                    <div ng-class="getTopLineColumnStyle(1)">                                    
-                        <div ng-if="currentStage && currentStage.id && eventsLoaded" class="row">
+                    <div style="width: 97%; float: left; padding: 5px">
+                        <div ng-if="currentStage && currentStage.id && eventsLoaded">
                             <div ng-include="'components/dataentry/tabular-horizontal-layout.html'"></div>
                             <div ng-if="!eventsByStage[currentStage.id] || eventsByStage[currentStage.id].length === 0">
                                 <div class="alert alert-warning">{{'no_event_exists'| translate}}</div>
@@ -39,7 +39,12 @@
                             <img src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
                         </div>
                     </div>
-                    <div ng-include="'components/dataentry/new-event-menu.html'"></div>
+                    <div style="width: 3%;" class="pull-right" ng-if="stageNeedsEvent(currentStage) && eventsLoaded">
+                        <a href ng-click="showCreateEvent(stage, eventCreationActions.add)">
+                            <i class="fa fa-plus-circle fa-4x" title="{{'add'|translate}}"></i>
+                        </a>
+                    </div> 
+                    <!--<div ng-include="'components/dataentry/new-event-menu.html'"></div>-->
                 </div>
             </div>
         </div>
