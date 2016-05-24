@@ -1973,26 +1973,27 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return event;
         },
         getGridColumns: function(stage, prStDes){
-            var columns = [];
-            columns.push({id: 'sortingDate', name: $translate.instant('date')});
-            columns.push({id: 'orgUnitName', name: $translate.instant('org_unit')});
+            var partial = [], allColumns = [];
+            partial.push({id: 'sortingDate', name: $translate.instant('date')});
+            partial.push({id: 'orgUnitName', name: $translate.instant('org_unit')});            
+            allColumns.push({id: 'sortingDate', name: $translate.instant('date')});
+            allColumns.push({id: 'orgUnitName', name: $translate.instant('org_unit')});
             
             var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});            
             if( displayInReports.length > 0 ){
-                angular.forEach(displayInReports, function(c){
-                    columns.push({id: c.id, name: prStDes[c.id].dataElement.displayFormName});
+                partial.forEach(displayInReports, function(c){
+                    partial.push({id: c.id, name: prStDes[c.id].dataElement.displayFormName});
                 });
             }
-            else{
-                for(var i=0; i<stage.programStageDataElements.length && i<7; i++){
-                    columns.push({id: stage.programStageDataElements[i].dataElement.id, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
-                }
-            }
-            
-            return columns;
+            for(var i=0; i<stage.programStageDataElements.length; i++){
+                if( i < 7 && displayInReports.length === 0){
+                    partial.push({id: stage.programStageDataElements[i].dataElement.id, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
+                }                        
+                allColumns.push({id: stage.programStageDataElements[i].dataElement.id, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
+            }            
+            return {partial: partial, all: allColumns};
         }
-    };
-    
+    };    
 })
 
 .service('EventCreationService', function($modal){

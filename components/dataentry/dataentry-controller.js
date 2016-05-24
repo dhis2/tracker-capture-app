@@ -100,8 +100,8 @@ trackerCapture.controller('DataEntryController',
         {color: 'alert-warning', description: 'executed', showInStageLegend: true, showInEventLegend: true},        
         {color: 'alert-success', description: 'ontime', showInStageLegend: true, showInEventLegend: true},
         {color: 'alert-danger', description: 'overdue', showInStageLegend: true, showInEventLegend: true},        
-        {color: 'alert-default', description: 'skipped', showInStageLegend: false, showInEventLegend: true},
-        {color: '', description: 'empty', showInStageLegend: true, showInEventLegend: false}
+        {color: 'alert-default', description: 'skipped', showInStageLegend: false, showInEventLegend: true}/*,
+        {color: '', description: 'empty', showInStageLegend: true, showInEventLegend: false}*/
     ];
  
     $scope.model= {};
@@ -2091,10 +2091,13 @@ trackerCapture.controller('DataEntryController',
         $scope.eventStyleLabels[ev.event] = $scope.getDescriptionTextForEventStyle(style, $scope.descriptionTypes.label, false);
         
         if ($scope.currentEvent && $scope.currentEvent.event === ev.event && (angular.isUndefined(skipCurrentEventStyle) || skipCurrentEventStyle === false)) {
-            style = style + ' ' + ' current-event';
-        }
+            style = style + '-darker' + ' ' + ' current-event';
+        }        
+        
         return style;
     };
+    
+    
 
     $scope.getColumnWidth = function (weight) {
         var width = weight <= 1 ? 1 : weight;

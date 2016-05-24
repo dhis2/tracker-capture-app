@@ -1887,6 +1887,31 @@ a.disable-link-effects:focus {
     color: #8C8C8C;    
 }
 
+.custom-tracker-complete-darker{
+    background-color: #8a8a8a !important;
+    color: #000;    
+}
+
+.alert-warning-darker {
+    background-color: #eed659 !important;
+    color: #000;
+}
+
+.alert-danger-darker {
+    background-color: #c67070 !important;
+    color: #000;
+}
+
+.alert-success-darker {
+    background-color: #85c66a !important;
+    color: #000;
+}
+
+.alert-default-darker {
+    background-color: #e2dfcc !important;
+    color: #000;
+}
+
 .btn.btn-default.remove-focus-effects:focus{
     outline-style: none;
     border-color: #ccc;

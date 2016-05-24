@@ -30,27 +30,7 @@
                     </div>
                     <div ng-class="getTopLineColumnStyle(1)">                                    
                         <div ng-if="currentStage && currentStage.id && eventsLoaded" class="row">
-                            <table class="table table-bordered dhis2-table-hover" ng-if="eventsByStage[currentStage.id].length > 0">
-                                <thead>
-                                    <tr>
-                                        <th ng-repeat="col in eventGridColumns">
-                                            {{col.name}}                                        
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody ng-repeat="dhis2Event in eventsByStage[currentStage.id]">
-                                    <tr ng-click="showDataEntry(dhis2Event, false, false)">
-                                        <td ng-class="getEventStyle(dhis2Event)" ng-repeat="col in eventGridColumns">
-                                            {{dhis2Event[col.id]}}                                    
-                                        </td>
-                                    </tr>
-                                    <tr ng-if="currentEvent && currentEvent.programStage === currentStage.id && dhis2Event.event === currentEvent.event">
-                                        <td colspan="{{eventGridColumns.length}}">
-                                            <div ng-include="'components/dataentry/main-dataentry-form.html'"></div>
-                                        </td>
-                                    </tr>
-                                </tbody>                            
-                            </table>
+                            <div ng-include="'components/dataentry/tabular-horizontal-layout.html'"></div>
                             <div ng-if="!eventsByStage[currentStage.id] || eventsByStage[currentStage.id].length === 0">
                                 <div class="alert alert-warning">{{'no_event_exists'| translate}}</div>
                             </div>
