@@ -1981,7 +1981,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             
             var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});            
             if( displayInReports.length > 0 ){
-                partial.forEach(displayInReports, function(c){
+                angular.forEach(displayInReports, function(c){
                     partial.push({id: c.id, name: prStDes[c.id].dataElement.displayFormName});
                 });
             }
