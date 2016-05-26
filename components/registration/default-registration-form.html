@@ -15,7 +15,7 @@
             </span>
             <span ng-if="attribute.mandatory || attribute.unique" class="required">*</span>
         </td>
-        <td>
+        <td class="absorbing-column">
             <ng-form name="innerForm">
                 <span ng-if="attribute.optionSetValue">
                     <ui-select  ng-model="selectedTei[attribute.id]"

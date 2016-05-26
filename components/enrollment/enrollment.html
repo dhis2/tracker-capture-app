@@ -20,7 +20,7 @@
             
             <!-- operations on selected enrollment begins -->
             <div class="row equal-height-columns">
-                <div ng-class="!showEnrollmentDiv && hasOtherPrograms ? 'col-sm-8' : 'col-sm-12'">                
+                <div class="col-sm-6">             
                     <div class="title small-vertical-spacing">
                         <span ng-if="hasOtherPrograms">
                             {{'selected_program'| translate}}                           
@@ -42,7 +42,7 @@
                                     <td>
                                         {{'enrolling_orgunit' | translate}}
                                     </td>
-                                    <td>
+                                    <td class="absorbing-column">
                                         <input type="text" class="form-control" value={{selectedEnrollment.orgUnitName}} ng-disabled="true"/>
                                     </td>
                                 </tr>
@@ -50,7 +50,7 @@
                                     <td>
                                         {{selectedProgram.enrollmentDateLabel}}
                                     </td>
-                                    <td>
+                                    <td class="absorbing-column">
                                         <input type="text" placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.enrollmentDate" ng-disabled="true"/>
                                     </td>
                                 </tr>
@@ -58,7 +58,7 @@
                                     <td>
                                         {{selectedProgram.incidentDateLabel}}
                                     </td>
-                                    <td>
+                                    <td class="absorbing-column">
                                         <input type="text" placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.incidentDate" ng-disabled="true"/>
                                     </td>
                                 </tr>                
@@ -134,7 +134,7 @@
                     
                 </div>
                 
-                <div class="col-sm-4 border-left" ng-if="!showEnrollmentDiv && hasOtherPrograms">
+                <div class="col-sm-6 border-left" ng-if="!showEnrollmentDiv && hasOtherPrograms">
                     <div class="title small-vertical-spacing">{{'other_programs'| translate}}</div>
                     <div class="vertical-spacing">
                         <div ng-if="activeEnrollments.length > 0">

@@ -618,6 +618,10 @@ table.table-striped tr td.optionset {
     position: relative;
 }
 
+.container-min-width {
+    min-width: 520px;
+}
+
 .separator {
     margin-bottom: 10px;
 }
@@ -1337,6 +1341,19 @@ ul.tree ul li:last-child:before {
 
 .default-form-table > tbody > tr:hover > td, .default-form-table > tbody > tr:hover > th {
     background-color: #dfe9f4;
+}
+
+.input-label-table {
+    white-space: normal;
+    width: 40%;
+}
+
+.input-field-table {
+    width: 60%;       
+}
+
+table td.absorbing-column {
+    width: 70%;
 }
 
 .row.null-margins {

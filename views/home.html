@@ -37,13 +37,13 @@
     
 </div>
 
-<div class="page" id="mainPage">
+<div class="page add-default-right-padding" id="mainPage">
 
     <!--- selected org unit begins -->
     <input type="text" selected-org-unit ng-model="selectedOrgUnit.displayName" ng-hide=true>
     <!--- selected org unit ends  -->
         
-    <div ng-if="treeLoaded && !selectedOrgUnit">
+    <div ng-if="treeLoaded && !selectedOrgUnit" class="row col-sm-12">
         <img src="../images/ajax-loader-bar.gif" alt="{{'in_progress'| translate}}"/><br>
         {{'loading_metadata'| translate}}
     </div> 
@@ -51,7 +51,7 @@
     <div ng-show="selectedOrgUnit && selectedOrgUnit.id">
         
         <!-- top bar begins -->
-        <div class="row top-bar">        
+        <div class="top-bar row">        
             <div class="col-sm-12">                
                 {{trackerCaptureLabel}}                
             </div>        
@@ -111,58 +111,59 @@
                     {{printLabel}}
                 </button>
             </div>
-            <!--search/registration buttons end-->
+            <!--search/registration buttons end-->            
+            
         </div>
         <!--- search and registration menu ends -->
-
+        
         <!--- Error display for search begins -->
-        <div class="vertical-spacing" ng-if="emptySearchAttribute || !model.searchText && emptySearchText">
-            <div class="alert alert-warning">{{'search_input_required'| translate}}</div>
-        </div>
-        <!--- Error display for search ends -->
-
+        <div class="row">
+            <div class="vertical-spacing" ng-if="emptySearchAttribute || !model.searchText && emptySearchText">
+                <div class="alert alert-warning">{{'search_input_required'| translate}}</div>
+            </div>
+        </div>        
+        <!--- Error display for search ends -->        
+        
         <!--registration form begins -->
-        <div class="col-sm-8 bordered-div" ng-if="showRegistrationDiv" ng-include="'components/registration/registration.html'"></div>
-        <!-- registration form ends -->        
+        <div class="row">
+            <div class="col-sm-4 bordered-div container-min-width add-default-padding" ng-if="showRegistrationDiv" ng-include="'components/registration/registration.html'"></div>
+        </div>        
+        <!-- registration form ends -->
 
         <!-- entity grid begins -->
-        
-        <div class="row long-vertical-spacing">
-            <div class="col-sm-12">
-                <span ng-if='!showRegistrationDiv'>
-                    <span class="btn-group" ng-if="selectedProgram">
-                        <label ng-if="selectedProgram.displayFrontPageList" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'TODAY'" title="{{todayLabel}}" ng-click='filterByEnrollmentStatus("TODAY")'><i class='fa fa-calendar-o mouse-pointer'></i></label>
-                        <label ng-if="selectedProgram.displayFrontPageList || frontPageListEnabled" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'ALL'" title="{{allEnrollmentsLabel}}" ng-click='filterByEnrollmentStatus("ALL")'><i class="fa fa-list mouse-pointer"></i></label>
-                        <label ng-if="selectedProgram.displayFrontPageList || frontPageListEnabled" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'ACTIVE'" title="{{activeEnrollmentsLabel}}" ng-click='filterByEnrollmentStatus("ACTIVE")'><i class="fa fa-circle-o mouse-pointer"></i></label>
-                        <label ng-if="selectedProgram.displayFrontPageList || frontPageListEnabled" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'COMPLETED'" title="{{completedEnrollmentsLabel}}" ng-click='filterByEnrollmentStatus("COMPLETED")'><i class="fa fa-check mouse-pointer"></i></label>
-                        <label ng-if="selectedProgram.displayFrontPageList || frontPageListEnabled" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'CANCELLED'" title="{{cancelledEnrollmentsLabel}}" ng-click='filterByEnrollmentStatus("CANCELLED")'><i class="fa fa-times mouse-pointer"></i></label>
-                    </span>
-                    <span ng-if="teiFetched && enrollmentStatus!== 'TODAY' && pager.total">
-                        {{'total'| translate}}:  {{pager.total}}
-                    </span>
-                    <span ng-if="teiFetched && enrollmentStatus=== 'TODAY' && trackedEntityList">
-                        {{'total'| translate}}:  {{trackedEntityList.length}}
-                    </span>
+        <div class="row col-sm-12 long-vertical-spacing">
+            <span ng-if='!showRegistrationDiv'>
+                <span class="btn-group" ng-if="selectedProgram">
+                    <label ng-if="selectedProgram.displayFrontPageList" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'TODAY'" title="{{todayLabel}}" ng-click='filterByEnrollmentStatus("TODAY")'><i class='fa fa-calendar-o mouse-pointer'></i></label>
+                    <label ng-if="selectedProgram.displayFrontPageList || frontPageListEnabled" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'ALL'" title="{{allEnrollmentsLabel}}" ng-click='filterByEnrollmentStatus("ALL")'><i class="fa fa-list mouse-pointer"></i></label>
+                    <label ng-if="selectedProgram.displayFrontPageList || frontPageListEnabled" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'ACTIVE'" title="{{activeEnrollmentsLabel}}" ng-click='filterByEnrollmentStatus("ACTIVE")'><i class="fa fa-circle-o mouse-pointer"></i></label>
+                    <label ng-if="selectedProgram.displayFrontPageList || frontPageListEnabled" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'COMPLETED'" title="{{completedEnrollmentsLabel}}" ng-click='filterByEnrollmentStatus("COMPLETED")'><i class="fa fa-check mouse-pointer"></i></label>
+                    <label ng-if="selectedProgram.displayFrontPageList || frontPageListEnabled" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'CANCELLED'" title="{{cancelledEnrollmentsLabel}}" ng-click='filterByEnrollmentStatus("CANCELLED")'><i class="fa fa-times mouse-pointer"></i></label>
                 </span>
-                
-                <span class="long-horizontal-spacing hideInPrint" ng-if="trackedEntityList.length > 0 && !showRegistrationDiv">
-                    <span class="dropdown">
-                        <label class="btn btn-default" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-download"></i></label>
-                        <ul class="dropdown-menu">
-                            <li><h6 class="dropdown-header">Download as</h6></li>
-                            <li class="divider"></li>
-                            <li ng-repeat="format in model.exportFormats"><a href ng-click="getExportList(format)">{{format}}</a></li>
-                        </ul>
-                    </span>
-                    <label class="horizontal-spacing btn btn-default" ng-click="showHideColumns()" title="{{'show_hide_columns'| translate}}">
-                        <i class="fa fa-table"></i>
-                    </label>
+                <span ng-if="teiFetched && enrollmentStatus!== 'TODAY' && pager.total">
+                    {{'total'| translate}}:  {{pager.total}}
                 </span>
-                
-            </div>
-        </div>
-        <i ng-if="!teiFetched && showTrackedEntityDiv && enrollmentStatus!=='TODAY'" class="fa fa-spinner fa-spin fa-2x"></i>
-        <div ng-if="!showRegistrationDiv" ng-include="'views/tei.html'"></div>
+                <span ng-if="teiFetched && enrollmentStatus=== 'TODAY' && trackedEntityList">
+                    {{'total'| translate}}:  {{trackedEntityList.length}}
+                </span>
+            </span>
+
+            <span class="long-horizontal-spacing hideInPrint" ng-if="trackedEntityList.length > 0 && !showRegistrationDiv">
+                <span class="dropdown">
+                    <label class="btn btn-default" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-download"></i></label>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">Download as</h6></li>
+                        <li class="divider"></li>
+                        <li ng-repeat="format in model.exportFormats"><a href ng-click="getExportList(format)">{{format}}</a></li>
+                    </ul>
+                </span>
+                <label class="horizontal-spacing btn btn-default" ng-click="showHideColumns()" title="{{'show_hide_columns'| translate}}">
+                    <i class="fa fa-table"></i>
+                </label>
+            </span>
+            <i ng-if="!teiFetched && showTrackedEntityDiv && enrollmentStatus!=='TODAY'" class="fa fa-spinner fa-spin fa-2x"></i>
+            <div ng-if="!showRegistrationDiv" ng-include="'views/tei.html'"></div>
+        </div>        
         <!-- entity grid ends -->
     </div>
 

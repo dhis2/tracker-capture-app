@@ -6,7 +6,7 @@
         <td>
             {{'enrolling_orgunit' | translate}}
         </td>
-        <td>
+        <td class="absorbing-column">
             <input type="text" class="form-control" value={{selectedEnrollment.orgUnitName}} ng-disabled="true"/>
         </td>
     </tr>
@@ -14,7 +14,7 @@
         <td>
             {{selectedProgram.enrollmentDateLabel}}
         </td>
-        <td>
+        <td class="absorbing-column">
             <input type="text" 
                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                    name="enrollmentDate" 
@@ -32,7 +32,7 @@
         <td>
             {{selectedProgram.incidentDateLabel}}
         </td>
-        <td>
+        <td class="absorbing-column">
             <input type="text" 
                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                    name="incidentDate"
