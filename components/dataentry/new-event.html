@@ -1,6 +1,6 @@
 <div class="modal-header page">
     <h3 ng-if="isNewEvent">{{'add_new_event_for_stage'| translate}}<span ng-if="model.selectedStage"> {{model.selectedStage.displayName}}</span></h3>
-    <h3 ng-if="isScheduleEvent && !isReferralEvent">{{'schedule_new_event_for_stage'| translate}}<span ng-if="model.selectedStage"> {{model.selectedStage.displayName}}</span></h3>
+    <h3 ng-if="isScheduleEvent && !isReferralEvent">{{'schedule_new_event'| translate}}<span ng-if="model.selectedStage"> {{model.selectedStage.displayName}}</span></h3>
     <h3 ng-if="isReferralEvent">{{'refer_new_event_for_stage' | translate}}<span ng-if="model.selectedStage"> {{model.selectedStage.displayName}}</span></h3>
 </div>
 <div class="modal-body page">    

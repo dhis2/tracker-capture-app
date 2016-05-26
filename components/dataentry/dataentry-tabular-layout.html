@@ -43,11 +43,18 @@
                                 </div>
                             </div>
                             <div style="width: 3%;" class="pull-right" ng-if="stageNeedsEvent(currentStage) && eventsLoaded && selectedEnrollment.status === 'ACTIVE'">
-                                <a href class="btn btn-primary"
-                                   ng-click="showCreateEvent(stage, eventCreationActions.add, currentStage)"
-                                   ng-disabled="selectedEntity.inactive">
-                                    <i class="fa fa-plus-circle fa-2x" title="{{'add_new_event'|translate}}"></i>
-                                </a>
+                                <div class="btn-group-vertical" role="group">
+                                    <a href class="btn btn-primary vertical-spacing"
+                                        ng-click="showCreateEvent(stage, eventCreationActions.add, currentStage)"
+                                        ng-disabled="selectedEntity.inactive">
+                                         <i class="fa fa-plus fa-2x" title="{{'add_new_event'|translate}}"></i>
+                                    </a>
+                                    <a href class="btn btn-info"
+                                        ng-click="showCreateEvent(stage, eventCreationActions.schedule, currentStage)"
+                                        ng-disabled="selectedEntity.inactive">
+                                         <i class="fa fa-calendar fa-2x" title="{{'schedule_new_event'|translate}}"></i>
+                                    </a>
+                                </div>                                
                             </div>
                         </div>                        
                     </div>
