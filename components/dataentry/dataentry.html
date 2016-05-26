@@ -59,27 +59,26 @@
                     <div ng-include="'components/dataentry/event-legend.html'"></div>
                 </div>
                 <div ng-if="useMainMenu && !mainMenuStageSelected() && eventsLoaded">
-                        <div class="">
-                            <div ng-repeat="mainMenuStage in mainMenuStages" class="main-menu-item-container" ng-class="getMainMenuItemStyle(mainMenuStage)" ng-click="openStageFromMenu(mainMenuStage)">                            
-                                <div class="main-menu-item">{{mainMenuStage.displayName}} ({{getStageEventCnt(mainMenuStage)}})</div>  
-                                <div class="main-menu-item-footer">{{getStageStyleLabel(mainMenuStage)}}</div>
-                            </div>
-                        </div>                
+                    <div class="">
+                        <div ng-repeat="mainMenuStage in mainMenuStages" class="main-menu-item-container" ng-class="getMainMenuItemStyle(mainMenuStage)" ng-click="openStageFromMenu(mainMenuStage)">                            
+                            <div class="main-menu-item">{{mainMenuStage.displayName}} ({{getStageEventCnt(mainMenuStage)}})</div>  
+                            <div class="main-menu-item-footer">{{getStageStyleLabel(mainMenuStage)}}</div>
+                        </div>
+                    </div>                
                 </div>
-                <div ng-if="!useMainMenu || mainMenuStageSelected()">
-
+                <div ng-if="!useMainMenu || mainMenuStageSelected()">                    
                     <div class="hideInPrint" ng-if="selectedEnrollment && selectedEnrollment.enrollment">
                         <div ng-include="'components/dataentry/event-layout.html'"></div>
                     </div>
-
                     <div ng-if="!selectedEnrollment || !selectedEnrollment.enrollment" class="alert alert-danger">{{notEnrolledLabel}}</div>
-
-                    <div ng-include="'components/dataentry/main-dataentry-form.html'"></div>
-
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div ng-include="'components/dataentry/main-dataentry-form.html'"></div>
+                        </div>
+                    </div>
                     <div ng-if="displayCustomForm !== 'TABLE'">
                         <div class="long-vertical-spacing" ng-include="'components/dataentry/dataentry-notes.html'"></div>
                     </div>
-
                 </div>
             </div>
         </div>

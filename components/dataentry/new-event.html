@@ -1,29 +1,32 @@
 <div class="modal-header page">
-    <h3 ng-if="isNewEvent">{{'add_new_event_for_stage'| translate}}<span ng-if="model.selectedStage"> {{model.selectedStage.displayName}}</span></h3>
-    <h3 ng-if="isScheduleEvent && !isReferralEvent">{{'schedule_new_event'| translate}}<span ng-if="model.selectedStage"> {{model.selectedStage.displayName}}</span></h3>
-    <h3 ng-if="isReferralEvent">{{'refer_new_event_for_stage' | translate}}<span ng-if="model.selectedStage"> {{model.selectedStage.displayName}}</span></h3>
+    <h3 ng-if="isNewEvent">{{'add_new_event_for_stage'| translate}}<span ng-if="model.selectedStage" class="bold"> {{model.selectedStage.displayName}}</span></h3>
+    <h3 ng-if="isScheduleEvent && !isReferralEvent">{{'schedule_new_event_for_stage'| translate}}<span ng-if="model.selectedStage" class="bold"> {{model.selectedStage.displayName}}</span></h3>
+    <h3 ng-if="isReferralEvent">{{'refer_new_event_for_stage' | translate}}<span ng-if="model.selectedStage" class="bold"> {{model.selectedStage.displayName}}</span></h3>
 </div>
 <div class="modal-body page">    
-    <form name="eventCreationForm" class="form-horizontal" role="form" novalidate>
-        <div class="row" ng-if="!stageSpecifiedOnModalOpen">            
-            <div class="col-sm-3">
-                {{'program_stage' | translate}}
-            </div>
-            <div class="col-sm-9">
-                <select class="form-control" 
-                        ng-model="model.selectedStage"                                
-                        ng-options="stage.displayName for stage in stages">                    
-                </select>
-            </div>             
-        </div>
-        
-        <div ng-if="model.selectedStage && !model.selectedStage.periodType">
-            <div class="row" ng-if="isScheduleEvent && !isReferralEvent && !model.selectedStage.hideDueDate">
-                <div class="col-sm-3">{{'scheduled_date'| translate}}</div>
-                <div class="col-sm-9">
+    <form name="eventCreationForm" class="form-horizontal" novalidate>
+        <table class="dhis2-list-table-striped default-form-table" ng-if="model.selectedStage">
+            <tr ng-if="!stageSpecifiedOnModalOpen && !suggestedStage.id">
+                <td>
+                    {{'program_stage' | translate}}
+                </td>
+                <td class="absorbing-column">
+                    <select class="form-control" 
+                            id="programStage"
+                            ng-model="model.selectedStage"                                
+                            ng-options="stage.displayName for stage in stages">                    
+                    </select>
+                </td>
+            </tr>
+            <tr ng-if="isScheduleEvent && !isReferralEvent && !model.selectedStage.hideDueDate && !model.selectedStage.periodType">
+                <td>
+                    {{'scheduled_date'| translate}}
+                </td>
+                <td class="absorbing-column">
                     <input type="text" 
                            class="form-control" 
                            name="dueDate"
+                           id="dueDate"
                            placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                            ng-rquired="true" 
                            d2-date
@@ -31,13 +34,16 @@
                            ng-model="dhis2Event.dueDate">
                     <div ng-messages="eventCreationForm.dueDate.$error" ng-if="interacted(eventCreationForm.eventDate)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">                        
                     </div>
-                </div>
-            </div>
-            <div class="row" ng-if="isNewEvent">
-                <div class="col-sm-3">{{model.selectedStage.excecutionDateLabel}}</div>
-                <div class="col-sm-9">
+                </td>
+            </tr>            
+            <tr ng-if="isNewEvent && !model.selectedStage.periodType">
+                <td>
+                    {{model.selectedStage.excecutionDateLabel}}
+                </td>
+                <td class="absorbing-column">
                     <input type="text" 
                            class="form-control" 
+                           id="eventDate"
                            name="eventDate"
                            placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                            ng-rquired="true" 
@@ -48,10 +54,28 @@
                            ng-model="dhis2Event.eventDate">
                     <div ng-messages="eventCreationForm.eventDate.$error" ng-if="interacted(eventCreationForm.eventDate)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">                        
                     </div>
-                </div>           
-            </div>
+                </td>
+            </tr>
+            <tr ng-if="model.selectedStage.periodType">
+                <td>
+                    {{'period'| translate}}
+                </td>
+                <td class="absorbing-column">
+                    <select class="form-control-program" 
+                            id="period"
+                            ng-model="dhis2Event.selectedPeriod"
+                            ng-change="updateSelection()"
+                            ng-options="period.name for period in dhis2Event.periods">
+                    </select>
+                    <button type="button" ng-disabled="model.currentSelectedIndex===0" class="btn btn-default small-horizontal-spacing trim" ng-click="fetchPeriod('PREV')" title="{{'prev_period'| translate}}"><i class="fa fa-backward"></i></button>
+                    <button type="button" ng-disabled="model.currentSelectedIndex===(dhis2Event.periods.length-1)" class="btn btn-default small-horizontal-spacing trim" ng-click="fetchPeriod('NEXT')" title="{{'nxt_period'| translate}}"><i class="fa fa-forward"></i></button>
+                </td>
+            </tr>
+        </table>
+        
+        <div ng-if="model.selectedStage && !model.selectedStage.periodType">
             <div class="row" ng-if="isReferralEvent">
-                <h4>Select an organizaton unit</h4>
+                <h4>{{'org_unit' | translate}}</h4>
                 <div class="org-unit-tree row" data-stop-propagation="true">
                     <i class="fa fa-spinner fa-spin fa-2x" ng-show="orgUnitsLoading"></i>
                     <script type="text/ng-template" id="orgUnitTree.html">
@@ -91,20 +115,6 @@
                 </div>
                 <span ng-if="model.dueDateInvalid" class="error">{{'required'| translate}}</span>
             </div>
-        </div>
-        <div class="row" ng-if="model.selectedStage && model.selectedStage.periodType">
-            <div class="col-sm-3">
-                {{'period'| translate}}
-            </div> 
-            <div class="col-sm-9">
-                <select class="form-control-program" 
-                        ng-model="dhis2Event.selectedPeriod"
-                        ng-change="updateSelection()"
-                        ng-options="period.name for period in dhis2Event.periods">
-                </select>
-                <button type="button" ng-disabled="model.currentSelectedIndex===0" class="btn btn-default small-horizontal-spacing trim" ng-click="fetchPeriod('PREV')" title="{{'prev_period'| translate}}"><i class="fa fa-backward"></i></button>
-                <button type="button" ng-disabled="model.currentSelectedIndex===(dhis2Event.periods.length-1)" class="btn btn-default small-horizontal-spacing trim" ng-click="fetchPeriod('NEXT')" title="{{'nxt_period'| translate}}"><i class="fa fa-forward"></i></button>
-            </div>        
         </div>
         <div ng-include="'components/dataentry/category-option-form.html'"></div>        
 

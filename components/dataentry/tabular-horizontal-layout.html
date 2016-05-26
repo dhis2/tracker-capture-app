@@ -7,8 +7,8 @@
         </tr>
     </thead>
     <tbody ng-repeat="dhis2Event in eventsByStage[currentStage.id]">
-        <tr ng-click="showDataEntry(dhis2Event, false, false)">
-            <td ng-class="getEventStyle(dhis2Event)" class="cursor-pointer"  ng-repeat="col in eventGridColumns.partial">
+        <tr ng-click="showDataEntry(dhis2Event, false, false)" ng-if="currentStage.repeatable">
+            <td ng-class="getEventStyle(dhis2Event)" class="cursor-pointer" ng-repeat="col in eventGridColumns.partial">
                 {{dhis2Event[col.id]}}                                    
             </td>
         </tr>
