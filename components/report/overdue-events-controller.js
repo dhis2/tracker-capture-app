@@ -21,7 +21,6 @@ trackerCapture.controller('OverdueEventsController',
     $scope.report = {};
     $scope.displayMode = {};
     $scope.printMode = false;
-    $scope.maxOptionSize = 30;
     $scope.model = {};
     
     

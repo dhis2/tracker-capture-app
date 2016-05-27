@@ -17,8 +17,6 @@ trackerCapture.controller('UpcomingEventsController',
                 MetaDataFactory,
                 CommonUtils) {
     $scope.today = DateUtils.getToday();
-    
-    $scope.maxOptionSize = 30;
     $scope.selectedOuMode = 'SELECTED';
     $scope.report = {};
     $scope.displayMode = {};

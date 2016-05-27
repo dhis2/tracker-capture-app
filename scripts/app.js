@@ -60,11 +60,14 @@ var trackerCapture = angular.module('trackerCapture',
     
 })
 
-.run(function($templateCache, $http){    
+.run(function($templateCache, $http, $rootScope){    
     $http.get('components/dataentry/inner-form.html').then(function(page){        
         $templateCache.put('components/dataentry/inner-form.html', page.data);
     });
     $http.get('components/dataentry/section-inner-form.html').then(function(page){        
         $templateCache.put('components/dataentry/section-inner-form.html', page.data);
     });
+    
+    $rootScope.maxGridColumnSize = 10;
+    $rootScope.maxOptionSize = 30;
 });

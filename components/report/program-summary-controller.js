@@ -17,7 +17,6 @@ trackerCapture.controller('ProgramSummaryController',
     $scope.ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];         
     $scope.selectedOuMode = $scope.ouModes[0];
     $scope.report = {};
-    $scope.maxOptionSize = 30;
     $scope.model = {};
     
     $scope.optionSets = CurrentSelection.getOptionSets();

@@ -1729,7 +1729,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     };
 })
 
-.service('EventUtils', function(DateUtils, CommonUtils, PeriodService, CalendarService, CurrentSelection, $translate, $filter, orderByFilter){
+.service('EventUtils', function(DateUtils, CommonUtils, PeriodService, CalendarService, CurrentSelection, $translate, $filter, $rootScope, orderByFilter){
     
     var getEventDueDate = function(eventsByStage, programStage, enrollment){       
         
@@ -1986,7 +1986,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 });
             }
             for(var i=0; i<stage.programStageDataElements.length; i++){
-                if( i < 7 && displayInReports.length === 0){
+                if( i < $rootScope.maxGridColumnSize && displayInReports.length === 0){
                     partial.push({id: stage.programStageDataElements[i].dataElement.id, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
                 }                        
                 allColumns.push({id: stage.programStageDataElements[i].dataElement.id, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});

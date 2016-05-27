@@ -1,13 +1,13 @@
 <table class="table table-bordered" ng-if="eventsByStage[currentStage.id].length > 0">
-    <thead ng-if="currentStage.repeatable">
+    <thead ng-if="eventsByStage[currentStage.id].length > 1">
         <tr>
             <th ng-repeat="col in eventGridColumns.partial">
-                {{col.name}}                                        
+                {{col.name}}
             </th>
         </tr>
     </thead>
     <tbody ng-repeat="dhis2Event in eventsByStage[currentStage.id]">
-        <tr ng-click="showDataEntry(dhis2Event, false, false)" ng-if="currentStage.repeatable">
+        <tr ng-click="showDataEntry(dhis2Event, false, false)" ng-if="eventsByStage[currentStage.id].length > 1">
             <td ng-class="getEventStyle(dhis2Event)" class="cursor-pointer" ng-repeat="col in eventGridColumns.partial">
                 {{dhis2Event[col.id]}}                                    
             </td>
