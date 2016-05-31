@@ -219,7 +219,7 @@
         </div>
         <div ng-switch-when="FILE_RESOURCE">
             <div class="hideInPrint">
-                <div class="input-group">
+                <div class="input-group max-input-filed-width">
                     <div class="form-control">
                         <a href ng-click="downloadFile(currentEvent.event, prStDe.dataElement.id)" title="{{fileNames[currentEvent.event][prStDe.dataElement.id]}}">{{fileNames[currentEvent.event][prStDe.dataElement.id].length > 20 ? fileNames[currentEvent.event][prStDe.dataElement.id].substring(0,20).concat('...') : fileNames[currentEvent.event][prStDe.dataElement.id]}}</a>
                     </div>
@@ -229,7 +229,7 @@
                                   title="{{'delete' | translate}}"
                                   d2-file-input-name="fileNames[currentEvent.event][prStDe.dataElement.id]"
                                   d2-file-input-delete="currentEvent[prStDe.dataElement.id]">
-                                <i class="fa fa-trash"></i><
+                                <i class="fa fa-trash"></i>
                             </span>
                         </span>
                         <span class="btn btn-grp btn-file" ng-if="!currentEvent[prStDe.dataElement.id]">
@@ -255,7 +255,7 @@
         </div>
         <div ng-switch-when="COORDINATE">
             <div class="hideInPrint">
-                <span class="input-group">                            
+                <span class="input-group max-input-filed-width">
                     <input type="text"
                        placeholder="{{'latitude_longitude_format' | translate}}"
                        d2-custom-coordinate-validator 

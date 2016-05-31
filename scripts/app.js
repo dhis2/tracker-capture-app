@@ -68,6 +68,6 @@ var trackerCapture = angular.module('trackerCapture',
         $templateCache.put('components/dataentry/section-inner-form.html', page.data);
     });
     
-    $rootScope.maxGridColumnSize = 10;
+    $rootScope.maxGridColumnSize = 1;
     $rootScope.maxOptionSize = 30;
 });
