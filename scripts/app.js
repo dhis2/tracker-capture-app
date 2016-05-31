@@ -22,7 +22,7 @@ var trackerCapture = angular.module('trackerCapture',
          'nvd3ChartDirectives',
          'pascalprecht.translate'])
               
-.value('DHIS2URL', '..')
+.value('DHIS2URL', '../api')
 
 .config(function($httpProvider, $routeProvider, $translateProvider) {    
             

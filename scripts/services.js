@@ -18,7 +18,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service to fetch/store dasboard widgets */
-.service('DashboardLayoutService', function($http) {
+.service('DashboardLayoutService', function($http, DHIS2URL) {
     
     var ButtonIds = { Complete: "Complete", Incomplete: "Incomplete", Validate: "Validate", Delete: "Delete", Skip: "Skip", Unskip: "Unskip", Note: "Note" };
       
@@ -40,7 +40,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     
     var getDefaultLayout = function(customLayout){
         var dashboardLayout = {customLayout: customLayout, defaultLayout: defaultLayout};        
-        var promise = $http.get(  '../api/systemSettings/keyTrackerDashboardDefaultLayout' ).then(function(response){
+        var promise = $http.get(  DHIS2URL + '/systemSettings/keyTrackerDashboardDefaultLayout' ).then(function(response){
             angular.extend(dashboardLayout.defaultLayout, response.data);
             return dashboardLayout;
         }, function(){
@@ -51,7 +51,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     
     return {
         saveLayout: function(dashboardLayout, saveAsDefault){
-            var url = saveAsDefault ? '../api/systemSettings/keyTrackerDashboardDefaultLayout' : '../api/userSettings/keyTrackerDashboardLayout';
+            var url = saveAsDefault ? DHIS2URL + '/systemSettings/keyTrackerDashboardDefaultLayout' : DHIS2URL + '/userSettings/keyTrackerDashboardLayout';
             var promise = $http({
                 method: "post",
                 url: url,
@@ -63,7 +63,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;            
         },
         get: function(){
-            var promise = $http.get(  '../api/userSettings/keyTrackerDashboardLayout' ).then(function(response){
+            var promise = $http.get(  DHIS2URL + '/userSettings/keyTrackerDashboardLayout' ).then(function(response){
                 return getDefaultLayout(response.data);
             }, function(){
                 return getDefaultLayout(null);
@@ -466,12 +466,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Factory for fetching OrgUnit */
-.factory('OrgUnitFactory', function($http) {    
+.factory('OrgUnitFactory', function($http, DHIS2URL) {    
     var orgUnit, orgUnitPromise, rootOrgUnitPromise,orgUnitTreePromise;
     return {
         get: function(uid){            
             if( orgUnit !== uid ){
-                orgUnitPromise = $http.get( '../api/organisationUnits.json?filter=id:eq:' + uid + '&fields=id,displayName,level,children[id,displayName,level,children[id,displayName,level]]&paging=false' ).then(function(response){
+                orgUnitPromise = $http.get( DHIS2URL + '/organisationUnits.json?filter=id:eq:' + uid + '&fields=id,displayName,level,children[id,displayName,level,children[id,displayName,level]]&paging=false' ).then(function(response){
                     orgUnit = response.data.id;
                     return response.data;
                 });
@@ -480,7 +480,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         getSearchTreeRoot: function(){
             if(!rootOrgUnitPromise){
-                var url = '../api/me.json?fields=teiSearchOrganisationUnits[id,displayName,level,children[id,displayName,level,children[id,displayName,level]]],organisationUnits[id,displayName,level,children[id,displayName,level,children[id,displayName,level]]]&paging=false';                
+                var url = DHIS2URL + '/me.json?fields=teiSearchOrganisationUnits[id,displayName,level,children[id,displayName,level,children[id,displayName,level]]],organisationUnits[id,displayName,level,children[id,displayName,level,children[id,displayName,level]]]&paging=false';                
                 rootOrgUnitPromise = $http.get( url ).then(function(response){                    
                     response.data.organisationUnits = response.data.teiSearchOrganisationUnits && response.data.teiSearchOrganisationUnits.length > 0 ? response.data.teiSearchOrganisationUnits : response.data.organisationUnits;
                     delete response.data.teiSearchOrganisationUnits;                    
@@ -490,7 +490,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return rootOrgUnitPromise;
         },
         getOrgUnits: function(uid,fieldUrl){
-            var url = '../api/organisationUnits.json?filter=id:eq:'+uid+'&'+fieldUrl+'&paging=false';
+            var url = DHIS2URL + '/organisationUnits.json?filter=id:eq:'+uid+'&'+fieldUrl+'&paging=false';
             orgUnitTreePromise = $http.get(url).then(function(response){
               return response.data; 
             });               
@@ -555,7 +555,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service to deal with enrollment */
-.service('EnrollmentService', function($http, DateUtils, DialogService, $translate) {
+.service('EnrollmentService', function($http, DHIS2URL, DateUtils, DialogService, $translate) {
     
     var convertFromApiToUser = function(enrollment){
         if(enrollment.enrollments){
@@ -579,19 +579,19 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     };
     return {        
         get: function( enrollmentUid ){
-            var promise = $http.get(  '../api/enrollments/' + enrollmentUid ).then(function(response){
+            var promise = $http.get(  DHIS2URL + '/enrollments/' + enrollmentUid ).then(function(response){
                 return convertFromApiToUser(response.data);
             });
             return promise;
         },
         getByEntity: function( entity ){
-            var promise = $http.get(  '../api/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&paging=false').then(function(response){
+            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&paging=false').then(function(response){
                 return convertFromApiToUser(response.data);
             });
             return promise;
         },
         getByEntityAndProgram: function( entity, program ){
-            var promise = $http.get(  '../api/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&program=' + program + '&paging=false').then(function(response){
+            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&program=' + program + '&paging=false').then(function(response){
                 return convertFromApiToUser(response.data);
             }, function(response){
                 if( response && response.data && response.data.status === 'ERROR'){
@@ -605,39 +605,39 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getByStartAndEndDate: function( program, orgUnit, ouMode, startDate, endDate ){
-            var promise = $http.get(  '../api/enrollments.json?ouMode=ACCESSIBLE&program=' + program + '&orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&startDate=' + startDate + '&endDate=' + endDate + '&paging=false').then(function(response){
+            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&program=' + program + '&orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&startDate=' + startDate + '&endDate=' + endDate + '&paging=false').then(function(response){
                 return convertFromApiToUser(response.data);
             });
             return promise;
         },
         enroll: function( enrollment ){
             var en = convertFromUserToApi(angular.copy(enrollment));
-            var promise = $http.post(  '../api/enrollments', en ).then(function(response){
+            var promise = $http.post(  DHIS2URL + '/enrollments', en ).then(function(response){
                 return response.data;
             });
             return promise;
         },
         update: function( enrollment ){
             var en = convertFromUserToApi(angular.copy(enrollment));
-            var promise = $http.put( '../api/enrollments/' + en.enrollment , en ).then(function(response){
+            var promise = $http.put( DHIS2URL + '/enrollments/' + en.enrollment , en ).then(function(response){
                 return response.data;
             });
             return promise;
         },
         updateForNote: function( enrollment ){
-            var promise = $http.post('../api/enrollments/' + enrollment.enrollment + '/note', enrollment).then(function(response){
+            var promise = $http.post(DHIS2URL + '/enrollments/' + enrollment.enrollment + '/note', enrollment).then(function(response){
                 return response.data;         
             });
             return promise;
         },
         cancel: function(enrollment){
-            var promise = $http.put('../api/enrollments/' + enrollment.enrollment + '/cancelled').then(function(response){
+            var promise = $http.put(DHIS2URL + '/enrollments/' + enrollment.enrollment + '/cancelled').then(function(response){
                 return response.data;               
             });
             return promise;           
         },
         completeIncomplete: function(enrollment, status){
-            var promise = $http.put('../api/enrollments/' + enrollment.enrollment + '/' + status).then(function(response){
+            var promise = $http.put(DHIS2URL + '/enrollments/' + enrollment.enrollment + '/' + status).then(function(response){
                 return response.data;               
             });
             return promise; 
@@ -677,11 +677,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service for getting tracked entity instances */
-.factory('TEIService', function($http, $q, AttributesFactory, DialogService, CommonUtils, CurrentSelection, DateUtils ) {
+.factory('TEIService', function($http, DHIS2URL, $q, AttributesFactory, DialogService, CommonUtils, CurrentSelection, DateUtils ) {
     
     return {
         get: function(entityUid, optionSets, attributesById){
-            var promise = $http.get( '../api/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
+            var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
                 var tei = response.data;
                 angular.forEach(tei.attributes, function(att){                    
                     if(attributesById[att.attribute]){
@@ -714,11 +714,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var deferred = $q.defer();
 
             if (format === "csv") {
-                url = '../api/trackedEntityInstances/query.csv?ou=' + ouId + '&ouMode=' + ouMode;
+                url = DHIS2URL + '/trackedEntityInstances/query.csv?ou=' + ouId + '&ouMode=' + ouMode;
             } else if (format === "xml") {
-                url = '../api/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
+                url = DHIS2URL + '/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
             }else {
-                url = '../api/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
+                url = DHIS2URL + '/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
             }
             
             if(queryUrl){
@@ -839,7 +839,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             angular.forEach(formattedTei.attributes, function(att){
                 att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API');
             });
-            var promise = $http.put( '../api/trackedEntityInstances/' + formattedTei.trackedEntityInstance , formattedTei ).then(function(response){                    
+            var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + formattedTei.trackedEntityInstance , formattedTei ).then(function(response){                    
                 return response.data;
             });
             
@@ -853,7 +853,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             
             formattedTei.attributes = attributes;
-            var promise = $http.post( '../api/trackedEntityInstances' , formattedTei ).then(function(response){                    
+            var promise = $http.post( DHIS2URL + '/trackedEntityInstances' , formattedTei ).then(function(response){                    
                 return response.data;
             }, function(response) {
                 //Necessary now that import errors gives a 409 response from the server.
@@ -1023,19 +1023,19 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* factory for handling events */
-.factory('DHIS2EventFactory', function($http, DialogService, $translate) {   
+.factory('DHIS2EventFactory', function($http, DHIS2URL, DialogService, $translate) {   
     
     var skipPaging = "&skipPaging=true";
     return {     
         
         getEventsByStatus: function(entity, orgUnit, program, programStatus){   
-            var promise = $http.get( '../api/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + '&orgUnit=' + orgUnit + '&program=' + program + '&programStatus=' + programStatus  + skipPaging).then(function(response){
+            var promise = $http.get( DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + '&orgUnit=' + orgUnit + '&program=' + program + '&programStatus=' + programStatus  + skipPaging).then(function(response){
                 return response.data.events;
             });            
             return promise;
         },
         getEventsByProgram: function(entity, program, attributeCategory){            
-            var url = '../api/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging;            
+            var url = DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging;            
             
             if(program){
                 url = url + '&program=' + program;
@@ -1051,7 +1051,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getEventsByProgramStage: function(entity, programStage){
-          var url = '../api/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging; 
+          var url = DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging; 
           if(programStage){
               url += '&programStage='+programStage;
           }
@@ -1063,10 +1063,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         getByOrgUnitAndProgram: function(orgUnit, ouMode, program, startDate, endDate){
             var url;
             if(startDate && endDate){
-                url = '../api/events.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program + '&startDate=' + startDate + '&endDate=' + endDate + skipPaging;
+                url = DHIS2URL + '/events.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program + '&startDate=' + startDate + '&endDate=' + endDate + skipPaging;
             }
             else{
-                url = '../api/events.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program + skipPaging;
+                url = DHIS2URL + '/events.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program + skipPaging;
             }
             var promise = $http.get( url ).then(function(response){
                 return response.data.events;
@@ -1082,43 +1082,43 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         get: function(eventUid){            
-            var promise = $http.get('../api/events/' + eventUid + '.json').then(function(response){               
+            var promise = $http.get(DHIS2URL + '/events/' + eventUid + '.json').then(function(response){               
                 return response.data;
             });            
             return promise;
         },        
         create: function(dhis2Event){    
-            var promise = $http.post('../api/events.json', dhis2Event).then(function(response){
+            var promise = $http.post(DHIS2URL + '/events.json', dhis2Event).then(function(response){
                 return response.data;           
             });
             return promise;            
         },
         delete: function(dhis2Event){
-            var promise = $http.delete('../api/events/' + dhis2Event.event).then(function(response){
+            var promise = $http.delete(DHIS2URL + '/events/' + dhis2Event.event).then(function(response){
                 return response.data;               
             });
             return promise;           
         },
         update: function(dhis2Event){   
-            var promise = $http.put('../api/events/' + dhis2Event.event, dhis2Event).then(function(response){
+            var promise = $http.put(DHIS2URL + '/events/' + dhis2Event.event, dhis2Event).then(function(response){
                 return response.data;         
             });
             return promise;
         },        
         updateForSingleValue: function(singleValue){   
-            var promise = $http.put('../api/events/' + singleValue.event + '/' + singleValue.dataValues[0].dataElement, singleValue ).then(function(response){
+            var promise = $http.put(DHIS2URL + '/events/' + singleValue.event + '/' + singleValue.dataValues[0].dataElement, singleValue ).then(function(response){
                 return response.data;
             });
             return promise;
         },
         updateForNote: function(dhis2Event){   
-            var promise = $http.post('../api/events/' + dhis2Event.event + '/note', dhis2Event).then(function(response){
+            var promise = $http.post(DHIS2URL + '/events/' + dhis2Event.event + '/note', dhis2Event).then(function(response){
                 return response.data;         
             });
             return promise;
         },
         updateForEventDate: function(dhis2Event){
-            var promise = $http.put('../api/events/' + dhis2Event.event + '/eventDate', dhis2Event).then(function(response){
+            var promise = $http.put(DHIS2URL + '/events/' + dhis2Event.event + '/eventDate', dhis2Event).then(function(response){
                 return response.data;         
             });
             return promise;
@@ -1127,12 +1127,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* factory for handling event reports */
-.factory('EventReportService', function($http, DialogService, $translate) {   
+.factory('EventReportService', function($http, DHIS2URL, DialogService, $translate) {   
     
     return {        
         getEventReport: function(orgUnit, ouMode, program, startDate, endDate, programStatus, eventStatus, pager){
             
-            var url = '../api/events/eventRows.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program;
+            var url = DHIS2URL + '/events/eventRows.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program;
             
             if( programStatus ){
                 url = url + '&programStatus=' + programStatus;
@@ -2049,10 +2049,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         this.eventCreationActions = { add: 'ADD',  schedule: 'SCHEDULE', referral: 'REFERRAL'};
 })
 
-.service('MessagingService', function($http){
+.service('MessagingService', function($http, DHIS2URL){
     return {
         sendSmsMessage: function(message){    
-            var promise = $http.post('../api/sms/outbound', message).then(function(response){
+            var promise = $http.post(DHIS2URL + '/sms/outbound', message).then(function(response){
                 return response.data;           
             }, function(response){
                 return response.data;
