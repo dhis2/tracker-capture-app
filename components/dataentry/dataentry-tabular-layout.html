@@ -21,7 +21,7 @@
             <div ng-if="dashboardReady">
                 <div class="col-sm-2 list-group">
                     <a ng-repeat="stage in programStages| orderBy:'sortOrder':reverse" class="list-group-item cursor-pointer" ng-class="{true: 'active'} [stage.id === currentStage.id]" ng-click="setCurrentStage(stage)">
-                        {{stage.name}}
+                        {{stage.displayName}}
                     </a>
                 </div>
                 <div class="col-sm-10">
