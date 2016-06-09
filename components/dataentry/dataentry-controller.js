@@ -10,7 +10,10 @@ trackerCapture.controller('DataEntryController',
                 $timeout,
                 $translate,
                 $window,
+				$q,
+                $location,
                 CommonUtils,
+				OrgUnitFactory,
                 DateUtils,
                 EventUtils,
                 orderByFilter,
@@ -25,8 +28,7 @@ trackerCapture.controller('DataEntryController',
                 CustomFormService,
                 PeriodService,
                 TrackerRulesFactory,
-                EventCreationService,
-                $q,$location) {
+                EventCreationService) {
     $scope.printForm = false;
     $scope.printEmptyForm = false;
     $scope.eventPageSize = 4;
@@ -555,86 +557,88 @@ trackerCapture.controller('DataEntryController',
         $scope.optionsReady = false;
         
         var selections = CurrentSelection.get();
-        $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
-        $scope.selectedEntity = selections.tei;
-        $scope.selectedProgram = selections.pr;
-        $scope.selectedEnrollment = selections.selectedEnrollment;        
+        OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function (orgUnit) {
+            $scope.selectedOrgUnit = orgUnit;
+        	$scope.selectedEntity = selections.tei;
+        	$scope.selectedProgram = selections.pr;
+        	$scope.selectedEnrollment = selections.selectedEnrollment;        
         
-        $scope.showSelf = true;
-        if(angular.isUndefined($scope.selectedEnrollment) || $scope.selectedEnrollment === null || ($scope.dashBoardWidgetFirstRun && $scope.selectedEnrollment.status === "COMPLETED")){
-            //onOpenEnrollment
-            $scope.showSelf = false;
-        }
+        	$scope.showSelf = true;
+        	if(angular.isUndefined($scope.selectedEnrollment) || $scope.selectedEnrollment === null || ($scope.dashBoardWidgetFirstRun && $scope.selectedEnrollment.status === "COMPLETED")){
+            	//onOpenEnrollment
+            	$scope.showSelf = false;
+        	}
         
-        $rootScope.$broadcast('BeforeOpenEnrollment', $scope.showSelf);
-        $scope.dashBoardWidgetFirstRun = false;
+	        $rootScope.$broadcast('BeforeOpenEnrollment', $scope.showSelf);
+    	    $scope.dashBoardWidgetFirstRun = false;
 
         
-        $scope.optionSets = selections.optionSets;
+    	    $scope.optionSets = selections.optionSets;
 
-        $scope.stagesById = [];
-        $scope.dataElementTranslations = CurrentSelection.getDataElementTranslations();
-        if ($scope.selectedOrgUnit && $scope.selectedProgram && $scope.selectedProgram.id && $scope.selectedEntity && $scope.selectedEnrollment && $scope.selectedEnrollment.enrollment) {
-            ProgramStageFactory.getByProgram($scope.selectedProgram).then(function (stages) {
+    	    $scope.stagesById = [];
+    	    $scope.dataElementTranslations = CurrentSelection.getDataElementTranslations();
+    	    if ($scope.selectedOrgUnit && $scope.selectedProgram && $scope.selectedProgram.id && $scope.selectedEntity && $scope.selectedEnrollment && $scope.selectedEnrollment.enrollment) {
+    	        ProgramStageFactory.getByProgram($scope.selectedProgram).then(function (stages) {
                 
-                $scope.programStages = stages;
+    	            $scope.programStages = stages;
                 
-                angular.forEach(stages, function (stage) {
-                    if (stage.openAfterEnrollment) {
-                        $scope.currentStage = stage;
-                    }
+    	            angular.forEach(stages, function (stage) {
+    	                if (stage.openAfterEnrollment) {
+    	                    $scope.currentStage = stage;
+    	                }
                     
-                    stage.excecutionDateLabel ? stage.excecutionDateLabel : $translate.instant('report_date');
-                    angular.forEach(stage.programStageDataElements, function (prStDe) {                        
-                        var tx = $scope.dataElementTranslations[prStDe.dataElement.id];
-                        prStDe.dataElement.displayFormName = tx.displayFormName && tx.displayFormName !== "" ? tx.displayFormName : tx.displayName ? tx.displayName : prStDe.dataElement.displayName;
-                        prStDe.dataElement.description = tx.description ? tx.description : prStDe.dataElement.description;
-                        $scope.prStDes[prStDe.dataElement.id] = prStDe;
-                        if(prStDe.allowProvidedElsewhere){
-                            $scope.allowProvidedElsewhereExists[stage.id] = true;
-                        }
-                    });
+    	                stage.excecutionDateLabel ? stage.excecutionDateLabel : $translate.instant('report_date');
+    	                angular.forEach(stage.programStageDataElements, function (prStDe) {                        
+    	                    var tx = $scope.dataElementTranslations[prStDe.dataElement.id];
+    	                    prStDe.dataElement.displayFormName = tx.displayFormName && tx.displayFormName !== "" ? tx.displayFormName : tx.displayName ? tx.displayName : prStDe.dataElement.displayName;
+    	                    prStDe.dataElement.description = tx.description ? tx.description : prStDe.dataElement.description;
+    	                    $scope.prStDes[prStDe.dataElement.id] = prStDe;
+    	                    if(prStDe.allowProvidedElsewhere){
+    	                        $scope.allowProvidedElsewhereExists[stage.id] = true;
+    	                    }
+    	                });
 
-                    $scope.stagesById[stage.id] = stage;
-                    $scope.eventsByStage[stage.id] = [];
+    	                $scope.stagesById[stage.id] = stage;
+    	                $scope.eventsByStage[stage.id] = [];
 
-                    //If one of the stages has less than $scope.tableMaxNumberOfDataElements data elements, allow sorting as table:
-                    if ($scope.stageCanBeShownAsTable(stage)) {
-                        $scope.stagesCanBeShownAsTable = true;
-                    }
-                });
+    	                //If one of the stages has less than $scope.tableMaxNumberOfDataElements data elements, allow sorting as table:
+    	                if ($scope.stageCanBeShownAsTable(stage)) {
+    	                    $scope.stagesCanBeShownAsTable = true;
+    	                }
+    	            });
 
-                $scope.programStages = orderByFilter($scope.programStages, '-sortOrder').reverse();
-                if (!$scope.currentStage) {
-                    $scope.currentStage = $scope.programStages[0];
-                }
+    	            $scope.programStages = orderByFilter($scope.programStages, '-sortOrder').reverse();
+    	            if (!$scope.currentStage) {
+    	                $scope.currentStage = $scope.programStages[0];
+    	            }
+    	            
+    	            $scope.setCurrentStage($scope.currentStage);                
                 
-                $scope.setCurrentStage($scope.currentStage);                
+    	            if($scope.useMainMenu){
+    	                $scope.buildMainMenuStages();
+    	            }
                 
-                if($scope.useMainMenu){
-                    $scope.buildMainMenuStages();
-                }
+    	            $scope.setDisplayTypeForStages();
+    	            $scope.getHeaderStages();
                 
-                $scope.setDisplayTypeForStages();
-                $scope.getHeaderStages();
+    	            $scope.selectedCategories = [];
+    	            if($scope.selectedProgram.categoryCombo && 
+    	                    !$scope.selectedProgram.categoryCombo.isDefault &&
+    	                    $scope.selectedProgram.categoryCombo.categories){
+    	                $scope.selectedCategories = $scope.selectedProgram.categoryCombo.categories;                    
+    	            }
+    	            else{
+    	                $scope.optionsReady = true;
+    	            }
                 
-                $scope.selectedCategories = [];
-                if($scope.selectedProgram.categoryCombo && 
-                        !$scope.selectedProgram.categoryCombo.isDefault &&
-                        $scope.selectedProgram.categoryCombo.categories){
-                    $scope.selectedCategories = $scope.selectedProgram.categoryCombo.categories;                    
-                }
-                else{
-                    $scope.optionsReady = true;
-                }
-                
-                TrackerRulesFactory.getRules($scope.selectedProgram.id).then(function(rules){                    
-                    $scope.allProgramRules = rules;
-                    $scope.getEvents();                    
-                    broadcastDataEntryControllerData();
-                });                
-            });
-        }
+    	            TrackerRulesFactory.getRules($scope.selectedProgram.id).then(function(rules){                    
+    	                $scope.allProgramRules = rules;
+    	                $scope.getEvents();                    
+    	                broadcastDataEntryControllerData();
+    	            });                
+    	        });
+    	    }
+		});
     });
     
     $scope.openEventExternal = function(event){
