@@ -15,8 +15,9 @@
         <tr ng-if="currentEvent && currentEvent.programStage === currentStage.id && dhis2Event.event === currentEvent.event && currentStage.programStageDataElements.length > maxGridColumnSize">
             <td colspan="{{eventGridColumns.partial.length}}" class="cursor-pointer">
                 <div class="row">
-                    <div class="col-sm-6" ng-include="'components/dataentry/main-dataentry-form.html'"></div>
-                </div>                
+                    <div ng-if="currentStage.programStageDataElements.length > 5" class="col-sm-6" ng-include="'components/dataentry/main-dataentry-form.html'"></div>
+                    <div ng-if="currentStage.programStageDataElements.length <= 5" class="col-sm-10 edit-grid" ng-include="'components/dataentry/table-entry-form.html'"></div>
+                </div>
             </td>
         </tr>
         <tr ng-if="currentEvent && currentEvent.programStage === currentStage.id && dhis2Event.event === currentEvent.event && currentStage.programStageDataElements.length < maxGridColumnSize">

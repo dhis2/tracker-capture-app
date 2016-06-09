@@ -2016,3 +2016,14 @@ a.disable-link-effects:focus {
 .input-group-btn-no-width {
     width: 0 !important;
 }
+
+
+.wrap-name {
+    white-space: normal;
+    max-width: 180px;
+}
+
+.edit-grid {
+    margin-top:20px;
+    margin-bottom:20px;
+}
