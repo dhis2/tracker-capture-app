@@ -709,7 +709,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 angular.forEach(tei.attributes, function(att){                    
                     if(attributesById[att.attribute]){
                         att.displayName = attributesById[att.attribute].displayName;                        
-                        att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');                
+                        att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');
+                        if (attributesById[att.attribute].generated) {
+                            $http.get( DHIS2URL + '/trackedEntityAttributes/' +  att.attribute + '/generate').then(function(response){
+                                console.log("Setting generate flag for "+ att.displayName+" attribute : "+response.statusText);
+                            });
+                        }
                     }
                 });
                 return tei;
