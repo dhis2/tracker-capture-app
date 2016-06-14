@@ -378,7 +378,7 @@
                 <td class="min-possible-width prevent-text-selection-on-double-click" ng-class="{'current-event-td': currentEvent === eventRow}">
                     <div class="statuscol" ng-controller="EventOptionsInTableController">
                         <div class="hideInPrint pull-right" ng-show="eventRow === currentEvent && tableEditMode !== tableEditModes.form && tableRowStatusButtonsEnabled(eventRow)">
-                            <div class="btn-group event-table-options-dropdown dropup"
+                            <div class="btn-group event-table-options-dropdown dropdown"
                                  ng-dblclick="$event.stopPropagation();">
                               <button type="button" class="btn btn-default" ng-click="defaultOption.onClick()"  data-toggle='tooltip' title='{{defaultOption.tooltip | translate}}' ng-bind-html="defaultOption.icon" ng-disabled="defaultOption.disabled">
                               </button>
