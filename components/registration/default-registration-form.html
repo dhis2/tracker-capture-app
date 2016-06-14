@@ -51,7 +51,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="editingDisabled" 
+                               ng-disabled="editingDisabled"
                                blur-or-change="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -92,7 +92,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="editingDisabled" 
+                               ng-disabled="editingDisabled || attribute.generated"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -108,7 +108,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="editingDisabled" 
+                               ng-disabled="editingDisabled || attribute.generated"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -124,7 +124,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="editingDisabled" 
+                               ng-disabled="editingDisabled || attribute.generated"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -140,7 +140,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="editingDisabled" 
+                               ng-disabled="editingDisabled || attribute.generated"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -156,7 +156,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="editingDisabled" 
+                               ng-disabled="editingDisabled || attribute.generated"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -170,7 +170,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="editingDisabled" 
+                               ng-disabled="editingDisabled"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -184,7 +184,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="editingDisabled" 
+                               ng-disabled="editingDisabled || attribute.generated"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory">
                         </textarea>
@@ -258,7 +258,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="editingDisabled" 
+                               ng-disabled="editingDisabled || attribute.generated"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>

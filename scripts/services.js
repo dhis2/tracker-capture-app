@@ -712,7 +712,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');
                         if (attributesById[att.attribute].generated) {
                             $http.get( DHIS2URL + '/trackedEntityAttributes/' +  att.attribute + '/generate').then(function(response){
-                                console.log("Setting generate flag for "+ att.displayName+" attribute : "+response.statusText);
+                                console.log("Setting generate flag for "+ att.displayName+" attribute : "+response.data);
+                                if(response && response.data) {
+                                    if(att.valueType === "NUMBER") {
+                                        att.value = Number(response.data);
+                                    }
+                                }
                             });
                         }
                     }
@@ -2015,7 +2020,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});            
             if( displayInReports.length > 0 ){
                 angular.forEach(displayInReports, function(c){
-                    partial.push({id: c.id, name: prStDes[c.id].dataElement.displayFormName});
+                    if ( prStDes[c.id] && prStDes[c.id].dataElement) {
+                        partial.push({id: c.id, name: prStDes[c.id].dataElement.displayFormName});
+                    }
                 });
             }
             for(var i=0; i<stage.programStageDataElements.length; i++){
