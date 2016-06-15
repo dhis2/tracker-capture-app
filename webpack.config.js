@@ -57,13 +57,14 @@ module.exports = {
         inline: false,
         compress: false,
         proxy: [
-            { path: '/api/*', target: dhisConfig.baseUrl, bypass:this.bypass },
-            { path: '/dhis-web-commons-ajax-json/*', target: dhisConfig.baseUrl, bypass:this.bypass },
-            { path: '/dhis-web-commons-stream/*', target: dhisConfig.baseUrl, bypass:this.bypass },
-            { path: '/dhis-web-commons/*', target: dhisConfig.baseUrl, bypass:this.bypass },
-            { path: '/icons/*', target: dhisConfig.baseUrl, bypass:this.bypass },
-            { path: '/images/*', target: dhisConfig.baseUrl, bypass:this.bypass },
-            { path: '/main.js', target: dhisConfig.baseUrl, bypass:this.bypass }
+                    { path: '/api/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/dhis-web-commons-ajax-json/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/dhis-web-commons-stream/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/dhis-web-commons/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/icons/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/images/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/main.js', target: dhisConfig.baseUrl, bypass }
+
         ]
     }
 };
