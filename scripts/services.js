@@ -710,16 +710,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     if(attributesById[att.attribute]){
                         att.displayName = attributesById[att.attribute].displayName;                        
                         att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');
-                        if (attributesById[att.attribute].generated) {
-                            $http.get( DHIS2URL + '/trackedEntityAttributes/' +  att.attribute + '/generate').then(function(response){
-                                console.log("Setting generate flag for "+ att.displayName+" attribute : "+response.data);
-                                if(response && response.data) {
-                                    if(att.valueType === "NUMBER") {
-                                        att.value = Number(response.data);
-                                    }
-                                }
-                            });
-                        }
                     }
                 });
                 return tei;
@@ -921,6 +911,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             }       
             return def.promise;
+        },
+        getGeneratedAttributeValue: function(attribute) {
+            var deferred = $q.defer();
+            $http.get( DHIS2URL + '/trackedEntityAttributes/' +  attribute + '/generate').then(function(response){
+                if(response && response.data) {
+                        deferred.resolve(response.data);
+                }
+            });
+            return deferred.promise;
         }
     };
 })

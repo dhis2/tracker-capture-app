@@ -22,6 +22,7 @@ trackerCapture.controller('RegistrationController',
                 DateUtils,
                 SessionStorageService,
                 TEIGridService,
+                TEIService,
                 TrackerRulesFactory,
                 TrackerRulesExecutionService,
                 TCStorageService,
@@ -166,6 +167,7 @@ trackerCapture.controller('RegistrationController',
             $scope.schedulingEnabled = true;
             AttributesFactory.getByProgram($scope.selectedProgram).then(function (atts) {
                 $scope.attributes = TEIGridService.generateGridColumns(atts, null, false).columns;
+                fetchGeneratedAttributes();
                 if ($scope.selectedProgram && $scope.selectedProgram.id) {
                     if ($scope.selectedProgram.dataEntryForm && $scope.selectedProgram.dataEntryForm.htmlCode) {
                         $scope.customRegistrationFormExists = true;
@@ -201,6 +203,20 @@ trackerCapture.controller('RegistrationController',
 
                         $scope.customDataEntryForm = CustomFormService.getForProgramStage($scope.currentStage, $scope.prStDes);
                     }
+                }
+            });
+        };
+
+        var fetchGeneratedAttributes = function() {
+            angular.forEach($scope.attributes, function(att) {
+                if (att.generated && !$scope.selectedTei[att.id]) {
+                    TEIService.getGeneratedAttributeValue(att.id).then(function(value) {
+                        if (att.valueType === "NUMBER") {
+                            $scope.selectedTei[att.id]=Number(value);
+                        } else {
+                            $scope.selectedTei[att.id]=value;
+                        }
+                    });
                 }
             });
         };
