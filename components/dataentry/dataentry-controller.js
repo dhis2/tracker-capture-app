@@ -27,6 +27,7 @@ trackerCapture.controller('DataEntryController',
                 TrackerRulesExecutionService,
                 CustomFormService,
                 PeriodService,
+                OptionSetService,
                 TrackerRulesFactory,
                 EventCreationService) {
     $scope.printForm = false;
@@ -284,6 +285,11 @@ trackerCapture.controller('DataEntryController',
                     //For "ASSIGN" actions where we have a dataelement, we save the calculated value to the dataelement:
                     //Blank out the value:
                     var processedValue = $filter('trimquotes')(effect.data);
+                    
+                    if($scope.prStDes[effect.dataElement.id].dataElement.optionSet) {
+                        processedValue = OptionSetService.getName(
+                                $scope.optionSets[$scope.prStDes[effect.dataElement.id].dataElement.optionSet.id].options, processedValue)
+                    }
                     
                     processedValue = processedValue === "true" ? true : processedValue;
                     processedValue = processedValue === "false" ? false : processedValue;
