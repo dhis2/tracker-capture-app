@@ -94,6 +94,10 @@ trackerCapture.controller('RegistrationController',
         });
     }
     
+    $scope.isDisabled = function(attribute) {
+        return attribute.generated || $scope.assignedFields[attribute.id] || $scope.editingDisabled;
+    }
+    
     OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
         $scope.selectedOrgUnit = orgUnit;
         $scope.selectedEnrollment = {
@@ -429,8 +433,8 @@ trackerCapture.controller('RegistrationController',
                 $scope.assignedFields = [];
                 $scope.errorMessages = {};
                 $scope.hiddenSections = [];
-
-                var effectResult = TrackerRulesExecutionService.processRuleEffectAttribute(args.event, $scope.selectedTei, $scope.tei, $scope.currentEvent, {}, $scope.currentEvent, $scope.attributesById, $scope.hiddenFields, $scope.hiddenSections, $scope.warningMessages, $scope.assignedFields);
+                
+                var effectResult = TrackerRulesExecutionService.processRuleEffectAttribute(args.event, $scope.selectedTei, $scope.tei, $scope.currentEvent, {}, $scope.currentEvent, $scope.attributesById, $scope.prStDes, $scope.hiddenFields, $scope.hiddenSections, $scope.warningMessages, $scope.assignedFields, $scope.optionSets);
                 $scope.selectedTei = effectResult.selectedTei;
                 $scope.currentEvent = effectResult.currentEvent;
                 $scope.hiddenFields = effectResult.hiddenFields;
