@@ -25,9 +25,9 @@ trackerCapture.controller('DashboardController',
                 CurrentSelection,
                 ModalService,
                 AuthorityService,
-				OrgUnitFactory) {
+                OrgUnitFactory) {
     //selections
-	if (!dhis2.tc.metaDataCached) {
+    if (!dhis2.tc.metaDataCached) {
         downloadMetaData();
     }
 	OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
