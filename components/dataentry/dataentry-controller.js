@@ -1075,7 +1075,8 @@ trackerCapture.controller('DataEntryController',
 
     $scope.showDataEntry = function (event, suppressToggling, resetStage) {
         if (event) {
-            if ($scope.currentEvent && !suppressToggling && $scope.currentEvent.event === event.event) {
+            if ($scope.currentEvent && !suppressToggling && $scope.currentEvent.event === event.event &&
+                $scope.currentStage.programStageDataElements.length > 5) {
                 //clicked on the same stage, do toggling
                 $scope.deSelectCurrentEvent(resetStage);
             }
