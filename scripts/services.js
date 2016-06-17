@@ -246,7 +246,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Factory to fetch programs */
-.factory('ProgramFactory', function($q, $rootScope, SessionStorageService, TCStorageService, orderByFilter, CommonUtils) { 
+.factory('ProgramFactory', function($q, $rootScope, $location, SessionStorageService, TCStorageService, orderByFilter, OrgUnitFactory, CommonUtils) { 
 
     return {        
         
@@ -254,22 +254,24 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             
             var roles = SessionStorageService.get('USER_ROLES');
             var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
-            var ou = SessionStorageService.get('SELECTED_OU');
             var def = $q.defer();
-            
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll('programs').done(function(prs){
-                    var programs = [];
-                    angular.forEach(prs, function(pr){
-                        if(pr.organisationUnits.hasOwnProperty( ou.id ) && CommonUtils.userHasValidRole(pr, 'programs', userRoles)){
-                            programs.push(pr);
-                        }
+            OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function (orgUnit) {
+                var ou = orgUnit;
+
+                TCStorageService.currentStore.open().done(function () {
+                    TCStorageService.currentStore.getAll('programs').done(function (prs) {
+                        var programs = [];
+                        angular.forEach(prs, function (pr) {
+                            if (pr.organisationUnits.hasOwnProperty(ou.id) && CommonUtils.userHasValidRole(pr, 'programs', userRoles)) {
+                                programs.push(pr);
+                            }
+                        });
+                        $rootScope.$apply(function () {
+                            def.resolve(programs);
+                        });
                     });
-                    $rootScope.$apply(function(){
-                        def.resolve(programs);
-                    });                      
                 });
-            });
+			});
             
             return def.promise;            
         },
@@ -466,7 +468,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Factory for fetching OrgUnit */
-.factory('OrgUnitFactory', function($http, DHIS2URL) {    
+.factory('OrgUnitFactory', function($http, DHIS2URL, $q, SessionStorageService) {    
     var orgUnit, orgUnitPromise, rootOrgUnitPromise,orgUnitTreePromise;
     return {
         get: function(uid){            
@@ -495,6 +497,27 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
               return response.data; 
             });               
             return orgUnitTreePromise;
+        },
+        getOrgUnit: function(uid) {
+            var def = $q.defer();
+            var selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
+            if (selectedOrgUnit) {
+                def.resolve(selectedOrgUnit);
+            } else if (uid) {
+                this.get(uid).then(function (response) {
+                    if (response.organisationUnits && response.organisationUnits[0]) {
+                        def.resolve({
+                            displayName: response.organisationUnits[0].displayName,
+                            id: response.organisationUnits[0].id
+                        });
+                    } else {
+                        def.resolve(null);
+                    }
+                });
+            } else {
+                def.resolve(null);
+            }
+            return def.promise;
         }
     }; 
 })
@@ -686,7 +709,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 angular.forEach(tei.attributes, function(att){                    
                     if(attributesById[att.attribute]){
                         att.displayName = attributesById[att.attribute].displayName;                        
-                        att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');                
+                        att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');
                     }
                 });
                 return tei;
@@ -888,6 +911,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             }       
             return def.promise;
+        },
+        getGeneratedAttributeValue: function(attribute) {
+            var deferred = $q.defer();
+            $http.get( DHIS2URL + '/trackedEntityAttributes/' +  attribute + '/generate').then(function(response){
+                if(response && response.data) {
+                        deferred.resolve(response.data);
+                }
+            });
+            return deferred.promise;
         }
     };
 })
@@ -1585,82 +1617,87 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     };    
 })
 
-.service('TEIGridService', function(OptionSetService, CurrentSelection, DateUtils, $translate, $filter, SessionStorageService){
+.service('TEIGridService', function(OptionSetService, CurrentSelection, DateUtils, $location, $translate, $filter, OrgUnitFactory){
     
     return {
         format: function(grid, map, optionSets, invalidTeis, isFollowUp){
             
-            var ou = SessionStorageService.get('SELECTED_OU');
-            
-            invalidTeis = !invalidTeis ? [] : invalidTeis;
-            if(!grid || !grid.rows){
-                return;
-            }            
-            
-            //grid.headers[0-6] = Instance, Created, Last updated, OU ID, Ou Name, Tracked entity, Inactive
-            //grid.headers[7..] = Attribute, Attribute,.... 
-            var attributes = [];
-            for(var i=6; i<grid.headers.length; i++){
-                attributes.push({id: grid.headers[i].name, displayName: grid.headers[i].column, type: grid.headers[i].type});
-            }
+            return OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function (orgUnit) {
+                var ou = orgUnit;
 
-            var entityList = {own: [], other: []};
-            
-            var attributesById = CurrentSelection.getAttributesById();
-            
-            angular.forEach(grid.rows, function(row){
-                if(invalidTeis.indexOf(row[0]) === -1 ){
-                    var entity = {};
-                    var isEmpty = true;
-
-                    entity.id = row[0];
-                    entity.created = DateUtils.formatFromApiToUser( row[1] );
-
-                    entity.orgUnit = row[3];
-                    entity.orgUnitName = row[4];
-                    entity.type = row[5];
-                    entity.inactive = row[6] !== "" ? row[6] : false;
-                    entity.followUp = isFollowUp;
-                    
-                    for(var i=7; i<row.length; i++){
-                        if(row[i] && row[i] !== ''){
-                            isEmpty = false;
-                            var val = row[i];
-
-                            if(attributesById[grid.headers[i].name] && 
-                                    attributesById[grid.headers[i].name].optionSetValue && 
-                                    optionSets &&    
-                                    attributesById[grid.headers[i].name].optionSet &&
-                                    optionSets[attributesById[grid.headers[i].name].optionSet.id] ){
-                                val = OptionSetService.getName(optionSets[attributesById[grid.headers[i].name].optionSet.id].options, val);
-                            }
-                            if(attributesById[grid.headers[i].name] && attributesById[grid.headers[i].name].valueType === 'date'){                                    
-                                val = DateUtils.formatFromApiToUser( val );
-                            }
-
-                            entity[grid.headers[i].name] = val;
-                        }
-                    }
-
-                    if(!isEmpty){
-                        if(map){
-                            entityList[entity.id] = entity;
-                        }
-                        else{
-                            if(entity.orgUnit === ou.id){
-                                entityList.own.push(entity);
-                            }
-                            else{
-                                entityList.other.push(entity);
-                            }
-                        }
-                    }
+                invalidTeis = !invalidTeis ? [] : invalidTeis;
+                if (!grid || !grid.rows) {
+                    return;
                 }
+
+                //grid.headers[0-6] = Instance, Created, Last updated, OU ID, Ou Name, Tracked entity, Inactive
+                //grid.headers[7..] = Attribute, Attribute,....
+                var attributes = [];
+                for (var i = 6; i < grid.headers.length; i++) {
+                    attributes.push({
+                        id: grid.headers[i].name,
+                        displayName: grid.headers[i].column,
+                        type: grid.headers[i].type
+                    });
+                }
+
+                var entityList = {own: [], other: []};
+
+                var attributesById = CurrentSelection.getAttributesById();
+
+                angular.forEach(grid.rows, function (row) {
+                    if (invalidTeis.indexOf(row[0]) === -1) {
+                        var entity = {};
+                        var isEmpty = true;
+
+                        entity.id = row[0];
+                        entity.created = DateUtils.formatFromApiToUser(row[1]);
+
+                        entity.orgUnit = row[3];
+                        entity.orgUnitName = row[4];
+                        entity.type = row[5];
+                        entity.inactive = row[6] !== "" ? row[6] : false;
+                        entity.followUp = isFollowUp;
+
+                        for (var i = 7; i < row.length; i++) {
+                            if (row[i] && row[i] !== '') {
+                                isEmpty = false;
+                                var val = row[i];
+
+                                if (attributesById[grid.headers[i].name] &&
+                                    attributesById[grid.headers[i].name].optionSetValue &&
+                                    optionSets &&
+                                    attributesById[grid.headers[i].name].optionSet &&
+                                    optionSets[attributesById[grid.headers[i].name].optionSet.id]) {
+                                    val = OptionSetService.getName(optionSets[attributesById[grid.headers[i].name].optionSet.id].options, val);
+                                }
+                                if (attributesById[grid.headers[i].name] && attributesById[grid.headers[i].name].valueType === 'date') {
+                                    val = DateUtils.formatFromApiToUser(val);
+                                }
+
+                                entity[grid.headers[i].name] = val;
+                            }
+                        }
+
+                        if (!isEmpty) {
+                            if (map) {
+                                entityList[entity.id] = entity;
+                            }
+                            else {
+                                if (entity.orgUnit === ou.id) {
+                                    entityList.own.push(entity);
+                                }
+                                else {
+                                    entityList.other.push(entity);
+                                }
+                            }
+                        }
+                    }
+                });
+
+                var len = entityList.own.length + entityList.other.length;
+                return {headers: attributes, rows: entityList, pager: grid.metaData.pager, length: len};
             });
-            
-            var len = entityList.own.length + entityList.other.length;
-            return {headers: attributes, rows: entityList, pager: grid.metaData.pager, length: len};
-            
         },
         generateGridColumns: function(attributes, ouMode, nonConfidential){
             
@@ -1982,7 +2019,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});            
             if( displayInReports.length > 0 ){
                 angular.forEach(displayInReports, function(c){
-                    partial.push({id: c.id, name: prStDes[c.id].dataElement.displayFormName});
+                    if ( prStDes[c.id] && prStDes[c.id].dataElement) {
+                        partial.push({id: c.id, name: prStDes[c.id].dataElement.displayFormName});
+                    }
                 });
             }
             for(var i=0; i<stage.programStageDataElements.length; i++){

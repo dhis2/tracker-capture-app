@@ -50,7 +50,7 @@ trackerCapture.controller('ProfileController',
 
         $timeout(function() { 
             $rootScope.$broadcast('registrationWidget', {registrationMode: 'PROFILE', selectedTei: $scope.selectedTei, enrollment: $scope.selectedEnrollment});
-        }, 200);
+        }, 600);
     };
     
     $scope.enableEdit = function(){
@@ -64,6 +64,6 @@ trackerCapture.controller('ProfileController',
         $scope.editingDisabled = !$scope.editingDisabled;
         $timeout(function() { 
             $rootScope.$broadcast('registrationWidget', {registrationMode: 'PROFILE', selectedTei: $scope.selectedTei, enrollment: $scope.selectedEnrollment});
-        }, 200);
+        }, 600);
     };  
 });

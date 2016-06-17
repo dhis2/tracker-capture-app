@@ -6,13 +6,15 @@ trackerCapture.controller('TeiReportController',
         function($scope,
                 $filter,
                 $translate,
+                $location,
                 CurrentSelection,
                 SessionStorageService,
                 DateUtils,
                 EventUtils,
                 TEIService,
                 ProgramStageFactory,
-                EnrollmentService) {  
+                EnrollmentService,
+                OrgUnitFactory) {
     $scope.showProgramReportDetailsDiv = false;
     $scope.enrollmentsByProgram = [];
     $scope.dashboardReady = false;
@@ -20,26 +22,28 @@ trackerCapture.controller('TeiReportController',
 
     $scope.$on('dashboardWidgets', function(event, args) {
         $scope.showProgramReportDetailsDiv = false;
-        var selections = CurrentSelection.get();        
-        $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
-        $scope.selectedTei = selections.tei;  
-        $scope.selectedEntity = selections.te;
-        $scope.selectedProgram = selections.pr;
-        $scope.optionSets = selections.optionSets;
-        $scope.programs = selections.prs;
-        $scope.programNames = selections.prNames;  
-        $scope.programStageNames = selections.prStNames;
-        $scope.dashboardReady = true;
-    
-        angular.forEach(selections.enrollments, function(en){            
-            $scope.enrollmentsByProgram[en.program] = en;
+        var selections = CurrentSelection.get();
+        OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function (orgUnit) {
+            $scope.selectedOrgUnit = orgUnit;
+            $scope.selectedTei = selections.tei;
+            $scope.selectedEntity = selections.te;
+            $scope.selectedProgram = selections.pr;
+            $scope.optionSets = selections.optionSets;
+            $scope.programs = selections.prs;
+            $scope.programNames = selections.prNames;
+            $scope.programStageNames = selections.prStNames;
+            $scope.dashboardReady = true;
+
+            angular.forEach(selections.enrollments, function (en) {
+                $scope.enrollmentsByProgram[en.program] = en;
+            });
+
+            if ($scope.selectedTei) {
+                $scope.getEvents();
+            }
+
         });
-        
-        if( $scope.selectedTei ){            
-            $scope.getEvents();
-        }
-        
-    });
+	});
     
     $scope.$on('tei-report-widget', function(event, args) {
         $scope.getEvents();        

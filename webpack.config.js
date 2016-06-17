@@ -15,7 +15,7 @@ try {
     console.warn('\nWARNING! Failed to load DHIS config:', e.message);
     console.info('Using default config');
     dhisConfig = {
-        baseUrl: 'http://localhost:9090/dhis',
+        baseUrl: 'http://localhost:8080',
         authorization: 'Basic YWRtaW46ZGlzdHJpY3Q=' // admin:district
     };
 }
@@ -30,23 +30,23 @@ module.exports = {
     entry: './scripts/index.js',
     output: {
         path: path.join(__dirname, '/build'),
-        filename: 'app.js',
+        filename: 'app.js'
     },
     module: {
         loaders: [
             {
                 test: /\.jsx?$/,
                 exclude: [/(node_modules)/],
-                loader: 'babel',
+                loader: 'babel'
             },
             {
                 test: /\.css$/,
-                loader: 'style-loader!css-loader',
-            },
-        ],
+                loader: 'style-loader!css-loader'
+            }
+        ] 
     },
     plugins: [
-        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.DedupePlugin()
     ],
     devtool: ['sourcemap'],
     devServer: {
@@ -54,16 +54,17 @@ module.exports = {
         progress: true,
         colors: true,
         port: 8081,
-        inline: true,
-        compress: true,
+        inline: false,
+        compress: false,
         proxy: [
-            { path: '/api/*', target: dhisConfig.baseUrl, bypass },
-            { path: '/dhis-web-commons-ajax-json/*', target: dhisConfig.baseUrl, bypass },
-            { path: '/dhis-web-commons-stream/*', target: dhisConfig.baseUrl, bypass },
-            { path: '/dhis-web-commons/*', target: dhisConfig.baseUrl, bypass },
-            { path: '/icons/*', target: dhisConfig.baseUrl, bypass },
-            { path: '/images/*', target: dhisConfig.baseUrl, bypass },
-            { path: '/main.js', target: dhisConfig.baseUrl, bypass }
+                    { path: '/api/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/dhis-web-commons-ajax-json/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/dhis-web-commons-stream/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/dhis-web-commons/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/icons/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/images/*', target: dhisConfig.baseUrl, bypass },
+                        { path: '/main.js', target: dhisConfig.baseUrl, bypass }
+
         ]
-    },
+    }
 };

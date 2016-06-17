@@ -422,7 +422,7 @@ function filterMissingTrackedEntityAttributes( programs, trackedEntityAttributes
 
 function getTrackedEntityAttributes( programs, trackedEntityAttributes)
 {
-    return dhis2.tracker.getBatches( trackedEntityAttributeIds, batchSize, {programs: programs, trackedEntityAttributes: trackedEntityAttributes}, 'attributes', 'trackedEntityAttributes', DHIS2URL + '/trackedEntityAttributes.json', 'paging=false&fields=id,displayName,code,version,description,valueType,optionSetValue,confidential,inherit,sortOrderInVisitSchedule,sortOrderInListNoProgram,displayOnVisitSchedule,displayInListNoProgram,unique,programScope,orgunitScope,confidential,optionSet[id,version],trackedEntity[id,displayName]', 'idb', dhis2.tc.store );
+    return dhis2.tracker.getBatches( trackedEntityAttributeIds, batchSize, {programs: programs, trackedEntityAttributes: trackedEntityAttributes}, 'attributes', 'trackedEntityAttributes', DHIS2URL + '/trackedEntityAttributes.json', 'paging=false&fields=id,generated,displayName,code,version,description,valueType,optionSetValue,confidential,inherit,sortOrderInVisitSchedule,sortOrderInListNoProgram,displayOnVisitSchedule,displayInListNoProgram,unique,programScope,orgunitScope,confidential,optionSet[id,version],trackedEntity[id,displayName]', 'idb', dhis2.tc.store );
 }
 
 function getOptionSetsForAttributes( data )
@@ -577,5 +577,5 @@ function getMetaProgramRuleVariables( programs )
 
 function getProgramRuleVariables( programRuleVariables )
 {
-    return dhis2.tracker.checkAndGetTrackerObjects( programRuleVariables, 'programRuleVariables', DHIS2URL + '/programRuleVariables', 'fields=id,displayName,programRuleVariableSourceType,program[id],programStage[id],dataElement[id],trackedEntityAttribute[id]', dhis2.tc.store);
+    return dhis2.tracker.checkAndGetTrackerObjects( programRuleVariables, 'programRuleVariables', DHIS2URL + '/programRuleVariables', 'fields=id,displayName,programRuleVariableSourceType,program[id],programStage[id],dataElement[id],trackedEntityAttribute[id],useCodeForOptionSet', dhis2.tc.store);
 }
