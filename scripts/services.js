@@ -2019,8 +2019,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});            
             if( displayInReports.length > 0 ){
                 angular.forEach(displayInReports, function(c){
-                    if ( prStDes[c.id] && prStDes[c.id].dataElement) {
-                        partial.push({id: c.id, name: prStDes[c.id].dataElement.displayFormName});
+                    if ( prStDes[c.dataElement.id] && prStDes[c.dataElement.id].dataElement) {
+                        partial.push({id: c.dataElement.id, name: prStDes[c.dataElement.id].dataElement.displayFormName});
                     }
                 });
             }
