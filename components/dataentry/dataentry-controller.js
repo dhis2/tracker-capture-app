@@ -587,8 +587,8 @@ trackerCapture.controller('DataEntryController',
                     stage.excecutionDateLabel ? stage.excecutionDateLabel : $translate.instant('report_date');
                     angular.forEach(stage.programStageDataElements, function (prStDe) {                        
                         var tx = $scope.dataElementTranslations[prStDe.dataElement.id];
-                        prStDe.dataElement.displayFormName = tx.displayFormName && tx.displayFormName !== "" ? tx.displayFormName : tx.displayName ? tx.displayName : prStDe.dataElement.displayName;
-                        prStDe.dataElement.description = tx.description ? tx.description : prStDe.dataElement.description;
+                        prStDe.dataElement.displayFormName = tx && tx.displayFormName && tx.displayFormName !== "" ? tx.displayFormName : tx && tx.displayName ? tx.displayName : prStDe.dataElement.displayName;
+                        prStDe.dataElement.description = tx && tx.description ? tx.description : prStDe.dataElement.description;
                         $scope.prStDes[prStDe.dataElement.id] = prStDe;
                         if(prStDe.allowProvidedElsewhere){
                             $scope.allowProvidedElsewhereExists[stage.id] = true;
