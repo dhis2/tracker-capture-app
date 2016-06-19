@@ -773,7 +773,6 @@ trackerCapture.controller('DataEntryController',
     $scope.stageNeedsEventErrors = {enrollment: 1, complete: 2, scheduleDisabled: 3, scheduledFound: 4, notRepeatable: 5};
     
     $scope.stageNeedsEventOfType = function (stage, type, completeRequired, errorResponseContainer) {
-        
         if(type === $scope.eventCreationActions.schedule || type === $scope.eventCreationActions.referral){
             if(stage.hideDueDate === true){
                 if(angular.isDefined(errorResponseContainer)){
