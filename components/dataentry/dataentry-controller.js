@@ -243,27 +243,31 @@ trackerCapture.controller('DataEntryController',
                 else {
                     $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEFIELD, bot does not have a dataelement defined");
                 }
-            } else if (effect.action === "SHOWERROR") {
+            } else if (effect.action === "SHOWERROR" 
+                    || effect.action === "ERRORONCOMPLETE") {
                 if (effect.ineffect) {
-
-                    if(effect.dataElement) {                           
-                        var message = effect.content;
-                        $scope.errorMessages[event][effect.dataElement.id] = message;
+                    var message = effect.content;
+                    if(effect.dataElement && $scope.prStDes[effect.dataElement.id]) {
+                        if(effect.action === "SHOWERROR") {
+                            //only SHOWERROR messages is going to be shown in the form as the user works
+                            $scope.errorMessages[event][effect.dataElement.id] = message;
+                        }
                         $scope.errorMessages[event].push($translate.instant($scope.prStDes[effect.dataElement.id].dataElement.displayName) + ": " + message);
                     }
                     else
                     {
-                        $scope.errorMessages.push(message);
+                        $scope.errorMessages[event].push(message);
                     }
                 }
-                else {
-
-                }
-            } else if (effect.action === "SHOWWARNING") {
+            } else if (effect.action === "SHOWWARNING" 
+                    || effect.action === "WARNINGONCOMPLETE") {
                 if (effect.ineffect) {
-                    if(effect.dataElement) {
-                        var message = effect.content;
-                        $scope.warningMessages[event][effect.dataElement.id] = message;
+                    var message = effect.content;
+                    if(effect.dataElement && $scope.prStDes[effect.dataElement.id]) {
+                        if(effect.action === "SHOWWARNING") {
+                            //only SHOWWARNING messages is going to show up in the form as the user works
+                            $scope.warningMessages[event][effect.dataElement.id] = message;
+                        }
                         $scope.warningMessages[event].push($translate.instant($scope.prStDes[effect.dataElement.id].dataElement.displayName) + ": " + message);
                     } else {
                         $scope.warningMessages[event].push(message);
@@ -1658,8 +1662,7 @@ trackerCapture.controller('DataEntryController',
                                 $scope.modalOptions.currentEvent.notes.splice(0,0,{storedDate: date,displayDate: today, value: newNote.value});
                             }
                                 $scope.note = $scope.textAreaValues["note"] = "";
-                            });
-
+                        });
                     };                    
                 }            
         };
@@ -1820,12 +1823,34 @@ trackerCapture.controller('DataEntryController',
                 }
             }
             
+            //Warnings might be put into both dialogs with errors and dialogs without errors.
+            //preparing a warnings section in case it is needed by one of the other dialogs.
+            var warningSection = false;
+            if(angular.isDefined($scope.warningMessages[$scope.currentEvent.event]) && $scope.warningMessages[$scope.currentEvent.event].length > 0) {
+                warningSection = {
+                    bodyText:'validation_warnings',
+                    bodyList:$scope.warningMessages[$scope.currentEvent.event],
+                    itemType:'warning'
+                };
+            }
+            
             if(angular.isDefined($scope.errorMessages[$scope.currentEvent.event]) && $scope.errorMessages[$scope.currentEvent.event].length > 0) {
                 //There is unresolved program rule errors - show error message.
+                var sections = [
+                    {
+                        bodyList:$scope.errorMessages[$scope.currentEvent.event],
+                        itemType:'danger'
+                    }
+                ];
+                
+                if(warningSection) {
+                    sections.push(warningSection);
+                }
+                
                 var dialogOptions = {
                     headerText: 'errors',
                     bodyText: 'please_fix_errors_before_completing',
-                    bodyList: $scope.errorMessages[$scope.currentEvent.event]
+                    sections: sections
                 };                
                 
                 DialogService.showDialog({}, dialogOptions);
@@ -1839,11 +1864,14 @@ trackerCapture.controller('DataEntryController',
                     headerText: 'complete',
                     bodyText: 'are_you_sure_to_complete_event'
                 };
+                
+                if(warningSection) {
+                    modalOptions.sections = [warningSection];
+                }
+                
                 modalOptions.actionButtons =[{ text: 'complete', action: modalCompleteIncompleteActions.complete, class: 'btn btn-primary'}];
-                
 
-                modalOptions.actionButtons.push({text: 'complete_and_exit', action: modalCompleteIncompleteActions.completeAndExit, class: 'btn btn-primary'});
-                
+                modalOptions.actionButtons.push({text: 'complete_and_exit', action: modalCompleteIncompleteActions.completeAndExit, class: 'btn btn-primary'});                
                 
                 if($scope.currentStage.remindCompleted){
                     modalOptions.bodyText = 'are_you_sure_to_complete_event_and_enrollment';                    

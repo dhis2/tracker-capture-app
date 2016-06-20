@@ -528,4 +528,20 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
       }
     };
   }
-]);
+])
+.directive('modalBody', function (){
+    return {
+        restrict: 'E',
+        templateUrl: 'views/modal-body.html',
+        scope: {
+            body: '='
+        },
+        controller: [
+            '$scope',
+            '$translate',
+            function($scope, $translate){
+                
+            }
+        ]
+    }
+});

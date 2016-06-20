@@ -1,0 +1,6 @@
+<p>{{body.bodyText | translate}}</p>
+<ul class="list-group" ng-if="body.bodyList && body.bodyList.length > 0">
+    <li class="list-group-item" ng-class="body.itemType ? 'list-group-item-' + body.itemType : ''" ng-repeat="item in body.bodyList">
+        {{ item | translate }}
+    </li>
+</ul>
