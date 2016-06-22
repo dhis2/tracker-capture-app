@@ -20,7 +20,6 @@ trackerCapture.controller('RegistrationController',
                 EventUtils,
                 RegistrationService,
                 DateUtils,
-                SessionStorageService,
                 TEIGridService,
                 TEIService,
                 TrackerRulesFactory,
@@ -83,16 +82,6 @@ trackerCapture.controller('RegistrationController',
         });
     }
     
-    $scope.dataElementTranslations = CurrentSelection.getDataElementTranslations();        
-    if(!$scope.dataElementTranslations){
-        $scope.dataElementTranslations = [];
-        MetaDataFactory.getAll('dataElements').then(function(des){
-            angular.forEach(des, function(de){  
-                $scope.dataElementTranslations[de.id] = de;
-            });
-            CurrentSelection.setDataElementTranslations($scope.dataElementTranslations);
-        });
-    }
     
     $scope.isDisabled = function(attribute) {
         return attribute.generated || $scope.assignedFields[attribute.id] || $scope.editingDisabled;
@@ -196,9 +185,7 @@ trackerCapture.controller('RegistrationController',
                         $scope.currentEvent.excecutionDateLabel = $scope.currentStage.excecutionDateLabel;
                         $rootScope.ruleeffects[$scope.currentEvent.event] = {};
                         $scope.selectedEnrollment.status = 'ACTIVE';
-                        angular.forEach($scope.currentStage.programStageDataElements, function (prStDe) {
-                            var tx = $scope.dataElementTranslations[prStDe.dataElement.id];
-                            prStDe.dataElement.displayFormName = tx && tx.displayFormName && tx.displayFormName !== "" ? tx.displayFormName : tx && tx.displayName ? tx.displayName : prStDe.dataElement.displayName;
+                        angular.forEach($scope.currentStage.programStageDataElements, function (prStDe) {                            
                             $scope.prStDes[prStDe.dataElement.id] = prStDe;
                             if (prStDe.allowProvidedElsewhere) {
                                 $scope.allowProvidedElsewhereExists[$scope.currentStage.id] = true;

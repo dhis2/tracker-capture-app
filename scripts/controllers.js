@@ -140,18 +140,7 @@ trackerCapture.controller('SelectionController',
                             CurrentSelection.setOptionSets($scope.optionSets);
                         });
                     }
-
-                    $scope.dataElementTranslations = CurrentSelection.getDataElementTranslations();
-                    if(!$scope.dataElementTranslations){
-                        $scope.dataElementTranslations = [];
-                        MetaDataFactory.getAll('dataElements').then(function(des){
-                            angular.forEach(des, function(de){
-                                $scope.dataElementTranslations[de.id] = de;
-                            });
-                            CurrentSelection.setDataElementTranslations($scope.dataElementTranslations);
-                        });
-                    }
-
+                   
                     $scope.ouLevels = CurrentSelection.getOuLevels();
                     if(!$scope.ouLevels){
                         TCStorageService.currentStore.open().done(function(){
