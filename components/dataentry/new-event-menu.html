@@ -36,7 +36,7 @@
             <div ng-if="!creatableStagesExist(creatableStages)" class="alert alert-warning">{{'no_stages_available'| translate}}</div> 
         </div>
     </div>       
-    <div ng-if="!showStageTasks" class="pull-right">
+    <div ng-if="!showStageTasks && selectedEnrollment.status === 'ACTIVE'" class="pull-right">
         <div ng-if="!useMainMenu">
             <a href ng-click="toggleShowStageTasks()" title="{{'show_new_event_menu'| translate}}">
                 <span class="stage-tasks-badge stage-tasks-badge-back">                                     
