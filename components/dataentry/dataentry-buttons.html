@@ -16,7 +16,7 @@
     
         <div class="pull-right">
             <a href ng-click="deleteEvent()" 
-                ng-disabled="selectedEnrollment.status === 'COMPLETED' || currentEvent.editingNotAllowed || currentEvent.orgUnit !== selectedOrgUnit.id"
+                ng-disabled="selectedEnrollment.status === 'COMPLETED' || selectedEnrollment.status === 'CANCELLED' || currentEvent.editingNotAllowed || currentEvent.orgUnit !== selectedOrgUnit.id"
                 class="btn btn-danger horizontal-spacing">{{'delete'| translate}}</a>  
             <a href class="btn btn-info" ng-click="print('print-div');">{{'print_form'| translate}}</a>
         </div>

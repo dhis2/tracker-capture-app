@@ -13,7 +13,6 @@ var i18n_ajax_login_failed = 'Login failed, check your username and password and
 var DHIS2URL = '../api';
 var optionSetIds = [];
 var trackedEntityAttributeIds = [];
-var dataElementIds = [];
 var batchSize = 50;
 var programBatchSize = 50;
 
@@ -30,7 +29,7 @@ if( dhis2.tc.memoryOnly ) {
 dhis2.tc.store = new dhis2.storage.Store({
     name: 'dhis2tc',
     adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],
-    objectStores: ['programs', 'programStages', 'trackedEntities', 'attributes', 'relationshipTypes', 'optionSets', 'programValidations', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements']
+    objectStores: ['programs', 'programStages', 'trackedEntities', 'attributes', 'relationshipTypes', 'optionSets', 'programValidations', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants']
 });
 
 (function($) {
@@ -145,8 +144,7 @@ function downloadMetaData()
     promise = promise.then( getTrackedEntityAttributes );
     promise = promise.then( getOptionSetsForAttributes );
     promise = promise.then( getOptionSetsForDataElements );
-    promise = promise.then( getOptionSets );
-    promise = promise.then( getDataElements );    
+    promise = promise.then( getOptionSets );   
     promise.done(function() {        
         //Enable ou selection after meta-data has downloaded
         $( "#orgUnitTree" ).removeClass( "disable-clicks" );
@@ -491,10 +489,7 @@ function getOptionSetsForDataElements( data )
             _.each(_.values( program.programStages), function( programStage) {
                 if(programStage.programStageDataElements){
                     _.each(_.values( programStage.programStageDataElements), function(prStDe){
-                        if( prStDe.dataElement ){
-                            if(dataElementIds.indexOf( prStDe.dataElement.id ) === -1){
-                                dataElementIds.push( prStDe.dataElement.id);
-                            }                                                        
+                        if( prStDe.dataElement ){                                    
                             if( prStDe.dataElement.optionSet && prStDe.dataElement.optionSet.id ){
                                 build = build.then(function() {
                                     var d = $.Deferred();
@@ -532,11 +527,6 @@ function getOptionSetsForDataElements( data )
 function getOptionSets()
 {   
     return dhis2.tracker.getBatches( optionSetIds, batchSize, null, 'optionSets', 'optionSets', DHIS2URL + '/optionSets.json', 'paging=false&fields=id,displayName,version,options[id,displayName,code]', 'idb', dhis2.tc.store );
-}
-
-function getDataElements()
-{   
-    return dhis2.tracker.getBatches( dataElementIds, batchSize, null, 'dataElements', 'dataElements', DHIS2URL + '/dataElements.json', 'paging=false&fields=id,formName,displayFormName,description', 'idb', dhis2.tc.store );
 }
 
 function getMetaProgramValidations( programs, programIds )

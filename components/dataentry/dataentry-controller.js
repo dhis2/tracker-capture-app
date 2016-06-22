@@ -586,7 +586,7 @@ trackerCapture.controller('DataEntryController',
     	    $scope.optionSets = selections.optionSets;
 
     	    $scope.stagesById = [];
-    	    $scope.dataElementTranslations = CurrentSelection.getDataElementTranslations();
+    	    //$scope.dataElementTranslations = CurrentSelection.getDataElementTranslations();
     	    if ($scope.selectedOrgUnit && $scope.selectedProgram && $scope.selectedProgram.id && $scope.selectedEntity && $scope.selectedEnrollment && $scope.selectedEnrollment.enrollment) {
     	        ProgramStageFactory.getByProgram($scope.selectedProgram).then(function (stages) {
                 
@@ -599,9 +599,9 @@ trackerCapture.controller('DataEntryController',
                     
     	                stage.excecutionDateLabel ? stage.excecutionDateLabel : $translate.instant('report_date');
     	                angular.forEach(stage.programStageDataElements, function (prStDe) {                        
-    	                    var tx = $scope.dataElementTranslations[prStDe.dataElement.id];
+    	                    /*var tx = $scope.dataElementTranslations[prStDe.dataElement.id];
     	                    prStDe.dataElement.displayFormName = tx.displayFormName && tx.displayFormName !== "" ? tx.displayFormName : tx.displayName ? tx.displayName : prStDe.dataElement.displayName;
-    	                    prStDe.dataElement.description = tx.description ? tx.description : prStDe.dataElement.description;
+    	                    prStDe.dataElement.description = tx.description ? tx.description : prStDe.dataElement.description;*/
     	                    $scope.prStDes[prStDe.dataElement.id] = prStDe;
     	                    if(prStDe.allowProvidedElsewhere){
     	                        $scope.allowProvidedElsewhereExists[stage.id] = true;
