@@ -2,8 +2,8 @@
     <table class="dhis2-list-table-striped default-form-table" ng-if='currentEvent && !currentStage.programStageSections.length'>
         <tr ng-repeat="prStDe in currentStage.programStageDataElements" ng-if="!isHidden(prStDe.dataElement.id, currentEvent)">
             <td>
-                <span d2-pop-over 
-                    class="popover-label"
+                <span d2-pop-over
+                    class="popover-label small-horizontal-spacing"
                     details="{{'details'| translate}}"
                     content="prStDe.dataElement"
                     template="dataelement-details.html"
@@ -49,8 +49,8 @@
                    <table class="dhis2-list-table-striped default-form-table" ng-if="section.programStageDataElements && section.programStageDataElements.length > 0">                        
                         <tr ng-repeat="de in section.programStageDataElements" ng-if="!isHidden(de.dataElement.id)">
                             <td>
-                                <span d2-pop-over 
-                                    class="popover-label"
+                                <span d2-pop-over
+                                    class="popover-label small-horizontal-spacing"
                                     details="{{'details'| translate}}"
                                     content="prStDes[de.dataElement.id].dataElement"
                                     template="dataelement-details.html"
