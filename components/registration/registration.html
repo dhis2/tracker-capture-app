@@ -88,19 +88,19 @@
         <!-- registration buttons begin -->
         <div ng-if="!editingDisabled && registrationMode === 'PROFILE'" class="vertical-spacing btn-group">
             <button type="button" class="btn btn-primary" ng-click="registerEntity(null)">{{'save'| translate}}</button>        
-            <button type="button" class="btn btn-default" ng-click="cancelRegistrationWarning(cancel)">{{'cancel'| translate}}</button>
+            <button type="button" class="btn btn-default small-horizontal-spacing" ng-click="cancelRegistrationWarning(cancel)">{{'cancel'| translate}}</button>
         </div>
 
         <div class="vertical-spacing btn-group" ng-if="registrationMode === 'ENROLLMENT'">            
             <button type="button" class="btn btn-primary" ng-click="registerEntity(null)">{{'enroll'| translate}}</button>  
-            <button type="button" class="btn btn-default" ng-click="cancelRegistrationWarning(showNewEnrollment)">{{'cancel'| translate}}</button>                    
+            <button type="button" class="btn btn-default small-horizontal-spacing" ng-click="cancelRegistrationWarning(showNewEnrollment)">{{'cancel'| translate}}</button>
         </div>
 
         <div class="vertical-spacing hideInPrint btn-group" ng-if="registrationMode === 'REGISTRATION'">
             <button type="button" class="btn btn-primary" ng-click="registerEntity('DASHBOARD')">{{'save_and_continue'| translate}}</button>
-            <button type="button" class="btn btn-success" ng-click="registerEntity('SELF')">{{'save_and_add_new'| translate}}</button>
-            <button type="button" class="btn btn-info" onclick="javascript:window.print()">{{'print_form'| translate}}</button>
-            <button type="button" class="btn btn-default" ng-click="cancelRegistrationWarning(showRegistration)">{{'cancel'| translate}}</button>
+            <button type="button" class="btn btn-success small-horizontal-spacing" ng-click="registerEntity('SELF')">{{'save_and_add_new'| translate}}</button>
+            <button type="button" class="btn btn-info small-horizontal-spacing" onclick="javascript:window.print()">{{'print_form'| translate}}</button>
+            <button type="button" class="btn btn-default small-horizontal-spacing" ng-click="cancelRegistrationWarning(showRegistration)">{{'cancel'| translate}}</button>
         </div>        
         <!-- registration buttons end -->
 

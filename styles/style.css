@@ -688,7 +688,7 @@ table.table-striped tr td.optionset {
 }
 
 .small-horizontal-spacing{
-    margin-left: 5px;
+    margin-left: 5px !important;
 }
 
 .small-vertical-spacing{
