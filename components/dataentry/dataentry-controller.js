@@ -879,7 +879,7 @@ trackerCapture.controller('DataEntryController',
         }
         else if($scope.showStageTasks){
             if(colNr === 1){
-                return 'col-xs-6 col-sm-9';
+                return $scope.selectedEnrollment.status !== 'ACTIVE' ? 'col-xs-12' : 'col-xs-6 col-sm-9';
             }
             else {
                 return 'col-xs-6 col-sm-3';
@@ -887,7 +887,7 @@ trackerCapture.controller('DataEntryController',
         }
         else {
             if(colNr === 1){
-                return 'col-xs-10 col-sm-11';
+                return $scope.selectedEnrollment.status !== 'ACTIVE' ? 'col-xs-12' : 'col-xs-10 col-sm-11';
             }
             else {
                 return 'col-xs-2 col-sm-1';

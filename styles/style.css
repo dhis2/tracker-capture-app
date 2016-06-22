@@ -1350,7 +1350,11 @@ ul.tree ul li:last-child:before {
 }
 
 .default-form-table > tbody > tr {
-    height: 40px;   
+    height: 40px;
+}
+
+th, td {
+    padding: 0 5px;
 }
 
 .default-form-table > tbody > tr:hover > td, .default-form-table > tbody > tr:hover > th {
@@ -2026,6 +2030,10 @@ a.disable-link-effects:focus {
 .edit-grid {
     margin-top:20px;
     margin-bottom:20px;
+}
+
+.ui-select-dropdown, .select2-drop {
+    z-index: 100;
 }
 
 /* From Bootstrap 3.3.x */
