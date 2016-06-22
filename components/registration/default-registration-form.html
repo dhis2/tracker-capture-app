@@ -4,14 +4,14 @@
 <table class="dhis2-list-table-striped default-form-table">
     <tr ng-repeat="attribute in attributes | filter: {attribute: 'true'} " ng-if="!hiddenFields[attribute.id] && ((editingDisabled  && attribute.show) || !editingDisabled)">
         <td>
-            <span d2-pop-over 
+            <span d2-pop-over
                 details="{{'details'| translate}}"
                 content="attribute"
                 class="popover-label small-horizontal-spacing"
                 template="attribute-details.html"
                 trigger="click"
                 placement="right">
-                <a href title="{{'details'| translate}}">{{attribute.displayName}}</a>
+                <a href title="{{'details'| translate}}" class="wrap-text">{{attribute.displayName}}</a>
             </span>
             <span ng-if="attribute.mandatory" class="required">*</span>
         </td>
