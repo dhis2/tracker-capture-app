@@ -127,6 +127,7 @@ function downloadMetaData()
 {
     console.log('Loading required meta-data');
     var def = $.Deferred();
+    var def2 = $.Deferred();
     var promise = def.promise();
 
     promise = promise.then( dhis2.tc.store.open );
@@ -151,10 +152,11 @@ function downloadMetaData()
         dhis2.tc.metaDataCached = true;
         dhis2.availability.startAvailabilityCheck();
         console.log( 'Finished loading meta-data' );        
-        selection.responseReceived(); 
+        selection.responseReceived();
+        def2.resolve();
     });
-
-    def.resolve();    
+    def.resolve();
+    return def2.promise();
 }
 
 function getUserRoles()
