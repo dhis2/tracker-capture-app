@@ -586,7 +586,8 @@ trackerCapture.controller('SelectionController',
                 CurrentSelection.setSortedTeiIds(sortedTeiIds);
                 $rootScope.enrollmentStatus = $scope.enrollmentStatus;
                 $location.path('/dashboard').search({tei: currentEntity.id,
-                    program: $scope.selectedProgram ? $scope.selectedProgram.id: null});
+                    program: $scope.selectedProgram ? $scope.selectedProgram.id: null,
+                    ou: $scope.selectedOrgUnit.id});
             };
 
             $scope.getHelpContent = function(){
