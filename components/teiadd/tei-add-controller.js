@@ -19,7 +19,6 @@ trackerCapture.controller('TEIAddController',
             TEIGridService,
             DialogService,
             Paginator,
-            SessionStorageService,
             relationshipTypes,
             selectedProgram,
             relatedProgramRelationship,
@@ -307,21 +306,23 @@ trackerCapture.controller('TEIAddController',
                 }
 
                 //process tei grid
-                $scope.trackedEntityList = TEIGridService.format(data, false, $scope.optionSets, invalidTeis);
-                $scope.showTrackedEntityDiv = true;
-                $scope.teiFetched = true;
+                
+                 TEIGridService.format(data, false, $scope.optionSets, invalidTeis).then(function (response) {
+                    $scope.trackedEntityList = response;
+                    $scope.showTrackedEntityDiv = true;
+                    $scope.teiFetched = true;
 
-                if (!$scope.sortColumn.id) {
-                    $scope.sortGrid({
-                        id: 'created',
-                        name: $translate.instant('registration_date'),
-                        valueType: 'date',
-                        displayInListNoProgram: false,
-                        showFilter: false,
-                        show: false
-                    });
-                }
-
+                    if (!$scope.sortColumn.id) {
+                        $scope.sortGrid({
+                            id: 'created',
+                            name: $translate.instant('registration_date'),
+                            valueType: 'date',
+                            displayInListNoProgram: false,
+                            showFilter: false,
+                            show: false
+                        });
+                    }
+                });
             });
         };
 
@@ -332,7 +333,7 @@ trackerCapture.controller('TEIAddController',
             AttributesFactory.getByProgram($scope.selectedProgramForRelative).then(function (atts) {
                 $scope.attributes = atts;
                 $scope.attributes = AttributesFactory.generateAttributeFilters(atts);
-                $scope.gridColumns = TEIGridService.generateGridColumns($scope.attributes, null, false).columns;//$scope.generateGridColumns($scope.attributes);
+                $scope.gridColumns = TEIGridService.generateGridColumns($scope.attributes, null, false).columns;
             });
 
             $scope.search($scope.selectedSearchMode);
