@@ -595,9 +595,9 @@ table.table-striped tr td.optionset {
 /*----------------------------------------------------------------------------*/
 
 .container-fluid {
-    overflow:auto;
+    /*overflow:auto;
     white-space: nowrap;
-    overflow-y: hidden;
+    overflow-y: hidden;*/
 }
 
 .container-1 {
