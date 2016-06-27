@@ -9,7 +9,7 @@
                     template="dataelement-details.html"
                     trigger="click"
                     placement="right">
-                    <a href title="{{'details'| translate}}" class="wrap-text">{{prStDe.dataElement.displayFormName}}</a>
+                    <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDe.dataElement.displayFormName}}</a>
                 </span>
                 <span ng-if="prStDe.compulsory" class="required">*</span>
                 <span class="hideInPrint">                    
@@ -56,7 +56,7 @@
                                     template="dataelement-details.html"
                                     trigger="click"
                                     placement="right">
-                                    <a href title="{{'details'| translate}}" class="wrap-text">{{prStDes[de.dataElement.id].dataElement.displayFormName}}</a>
+                                    <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDes[de.dataElement.id].dataElement.displayFormName}}</a>
                                 </span>
                                 <span ng-if="prStDes[de.dataElement.id].compulsory" class="required">*</span>
                                 <span class="hideInPrint">

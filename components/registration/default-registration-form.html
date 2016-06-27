@@ -11,7 +11,7 @@
                 template="attribute-details.html"
                 trigger="click"
                 placement="right">
-                <a href title="{{'details'| translate}}" class="wrap-text">{{attribute.displayName}}</a>
+                <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{attribute.displayName}}</a>
             </span>
             <span ng-if="attribute.mandatory" class="required">*</span>
         </td>
