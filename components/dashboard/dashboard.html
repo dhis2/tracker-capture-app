@@ -1,7 +1,7 @@
 <div class="container-1-1">
     
     <!-- dashboard widgets begin -->
-    <div class="col-sm-12">
+    <div class="col-sm-12" ng-if="metaDataCached">
         <div class="row dashboard-top-bar-sticky" height-change-source ng-if="useTopBar">
             <div class="col-sm-12">
                 <div class="dashboard-info-btn-left">
@@ -103,6 +103,11 @@
         </div>          
     </div>
     <!-- dashboard widgets end -->
+    
+    <div class="col-sm-12" ng-if="!metaDataCached">
+        <img src="../images/ajax-loader-bar.gif" alt="{{'in_progress'| translate}}"/><br>
+        {{'loading_metadata'| translate}}
+    </div>
     
 </div>
 
