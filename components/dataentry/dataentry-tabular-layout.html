@@ -30,7 +30,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            <div style="width: 97%; float: left; padding: 5px">
+                            <div style="width: 97%; float: left;">
                                 <div ng-if="currentStage && currentStage.id && eventsLoaded" class="container-fluid">
                                     <div ng-include="'components/dataentry/tabular-horizontal-layout.html'"></div>
                                     <div ng-if="!eventsByStage[currentStage.id] || eventsByStage[currentStage.id].length === 0">
@@ -42,20 +42,20 @@
                                     <img src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
                                 </div>
                             </div>
-                            <div style="width: 3%;" class="pull-right" ng-if="stageNeedsEvent(currentStage) && eventsLoaded && selectedEnrollment.status === 'ACTIVE'">
-                                <div class="btn-group-vertical" role="group">
-                                    <a href class="btn btn-primary vertical-spacing"
+                            <div style="width: 3%; float: right; padding: 0 10px;">
+                                <button type="button" 
+                                        class="btn btn-primary" 
                                         ng-click="showCreateEvent(stage, eventCreationActions.add, currentStage)"
                                         ng-disabled="selectedEntity.inactive">
-                                         <i class="fa fa-plus fa-2x" title="{{'add_new_event'|translate}}"></i>
-                                    </a>
-                                    <a href class="btn btn-info"
+                                    <i class="fa fa-plus" title="{{'add_new_event'|translate}}"></i>
+                                </button>
+                                <button type="button" 
+                                        class="btn btn-info long-vertical-spacing" 
                                         ng-click="showCreateEvent(stage, eventCreationActions.schedule, currentStage)"
                                         ng-disabled="selectedEntity.inactive">
-                                         <i class="fa fa-calendar fa-2x" title="{{'schedule_new_event'|translate}}"></i>
-                                    </a>
-                                </div>                                
-                            </div>
+                                    <i class="fa fa-calendar" title="{{'schedule_new_event'|translate}}"></i>
+                                </button>
+                            </div>                            
                         </div>                        
                     </div>
                 </div>
