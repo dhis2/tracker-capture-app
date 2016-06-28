@@ -238,6 +238,7 @@ trackerCapture.controller('RegistrationController',
                 DialogService.showDialog({}, dialogOptions);
                 $scope.selectedTei = {};
                 $scope.tei = {};
+                fetchGeneratedAttributes();
             }
         };
 
