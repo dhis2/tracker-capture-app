@@ -31,7 +31,8 @@ trackerCapture.controller('DashboardController',
     var orgUnitUrl = ($location.search()).ou;
     
     $scope.displayEnrollment = false;
-    $scope.dataEntryMainMenuItemSelected = false;
+    $scope.dataEntryMainMenuItemSelected = false;    
+    $scope.metaDataCached = false;
     
     if ( !dhis2.tc.metaDataCached){
         downloadMetaData().then(function () {
@@ -43,11 +44,14 @@ trackerCapture.controller('DashboardController',
     }
 
     function updateDashboard() {
+        
+        $scope.metaDataCached = true;
+        
         OrgUnitFactory.getOrgUnit(orgUnitUrl).then(function (orgUnit) {
             if (!orgUnit) {
                 return;
             }
-
+        
             $scope.selectedTeiId = ($location.search()).tei;
             $scope.selectedProgramId = ($location.search()).program;
             $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
