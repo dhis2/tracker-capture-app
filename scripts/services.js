@@ -914,10 +914,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         getGeneratedAttributeValue: function(attribute) {
             var deferred = $q.defer();
-            $http.get( DHIS2URL + '/trackedEntityAttributes/' +  attribute + '/generate').then(function(response){
-                if(response && response.data) {
-                        deferred.resolve(response.data);
+            $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generate').then(function (response) {
+                if (response && response.data) {
+                    deferred.resolve(response.data);
                 }
+            }, function (error) {
+                deferred.resolve(error.data);
             });
             return deferred.promise;
         }

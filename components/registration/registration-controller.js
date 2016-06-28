@@ -201,11 +201,19 @@ trackerCapture.controller('RegistrationController',
         var fetchGeneratedAttributes = function() {
             angular.forEach($scope.attributes, function(att) {
                 if (att.generated && !$scope.selectedTei[att.id]) {
-                    TEIService.getGeneratedAttributeValue(att.id).then(function(value) {
-                        if (att.valueType === "NUMBER") {
-                            $scope.selectedTei[att.id]=Number(value);
+                    TEIService.getGeneratedAttributeValue(att.id).then(function (data) {
+                        if (data && data.status === "ERROR") {
+                            var dialogOptions = {
+                                headerText: 'error',
+                                bodyText: data.message
+                            };
+                            DialogService.showDialog({}, dialogOptions);
                         } else {
-                            $scope.selectedTei[att.id]=value;
+                            if (att.valueType === "NUMBER") {
+                                $scope.selectedTei[att.id] = Number(data);
+                            } else {
+                                $scope.selectedTei[att.id] = data;
+                            }
                         }
                     });
                 }
