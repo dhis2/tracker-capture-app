@@ -51,7 +51,7 @@ var trackerCapture = angular.module('trackerCapture',
         templateUrl:'components/report/upcoming-events.html',
         controller: 'UpcomingEventsController'
     }).otherwise({
-        redirectTo : '/'
+        redirectTo : '../dhis-web-commons/security/login.action'
     });  
     
     $translateProvider.preferredLanguage('en');
