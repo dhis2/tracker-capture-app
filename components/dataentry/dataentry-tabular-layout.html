@@ -30,7 +30,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            <div style="width: 97%; float: left;">
+                            <div style="width: 98%; float: left;">
                                 <div ng-if="currentStage && currentStage.id && eventsLoaded" class="container-fluid">
                                     <div ng-include="'components/dataentry/tabular-horizontal-layout.html'"></div>
                                     <div ng-if="!eventsByStage[currentStage.id] || eventsByStage[currentStage.id].length === 0">
@@ -42,7 +42,7 @@
                                     <img src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
                                 </div>
                             </div>
-                            <div style="width: 3%; float: right; padding: 0 10px;">
+                            <div style="width: 2%; float: right; padding: 0 9px;">
                                 <button type="button" 
                                         class="btn btn-primary" 
                                         ng-click="showCreateEvent(stage, eventCreationActions.add, currentStage)"
