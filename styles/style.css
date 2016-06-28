@@ -714,12 +714,21 @@ table.table-striped tr td.optionset {
     overflow-y: scroll;
 }
 
-div#searchOuTree accordion>.panel-group>.panel-default>.panel-heading{
+#searchOuTree {
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
+#searchOuTree::-webkit-scrollbar {
+    width: 8px;
+}​
+
+#searchOuTree accordion>.panel-group>.panel-default>.panel-heading{
     background-color: #ffffff;
     padding: 10px 5px 10px 5px;
 }
 
-div#searchOuTree h4{
+#searchOuTree h4{
     font-size: 9pt;
 }
 
