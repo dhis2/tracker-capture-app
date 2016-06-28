@@ -205,7 +205,7 @@ trackerCapture.controller('RegistrationController',
                         if (data && data.status === "ERROR") {
                             var dialogOptions = {
                                 headerText: 'error',
-                                bodyText: data.message
+                                bodyText: 'auto_generate_failed'
                             };
                             DialogService.showDialog({}, dialogOptions);
                         } else {
