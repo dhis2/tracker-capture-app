@@ -480,6 +480,18 @@ trackerCapture.controller('RegistrationController',
 
         $scope.cancelRegistrationWarning = function (cancelFunction) {
             var result = RegistrationService.processForm($scope.tei, $scope.selectedTei, $scope.teiOriginal, $scope.attributesById);
+            var prStDe;
+            if (!result.formChanged) {
+                if ($scope.currentStage &&  $scope.currentStage.programStageDataElements) {
+                    for (var index = 0; index < $scope.currentStage.programStageDataElements.length; index++) {
+                        prStDe = $scope.currentStage.programStageDataElements[index];
+                        if ($scope.currentEvent[prStDe.dataElement.id]) {
+                            result.formChanged = true;
+                            break;
+                        }
+                    }
+                }
+            }
             if (result.formChanged) {
                 var modalOptions = {
                     closeButtonText: 'no',
