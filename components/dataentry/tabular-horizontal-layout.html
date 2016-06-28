@@ -1,5 +1,5 @@
 <table class="table table-bordered table-horizontal-layout" ng-if="eventsByStage[currentStage.id].length > 0">
-    <thead ng-if="eventsByStage[currentStage.id].length > 1 && currentStage.programStageDataElements.length > 5">
+    <thead ng-if="eventsByStage[currentStage.id].length > 1">
         <tr>
             <th ng-repeat="col in eventGridColumns.partial">
                 {{col.name}}
@@ -7,47 +7,17 @@
         </tr>
     </thead>
     <tbody ng-repeat="dhis2Event in eventsByStage[currentStage.id]">
-        <tr ng-click="showDataEntry(dhis2Event, false, false)" ng-if="eventsByStage[currentStage.id].length > 1 && currentStage.programStageDataElements.length > 5">
+        <tr ng-click="showDataEntry(dhis2Event, false, false)" ng-if="eventsByStage[currentStage.id].length > 1">
             <td ng-class="getEventStyle(dhis2Event)" class="cursor-pointer" ng-repeat="col in eventGridColumns.partial">
                 {{dhis2Event[col.id]}}                                    
             </td>
         </tr>
-        <tr ng-init="showDataEntry(dhis2Event, false, false)" ng-if="eventsByStage[currentStage.id].length > 1 && currentStage.programStageDataElements.length <= 5">
-        </tr>
-        <tr ng-if="currentEvent && currentEvent.programStage === currentStage.id && dhis2Event.event === currentEvent.event && currentStage.programStageDataElements.length > maxGridColumnSize">
+        <tr ng-if="currentEvent && currentEvent.programStage === currentStage.id && dhis2Event.event === currentEvent.event">
             <td colspan="{{eventGridColumns.partial.length}}" class="cursor-pointer">
                 <div class="row">
-                    <div ng-if="currentStage.programStageDataElements.length > 5" class="col-sm-12" ng-include="'components/dataentry/main-dataentry-form.html'"></div>
-                    <div ng-if="currentStage.programStageDataElements.length <= 5" class="col-sm-12 edit-grid" ng-include="'components/dataentry/table-entry-form.html'"></div>
+                    <div class="col-sm-12" ng-include="'components/dataentry/main-dataentry-form.html'"></div>
                 </div>
             </td>
-        </tr>
-        <tr ng-if="currentEvent && currentEvent.programStage === currentStage.id && dhis2Event.event === currentEvent.event && currentStage.programStageDataElements.length < maxGridColumnSize">
-            <td ng-repeat="col in eventGridColumns.partial" ng-if="col.id === 'orgUnitName' || col.id === 'sortingDate'" class="max-input-filed-width">                
-                <div ng-if="col.id === 'orgUnitName'">
-                    {{colid}}
-                    <input type="text"
-                           class="form-control"
-                           ng-model="dhis2Event[col.id]"
-                           ng-disabled="true"/>
-                </div>
-                <div ng-if="col.id === 'sortingDate' && dhis2Event.eventDate">
-                    <input type="text"
-                           class="form-control"
-                           ng-model="dhis2Event.eventDate"
-                           ng-if="dhis2Event.eventDate"
-                           ng-disabled="true"/>
-                </div>
-                <div ng-if="col.id === 'sortingDate' && !dhis2Event.eventDate">
-                    <input type="text"
-                           class="form-control"
-                           ng-model="dhis2Event.dueDate"
-                           ng-disabled="true"/>
-                </div>                
-            </td>
-            <td ng-repeat="prStDe in currentStage.programStageDataElements" class="max-input-filed-width">
-                <div class="absorbing-column" dhis2-compiled-include="components/dataentry/inner-form.html"></div>
-            </td>
-        </tr>
+        </tr>        
     </tbody>
 </table>
