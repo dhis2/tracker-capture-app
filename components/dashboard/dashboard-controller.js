@@ -223,7 +223,7 @@ trackerCapture.controller('DashboardController',
         $scope.orderChanged = false;
 
         DashboardLayoutService.get().then(function (response) {
-            $scope.dashboardLayouts = response;
+            $scope.dashboardLayouts = response;            
             var defaultLayout = $scope.dashboardLayouts.defaultLayout['DEFAULT'];
             var selectedLayout = null;
             if ($scope.selectedProgram && $scope.selectedProgram.id) {
@@ -326,18 +326,16 @@ trackerCapture.controller('DashboardController',
             }
             widgets.push(w);
         });
-        var layout = {};
-        if ($scope.selectedProgram && $scope.selectedProgram.id) {
-            layout[$scope.selectedProgram.id] = {widgets: widgets, program: $scope.selectedProgram.id};
-        } else {
-            layout['DEFAULT'] = {widgets: widgets, program: 'DEFAULT'};
-        }
-        return layout;
+
+        return {widgets: widgets, program: $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT'};
     }
 
     function saveDashboardLayout() {
-        var layout = getCurrentDashboardLayout();
-        DashboardLayoutService.saveLayout(layout, false).then(function () {
+        var currentLayout = $scope.dashboardLayouts.customLayout ? angular.copy($scope.dashboardLayouts.customLayout) : {};
+        var programId = $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT';        
+        currentLayout[programId] = getCurrentDashboardLayout();
+       
+        DashboardLayoutService.saveLayout(currentLayout, false).then(function () {
             if (!$scope.orderChanged) {
                 $scope.hasSmaller = $filter('filter')($scope.dashboardWidgets, {
                     parent: "smallerWidget",
@@ -510,10 +508,11 @@ trackerCapture.controller('DashboardController',
     };
 
     $scope.saveDashboarLayoutAsDefault = function () {
-        var layout = angular.copy($scope.dashboardLayouts.defaultLayout);
-        var currentLayout = getCurrentDashboardLayout();
-        angular.extend(layout, currentLayout);
+        var layout = angular.copy($scope.dashboardLayouts.defaultLayout);        
+        var programId = $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT';        
+        layout[programId] = getCurrentDashboardLayout();
         delete layout.DEFAULT;
+        
         DashboardLayoutService.saveLayout(layout, true).then(function () {
             var dialogOptions = {
                 headerText: 'success',
