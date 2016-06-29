@@ -517,7 +517,10 @@ trackerCapture.controller('SelectionController',
                 $scope.trackedEntityList = null;
             };
 
-            $scope.showRegistration = function(){
+            $scope.showRegistration = function(register){
+                if(register && $scope.showRegistrationDiv) {
+                    return;
+                }
                 $scope.showRegistrationDiv = !$scope.showRegistrationDiv;
                 if($scope.showRegistrationDiv){
                     $scope.showTrackedEntityDiv = false;
