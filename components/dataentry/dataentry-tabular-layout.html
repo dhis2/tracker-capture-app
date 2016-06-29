@@ -27,6 +27,9 @@
                             </a>
                         </div>
                         <div style="width: 87%; float: left; padding-left: 12px; padding-right: 12px;">
+                            <div ng-if="model.showLegend">
+                                <div ng-include="'components/dataentry/event-legend.html'"></div>
+                            </div>
                             <div ng-if="currentStage && currentStage.id && eventsLoaded" class="container-fluid">
                                 <div ng-include="'components/dataentry/tabular-horizontal-layout.html'"></div>
                                 <div ng-if="!eventsByStage[currentStage.id] || eventsByStage[currentStage.id].length === 0">

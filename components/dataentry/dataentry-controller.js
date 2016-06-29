@@ -597,7 +597,7 @@ trackerCapture.controller('DataEntryController',
     	                    $scope.currentStage = stage;
     	                }
                     
-    	                stage.excecutionDateLabel ? stage.excecutionDateLabel : $translate.instant('report_date');
+    	                stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date');
     	                angular.forEach(stage.programStageDataElements, function (prStDe) {                        
     	                    /*var tx = $scope.dataElementTranslations[prStDe.dataElement.id];
     	                    prStDe.dataElement.displayFormName = tx.displayFormName && tx.displayFormName !== "" ? tx.displayFormName : tx.displayName ? tx.displayName : prStDe.dataElement.displayName;
@@ -695,7 +695,7 @@ trackerCapture.controller('DataEntryController',
                     var eventStage = $scope.stagesById[dhis2Event.programStage];
                     if (angular.isObject(eventStage)) {
                         dhis2Event.name = eventStage.displayName;
-                        dhis2Event.excecutionDateLabel = eventStage.excecutionDateLabel ? eventStage.excecutionDateLabel : $translate.instant('report_date');
+                        dhis2Event.executionDateLabel = eventStage.executionDateLabel ? eventStage.executionDateLabel : $translate.instant('report_date');
                         dhis2Event.dueDate = DateUtils.formatFromApiToUser(dhis2Event.dueDate);
                         dhis2Event.sortingDate = dhis2Event.dueDate;
 
@@ -1045,7 +1045,7 @@ trackerCapture.controller('DataEntryController',
                             var newEvent = ev;
                             newEvent.orgUnitName = dummyEvent.orgUnitName;
                             newEvent.name = dummyEvent.name;
-                            newEvent.excecutionDateLabel = dummyEvent.excecutionDateLabel;
+                            newEvent.executionDateLabel = dummyEvent.executionDateLabel;
                             newEvent.sortingDate = ev.eventDate ? ev.eventDate : ev.dueDate,
                             newEvent.statusColor = EventUtils.getEventStatusColor(ev);
                             newEvent.eventDate = DateUtils.formatFromApiToUser(ev.eventDate);

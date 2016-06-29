@@ -1873,7 +1873,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                               orgUnit: orgUnit.id,
                               orgUnitName: orgUnit.displayName,
                               name: programStage.displayName,
-                              excecutionDateLabel: programStage.excecutionDateLabel ? programStage.excecutionDateLabel : $translate.instant('report_date'),
+                              executionDateLabel: programStage.executionDateLabel ? programStage.executionDateLabel : $translate.instant('report_date'),
                               enrollmentStatus: 'ACTIVE',
                               enrollment: enrollment.enrollment,
                               status: 'SCHEDULED'};
@@ -2015,9 +2015,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         getGridColumns: function(stage, prStDes){
             var partial = [], allColumns = [];
-            partial.push({id: 'sortingDate', name: $translate.instant('date')});
+            partial.push({id: 'sortingDate', name: stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date')});
             partial.push({id: 'orgUnitName', name: $translate.instant('org_unit')});            
-            allColumns.push({id: 'sortingDate', name: $translate.instant('date')});
+            allColumns.push({id: 'sortingDate', name: stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date')});
             allColumns.push({id: 'orgUnitName', name: $translate.instant('org_unit')});
             
             var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});            

@@ -48,7 +48,7 @@ trackerCapture.controller('EventCreationController',
         dummyEvent = EventUtils.createDummyEvent(eventsByStage[stage.id], tei, program, stage, orgUnit, enrollment);
         
         $scope.newEvent = {programStage: stage};
-        $scope.dhis2Event = {eventDate: $scope.isScheduleEvent ? '' : DateUtils.getToday(), dueDate: dummyEvent.dueDate, excecutionDateLabel : dummyEvent.excecutionDateLabel, name: dummyEvent.name, invalid: true};        
+        $scope.dhis2Event = {eventDate: $scope.isScheduleEvent ? '' : DateUtils.getToday(), dueDate: dummyEvent.dueDate, executionDateLabel : dummyEvent.executionDateLabel, name: dummyEvent.name, invalid: true};        
 
         if ($scope.model.selectedStage.periodType) {
             $scope.dhis2Event.eventDate = dummyEvent.dueDate;
@@ -145,7 +145,7 @@ trackerCapture.controller('EventCreationController',
         if(angular.isObject($scope.model.selectedStage)){
             stage = $scope.model.selectedStage;            
             prepareEvent();
-            $scope.model.selectedStage.excecutionDateLabel = $scope.model.selectedStage.excecutionDateLabel ? $scope.model.selectedStage.excecutionDateLabel : $translate.instant('report_date');
+            $scope.model.selectedStage.executionDateLabel = $scope.model.selectedStage.executionDateLabel ? $scope.model.selectedStage.executionDateLabel : $translate.instant('report_date');
             //If the caller wants to create right away, go ahead and save.
             if (autoCreate) {
                 $scope.save();

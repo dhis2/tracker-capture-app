@@ -183,7 +183,7 @@ trackerCapture.controller('RegistrationController',
                         $scope.currentEvent.program = $scope.selectedProgram.id;
                         $scope.currentEvent.programStage = $scope.currentStage.id;
                         $scope.currentEvent.enrollmentStatus = $scope.currentEvent.status = 'ACTIVE';
-                        $scope.currentEvent.excecutionDateLabel = $scope.currentStage.excecutionDateLabel;
+                        $scope.currentEvent.executionDateLabel = $scope.currentStage.executionDateLabel;
                         $rootScope.ruleeffects[$scope.currentEvent.event] = {};
                         $scope.selectedEnrollment.status = 'ACTIVE';
                         angular.forEach($scope.currentStage.programStageDataElements, function (prStDe) {                            

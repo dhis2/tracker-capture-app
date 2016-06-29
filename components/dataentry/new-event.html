@@ -38,7 +38,7 @@
             </tr>            
             <tr ng-if="isNewEvent && !model.selectedStage.periodType">
                 <td>
-                    {{model.selectedStage.excecutionDateLabel}}
+                    {{model.selectedStage.executionDateLabel}}
                 </td>
                 <td class="absorbing-column">
                     <input type="text" 
@@ -95,7 +95,7 @@
                 <div class="alert alert-warning" ng-if="orgUnitError"><span>Please select an organization unit</span></div>
                 <hr/>
                 <div class="input-group">
-                    <label for="referralDueDate"><strong>{{dhis2Event.excecutionDateLabel}}</strong></label>
+                    <label for="referralDueDate"><strong>{{dhis2Event.executionDateLabel}}</strong></label>
                     <input type="text" 
                        placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                        id="referralDueDate"

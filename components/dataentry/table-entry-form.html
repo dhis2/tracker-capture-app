@@ -61,7 +61,7 @@
             <thead>
                 <tr class="">                
                     <th class="">                        
-                        {{currentStage.excecutionDateLabel}}
+                        {{currentStage.executionDateLabel}}
                     </th>
                     <th class="" ng-repeat="prStDe in currentStage.programStageDataElements">
                         <span d2-pop-over
@@ -97,7 +97,7 @@
                                ng-disabled="eventRow.status === 'SKIPPED' || eventRow.enrollmentStatus !== 'ACTIVE' || eventRow.editingNotAllowed "
                                ng-required="true"
                                ng-dblclick="$event.stopPropagation();"
-                               title="{{currentStage.excecutionDateLabel}}"
+                               title="{{currentStage.executionDateLabel}}"
                                blur-or-change="saveEventDateForEvent(eventRow)"/>
                     </div>
                     <div class="event-table-inactive" ng-if="!tableRowIsEditable(eventRow)">
