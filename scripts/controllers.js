@@ -322,7 +322,7 @@ trackerCapture.controller('SelectionController',
 
             //$scope.searchParam = {bools: []};
             $scope.search = function(mode,goToPage){
-                resetParams(goToPage);
+                //resetParams(goToPage);
                 var grid;
                 if (!$scope.gridColumns) {
                     grid = TEIGridService.generateGridColumns($scope.attributes, $scope.selectedOuMode.name, true);
