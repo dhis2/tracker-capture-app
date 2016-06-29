@@ -19,45 +19,42 @@
                 <img src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
             </div>
             <div ng-if="dashboardReady">
-                <div class="col-sm-2 list-group">
-                    <a ng-repeat="stage in programStages| orderBy:'sortOrder':reverse" class="list-group-item cursor-pointer" ng-class="{true: 'active'} [stage.id === currentStage.id]" ng-click="setCurrentStage(stage)">
-                        {{stage.displayName}}
-                    </a>
-                </div>
-                <div class="col-sm-10">
-                    <div class="row" ng-if="model.showLegend">
-                        <div class="col-sm-12" ng-include="'components/dataentry/event-legend.html'"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div style="width: 98%; float: left;">
-                                <div ng-if="currentStage && currentStage.id && eventsLoaded" class="container-fluid">
-                                    <div ng-include="'components/dataentry/tabular-horizontal-layout.html'"></div>
-                                    <div ng-if="!eventsByStage[currentStage.id] || eventsByStage[currentStage.id].length === 0">
-                                        <div class="alert alert-warning">{{'no_event_exists'| translate}}</div>
-                                    </div>                                    
-                                    <div ng-if="currentEvent" class="long-vertical-spacing" ng-include="'components/dataentry/dataentry-notes.html'"></div>                                    
-                                </div>
-                                <div ng-if="!eventsLoaded">
-                                    <img src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
-                                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="list-group" style="width: 10%; float: left;">
+                            <a ng-repeat="stage in programStages| orderBy:'sortOrder':reverse" class="list-group-item cursor-pointer" ng-class="{true: 'active'} [stage.id === currentStage.id]" ng-click="setCurrentStage(stage)">
+                                {{stage.displayName}}
+                            </a>
+                        </div>
+                        <div style="width: 87%; float: left; padding-left: 12px; padding-right: 12px;">
+                            <div ng-if="currentStage && currentStage.id && eventsLoaded" class="container-fluid">
+                                <div ng-include="'components/dataentry/tabular-horizontal-layout.html'"></div>
+                                <div ng-if="!eventsByStage[currentStage.id] || eventsByStage[currentStage.id].length === 0">
+                                    <div class="alert alert-warning">{{'no_event_exists'| translate}}</div>
+                                </div>                                    
+                                <div ng-if="currentEvent" class="long-vertical-spacing" ng-include="'components/dataentry/dataentry-notes.html'"></div>                                    
                             </div>
-                            <div style="width: 2%; float: right; padding: 0 9px;">
-                                <button type="button" 
-                                        class="btn btn-primary" 
-                                        ng-click="showCreateEvent(stage, eventCreationActions.add, currentStage)"
-                                        ng-disabled="selectedEntity.inactive">
-                                    <i class="fa fa-plus" title="{{'add_new_event'|translate}}"></i>
-                                </button>
-                                <button type="button" 
-                                        class="btn btn-info long-vertical-spacing" 
-                                        ng-click="showCreateEvent(stage, eventCreationActions.schedule, currentStage)"
-                                        ng-disabled="selectedEntity.inactive">
-                                    <i class="fa fa-calendar" title="{{'schedule_new_event'|translate}}"></i>
-                                </button>
-                            </div>                            
-                        </div>                        
-                    </div>
+                            <div ng-if="!eventsLoaded">
+                                <img src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
+                            </div>
+                        </div>
+                        <div style="width: 3%; float: left;">
+                            <button type="button" 
+                                    title="{{'add_new_event'|translate}}"
+                                    class="btn btn-primary" 
+                                    ng-click="showCreateEvent(stage, eventCreationActions.add, currentStage)"
+                                    ng-disabled="selectedEntity.inactive">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                            <button type="button" 
+                                    title="{{'schedule_new_event'|translate}}"
+                                    class="btn btn-info long-vertical-spacing" 
+                                    ng-click="showCreateEvent(stage, eventCreationActions.schedule, currentStage)"
+                                    ng-disabled="selectedEntity.inactive">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </div>                            
+                    </div>                        
                 </div>
             </div>
         </div>
