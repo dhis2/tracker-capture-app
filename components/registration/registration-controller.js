@@ -45,7 +45,6 @@ trackerCapture.controller('RegistrationController',
     
     $scope.helpTexts = {};
     $scope.registrationMode = 'REGISTRATION';
-    $scope.currentEvent = {};
     var flag = {debug: true, verbose: false};
     $rootScope.ruleeffects = {};
 
@@ -174,6 +173,7 @@ trackerCapture.controller('RegistrationController',
                     }
 
                     if ($scope.selectedProgram.programStages && $scope.selectedProgram.programStages[0] && $scope.selectedProgram.useFirstStageDuringRegistration && $scope.registrationMode === 'REGISTRATION') {
+                        $scope.currentEvent = {};
                         $scope.registrationAndDataEntry = true;
                         $scope.prStDes = [];
                         $scope.currentStage = $scope.selectedProgram.programStages[0];
