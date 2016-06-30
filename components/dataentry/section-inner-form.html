@@ -4,7 +4,7 @@
             <div ng-if="!selectedProgram.dataEntryMethod || optionSets[prStDes[de.dataElement.id].dataElement.optionSet.id].options.length >= 7">
                 <ui-select  ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
                             theme="select2"
-                            ng-required={{prStDes[de.dataElement.id].compulsory}}
+                            ng-required={{isCompulsory(de.dataElement)}}
                             ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                             name="foo"
                             on-select="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
@@ -23,7 +23,7 @@
                                class="form-control"
                                ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                                name={{currentEvent[prStDes[de.dataElement.id].dataElement.id]}}
-                               ng-required={{prStDes[de.dataElement.id].compulsory}}
+                               ng-required={{isCompulsory(de.dataElement)}}
                                ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                                ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
                                ng-change="saveDatavalue(prStDes[de.dataElement.id])"
@@ -37,7 +37,7 @@
                                    class="form-control"
                                    ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                                    name={{currentEvent[prStDes[de.dataElement.id].dataElement.id]}}
-                                   ng-required={{prStDes[de.dataElement.id].compulsory}}
+                                   ng-required={{isCompulsory(de.dataElement)}}
                                    ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                                    ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
                                    ng-change="saveDatavalue(prStDes[de.dataElement.id])"
@@ -59,7 +59,7 @@
                            class="form-control"
                            ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                            ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                           ng-required={{prStDes[de.dataElement.id].compulsory}}
+                           ng-required={{isCompulsory(de.dataElement)}}
                            ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                            ng-blur="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
                            name="foo"/>
@@ -76,7 +76,7 @@
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                        ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                       ng-required={{prStDes[de.dataElement.id].compulsory}}
+                       ng-required={{isCompulsory(de.dataElement)}}
                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                        ng-blur="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
                        name="foo" />
@@ -93,7 +93,7 @@
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                        ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                       ng-required={{prStDes[de.dataElement.id].compulsory}}
+                       ng-required={{isCompulsory(de.dataElement)}}
                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                        ng-blur="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
                        name="foo"/>
@@ -110,7 +110,7 @@
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                        ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                       ng-required={{prStDes[de.dataElement.id].compulsory}}
+                       ng-required={{isCompulsory(de.dataElement)}}
                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                        ng-blur="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
                        name="foo"/>
@@ -127,7 +127,7 @@
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                        ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                       ng-required={{prStDes[de.dataElement.id].compulsory}}
+                       ng-required={{isCompulsory(de.dataElement)}}
                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                        ng-blur="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
                        name="foo"/>
@@ -140,7 +140,7 @@
         <div ng-switch-when="BOOLEAN">
             <div class="hideInPrint form-control">
                 <d2-radio-button
-                    dh-required="prStDes[de.dataElement.id].compulsory"
+                    dh-required="isCompulsory(de.dataElement)"
                     dh-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id] === true"
                     dh-value="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
                     dh-name="foo"
@@ -165,7 +165,7 @@
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                        ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                       ng-required={{prStDes[de.dataElement.id].compulsory}}
+                       ng-required={{isCompulsory(de.dataElement)}}
                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                        blur-or-change="saveDatavalue(prStDes[de.dataElement.id])"
                        name="foo"/>
@@ -179,7 +179,7 @@
                 <input type="checkbox"
                        class="form-control-checkbox"
                        ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                       ng-required={{prStDes[de.dataElement.id].compulsory}}
+                       ng-required={{isCompulsory(de.dataElement)}}
                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                        ng-change="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
                        name="foo"/>
@@ -195,7 +195,7 @@
 
                               ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                               ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                              ng-required={{prStDes[de.dataElement.id].compulsory}}
+                              ng-required={{isCompulsory(de.dataElement)}}
                               ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                               ng-blur="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
                               name="foo"></textarea>
@@ -210,7 +210,7 @@
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                        ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                       ng-required={{prStDes[de.dataElement.id].compulsory}}
+                       ng-required={{isCompulsory(de.dataElement)}}
                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                        ng-blur="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
                        name="foo"/>
@@ -238,7 +238,7 @@
                                 <span title="{{'upload' | translate}}">
                                     <i class="fa fa-upload"></i>
                                     <input type="file"
-                                           ng-required={{prStDes[de.dataElement.id].compulsory}}
+                                           ng-required={{isCompulsory(de.dataElement)}}
                                            ng-disabled="assignedFields[de.dataElement.id]"
                                            name="foo"
                                            input-field-id={{de.dataElement.id}}
@@ -264,7 +264,7 @@
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                        ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                       ng-required={{prStDes[de.dataElement.id].compulsory}}
+                       ng-required={{isCompulsory(de.dataElement)}}
                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                        ng-change="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
                        name="foo"/>
@@ -289,7 +289,7 @@
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
                        ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                       ng-required={{prStDes[de.dataElement.id].compulsory}}
+                       ng-required={{isCompulsory(de.dataElement)}}
                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                        ng-blur="saveDatavalue(prStDes[de.dataElement.id])"
                        name="foo"/>

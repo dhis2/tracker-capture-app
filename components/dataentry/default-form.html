@@ -58,7 +58,7 @@
                                     placement="right">
                                     <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDes[de.dataElement.id].dataElement.displayFormName}}</a>
                                 </span>
-                                <span ng-if="prStDes[de.dataElement.id].compulsory" class="required">*</span>
+                                <span ng-if="isCompulsory(de.dataElement)" class="required">*</span>
                                 <span class="hideInPrint">
                                     <d2-info ng-if="prStDes[de.dataElement.id].dataElement.description" data-content='[{"name":"{{"description" | translate}}", "data":"{{prStDes[de.dataElement.id].dataElement.description}}"}]'>
                                     </d2-info>

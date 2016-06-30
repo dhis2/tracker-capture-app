@@ -497,6 +497,10 @@ trackerCapture.controller('DataEntryController',
         return [];
     };
     
+    $scope.isCompulsory = function(dataElement) {
+        return $scope.currentStage.programStageDataElementsCollection[dataElement.id].compulsory;
+    };
+    
     //check if field is hidden
     $scope.isHidden = function (id, event) {
         //In case the field contains a value, we cant hide it. 
@@ -596,6 +600,8 @@ trackerCapture.controller('DataEntryController',
     	                if (stage.openAfterEnrollment) {
     	                    $scope.currentStage = stage;
     	                }
+                        
+                        stage.programStageDataElementsCollection = {};
                     
     	                stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date');
     	                angular.forEach(stage.programStageDataElements, function (prStDe) {                        
@@ -606,6 +612,8 @@ trackerCapture.controller('DataEntryController',
     	                    if(prStDe.allowProvidedElsewhere){
     	                        $scope.allowProvidedElsewhereExists[stage.id] = true;
     	                    }
+                            
+                            stage.programStageDataElementsCollection[prStDe.dataElement.id] = prStDe;
     	                });
 
     	                $scope.stagesById[stage.id] = stage;
