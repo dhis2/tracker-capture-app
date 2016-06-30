@@ -181,30 +181,45 @@ trackerCapture.controller('EnrollmentController',
             $scope.broadCastSelections('mainDashboard');
         };
 
-        $scope.cancelEnrollment = function () {
+        $scope.activateDeactivateEnrollment = function () {
 
             var modalOptions = {
                 closeButtonText: 'no',
                 actionButtonText: 'yes',
-                headerText: 'cancel_enrollment',
-                bodyText: 'are_you_sure_to_cancel_enrollment'
+                headerText: $scope.selectedEnrollment.status === 'CANCELLED' ? 'activate_enrollment' : 'deactivate_enrollment',
+                bodyText: $scope.selectedEnrollment.status === 'CANCELLED' ? 'are_you_sure_to_activate_enrollment' : 'are_you_sure_to_deactivate_enrollment'
             };
 
+
             ModalService.showModal({}, modalOptions).then(function (result) {
-                EnrollmentService.cancel($scope.selectedEnrollment).then(function (data) {
-                    $scope.selectedEnrollment.status = 'CANCELLED';
+                var status = 'cancelled';
+                if ($scope.selectedEnrollment.status === 'CANCELLED') {
+                    status = 'incompleted';
+                }
+
+                EnrollmentService.updateForStatus($scope.selectedEnrollment, status).then(function (data) {
+                    $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'CANCELLED' ? 'ACTIVE' : 'CANCELLED';
                     $scope.loadEnrollmentDetails($scope.selectedEnrollment);
+                }, function (response) {
+                    if (response && response.data && response.data.status === "ERROR") {
+                        //notify user
+                        var dialogOptions = {
+                            headerText: response.data.status,
+                            bodyText: response.data.message
+                        };
+                        DialogService.showDialog({}, dialogOptions);
+                    }
                 });
             });
         };
 
-        $scope.completeEnrollment = function () {
+        $scope.completeReopenEnrollment = function () {
 
             var modalOptions = {
-                closeButtonText: 'cancel',
-                actionButtonText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'complete' : 'incomplete',
-                headerText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'complete_enrollment' : 'incomplete_enrollment',
-                bodyText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'are_you_sure_to_complete_enrollment' : 'are_you_sure_to_incomplete_enrollment'
+                closeButtonText: 'no',
+                actionButtonText: 'yes',
+                headerText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'complete_enrollment' : 'reopen_enrollment',
+                bodyText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'are_you_sure_to_complete_enrollment' : 'are_you_sure_to_reopen_enrollment'
             };
 
 
@@ -216,7 +231,7 @@ trackerCapture.controller('EnrollmentController',
                     status = 'incompleted';
                 }
 
-                EnrollmentService.completeIncomplete($scope.selectedEnrollment, status).then(function (data) {
+                EnrollmentService.updateForStatus($scope.selectedEnrollment, status).then(function (data) {
                     $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
                     $scope.loadEnrollmentDetails($scope.selectedEnrollment);
                 }, function (response) {

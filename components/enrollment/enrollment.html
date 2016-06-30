@@ -67,17 +67,20 @@
                             <div class="vertical-spacing">
                                 <button type="button" 
                                         class="btn btn-primary"
+                                        ng-if="selectedEnrollment.status !== 'CANCELLED'"
                                         ng-disabled="!canUseEnrollment()"
-                                        ng-click="completeEnrollment()">
-                                    {{selectedEnrollment.status === 'ACTIVE' ? 'complete' : 'incomplete' | translate}}
+                                        ng-click="completeReopenEnrollment()">
+                                    {{selectedEnrollment.status === 'ACTIVE' ? 'complete' : 'reopen' | translate}}
                                 </button>
                                 <button type="button" 
                                         class="btn btn-warning"
-                                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive"
-                                        ng-click="cancelEnrollment()">
-                                    {{'cancel'| translate}}
+                                        ng-if="selectedEnrollment.status !== 'COMPLETED'"
+                                        ng-disabled="!canUseEnrollment()"
+                                        ng-click="activateDeactivateEnrollment()">
+                                    {{selectedEnrollment.status === 'CANCELLED' ? 'activate' : 'deactivate' | translate}}
                                 </button>
                                 <button type="button"
+                                        ng-if="selectedEnrollment.status === 'ACTIVE'"
                                         title="{{selectedEnrollment.followup ? 'unmark_for_followup' : 'mark_for_followup' | translate}}"
                                         ng-class="{true: 'btn btn-danger', false: 'btn btn-default'} [selectedEnrollment.followup]" 
                                         ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive"

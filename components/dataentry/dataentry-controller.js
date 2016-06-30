@@ -1748,7 +1748,7 @@ trackerCapture.controller('DataEntryController',
     
     var completeEnrollment = function () {
         $scope.deleteScheduleAndOverdueEvents().then(function(result){
-            EnrollmentService.completeIncomplete($scope.selectedEnrollment, 'completed').then(function (data) {
+            EnrollmentService.updateForStatus($scope.selectedEnrollment, 'completed').then(function (data) {
                 $scope.selectedEnrollment.status = 'COMPLETED';
                 selection.load();
                 $location.path('/').search({program: $scope.selectedProgramId});

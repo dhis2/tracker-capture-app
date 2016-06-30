@@ -46,14 +46,14 @@
                                     title="{{'add_new_event'|translate}}"
                                     class="btn btn-primary" 
                                     ng-click="showCreateEvent(stage, eventCreationActions.add, currentStage)"
-                                    ng-disabled="selectedEntity.inactive">
+                                    ng-disabled="selectedEntity.inactive || selectedEnrollment.status !== 'ACTIVE'">
                                 <i class="fa fa-plus"></i>
                             </button>
                             <button type="button" 
                                     title="{{'schedule_new_event'|translate}}"
                                     class="btn btn-info long-vertical-spacing" 
                                     ng-click="showCreateEvent(stage, eventCreationActions.schedule, currentStage)"
-                                    ng-disabled="selectedEntity.inactive">
+                                    ng-disabled="selectedEntity.inactive || selectedEnrollment.status !== 'ACTIVE'">
                                 <i class="fa fa-calendar"></i>
                             </button>
                         </div>                            

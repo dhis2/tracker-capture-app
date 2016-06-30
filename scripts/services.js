@@ -653,17 +653,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        cancel: function(enrollment){
-            var promise = $http.put(DHIS2URL + '/enrollments/' + enrollment.enrollment + '/cancelled').then(function(response){
-                return response.data;               
-            });
-            return promise;           
-        },
-        completeIncomplete: function(enrollment, status){
+        updateForStatus: function( enrollment, status ){
             var promise = $http.put(DHIS2URL + '/enrollments/' + enrollment.enrollment + '/' + status).then(function(response){
                 return response.data;               
             });
-            return promise; 
+            return promise;
         }
     };   
 })

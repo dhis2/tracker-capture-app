@@ -458,7 +458,7 @@ trackerCapture.controller('DashboardController',
         var modalOptions = {
             closeButtonText: 'no',
             actionButtonText: 'yes',
-            headerText: st ? 'deactivate_tei' : 'activate_tei',
+            headerText: st ? 'deactivate' : 'activate',
             bodyText: 'are_you_sure_to_proceed'
         };
 
