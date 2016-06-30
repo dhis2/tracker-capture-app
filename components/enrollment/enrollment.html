@@ -79,16 +79,7 @@
                                 </button>
                                 <button type="button"
                                         title="{{selectedEnrollment.followup ? 'unmark_for_followup' : 'mark_for_followup' | translate}}"
-                                        ng-if="selectedEnrollment.followup"
-                                        class="btn btn-danger"
-                                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive"
-                                        ng-click="markForFollowup()">
-                                    <i class="fa fa-exclamation-triangle"></i>
-                                </button>
-                                <button type="button"
-                                        title="{{selectedEnrollment.followup ? 'unmark_for_followup' : 'mark_for_followup' | translate}}"
-                                        ng-if="!selectedEnrollment.followup"
-                                        class="btn btn-default"
+                                        ng-class="{true: 'btn btn-danger', false: 'btn btn-default'} [selectedEnrollment.followup]" 
                                         ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive"
                                         ng-click="markForFollowup()">
                                     <i class="fa fa-exclamation-triangle"></i>
