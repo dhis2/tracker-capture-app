@@ -23,7 +23,7 @@
         <div ng-messages="outerDataEntryForm.eventDate.$error" ng-if="interacted(outerDataEntryForm.eventDate)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">                        
         </div>        
     </div>
-    <div ng-if="!currentStage.hideDueDate"  class="col-md-6">
+    <div ng-if="!currentStage.hideDueDate && !registrationAndDataEntry"  class="col-md-6">
         <span ng-if="currentEvent.eventDate || currentEvent.status === 'SKIPPED' || currentEvent.dueDate || registrationMode === 'REGISTRATION'">
             {{'due_date'| translate}}
         </span>
