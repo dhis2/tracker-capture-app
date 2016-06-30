@@ -417,7 +417,7 @@ trackerCapture.controller('RegistrationController',
                 var eventExists = $scope.currentEvent && $scope.currentEvent.event;
                 TrackerRulesExecutionService.executeRules($scope.allProgramRules, eventExists ? $scope.currentEvent : 'registration', eventExists ? {
                     all: [$scope.currentEvent],
-                    byStage: [$scope.currentStage.id][$scope.currentEvent]
+                    byStage: {[$scope.currentStage.id]:[$scope.currentEvent]}
                 } : null, $scope.prStDes, $scope.selectedTei, $scope.selectedEnrollment, $scope.optionSets, flag);
             }
         };
