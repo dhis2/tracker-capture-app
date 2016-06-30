@@ -1811,7 +1811,10 @@ trackerCapture.controller('DataEntryController',
             };
             dhis2Event.status = 'ACTIVE';
         }
-        else {//complete event            
+        else {//complete event    
+            //We must execute the rules right before deciding wheter to allow completion:
+            $scope.executeRules();
+            
             if(angular.isUndefined(inTableView) || inTableView === false || inTableView === null){
                 
                 if(!outerDataEntryForm){
