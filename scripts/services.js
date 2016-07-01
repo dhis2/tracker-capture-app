@@ -1324,7 +1324,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                         programRuleVariableSourceType:'DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE',
                                         dataElement:variableNameParts[1],
                                         programStage:variableNameParts[0],
-                                        program:programUid
+                                        program:programUid,
+                                        useCodeForOptionSet:true
                                     };
                                 }
                                 else if(variableNameParts.length === 1)
@@ -1334,7 +1335,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                         displayName:variableName,
                                         programRuleVariableSourceType:'TEI_ATTRIBUTE',
                                         trackedEntityAttribute:variableNameParts[0],
-                                        program:programUid
+                                        program:programUid,
+                                        useCodeForOptionSet:true
                                     };
                                 }
                                 variables.push(newVariableObject);
