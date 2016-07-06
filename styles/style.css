@@ -791,6 +791,10 @@ table.table-striped tr td.optionset {
     width: 75%;
 }
 
+.modal-footer .btn {
+    margin-top: 5px;
+}
+
 .modal {
     padding-top: 20px;
 }
