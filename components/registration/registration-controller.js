@@ -112,7 +112,7 @@ trackerCapture.controller('RegistrationController',
                 programRules: []
             };
             if (angular.isObject($scope.selectedProgram) && $scope.selectedProgram.id) {
-                TrackerRulesFactory.getRules($scope.selectedProgram.id).then(function (rules) {
+                return TrackerRulesFactory.getRules($scope.selectedProgram.id).then(function (rules) {
                     $scope.allProgramRules = rules;
                 });
             }
@@ -149,7 +149,9 @@ trackerCapture.controller('RegistrationController',
             $scope.getAttributes($scope.registrationMode);
 
             if ($scope.selectedProgram && $scope.selectedProgram.id) {
-                getProgramRules();
+                getProgramRules().then( function (rules) {
+                    $scope.executeRules();
+                });
             }
         });
 
