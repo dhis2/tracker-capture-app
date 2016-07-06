@@ -435,7 +435,7 @@ trackerCapture.controller('RegistrationController',
 
         //listen for rule effect changes
         $scope.$on('ruleeffectsupdated', function (event, args) {
-            if (args.event === "registration") {
+            if (args.event === "registration" || args.event === 'SINGLE_EVENT') {
                 $scope.warningMessages = [];
                 $scope.hiddenFields = [];
                 $scope.assignedFields = [];
