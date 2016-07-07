@@ -216,29 +216,32 @@ trackerCapture.controller('DataEntryController',
             if (effect.action === "HIDEFIELD") {                    
                 if (effect.dataElement) {
 
-                    if (effect.ineffect && affectedEvent[effect.dataElement.id]) {
-                        //If a field is going to be hidden, but contains a value, we need to take action;
-                        if (effect.content) {
-                            //TODO: Alerts is going to be replaced with a proper display mecanism.
-                            alert(effect.content);
+                    if(affectedEvent.status !== 'SCHEDULE' &&
+                        affectedEvent.status !== 'SKIPPED' &&
+                        !affectedEvent.editingNotAllowed) {
+                        if (effect.ineffect && affectedEvent[effect.dataElement.id]) {
+                            //If a field is going to be hidden, but contains a value, we need to take action;
+                            if (effect.content) {
+                                //TODO: Alerts is going to be replaced with a proper display mecanism.
+                                alert(effect.content);
+                            }
+                            else {
+                                //TODO: Alerts is going to be replaced with a proper display mecanism.
+                                alert($scope.prStDes[effect.dataElement.id].dataElement.displayFormName + " was blanked out and hidden by your last action");
+                            }
+
+                            //Blank out the value:
+                            affectedEvent[effect.dataElement.id] = "";
+                            $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
                         }
-                        else {
-                            //TODO: Alerts is going to be replaced with a proper display mecanism.
-                            alert($scope.prStDes[effect.dataElement.id].dataElement.displayFormName + " was blanked out and hidden by your last action");
+
+                        if(effect.ineffect) {
+                            $scope.hiddenFields[event][effect.dataElement.id] = true;
+                        } 
+                        else if( !$scope.hiddenFields[event][effect.dataElement.id]) {
+                            $scope.hiddenFields[event][effect.dataElement.id] = false;
                         }
-
-                        //Blank out the value:
-                        affectedEvent[effect.dataElement.id] = "";
-                        $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
                     }
-
-                    if(effect.ineffect) {
-                        $scope.hiddenFields[event][effect.dataElement.id] = true;
-                    } 
-                    else if( !$scope.hiddenFields[event][effect.dataElement.id]) {
-                        $scope.hiddenFields[event][effect.dataElement.id] = false;
-                    }
-
                 }
                 else {
                     $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEFIELD, bot does not have a dataelement defined");
@@ -285,22 +288,26 @@ trackerCapture.controller('DataEntryController',
                     $log.warn("ProgramRuleAction " + effect.id + " is of type HIDESECTION, bot does not have a section defined");
                 }
             } else if (effect.action === "ASSIGN") {
-                if(effect.ineffect && effect.dataElement) {
-                    //For "ASSIGN" actions where we have a dataelement, we save the calculated value to the dataelement:
-                    //Blank out the value:
-                    var processedValue = $filter('trimquotes')(effect.data);
-                    
-                    if($scope.prStDes[effect.dataElement.id].dataElement.optionSet) {
-                        processedValue = OptionSetService.getName(
-                                $scope.optionSets[$scope.prStDes[effect.dataElement.id].dataElement.optionSet.id].options, processedValue)
+                if(affectedEvent.status !== 'SCHEDULE' &&
+                        affectedEvent.status !== 'SKIPPED' &&
+                        !affectedEvent.editingNotAllowed) {
+                    if(effect.ineffect && effect.dataElement) {
+                        //For "ASSIGN" actions where we have a dataelement, we save the calculated value to the dataelement:
+                        //Blank out the value:
+                        var processedValue = $filter('trimquotes')(effect.data);
+
+                        if($scope.prStDes[effect.dataElement.id].dataElement.optionSet) {
+                            processedValue = OptionSetService.getName(
+                                    $scope.optionSets[$scope.prStDes[effect.dataElement.id].dataElement.optionSet.id].options, processedValue);
+                        }
+
+                        processedValue = processedValue === "true" ? true : processedValue;
+                        processedValue = processedValue === "false" ? false : processedValue;
+
+                        affectedEvent[effect.dataElement.id] = processedValue;
+                        $scope.assignedFields[event][effect.dataElement.id] = true;
+                        $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
                     }
-                    
-                    processedValue = processedValue === "true" ? true : processedValue;
-                    processedValue = processedValue === "false" ? false : processedValue;
-                    
-                    affectedEvent[effect.dataElement.id] = processedValue;
-                    $scope.assignedFields[event][effect.dataElement.id] = true;
-                    $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
                 }
             }
         });
