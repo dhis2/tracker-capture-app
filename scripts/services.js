@@ -2099,6 +2099,41 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;            
         }
     };
-});
+})
 
+/* Service to fetch/store dasboard widgets */
+.service('GridColumnsService', function($http, DHIS2URL) {
+    return {
+        set: function (gridColumns, created) {
+            var url = DHIS2URL + '/24/userDataStore/gridColumns/trackerCaptureGridColumns';
+
+            var method = created ? "put":"post";
+
+            var promise = $http({
+                method: method,
+                url: url,
+                data: {"gridColumns": JSON.stringify(gridColumns)},
+                headers: {'Content-Type': 'application/json;charset=UTF-8'}
+            }).then(function (response) {
+                return response.data;
+            });
+            return promise;
+        },
+        get: function () {
+            var promise = $http.get(DHIS2URL + '/24/userDataStore/gridColumns/trackerCaptureGridColumns').then(function (response) {
+                if (response && response.data && response.data.gridColumns) {
+                    return JSON.parse(response.data.gridColumns);
+                } else {
+                    return null;
+                }
+            }, function (error) {
+                if (error && error.data) {
+                    return error.data;
+                }
+                return null;
+            });
+            return promise;
+        }
+    };
+});
 

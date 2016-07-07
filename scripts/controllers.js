@@ -23,7 +23,7 @@ trackerCapture.controller('SelectionController',
                  TEIService,
                  EventReportService,
                  TCStorageService,
-                 GridColumnService,
+                 GridColumnsService,
                  $q) {
             var savedAdvancedSeachOptions = null;
             var defaultColumn = {
@@ -64,12 +64,12 @@ trackerCapture.controller('SelectionController',
             $scope.attributesById = null;
             $scope.dataElementTranslations = null;
             $scope.doSearch = true;
-            $scope.gridColumnsRestoredFromUserStore = false;
+            $scope.gridColumnsCreatedInUserStore = false;
 
-            GridColumnService.get("trackerCaptureGridColumns").then(function(gridColumns) {
+            GridColumnsService.get().then(function(gridColumns) {
                 if (gridColumns && gridColumns.status !== "ERROR") {
                     $scope.gridColumns = gridColumns;
-                    $scope.gridColumnsRestoredFromUserStore = true;
+                    $scope.gridColumnsCreatedInUserStore = true;
                 }
 
                 $scope.sortColumn = defaultColumn;
@@ -577,8 +577,7 @@ trackerCapture.controller('SelectionController',
                     modalInstance.result.then(function (gridColumns) {
                         $scope.gridColumns = gridColumns;
                         CurrentSelection.setGridColumns(angular.copy($scope.gridColumns));
-                        GridColumnService.set($scope.gridColumns, $scope.gridColumnsRestoredFromUserStore,
-                            "trackerCaptureGridColumns");
+                        GridColumnsService.set($scope.gridColumns, $scope.gridColumnsCreatedInUserStore);
                     }, function () {
                     });
                 };
