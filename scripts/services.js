@@ -2016,24 +2016,24 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         getGridColumns: function(stage, prStDes){
             var partial = [], allColumns = [];
-            partial.push({id: 'sortingDate', name: stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date')});
-            partial.push({id: 'orgUnitName', name: $translate.instant('org_unit')});            
-            allColumns.push({id: 'sortingDate', name: stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date')});
-            allColumns.push({id: 'orgUnitName', name: $translate.instant('org_unit')});
+            partial.push({id: 'sortingDate', valueType: 'DATE', name: stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date')});
+            partial.push({id: 'orgUnitName', valueType: 'TEXT', name: $translate.instant('org_unit')});            
+            allColumns.push({id: 'sortingDate', valueType: 'DATE', name: stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date')});
+            allColumns.push({id: 'orgUnitName', valueType: 'TEXT', name: $translate.instant('org_unit')});
             
             var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});            
             if( displayInReports.length > 0 ){
                 angular.forEach(displayInReports, function(c){
                     if ( prStDes[c.dataElement.id] && prStDes[c.dataElement.id].dataElement) {
-                        partial.push({id: c.dataElement.id, name: prStDes[c.dataElement.id].dataElement.displayFormName});
+                        partial.push({id: c.dataElement.id, valueType: prStDes[c.dataElement.id].dataElement.valueType, name: prStDes[c.dataElement.id].dataElement.displayFormName});
                     }
                 });
             }
             for(var i=0; i<stage.programStageDataElements.length; i++){
                 if( i < $rootScope.maxGridColumnSize && displayInReports.length === 0){
-                    partial.push({id: stage.programStageDataElements[i].dataElement.id, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
+                    partial.push({id: stage.programStageDataElements[i].dataElement.id, valueType: stage.programStageDataElements[i].dataElement.valueType, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
                 }                        
-                allColumns.push({id: stage.programStageDataElements[i].dataElement.id, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
+                allColumns.push({id: stage.programStageDataElements[i].dataElement.id, valueType: stage.programStageDataElements[i].dataElement.valueType, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
             }            
             return {partial: partial, all: allColumns};
         }
