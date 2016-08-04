@@ -523,7 +523,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* service to deal with TEI registration and update */
-.service('RegistrationService', function(TEIService, $q, $translate){
+.service('RegistrationService', function(TEIService, $q){
     return {
         registerOrUpdate: function(tei, optionSets, attributesById){
             if(tei){
@@ -571,7 +571,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     }                    
                 }
             }
-            
+
+            angular.forEach(originalTei.attributes, function(att){
+                if( tei[att.attribute]) {
+                    delete tei[att.attribute];
+                }
+            });
             return {tei: tei, formEmpty: formEmpty, formChanged: formChanged};
         }
     };
