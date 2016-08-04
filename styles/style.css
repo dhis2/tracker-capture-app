@@ -921,7 +921,7 @@ table.table-striped tr td.optionset {
     padding: 5px;
     margin-bottom: 5px;
     margin-top: 5px;
-    vertical-align: middle;
+    vertical-align: middle !important;
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -1520,8 +1520,9 @@ table td.absorbing-column {
     color: #C7C728;
 }
 
-.custom-radio-group {
-    /*margin-left: -8px;*/
+.custom-radio-group {    
+    margin-left: -3px !important;
+    margin-top: -3px !important;
 }
 
 .custom-radio-container{
