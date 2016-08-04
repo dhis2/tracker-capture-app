@@ -42,11 +42,11 @@
                     title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
-                            <span ng-switch-when="bool">
+                            <span ng-switch-when="BOOLEAN">
                                 <span ng-if="trackedEntity[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
                                 <span ng-if="trackedEntity[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
                             </span>
-                            <span ng-switch-when="trueOnly">
+                            <span ng-switch-when="TRUE_ONLY">
                                 <span ng-if="trackedEntity[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
                             </span>
                             <span ng-switch-default>{{trackedEntity[gridColumn.id]}}</span>
@@ -60,11 +60,11 @@
                     title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
-                            <span ng-switch-when="bool">
+                            <span ng-switch-when="BOOLEAN">
                                 <span ng-if="trackedEntity[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
                                 <span ng-if="trackedEntity[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
                             </span>
-                            <span ng-switch-when="trueOnly">
+                            <span ng-switch-when="TRUE_ONLY">
                                 <span ng-if="trackedEntity[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
                             </span>
                             <span ng-switch-default>{{trackedEntity[gridColumn.id]}}</span>
@@ -79,11 +79,11 @@
                     title="{{'select'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
-                            <span ng-switch-when="bool">
+                            <span ng-switch-when="BOOLEAN">
                                 <span ng-if="trackedEntity[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
                                 <span ng-if="trackedEntity[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
                             </span>
-                            <span ng-switch-when="trueOnly">
+                            <span ng-switch-when="TRUE_ONLY">
                                 <span ng-if="trackedEntity[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
                             </span>
                             <span ng-switch-default>{{trackedEntity[gridColumn.id]}}</span>
@@ -97,11 +97,11 @@
                     title="{{'select'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
-                            <span ng-switch-when="bool">
+                            <span ng-switch-when="BOOLEAN">
                                 <span ng-if="trackedEntity[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
                                 <span ng-if="trackedEntity[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
                             </span>
-                            <span ng-switch-when="trueOnly">
+                            <span ng-switch-when="TRUE_ONLY">
                                 <span ng-if="trackedEntity[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
                             </span>
                             <span ng-switch-default>{{trackedEntity[gridColumn.id]}}</span>

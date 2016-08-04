@@ -9,7 +9,18 @@
     <tbody ng-repeat="dhis2Event in eventsByStage[currentStage.id]">
         <tr ng-click="showDataEntry(dhis2Event, false, false)" ng-if="eventsByStage[currentStage.id].length > 1">
             <td ng-class="getEventStyle(dhis2Event)" class="cursor-pointer" ng-repeat="col in eventGridColumns.partial">
-                {{dhis2Event[col.id]}}                                    
+                <span ng-switch="col.valueType">
+                    <span ng-switch-when="BOOLEAN">
+                        <span ng-if="dhis2Event[col.id] === 'true'">{{'yes'| translate}}</span>
+                        <span ng-if="dhis2Event[col.id] === 'false'">{{ 'no' | translate}}</span>
+                    </span>
+                    <span ng-switch-when="TRUE_ONLY">
+                        <span ng-if="dhis2Event[col.id]">
+                            <i class="fa fa-check"></i>
+                        </span>
+                    </span>
+                    <span ng-switch-default>{{dhis2Event[col.id]}}</span>
+                </span>
             </td>
         </tr>
         <tr ng-if="currentEvent && currentEvent.programStage === currentStage.id && dhis2Event.event === currentEvent.event">
