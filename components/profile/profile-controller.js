@@ -45,8 +45,6 @@ trackerCapture.controller('ProfileController',
         angular.forEach($scope.selectedTei.attributes, function(att){
             $scope.selectedTei[att.attribute] = att.value;
         });
-        
-        delete $scope.selectedTei.attributes;
 
         $timeout(function() { 
             $rootScope.$broadcast('registrationWidget', {registrationMode: 'PROFILE', selectedTei: $scope.selectedTei, enrollment: $scope.selectedEnrollment});

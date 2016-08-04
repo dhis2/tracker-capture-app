@@ -165,7 +165,6 @@ trackerCapture.controller('EnrollmentController',
             angular.forEach($scope.selectedTei.attributes, function (att) {
                 $scope.selectedTei[att.attribute] = att.value;
             });
-            delete $scope.selectedTei.attributes;
         };
 
         var hideEnrollmentDiv = function () {
