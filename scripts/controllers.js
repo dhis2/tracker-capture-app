@@ -66,11 +66,7 @@ trackerCapture.controller('SelectionController',
             $scope.doSearch = true;
             $scope.gridColumnsRestoredFromUserStore = false;
 
-            GridColumnService.get("trackerCaptureGridColumns").then(function(gridColumns) {
-                if (gridColumns && gridColumns.status !== "ERROR") {
-                    $scope.gridColumns = gridColumns;
-                    $scope.gridColumnsRestoredFromUserStore = true;
-                }
+
 
                 $scope.sortColumn = defaultColumn;
 
@@ -147,47 +143,53 @@ trackerCapture.controller('SelectionController',
                                 CurrentSelection.setOptionSets($scope.optionSets);
                             });
                         }
+                        GridColumnService.get("trackerCaptureGridColumns").then(function (gridColumns) {
+                            if (gridColumns && gridColumns.status !== "ERROR") {
+                                $scope.gridColumns = gridColumns;
+                                $scope.gridColumnsRestoredFromUserStore = true;
+                            }
 
-                        $scope.ouLevels = CurrentSelection.getOuLevels();
-                        if (!$scope.ouLevels) {
-                            TCStorageService.currentStore.open().done(function () {
-                                TCStorageService.currentStore.getAll('ouLevels').done(function (response) {
-                                    var ouLevels = angular.isObject(response) ? orderByFilter(response, '-level').reverse() : [];
-                                    CurrentSelection.setOuLevels(orderByFilter(ouLevels, '-level').reverse());
+                            $scope.ouLevels = CurrentSelection.getOuLevels();
+                            if (!$scope.ouLevels) {
+                                TCStorageService.currentStore.open().done(function () {
+                                    TCStorageService.currentStore.getAll('ouLevels').done(function (response) {
+                                        var ouLevels = angular.isObject(response) ? orderByFilter(response, '-level').reverse() : [];
+                                        CurrentSelection.setOuLevels(orderByFilter(ouLevels, '-level').reverse());
+                                    });
                                 });
+                            }
+
+                            //Labels
+                            $scope.trackerCaptureLabel = $translate.instant('tracker_capture');
+                            $scope.orgUnitLabel = $translate.instant('org_unit');
+                            $scope.listAllLabel = $translate.instant('list_all');
+                            $scope.registerLabel = $translate.instant('register');
+                            $scope.searchOusLabel = $translate.instant('locate_organisation_unit_by_name');
+                            $scope.printLabel = $translate.instant('print');
+                            $scope.searchLabel = $translate.instant('search');
+                            $scope.findLabel = $translate.instant('find');
+                            $scope.advancedSearchLabel = $translate.instant('advanced_search');
+                            $scope.allEnrollmentsLabel = $translate.instant('all_enrollment');
+                            $scope.completedEnrollmentsLabel = $translate.instant('completed_enrollment');
+                            $scope.activeEnrollmentsLabel = $translate.instant('active_enrollment');
+                            $scope.cancelledEnrollmentsLabel = $translate.instant('cancelled_enrollment');
+                            $scope.searchCriteriaLabel = $translate.instant('type_your_search_criteria_here');
+                            $scope.programSelectLabel = $translate.instant('please_select_a_program');
+                            $scope.settingsLabel = $translate.instant('settings');
+                            $scope.showHideLabel = $translate.instant('show_hide_columns');
+                            $scope.listProgramsLabel = $translate.instant('list_programs');
+                            $scope.settingsLabel = $translate.instant('settings');
+                            $scope.todayLabel = $translate.instant('events_today_persons');
+                            angular.forEach($scope.eventsTodayFilters, function (filter) {
+                                filter.name = $translate.instant(filter.name);
                             });
-                        }
+                            $scope.displayModeLabel = $translate.instant('display_mode');
 
-                        //Labels
-                        $scope.trackerCaptureLabel = $translate.instant('tracker_capture');
-                        $scope.orgUnitLabel = $translate.instant('org_unit');
-                        $scope.listAllLabel = $translate.instant('list_all');
-                        $scope.registerLabel = $translate.instant('register');
-                        $scope.searchOusLabel = $translate.instant('locate_organisation_unit_by_name');
-                        $scope.printLabel = $translate.instant('print');
-                        $scope.searchLabel = $translate.instant('search');
-                        $scope.findLabel = $translate.instant('find');
-                        $scope.advancedSearchLabel = $translate.instant('advanced_search');
-                        $scope.allEnrollmentsLabel = $translate.instant('all_enrollment');
-                        $scope.completedEnrollmentsLabel = $translate.instant('completed_enrollment');
-                        $scope.activeEnrollmentsLabel = $translate.instant('active_enrollment');
-                        $scope.cancelledEnrollmentsLabel = $translate.instant('cancelled_enrollment');
-                        $scope.searchCriteriaLabel = $translate.instant('type_your_search_criteria_here');
-                        $scope.programSelectLabel = $translate.instant('please_select_a_program');
-                        $scope.settingsLabel = $translate.instant('settings');
-                        $scope.showHideLabel = $translate.instant('show_hide_columns');
-                        $scope.listProgramsLabel = $translate.instant('list_programs');
-                        $scope.settingsLabel = $translate.instant('settings');
-                        $scope.todayLabel = $translate.instant('events_today_persons');
-                        angular.forEach($scope.eventsTodayFilters, function (filter) {
-                            filter.name = $translate.instant(filter.name);
+                            resetParams();
+                            //$scope.doSearch = true;
+                            $scope.loadPrograms($scope.selectedOrgUnit);
                         });
-                        $scope.displayModeLabel = $translate.instant('display_mode');
-
-                        resetParams();
-                        //$scope.doSearch = true;
-                        $scope.loadPrograms($scope.selectedOrgUnit);
-                    }
+                    };
                 });
 
                 //watch for changes in ou mode - mode could be selected without notifcation to grid column generator
@@ -706,5 +708,4 @@ trackerCapture.controller('SelectionController',
                 $scope.exportEnabled = function () {
                     return $scope.trackedEntityList && $scope.trackedEntityList.length > 0;
                 };
-            });
         });
