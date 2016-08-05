@@ -334,7 +334,7 @@ trackerCapture.controller('DashboardController',
         var currentLayout = $scope.dashboardLayouts.customLayout ? angular.copy($scope.dashboardLayouts.customLayout) : {};
         var programId = $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT';        
         currentLayout[programId] = getCurrentDashboardLayout();
-       
+        
         DashboardLayoutService.saveLayout(currentLayout, false).then(function () {
             if (!$scope.orderChanged) {
                 $scope.hasSmaller = $filter('filter')($scope.dashboardWidgets, {
@@ -349,36 +349,58 @@ trackerCapture.controller('DashboardController',
             setWidgetsSize();
         });
     };
+    
+    $scope.saveDashboarLayoutAsDefault = function () {
+        var layout = angular.copy($scope.dashboardLayouts.defaultLayout);        
+        var programId = $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT';        
+        layout[programId] = getCurrentDashboardLayout();
+        delete layout.DEFAULT;
+        
+        DashboardLayoutService.saveLayout(layout, true).then(function () {
+            var dialogOptions = {
+                headerText: 'success',
+                bodyText: $translate.instant('dashboard_layout_saved')
+            };
+            DialogService.showDialog({}, dialogOptions);
+            return;
+        }, function () {
+            var dialogOptions = {
+                headerText: 'error',
+                bodyText: $translate.instant('dashboard_layout_not_saved')
+            };
+            DialogService.showDialog({}, dialogOptions);
+            return;
+        });
+    };
 
-    //watch for widget sorting
-    $scope.$watch('widgetsOrder', function () {
-        if (angular.isObject($scope.widgetsOrder)) {
-            $scope.orderChanged = false;
-            for (var i = 0; i < $scope.widgetsOrder.smallerWidgets.length; i++) {
-                if ($scope.widgetsOrder.smallerWidgets.length === $scope.dashboardWidgetsOrder.smallerWidgets.length && $scope.widgetsOrder.smallerWidgets[i] !== $scope.dashboardWidgetsOrder.smallerWidgets[i]) {
-                    $scope.orderChanged = true;
-                }
-
-                if ($scope.widgetsOrder.smallerWidgets.length !== $scope.dashboardWidgetsOrder.smallerWidgets.length) {
-                    $scope.orderChanged = true;
-                }
+    //persist widget sorting
+    $scope.applyWidgetsOrderChange = function(param){
+        $scope.widgetsOrder = param;
+        $scope.orderChanged = false;
+        for (var i = 0; i < $scope.widgetsOrder.smallerWidgets.length; i++) {
+            if ($scope.widgetsOrder.smallerWidgets.length === $scope.dashboardWidgetsOrder.smallerWidgets.length && $scope.widgetsOrder.smallerWidgets[i] !== $scope.dashboardWidgetsOrder.smallerWidgets[i]) {
+                $scope.orderChanged = true;
             }
 
-            for (var i = 0; i < $scope.widgetsOrder.biggerWidgets.length; i++) {
-                if ($scope.widgetsOrder.biggerWidgets.length === $scope.dashboardWidgetsOrder.biggerWidgets.length && $scope.widgetsOrder.biggerWidgets[i] !== $scope.dashboardWidgetsOrder.biggerWidgets[i]) {
-                    $scope.orderChanged = true;
-                }
-
-                if ($scope.widgetsOrder.biggerWidgets.length !== $scope.dashboardWidgetsOrder.biggerWidgets.length) {
-                    $scope.orderChanged = true;
-                }
-            }
-
-            if ($scope.orderChanged) {
-                saveDashboardLayout();
+            if ($scope.widgetsOrder.smallerWidgets.length !== $scope.dashboardWidgetsOrder.smallerWidgets.length) {
+                $scope.orderChanged = true;
             }
         }
-    });
+
+        for (var i = 0; i < $scope.widgetsOrder.biggerWidgets.length; i++) {
+            if ($scope.widgetsOrder.biggerWidgets.length === $scope.dashboardWidgetsOrder.biggerWidgets.length && $scope.widgetsOrder.biggerWidgets[i] !== $scope.dashboardWidgetsOrder.biggerWidgets[i]) {
+                $scope.orderChanged = true;
+            }
+
+            if ($scope.widgetsOrder.biggerWidgets.length !== $scope.dashboardWidgetsOrder.biggerWidgets.length) {
+                $scope.orderChanged = true;
+            }
+        }
+
+        if ($scope.orderChanged) {
+            saveDashboardLayout();
+        }
+    };
 
     $scope.$on('DataEntryMainMenuItemSelected', function (event) {
         $scope.dataEntryMainMenuItemSelected = true;
@@ -492,7 +514,6 @@ trackerCapture.controller('DashboardController',
         }
     };
 
-
     $scope.showEnrollment = function () {
         $scope.displayEnrollment = true;
     };
@@ -505,29 +526,6 @@ trackerCapture.controller('DashboardController',
     $scope.expandCollapse = function (widget) {
         widget.expand = !widget.expand;
         saveDashboardLayout();
-    };
-
-    $scope.saveDashboarLayoutAsDefault = function () {
-        var layout = angular.copy($scope.dashboardLayouts.defaultLayout);        
-        var programId = $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT';        
-        layout[programId] = getCurrentDashboardLayout();
-        delete layout.DEFAULT;
-        
-        DashboardLayoutService.saveLayout(layout, true).then(function () {
-            var dialogOptions = {
-                headerText: 'success',
-                bodyText: $translate.instant('dashboard_layout_saved')
-            };
-            DialogService.showDialog({}, dialogOptions);
-            return;
-        }, function () {
-            var dialogOptions = {
-                headerText: 'error',
-                bodyText: $translate.instant('dashboard_layout_not_saved')
-            };
-            DialogService.showDialog({}, dialogOptions);
-            return;
-        });
     };
 
     $scope.showHideWidgets = function () {
