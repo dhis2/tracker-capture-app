@@ -312,7 +312,7 @@ input.option {
 }
 
 .notes-heading-column {
-    width:93%;
+    width:90%;
     overflow:hidden;
     white-space: nowrap;
     border-right: none !important;
@@ -320,7 +320,7 @@ input.option {
 }
 
 .notes-date-column {
-    width: 7%;
+    width: 10%;
     border-left:none !important;
 }
 /*----------------------------------------------------------------------------*/
