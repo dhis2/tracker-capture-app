@@ -249,7 +249,8 @@ trackerCapture.controller('DataEntryController',
             } else if (effect.action === "SHOWERROR" 
                     || effect.action === "ERRORONCOMPLETE") {
                 if (effect.ineffect) {
-                    var message = effect.content;
+                    var message = effect.content + (effect.data ? effect.data : "");
+                        
                     if(effect.dataElement && $scope.prStDes[effect.dataElement.id]) {
                         if(effect.action === "SHOWERROR") {
                             //only SHOWERROR messages is going to be shown in the form as the user works
@@ -265,7 +266,8 @@ trackerCapture.controller('DataEntryController',
             } else if (effect.action === "SHOWWARNING" 
                     || effect.action === "WARNINGONCOMPLETE") {
                 if (effect.ineffect) {
-                    var message = effect.content;
+                    var message = effect.content + (effect.data ? effect.data : "");
+                        
                     if(effect.dataElement && $scope.prStDes[effect.dataElement.id]) {
                         if(effect.action === "SHOWWARNING") {
                             //only SHOWWARNING messages is going to show up in the form as the user works
