@@ -23,6 +23,7 @@ function($rootScope,
          TEIService,
          EventReportService,
          TCStorageService,
+         GridColumnService,
          $q) {
     var savedAdvancedSeachOptions = null;
     var defaultColumn = {
@@ -141,45 +142,50 @@ function($rootScope,
                 });
             }
 
-            $scope.ouLevels = CurrentSelection.getOuLevels();
-            if(!$scope.ouLevels){
-                TCStorageService.currentStore.open().done(function(){
-                    TCStorageService.currentStore.getAll('ouLevels').done(function(response){
-                        var ouLevels = angular.isObject(response) ? orderByFilter(response, '-level').reverse() : [];
-                        CurrentSelection.setOuLevels(orderByFilter(ouLevels, '-level').reverse());
+            GridColumnService.get("trackerCaptureGridColumns").then(function (gridColumns) {
+                if (gridColumns && gridColumns.status !== "ERROR") {
+                    $scope.gridColumnsInUserStore = gridColumns;
+                }
+                $scope.ouLevels = CurrentSelection.getOuLevels();
+                if(!$scope.ouLevels){
+                    TCStorageService.currentStore.open().done(function(){
+                        TCStorageService.currentStore.getAll('ouLevels').done(function(response){
+                            var ouLevels = angular.isObject(response) ? orderByFilter(response, '-level').reverse() : [];
+                            CurrentSelection.setOuLevels(orderByFilter(ouLevels, '-level').reverse());
+                        });
                     });
-                });
-            }
+                }
 
             //Labels
-            $scope.trackerCaptureLabel = $translate.instant('tracker_capture');
-            $scope.orgUnitLabel = $translate.instant('org_unit');
-            $scope.listAllLabel = $translate.instant('list_all');
-            $scope.registerLabel = $translate.instant('register');
-            $scope.searchOusLabel = $translate.instant('locate_organisation_unit_by_name');
-            $scope.printLabel = $translate.instant('print');
-            $scope.searchLabel = $translate.instant('search');
-            $scope.findLabel = $translate.instant('find');
-            $scope.advancedSearchLabel = $translate.instant('advanced_search');
-            $scope.allEnrollmentsLabel = $translate.instant('all_enrollment');
-            $scope.completedEnrollmentsLabel = $translate.instant('completed_enrollment');
-            $scope.activeEnrollmentsLabel = $translate.instant('active_enrollment');
-            $scope.cancelledEnrollmentsLabel = $translate.instant('cancelled_enrollment');
-            $scope.searchCriteriaLabel = $translate.instant('type_your_search_criteria_here');
-            $scope.programSelectLabel = $translate.instant('please_select_a_program');
-            $scope.settingsLabel = $translate.instant('settings');
-            $scope.showHideLabel = $translate.instant('show_hide_columns');
-            $scope.listProgramsLabel = $translate.instant('list_programs');
-            $scope.settingsLabel = $translate.instant('settings');
-            $scope.todayLabel = $translate.instant('events_today_persons');
-            angular.forEach($scope.eventsTodayFilters, function(filter){
-                filter.name = $translate.instant(filter.name);
-            });
-            $scope.displayModeLabel = $translate.instant('display_mode');
+                $scope.trackerCaptureLabel = $translate.instant('tracker_capture');
+                $scope.orgUnitLabel = $translate.instant('org_unit');
+                $scope.listAllLabel = $translate.instant('list_all');
+                $scope.registerLabel = $translate.instant('register');
+                $scope.searchOusLabel = $translate.instant('locate_organisation_unit_by_name');
+                $scope.printLabel = $translate.instant('print');
+                $scope.searchLabel = $translate.instant('search');
+                $scope.findLabel = $translate.instant('find');
+                $scope.advancedSearchLabel = $translate.instant('advanced_search');
+                $scope.allEnrollmentsLabel = $translate.instant('all_enrollment');
+                $scope.completedEnrollmentsLabel = $translate.instant('completed_enrollment');
+                $scope.activeEnrollmentsLabel = $translate.instant('active_enrollment');
+                $scope.cancelledEnrollmentsLabel = $translate.instant('cancelled_enrollment');
+                $scope.searchCriteriaLabel = $translate.instant('type_your_search_criteria_here');
+                $scope.programSelectLabel = $translate.instant('please_select_a_program');
+                $scope.settingsLabel = $translate.instant('settings');
+                $scope.showHideLabel = $translate.instant('show_hide_columns');
+                $scope.listProgramsLabel = $translate.instant('list_programs');
+                $scope.settingsLabel = $translate.instant('settings');
+                $scope.todayLabel = $translate.instant('events_today_persons');
+                angular.forEach($scope.eventsTodayFilters, function(filter){
+                    filter.name = $translate.instant(filter.name);
+                });
+                $scope.displayModeLabel = $translate.instant('display_mode');
 
-            resetParams();
-            //$scope.doSearch = true;
-            $scope.loadPrograms($scope.selectedOrgUnit);
+                resetParams();
+                //$scope.doSearch = true;
+                $scope.loadPrograms($scope.selectedOrgUnit);
+            });
         }
     });
 
@@ -216,6 +222,7 @@ function($rootScope,
                 $scope.trackedEntityList = null;
                 $scope.selectedSearchMode = $scope.searchMode.listAll;
                 $scope.processAttributes();
+                $scope.restoreGridColumnsFromUserStore();
             });
         }
     };
@@ -231,7 +238,19 @@ function($rootScope,
         savedAdvancedSeachOptions = null;
         $scope.gridColumns = null;
         $scope.processAttributes();
+        $scope.restoreGridColumnsFromUserStore();
     };
+
+    /*If gridCoulumns for a program is stored in user data store then it is restored when
+     * the program is selected. If the grid columns are not stored then the grid columns are set
+     * as the default one for that program (in $scope.search() function)*/
+    $scope.restoreGridColumnsFromUserStore = function() {
+        if($scope.gridColumnsInUserStore && $scope.selectedProgram && $scope.selectedProgram.id) {
+            if ($scope.gridColumnsInUserStore[$scope.selectedProgram.id]) {
+                $scope.gridColumns = $scope.gridColumnsInUserStore[$scope.selectedProgram.id];
+            }
+        }
+    }
 
     $scope.processAttributes = function(){
         if(savedAdvancedSeachOptions && savedAdvancedSeachOptions.sortColumn) {
@@ -546,6 +565,7 @@ function($rootScope,
 
     $scope.showHideColumns = function(){
         $scope.hiddenGridColumns = 0;
+        var currentColumns = angular.copy($scope.gridColumns);
 
         angular.forEach($scope.gridColumns, function(gridColumn){
             if(!gridColumn.show){
@@ -567,8 +587,23 @@ function($rootScope,
         });
 
         modalInstance.result.then(function (gridColumns) {
+            var gridColumnsChanged = false;
+            for (var i = 0; i<gridColumns.length; i++) {
+                if (currentColumns[i].show !== $scope.gridColumns[i].show) {
+                    gridColumnsChanged = true;
+                    break;
+                }
+            }
+            if(!gridColumnsChanged) {
+                return;
+            }
             $scope.gridColumns = gridColumns;
             CurrentSelection.setGridColumns(angular.copy($scope.gridColumns));
+            if(!$scope.gridColumnsInUserStore) {
+                $scope.gridColumnsInUserStore = {};
+            }
+            $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = $scope.gridColumns;
+            GridColumnService.set($scope.gridColumnsInUserStore, true, "trackerCaptureGridColumns");
         }, function () {
         });
     };
