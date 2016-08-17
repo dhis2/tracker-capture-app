@@ -588,6 +588,7 @@ function($rootScope,
 
         modalInstance.result.then(function (gridColumns) {
             var gridColumnsChanged = false;
+            var created = false;
             for (var i = 0; i<gridColumns.length; i++) {
                 if (currentColumns[i].show !== $scope.gridColumns[i].show) {
                     gridColumnsChanged = true;
@@ -599,11 +600,13 @@ function($rootScope,
             }
             $scope.gridColumns = gridColumns;
             CurrentSelection.setGridColumns(angular.copy($scope.gridColumns));
-            if(!$scope.gridColumnsInUserStore) {
+            if(!$scope.gridColumnsInUserStore || ($scope.gridColumnsInUserStore && $scope.gridColumnsInUserStore.length===0)) {
                 $scope.gridColumnsInUserStore = {};
+            } else {
+                created = true;
             }
             $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = $scope.gridColumns;
-            GridColumnService.set($scope.gridColumnsInUserStore, true, "trackerCaptureGridColumns");
+            GridColumnService.set($scope.gridColumnsInUserStore, created, "trackerCaptureGridColumns");
         }, function () {
         });
     };
