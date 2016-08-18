@@ -600,10 +600,11 @@ function($rootScope,
             }
             $scope.gridColumns = gridColumns;
             CurrentSelection.setGridColumns(angular.copy($scope.gridColumns));
+            if($scope.gridColumnsInUserStore) {
+                created = true;
+            }
             if(!$scope.gridColumnsInUserStore || ($scope.gridColumnsInUserStore && $scope.gridColumnsInUserStore.length===0)) {
                 $scope.gridColumnsInUserStore = {};
-            } else {
-                created = true;
             }
             $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = $scope.gridColumns;
             GridColumnService.set($scope.gridColumnsInUserStore, created, "trackerCaptureGridColumns");
