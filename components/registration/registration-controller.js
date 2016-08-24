@@ -303,6 +303,10 @@ trackerCapture.controller('RegistrationController',
                             enrollment.orgUnit = $scope.selectedOrgUnit.id;
                             enrollment.enrollmentDate = $scope.selectedEnrollment.enrollmentDate;
                             enrollment.incidentDate = $scope.selectedEnrollment.incidentDate === '' ? $scope.selectedEnrollment.enrollmentDate : $scope.selectedEnrollment.incidentDate;
+                            
+                            if( $scope.selectedEnrollment.coordinate ){
+                                enrollment.coordinate = $scope.selectedEnrollment.coordinate;
+                            }
 
                             EnrollmentService.enroll(enrollment).then(function (enrollmentResponse) {
                                 var en = enrollmentResponse.response && enrollmentResponse.response.importSummaries && enrollmentResponse.response.importSummaries[0] ? enrollmentResponse.response.importSummaries[0] : {};

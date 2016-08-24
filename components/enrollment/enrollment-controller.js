@@ -113,6 +113,10 @@ trackerCapture.controller('EnrollmentController',
 
                 //load new enrollment details
                 $scope.selectedEnrollment = {orgUnitName: $scope.selectedOrgUnit.displayName};
+                
+                if( $scope.selectedProgram && $scope.selectedProgram.captureCoordinates ){
+                    $scope.selectedEnrollment.coordinate = {};
+                }
                 $scope.loadEnrollmentDetails($scope.selectedEnrollment);
 
                 $timeout(function () {
