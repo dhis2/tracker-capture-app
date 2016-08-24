@@ -467,61 +467,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     };        
 })
 
-/* Factory for fetching OrgUnit */
-.factory('OrgUnitFactory', function($http, DHIS2URL, $q, SessionStorageService) {    
-    var orgUnit, orgUnitPromise, rootOrgUnitPromise,orgUnitTreePromise;
-    return {
-        get: function(uid){            
-            if( orgUnit !== uid ){
-                orgUnitPromise = $http.get( DHIS2URL + '/organisationUnits.json?filter=id:eq:' + uid + '&fields=id,displayName,level,children[id,displayName,level,children[id,displayName,level]]&paging=false' ).then(function(response){
-                    orgUnit = response.data.id;
-                    return response.data;
-                });
-            }
-            return orgUnitPromise;
-        },
-        getSearchTreeRoot: function(){
-            if(!rootOrgUnitPromise){
-                var url = DHIS2URL + '/me.json?fields=teiSearchOrganisationUnits[id,displayName,level,children[id,displayName,level,children[id,displayName,level]]],organisationUnits[id,displayName,level,children[id,displayName,level,children[id,displayName,level]]]&paging=false';                
-                rootOrgUnitPromise = $http.get( url ).then(function(response){                    
-                    response.data.organisationUnits = response.data.teiSearchOrganisationUnits && response.data.teiSearchOrganisationUnits.length > 0 ? response.data.teiSearchOrganisationUnits : response.data.organisationUnits;
-                    delete response.data.teiSearchOrganisationUnits;                    
-                    return response.data;
-                });
-            }
-            return rootOrgUnitPromise;
-        },
-        getOrgUnits: function(uid,fieldUrl){
-            var url = DHIS2URL + '/organisationUnits.json?filter=id:eq:'+uid+'&'+fieldUrl+'&paging=false';
-            orgUnitTreePromise = $http.get(url).then(function(response){
-              return response.data; 
-            });               
-            return orgUnitTreePromise;
-        },
-        getOrgUnit: function(uid) {
-            var def = $q.defer();
-            var selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
-            if (selectedOrgUnit) {
-                def.resolve(selectedOrgUnit);
-            } else if (uid) {
-                this.get(uid).then(function (response) {
-                    if (response.organisationUnits && response.organisationUnits[0]) {
-                        def.resolve({
-                            displayName: response.organisationUnits[0].displayName,
-                            id: response.organisationUnits[0].id
-                        });
-                    } else {
-                        def.resolve(null);
-                    }
-                });
-            } else {
-                def.resolve(null);
-            }
-            return def.promise;
-        }
-    }; 
-})
-
 /* service to deal with TEI registration and update */
 .service('RegistrationService', function(TEIService, $q){
     return {
