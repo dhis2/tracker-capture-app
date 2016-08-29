@@ -661,6 +661,10 @@ table.table-striped tr td.optionset {
     font-weight: normal !important;
 }
 
+.widget-link > a {
+    color: #000 !important;
+}
+
 .widget-link-active {
     font-weight: bold !important;
 }
@@ -2002,7 +2006,7 @@ a.disable-link-effects:focus {
 
 .audit-icon {
     cursor: pointer;
-    color: #3162C5;
+    //color: #3162C5;
     margin-left: 5px;
 }
 
@@ -2075,6 +2079,24 @@ a.disable-link-effects:focus {
 .no-left-radius {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+}
+
+.panel-default-custom {
+    border-color: #ddd
+}
+.panel-default-custom > .panel-heading {
+    color: #444;
+    background-color: #e3e3e3;
+    border-color: #ddd
+}
+.panel-default-custom > .panel-heading+ .panel-collapse .panel-body {
+    border-top-color: #ddd
+}
+.panel-default-custom > .panel-heading > .dropdown .caret {
+    border-color: #ddd transparent
+}
+.panel-default-custom > .panel-footer+ .panel-collapse .panel-body {
+    border-bottom-color: #ddd
 }
 
 /* From Bootstrap 3.3.x */
