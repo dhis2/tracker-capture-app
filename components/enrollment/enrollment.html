@@ -61,7 +61,15 @@
                                     <td class="absorbing-column">
                                         <input type="text" placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.incidentDate" ng-disabled="true"/>
                                     </td>
-                                </tr>                
+                                </tr>
+                                <tr ng-if="selectedProgram.captureCoordinates">
+                                    <td>
+                                        {{'coordinate' | translate}}
+                                    </td>
+                                    <td>
+                                        <d2-map d2-object="selectedEnrollment"></d2-map>
+                                    </td>
+                                </tr>
                             </table>
 
                             <div class="vertical-spacing">

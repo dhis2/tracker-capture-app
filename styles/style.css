@@ -2063,6 +2063,20 @@ a.disable-link-effects:focus {
     z-index: 100;
 }
 
+.empty-span {
+    width: 0px;
+}
+
+.no-right-radius {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.no-left-radius {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 /* From Bootstrap 3.3.x */
 .list-group-item-success {
   color: #3c763d;

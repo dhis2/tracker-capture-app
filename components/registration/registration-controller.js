@@ -160,6 +160,11 @@ trackerCapture.controller('RegistrationController',
             $scope.customRegistrationFormExists = false;
             $scope.customDataEntryForm = null;
             $scope.schedulingEnabled = true;
+            
+            if( $scope.selectedProgram && $scope.selectedProgram.captureCoordinates ){
+                $scope.selectedEnrollment.coordinate = angular.isObject($scope.selectedEnrollment) && angular.isObject($scope.selectedEnrollment.coordinate) ? $scope.selectedEnrollment.coordinate : {};
+            }
+            
             AttributesFactory.getByProgram($scope.selectedProgram).then(function (atts) {
                 $scope.attributes = TEIGridService.generateGridColumns(atts, null, false).columns;
                 fetchGeneratedAttributes();
@@ -188,6 +193,11 @@ trackerCapture.controller('RegistrationController',
                         $scope.currentEvent.executionDateLabel = $scope.currentStage.executionDateLabel;
                         $rootScope.ruleeffects[$scope.currentEvent.event] = {};
                         $scope.selectedEnrollment.status = 'ACTIVE';
+                        
+                        if( $scope.currentStage.captureCoordinates ){
+                            $scope.currentEvent.coordinate = {};
+                        }
+                        
                         angular.forEach($scope.currentStage.programStageDataElements, function (prStDe) {                            
                             $scope.prStDes[prStDe.dataElement.id] = prStDe;
                             if (prStDe.allowProvidedElsewhere) {
@@ -591,7 +601,28 @@ trackerCapture.controller('RegistrationController',
             }, function () {
             });
         };
+        
+        $scope.showProgramStageMap = function(event){
+            var modalInstance = $modal.open({
+                templateUrl: '../dhis-web-commons/angular-forms/map.html',
+                controller: 'MapController',
+                windowClass: 'modal-full-window',
+                resolve: {
+                    location: function () {
+                        return {lat: event.coordinate.latitude, lng: event.coordinate.longitude};
+                    }
+                }
+            });
 
+            modalInstance.result.then(function (location) {
+                if(angular.isObject(location)){
+                    event.coordinate.latitude = location.lat;
+                    event.coordinate.longitude = location.lng;
+                }
+            }, function () {
+            });
+        };
+        
         $scope.saveDatavalue = function () {
             $scope.executeRules();
         };

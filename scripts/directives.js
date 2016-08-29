@@ -544,4 +544,47 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             }
         ]
     }
+})
+
+.directive('d2Map', function(){
+    return {
+        restrict: 'E',            
+        templateUrl: "views/coordinate-input.html",
+        scope: {
+            d2Object: '=',
+            d2Disabled: '@',
+            d2CallbackFunction: '&d2Function',
+            d2Required: '@'
+        },
+        controller: function($scope, $modal){
+            
+            $scope.showMap = function(){
+                
+                var modalInstance = $modal.open({
+                    templateUrl: '../dhis-web-commons/angular-forms/map.html',
+                    controller: 'MapController',
+                    windowClass: 'modal-full-window',
+                    resolve: {
+                        location: function () {
+                            return {lat: $scope.d2Object.coordinate.latitude, lng: $scope.d2Object.coordinate.longitude};
+                        }
+                    }
+                });
+                
+                modalInstance.result.then(function (location) {
+                    if(angular.isObject(location)){
+                        $scope.d2Object.coordinate.latitude = location.lat;
+                        $scope.d2Object.coordinate.longitude = location.lng;
+                        if( angular.isDefined( $scope.d2CallbackFunction ) ){
+                            $scope.d2CallbackFunction($scope.d2Object);
+                        }
+                        
+                    }
+                }, function () {
+                });
+            };            
+        },
+        link: function (scope, element, attrs) {
+        }
+    };
 });
