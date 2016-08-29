@@ -54,67 +54,14 @@
 <div class="row" ng-if="currentStage.captureCoordinates && currentEvent.eventDate || currentStage.captureCoordinates && registrationMode === 'REGISTRATION'">    
     <div class="col-sm-12">
         {{'coordinate' | translate}}
-        <d2-map d2-object="currentEvent"></d2-map>        
+        <d2-map d2-lat-saved="longitudeSaved"
+                d2-lng-saved="longitudeSaved"
+                d2-object="currentEvent" 
+                d2-function="saveCoordinate(arg1)" 
+                d2-function-param="LATLNG">
+        </d2-map>        
         <div ng-messages="outerDataEntryForm.latitude.$error" ng-if="interacted(outerDataEntryForm.latitude)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></div>
         <div ng-messages="outerDataEntryForm.longitude.$error" ng-if="interacted(outerDataEntryForm.longitude)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></div>
-    </div>
-    <!--<div class="col-md-6">
-        <div class="row">
-            <div class="col-sm-2 vertical-center add-default-top-margin">
-                {{'latitude' | translate}}
-            </div>
-            <div class="input-group col-sm-10 pull-left">
-                <input type="number"
-                    ng-model="currentEvent.coordinate.latitude"
-                    class="form-control"
-                    placeholder="{{'latitude' | translate}}"
-                    ng-class="{'input-success': latitudeSaved}"
-                    name="latitude"
-                    d2-coordinate-validator
-                    ng-blur="saveCoordinate('LAT')"
-                    ng-disabled="currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"
-                    ng-required="false"/>
-                <span class="input-group-btn">
-                    <button class="btn btn-grp hideInPrint trim"
-                            type="button"
-                            ng-disabled="currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"
-                            title="{{'get_from_map'| translate}}"
-                            ng-click="showProgramStageMap(currentEvent)">
-                            <i class="fa fa-map-marker"></i>
-                    </button>
-                </span>
-            </div>
-            <div ng-messages="outerDataEntryForm.latitude.$error" ng-if="interacted(outerDataEntryForm.latitude)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="row">
-            <div class="col-sm-2 vertical-center add-default-top-margin">
-                {{'longitude' | translate}}
-            </div>
-            <div class="input-group col-sm-10 pull-left">
-                <input type="number"
-                       ng-model="currentEvent.coordinate.longitude"
-                       class="form-control"
-                       placeholder="{{'longitude' | translate}}"
-                       ng-class="{'input-success': longitudeSaved}"
-                       name="longitude"
-                       d2-coordinate-validator
-                       ng-blur="saveCoordinate('LNG')"
-                       ng-disabled="currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"
-                       ng-required="false"/>
-                <span class="input-group-btn">
-                    <button class="btn btn-grp hideInPrint trim"
-                            type="button"
-                            ng-disabled="currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"
-                            title="{{'get_from_map'| translate}}"
-                            ng-click="showProgramStageMap(currentEvent)">
-                            <i class="fa fa-map-marker"></i>
-                    </button>
-                </span>
-            </div>
-            <div ng-messages="outerDataEntryForm.longitude.$error" ng-if="interacted(outerDataEntryForm.longitude)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></div>
-        </div>
-    </div>-->
+    </div>    
 </div>
 <!-- coordinates begin -->

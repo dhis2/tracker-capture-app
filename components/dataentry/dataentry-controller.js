@@ -2289,28 +2289,6 @@ trackerCapture.controller('DataEntryController',
         
     };
 
-    $scope.showProgramStageMap = function (event) {
-        var modalInstance = $modal.open({
-            templateUrl: '../dhis-web-commons/angular-forms/map.html',
-            controller: 'MapController',
-            windowClass: 'modal-full-window',
-            resolve: {
-                location: function () {
-                    return {lat: event.coordinate.latitude, lng: event.coordinate.longitude};
-                }
-            }
-        });
-
-        modalInstance.result.then(function (location) {
-            if (angular.isObject(location)) {
-                event.coordinate.latitude = location.lat;
-                event.coordinate.longitude = location.lng;
-                $scope.saveCoordinate('LATLNG');
-            }
-        }, function () {
-        });
-    };
-
     $scope.showDataElementMap = function(obj, id, fieldId){
         var lat = "",
             lng = "";
