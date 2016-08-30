@@ -125,7 +125,6 @@ trackerCapture.controller('TeiReportController',
         $scope.stagesById = [];  
         $scope.allowProvidedElsewhereExists = [];
         $scope.prStDes = [];
-        $scope.dataElementTranslations = CurrentSelection.getDataElementTranslations();
         
         ProgramStageFactory.getByProgram($scope.selectedProgram).then(function(stages){
             $scope.programStages = stages;
@@ -135,9 +134,7 @@ trackerCapture.controller('TeiReportController',
                     if(stage.programStageDataElements[i].allowProvidedElsewhere && !providedElsewhereExists){
                         providedElsewhereExists = true;
                         $scope.allowProvidedElsewhereExists[stage.id] = true;
-                    }
-                    var tx = $scope.dataElementTranslations[stage.programStageDataElements[i].dataElement.id];
-                    stage.programStageDataElements[i].dataElement.displayFormName = tx.displayFormName && tx.displayFormName !== "" ? tx.displayFormName : tx.displayName ? tx.displayName : stage.programStageDataElements[i].dataElement.displayName;
+                    }                    
                     $scope.prStDes[stage.programStageDataElements[i].dataElement.id] = stage.programStageDataElements[i];
                 }
 
