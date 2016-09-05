@@ -175,7 +175,7 @@ function getSystemSetting()
        return; 
     }
     
-    return dhis2.tracker.getTrackerObject(null, 'SYSTEM_SETTING', '../api/systemSettings', 'key=keyGoogleMapsApiKey&key=keyCalendar&key=keyDateFormat', 'localStorage', dhis2.ec.store);
+    return dhis2.tracker.getTrackerObject(null, 'SYSTEM_SETTING', '../api/systemSettings', 'key=keyGoogleMapsApiKey&key=keyCalendar&key=keyDateFormat', 'localStorage', dhis2.tc.store);
 }
 
 function getConstants()
