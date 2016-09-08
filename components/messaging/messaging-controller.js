@@ -2,60 +2,106 @@
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('MessagingController',
-        function($scope,
+        function($scope, $translate,
                 MessagingService,
                 CurrentSelection,
                 DialogService) {
     $scope.dashboardReady = false;
-    
-    //$scope.smsForm = {};
+
+    //$scope.messagingForm = {};
     $scope.note = {};
     $scope.message = {};
     $scope.showMessagingDiv = false;
     $scope.showNotesDiv = true;
-    
+    $scope.model = {messageTypes:["sms","email"], selectedMessageType:"sms", smsMessage:"", emailMessage:""};
     $scope.$on('dashboardWidgets', function() {
         $scope.selectedEnrollment = null;
-        var selections = CurrentSelection.get();
-        $scope.selectedTei = selections.tei;
+        $scope.selections = CurrentSelection.get();
+        $scope.selectedTei = $scope.selections.tei;
         $scope.dashboardReady = true;
-        
-        if($scope.selectedTei){
+
+        if ($scope.selectedTei) {
             //check if the selected TEI has any of the contact attributes
             //that can be used for messaging
-            var continueLoop = true;
-            for(var i=0; i<$scope.selectedTei.attributes.length && continueLoop; i++){
-                if( $scope.selectedTei.attributes[i].valueType === 'PHONE_NUMBER' /*|| $scope.selectedTei.attributes[i].valueType === 'EMAIL'*/ ){
+            var foundPhoneNumber = false;
+            var foundEmailId = false;
+            for (var i = 0; i < $scope.selectedTei.attributes.length; i++) {
+                if ($scope.selectedTei.attributes[i].valueType === 'PHONE_NUMBER') {
                     $scope.message.phoneNumber = $scope.selectedTei.attributes[i].value;
-                    continueLoop = false;
+                    foundPhoneNumber = true;
+                }
+                if ($scope.selectedTei.attributes[i].displayName === 'Email') {
+                    $scope.message.emailId = $scope.selectedTei.attributes[i].value;
+                    foundEmailId = true;
+                }
+                if (foundPhoneNumber && foundEmailId) {
+                    break;
                 }
             }
         }
     });
-    
-    $scope.sendSms = function(){
-        //check for form validity
-        $scope.smsForm.submitted = true;        
-        if( $scope.smsForm.$invalid ){
-            return false;
-        } 
-        
-        //form is valid...        
-        var smsMessage = {message: $scope.message.value, recipients: [$scope.message.phoneNumber]};        
-        MessagingService.sendSmsMessage(smsMessage).then(function(response){
-            var dialogOptions = {
-                headerText: response.status,
-                bodyText: response.message
-            };                
 
+    $scope.sendMessage = function(){
+        var message;
+        //check for form validity
+        $scope.messagingForm.submitted = true;
+        if ($scope.messagingForm.$invalid) {
+            return false;
+        }
+
+        //form is valid...
+
+        if ($scope.model.selectedMessageType === "email") {
+            message = {
+                "programMessages": [{
+                    "recipients": {
+                        "emailAddresses": [$scope.message.emailId]
+                    },
+                    "programInstance": {
+                        "id": $scope.selectedProgramId
+                    },
+                    "deliveryChannels": ["EMAIL"],
+                    "subject": $scope.message.emailSubject,
+                    "text": $scope.message.emailMessage,
+                    "storeCopy": false
+                }]
+            };
+        } else if ($scope.model.selectedMessageType === "sms") {
+            message = {
+                "programMessages": [{
+                    "recipients": {
+                        "phoneNumbers": [$scope.message.phoneNumber]
+                    },
+                    "programInstance": {
+                        "id": $scope.selectedProgramId
+                    },
+                    "deliveryChannels": ["SMS"],
+                    "text": $scope.message.smsMessage,
+                    "storeCopy": false
+                }]
+            };
+        }
+
+        MessagingService.sendMessage(message).then(function (response) {
+            var dialogOptions = {};
+            if (response && response.summaries) {
+                if (response.summaries[0].status) {
+                    dialogOptions.headerText = response.summaries[0].status;
+                    if (response.summaries[0].responseMessage) {
+                        dialogOptions.bodyText = response.summaries[0].responseMessage;
+                    } else if (response.summaries[0].errorMessage) {
+                        dialogOptions.bodyText = response.summaries[0].errorMessage;
+                    }
+                }
+            }
             DialogService.showDialog({}, dialogOptions);
-            $scope.clear();
+
         });
-        
+
     };
-    
+
     $scope.clear = function(){
-        $scope.smsForm.submitted = false;
+        $scope.messagingForm.submitted = false;
         $scope.message = {};
     };
     

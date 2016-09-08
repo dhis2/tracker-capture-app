@@ -2040,8 +2040,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 .service('MessagingService', function($http, DHIS2URL){
     return {
-        sendSmsMessage: function(message){    
-            var promise = $http.post(DHIS2URL + '/sms/outbound', message).then(function(response){
+        sendMessage: function(message, type){
+            var url=DHIS2URL +"/24/messages";
+            var promise = $http.post(url, message).then(function(response){
                 return response.data;           
             }, function(response){
                 return response.data;
