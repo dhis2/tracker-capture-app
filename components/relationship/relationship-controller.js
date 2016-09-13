@@ -11,7 +11,6 @@ trackerCapture.controller('RelationshipController',
                 CurrentSelection,
                 RelationshipFactory,
                 ModalService,
-                DialogService,
                 CommonUtils) {
     $scope.dashboardReady = false;
     $rootScope.showAddRelationshipDiv = false;    

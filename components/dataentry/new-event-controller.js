@@ -10,7 +10,7 @@ trackerCapture.controller('EventCreationController',
                 DateUtils,
                 DHIS2EventFactory,
                 OrgUnitFactory,
-                DialogService,
+                NotificationService,
                 EventCreationService,
                 eventsByStage,
                 stage,
@@ -206,11 +206,7 @@ trackerCapture.controller('EventCreationController',
         /*for saving category combo*/
         if ($scope.selectedProgram.categoryCombo && !$scope.selectedProgram.categoryCombo.isDefault) {
             if ($scope.selectedOptions.length !== $scope.selectedCategories.length) {
-                var dialogOptions = {
-                    headerText: 'error',
-                    bodyText: 'fill_all_category_options'
-                };
-                DialogService.showDialog({}, dialogOptions);
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("fill_all_category_options"));
                 return;
             }
             newEvent.attributeCategoryOptions = $scope.selectedOptions.join(';');

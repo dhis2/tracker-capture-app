@@ -93,9 +93,9 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             '$q',
             'EventUtils',
             'DHIS2EventFactory',
-            'DialogService',
+            'NotificationService',
             '$translate',
-            function($scope, $element, $attrs, $q, EventUtils, DHIS2EventFactory, DialogService, $translate){
+            function($scope, $element, $attrs, $q, EventUtils, DHIS2EventFactory, NotificationService, $translate){
                 
                 $scope.EVENTSTATUSCOMPLETELABEL = "COMPLETED";
                 $scope.EVENTSTATUSSKIPPEDLABEL = "SKIPPED";
@@ -408,7 +408,7 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                             }            
                     };
 
-                    DialogService.showDialog(dialogDefaults, dialogOptions).then(function(e){                        
+                    NotificationService.showNotifcationWithOptions (dialogDefaults, dialogOptions).then(function(e){
                         $scope.event.notes = e.notes;
                         def.resolve();
                     });

@@ -11,8 +11,6 @@ trackerCapture.controller('EnrollmentController',
                 SessionStorageService,
                 CurrentSelection,
                 EnrollmentService,
-                $route,
-                DialogService,
                 ModalService,
                 OrgUnitFactory) {
     

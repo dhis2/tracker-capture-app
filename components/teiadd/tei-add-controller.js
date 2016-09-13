@@ -17,7 +17,7 @@ trackerCapture.controller('TEIAddController',
             MetaDataFactory,
             TEIService,
             TEIGridService,
-            DialogService,
+            NotificationService,
             Paginator,
             relationshipTypes,
             selectedProgram,
@@ -265,11 +265,8 @@ trackerCapture.controller('TEIAddController',
 
             if ($scope.addingTeiAssociate) {
                 if (!$scope.selectedTrackedEntity || !$scope.selectedTrackedEntity.id) {
-                    var dialogOptions = {
-                        headerText: 'searching_error',
-                        bodyText: $translate.instant('no_entity_for_tracker_associate_attribute')
-                    };
-                    DialogService.showDialog({}, dialogOptions);
+                    NotificationService.showNotifcationDialog($translate.instant("searching_error"),
+                        $translate.instant("no_entity_for_tracker_associate_attribute"));
                     $scope.teiFetched = true;
                     return;
                 }
@@ -461,11 +458,7 @@ trackerCapture.controller('TEIAddController',
                     });
                 }
                 else {
-                    var dialogOptions = {
-                        headerText: 'relationship_error',
-                        bodyText: $translate.instant('selected_tei_is_invalid')
-                    };
-                    DialogService.showDialog({}, dialogOptions);
+                    NotificationService.showNotifcationDialog($translate.instant("relationship_error"), $translate.instant("selected_tei_is_invalid"));
                     return;
                 }
             }
@@ -474,11 +467,7 @@ trackerCapture.controller('TEIAddController',
                     $modalInstance.close($scope.teiForRelationship);
                 }
                 else {
-                    var dialogOptions = {
-                        headerText: 'tracker_associate_error',
-                        bodyText: $translate.instant('selected_tei_is_invalid')
-                    };
-                    DialogService.showDialog({}, dialogOptions);
+                    NotificationService.showNotifcationDialog($translate.instant("tracker_associate_error"), $translate.instant("selected_tei_is_invalid"));
                     return;
                 }
 
@@ -525,13 +514,14 @@ trackerCapture.controller('TEIAddController',
         function($rootScope,
                 $scope,
                 $timeout,
+                $translate,
                 AttributesFactory,
                 MetaDataFactory,
                 TrackerRulesFactory,
                 CustomFormService,
                 TEService,
                 EnrollmentService,
-                DialogService,
+                NotificationService,
                 CurrentSelection,
                 DateUtils,
                 EventUtils,
@@ -701,11 +691,7 @@ trackerCapture.controller('TEIAddController',
                             }
                             else {
                                 //enrollment has failed
-                                var dialogOptions = {
-                                    headerText: 'enrollment_error',
-                                    bodyText: enrollmentResponse.message
-                                };
-                                DialogService.showDialog({}, dialogOptions);
+                                NotificationService.showNotifcationDialog($translate.instant("enrollment_error"), enrollmentResponse.message);
                                 return;
                             }
                         }
@@ -714,11 +700,7 @@ trackerCapture.controller('TEIAddController',
             }
             else{
                 //registration has failed
-                var dialogOptions = {
-                        headerText: 'registration_error',
-                        bodyText: registrationResponse.message
-                    };
-                DialogService.showDialog({}, dialogOptions);
+                NotificationService.showNotifcationDialog($translate.instant("registration_error"), enrollmentResponse.message);
                 return;
             }
             

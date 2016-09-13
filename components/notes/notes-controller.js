@@ -3,10 +3,11 @@
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('NotesController',
         function($scope,
+                $translate,
                 DateUtils,
                 EnrollmentService,
                 CurrentSelection,
-                DialogService,
+                NotificationService,
                 SessionStorageService,
                 orderByFilter) {
     $scope.dashboardReady = false;
@@ -42,12 +43,7 @@ trackerCapture.controller('NotesController',
        
     $scope.addNote = function(){
         if(!$scope.note.value){
-            var dialogOptions = {
-                headerText: 'error',
-                bodyText: 'please_add_some_text'
-            };                
-
-            DialogService.showDialog({}, dialogOptions);
+            NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("please_add_some_text"));
             return;
         }
 

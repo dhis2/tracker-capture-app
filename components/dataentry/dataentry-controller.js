@@ -22,7 +22,7 @@ trackerCapture.controller('DataEntryController',
                 ProgramStageFactory,
                 DHIS2EventFactory,
                 ModalService,
-                DialogService,
+                NotificationService,
                 CurrentSelection,
                 TrackerRulesExecutionService,
                 CustomFormService,
@@ -993,12 +993,10 @@ trackerCapture.controller('DataEntryController',
                             break;                    
                     }
                 }
-                var dialogOptions = {
-                    headerText: $translate.instant('event_cant_be_created'),
-                    bodyText: errorMessage
-                };
-                    
-                DialogService.showDialog({}, dialogOptions);
+                var headerText = $translate.instant('event_cant_be_created');
+                var bodyText = errorMessage;
+                NotificationService.showNotifcationDialog(headerText, bodyText);
+
             }
             else {
                 $scope.stageErrorInEventLayout[stage.id] = eventCreationAction;
@@ -1040,13 +1038,9 @@ trackerCapture.controller('DataEntryController',
                 });
             }           
             if(availableStages.length === 0) {
-                var dialogOptions = {
-                    headerText: 'error',
-                    bodyText: 'no_stages_available'
-                };
-                    
-                DialogService.showDialog({}, dialogOptions);
-                
+                var headerText = $translate.instant("error");
+                var bodyText = $translate.instant("no_stages_available");
+                NotificationService.showNotifcationDialog(headerText, bodyText);
                 return;
             }
         }
@@ -1578,12 +1572,9 @@ trackerCapture.controller('DataEntryController',
     $scope.addNote = function () {
         
         if(!$scope.note.value){
-            var dialogOptions = {
-                headerText: 'error',
-                bodyText: 'please_add_some_text'
-            };                
-
-            DialogService.showDialog({}, dialogOptions);
+            var headerText =  $translate.instant("error");
+            var bodyText =  $translate.instant("please_add_some_text");
+            NotificationService.showNotifcationDialog(headerText, bodyText);
             return;
         }
         var newNote = {value: $scope.note.value};
@@ -1683,8 +1674,7 @@ trackerCapture.controller('DataEntryController',
                 }            
         };
         
-        DialogService.showDialog(dialogDefaults, dialogOptions).then(function(e){
-
+        NotificationService.showNotifcationWithOptions(dialogDefaults, dialogOptions).then(function(e){
             $scope.currentEvent.notes = e.notes;
         });
         
@@ -1803,13 +1793,7 @@ trackerCapture.controller('DataEntryController',
         if($scope.currentEvent.status !== 'COMPLETED'){
             $scope.outerDataEntryForm.submitted = true;
             if($scope.outerDataEntryForm.$invalid){
-                var dialogOptions = {
-                    headerText: 'error',
-                    bodyText: 'form_invalid'
-                };                
-                
-                DialogService.showDialog({}, dialogOptions);
-                
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("form_invalid"));
                 return;
             }
         }
@@ -1872,8 +1856,7 @@ trackerCapture.controller('DataEntryController',
                     sections: sections
                 };                
                 
-                DialogService.showDialog({}, dialogOptions);
-                
+                NotificationService.showNotifcationWithOptions({}, dialogOptions);
                 return;
             }
             else
@@ -2137,12 +2120,7 @@ trackerCapture.controller('DataEntryController',
             }, function(error){   
                 
                 //temporarily error message because of new audit functionality
-                var dialogOptions = {
-                    headerText: 'error',
-                    bodyText: 'delete_error_audit'                    
-                };
-                DialogService.showDialog({}, dialogOptions);
-                
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("delete_error_audit"));
                 return $q.reject(error);
             });        
     };
@@ -2389,7 +2367,7 @@ trackerCapture.controller('DataEntryController',
                     bodyList: messages
                 };                
                 
-                DialogService.showDialog({}, dialogOptions);        
+        NotificationService.showNotifcationWithOptions({}, dialogOptions);
     };
     
     //for compare-mode
@@ -2921,13 +2899,7 @@ trackerCapture.controller('DataEntryController',
     $scope.downloadFile = function(eventUid, dataElementUid, e) {
         eventUid = eventUid ? eventUid : $scope.currentEvent.event ? $scope.currentEvent.event : null;        
         if( !eventUid || !dataElementUid){
-            
-            var dialogOptions = {
-                headerText: 'error',
-                bodyText: 'missing_file_identifier'
-            };
-
-            DialogService.showDialog({}, dialogOptions);
+            NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("missing_file_identifier"));
             return;
         }
         
@@ -2940,12 +2912,8 @@ trackerCapture.controller('DataEntryController',
     
     $scope.deleteFile = function(ev, dataElement){
         
-        if( !dataElement ){            
-            var dialogOptions = {
-                headerText: 'error',
-                bodyText: 'missing_file_identifier'
-            };
-            DialogService.showDialog({}, dialogOptions);
+        if( !dataElement ){
+            NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("missing_file_identifier"));
             return;
         }
         
