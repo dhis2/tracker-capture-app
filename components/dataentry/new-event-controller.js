@@ -10,7 +10,7 @@ trackerCapture.controller('EventCreationController',
                 DateUtils,
                 DHIS2EventFactory,
                 OrgUnitFactory,
-                DialogService,
+                NotificationService,
                 EventCreationService,
                 eventsByStage,
                 stage,
@@ -206,11 +206,7 @@ trackerCapture.controller('EventCreationController',
         /*for saving category combo*/
         if ($scope.selectedProgram.categoryCombo && !$scope.selectedProgram.categoryCombo.isDefault) {
             if ($scope.selectedOptions.length !== $scope.selectedCategories.length) {
-                var dialogOptions = {
-                    headerText: 'error',
-                    bodyText: 'fill_all_category_options'
-                };
-                DialogService.showDialog({}, dialogOptions);
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("fill_all_category_options"));
                 return;
             }
             newEvent.attributeCategoryOptions = $scope.selectedOptions.join(';');
@@ -219,18 +215,11 @@ trackerCapture.controller('EventCreationController',
 
         newEvents.events.push(newEvent);
         DHIS2EventFactory.create(newEvents).then(function (response) {
-            if (response.response && response.response.importSummaries[0].status === 'SUCCESS') {
+            if (response && response.response && response.response.importSummaries[0].status === 'SUCCESS') {
                 newEvent.event = response.response.importSummaries[0].reference;
                 $modalInstance.close({dummyEvent: dummyEvent, ev: newEvent});
-            }
-            else {
-                var dialogOptions = {
-                    headerText: 'event_creation_error',
-                    bodyText: response.message
-                };
-                
+            } else {
                 $scope.eventCreationForm.submitted = false;
-                DialogService.showDialog({}, dialogOptions);
             }
         });
     };

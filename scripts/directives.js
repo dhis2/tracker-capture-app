@@ -93,9 +93,9 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             '$q',
             'EventUtils',
             'DHIS2EventFactory',
-            'DialogService',
+            'NotificationService',
             '$translate',
-            function($scope, $element, $attrs, $q, EventUtils, DHIS2EventFactory, DialogService, $translate){
+            function($scope, $element, $attrs, $q, EventUtils, DHIS2EventFactory, NotificationService, $translate){
                 
                 $scope.EVENTSTATUSCOMPLETELABEL = "COMPLETED";
                 $scope.EVENTSTATUSSKIPPEDLABEL = "SKIPPED";
@@ -391,7 +391,7 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                                             trackedEntityInstance: $scope.currentEvent.trackedEntityInstance,
                                             notes: [newNote]
                                     };
-                                    
+
                                     DHIS2EventFactory.updateForNote(e).then(function (data) {
                                         if (angular.isUndefined($scope.modalOptions.bodyList) || $scope.modalOptions.bodyList.length === 0) {
                                             $scope.modalOptions.bodyList = [{value1: date, value2: newNote.value}];
@@ -408,7 +408,7 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                             }            
                     };
 
-                    DialogService.showDialog(dialogDefaults, dialogOptions).then(function(e){                        
+                    NotificationService.showNotifcationWithOptions (dialogDefaults, dialogOptions).then(function(e){
                         $scope.event.notes = e.notes;
                         def.resolve();
                     });
@@ -454,8 +454,6 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                             
                             //reset dataElementStatus for event
                             $scope.event.deStatus = {};
-                        }, function(){
-                            
                         });
                     }
                 };

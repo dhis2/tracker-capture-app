@@ -3,10 +3,11 @@
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('NotesController',
         function($scope,
+                $translate,
                 DateUtils,
                 EnrollmentService,
                 CurrentSelection,
-                DialogService,
+                NotificationService,
                 SessionStorageService,
                 orderByFilter) {
     $scope.dashboardReady = false;
@@ -25,14 +26,16 @@ trackerCapture.controller('NotesController',
         $scope.dashboardReady = true;
         var selections = CurrentSelection.get();
         if(selections.selectedEnrollment && selections.selectedEnrollment.enrollment){
-            EnrollmentService.get(selections.selectedEnrollment.enrollment).then(function(data){    
-                $scope.selectedEnrollment = data;   
-                if(!angular.isUndefined( $scope.selectedEnrollment.notes)){
-                    $scope.selectedEnrollment.notes = orderByFilter($scope.selectedEnrollment.notes, '-storedDate');            
-                    angular.forEach($scope.selectedEnrollment.notes, function(note){
-                        note.displayDate = DateUtils.formatFromApiToUser(note.storedDate);
-                        note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
-                    });
+            EnrollmentService.get(selections.selectedEnrollment.enrollment).then(function(data){
+                if (data) {
+                    $scope.selectedEnrollment = data;
+                    if (!angular.isUndefined($scope.selectedEnrollment.notes)) {
+                        $scope.selectedEnrollment.notes = orderByFilter($scope.selectedEnrollment.notes, '-storedDate');
+                        angular.forEach($scope.selectedEnrollment.notes, function (note) {
+                            note.displayDate = DateUtils.formatFromApiToUser(note.storedDate);
+                            note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
+                        });
+                    }
                 }
             });
         }
@@ -40,12 +43,7 @@ trackerCapture.controller('NotesController',
        
     $scope.addNote = function(){
         if(!$scope.note.value){
-            var dialogOptions = {
-                headerText: 'error',
-                bodyText: 'please_add_some_text'
-            };                
-
-            DialogService.showDialog({}, dialogOptions);
+            NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("please_add_some_text"));
             return;
         }
 

@@ -4,7 +4,8 @@ var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('EventCategoryComboController', 
         function($scope, 
                 $modalInstance, 
-                DialogService, 
+                $translate,
+                NotificationService,
                 selectedProgram, 
                 selectedCategories,
                 selectedTeiId,
@@ -18,12 +19,7 @@ trackerCapture.controller('EventCategoryComboController',
         var attributeCategory = {cc: $scope.selectedProgram.categoryCombo.id, default: $scope.selectedProgram.categoryCombo.isDefault, cp: ""};
         if(!$scope.selectedProgram.categoryCombo.isDefault){            
             if($scope.selectedOptions.length !== $scope.selectedCategories.length){
-                var dialogOptions = {
-                    headerText: 'error',
-                    bodyText: 'fill_all_category_options'
-                };
-
-                DialogService.showDialog({}, dialogOptions);
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("fill_all_category_options"));
                 return;
             }            
             attributeCategory.cp = $scope.selectedOptions.join(';');

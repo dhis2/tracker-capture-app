@@ -11,7 +11,6 @@ trackerCapture.controller('RelationshipController',
                 CurrentSelection,
                 RelationshipFactory,
                 ModalService,
-                DialogService,
                 CommonUtils) {
     $scope.dashboardReady = false;
     $rootScope.showAddRelationshipDiv = false;    
@@ -120,14 +119,9 @@ trackerCapture.controller('RelationshipController',
                     delete rel.relative;
                 });
                 TEIService.update(trimmedTei, $scope.optionSets, $scope.attributesById).then(function(response){
-                    if(response.response && response.response.status !== 'SUCCESS'){//update has failed
-                        var dialogOptions = {
-                                headerText: 'update_error',
-                                bodyText: response.message
-                            };
-                        DialogService.showDialog({}, dialogOptions);
+                    if(!response || response.response && response.response.status !== 'SUCCESS'){//update has failed
                         return;
-                    }                    
+                    }
                     setRelationships();
                 });
             }

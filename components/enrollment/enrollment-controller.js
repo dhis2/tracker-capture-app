@@ -11,8 +11,6 @@ trackerCapture.controller('EnrollmentController',
                 SessionStorageService,
                 CurrentSelection,
                 EnrollmentService,
-                $route,
-                DialogService,
                 ModalService,
                 OrgUnitFactory) {
     
@@ -203,15 +201,6 @@ trackerCapture.controller('EnrollmentController',
                 EnrollmentService.updateForStatus($scope.selectedEnrollment, status).then(function (data) {
                     $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'CANCELLED' ? 'ACTIVE' : 'CANCELLED';
                     $scope.loadEnrollmentDetails($scope.selectedEnrollment);
-                }, function (response) {
-                    if (response && response.data && response.data.status === "ERROR") {
-                        //notify user
-                        var dialogOptions = {
-                            headerText: response.data.status,
-                            bodyText: response.data.message
-                        };
-                        DialogService.showDialog({}, dialogOptions);
-                    }
                 });
             });
         };
@@ -237,23 +226,13 @@ trackerCapture.controller('EnrollmentController',
                 EnrollmentService.updateForStatus($scope.selectedEnrollment, status).then(function (data) {
                     $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
                     $scope.loadEnrollmentDetails($scope.selectedEnrollment);
-                }, function (response) {
-                    if (response && response.data && response.data.status === "ERROR") {
-                        //notify user
-                        var dialogOptions = {
-                            headerText: response.data.status,
-                            bodyText: response.data.message
-                        };
-                        DialogService.showDialog({}, dialogOptions);
-                    }
                 });
             });
         };
 
         $scope.markForFollowup = function () {
             $scope.selectedEnrollment.followup = !$scope.selectedEnrollment.followup;
-            EnrollmentService.update($scope.selectedEnrollment).then(function (data) {
-            });
+            EnrollmentService.update($scope.selectedEnrollment);
         };
 
         $scope.changeProgram = function (program) {

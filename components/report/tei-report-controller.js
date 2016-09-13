@@ -147,7 +147,15 @@ trackerCapture.controller('TeiReportController',
 
                 angular.forEach(ev.notes, function(note){
                     note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
-                });
+                    //get enrollment details
+                    EnrollmentService.get(enr).then(function(enrollment){
+                        if (enrollment) {
+                            angular.forEach(enrollment.notes, function (note) {
+                                note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
+                            });
+                            $scope.enrollments.push(enrollment);
+                        }
+                    });
 
                 if(ev.dataValues){
                     ev = EventUtils.processEvent(ev, $scope.stagesById[ev.programStage], $scope.optionSets, $scope.prStDes);

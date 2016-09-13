@@ -17,7 +17,7 @@ trackerCapture.controller('TEIAddController',
             MetaDataFactory,
             TEIService,
             TEIGridService,
-            DialogService,
+            NotificationService,
             Paginator,
             relationshipTypes,
             selectedProgram,
@@ -265,11 +265,8 @@ trackerCapture.controller('TEIAddController',
 
             if ($scope.addingTeiAssociate) {
                 if (!$scope.selectedTrackedEntity || !$scope.selectedTrackedEntity.id) {
-                    var dialogOptions = {
-                        headerText: 'searching_error',
-                        bodyText: $translate.instant('no_entity_for_tracker_associate_attribute')
-                    };
-                    DialogService.showDialog({}, dialogOptions);
+                    NotificationService.showNotifcationDialog($translate.instant("searching_error"),
+                        $translate.instant("no_entity_for_tracker_associate_attribute"));
                     $scope.teiFetched = true;
                     return;
                 }
@@ -443,12 +440,7 @@ trackerCapture.controller('TEIAddController',
                     tei.relationships.push(relationship);
 
                     TEIService.update(tei, $scope.optionSets, $scope.attributesById).then(function (response) {
-                        if (response.response && response.response.status !== 'SUCCESS') {//update has failed
-                            var dialogOptions = {
-                                headerText: 'relationship_error',
-                                bodyText: response.message
-                            };
-                            DialogService.showDialog({}, dialogOptions);
+                        if (!response || response.response && response.response.status !== 'SUCCESS') {//update has failed
                             return;
                         }
 
@@ -466,11 +458,7 @@ trackerCapture.controller('TEIAddController',
                     });
                 }
                 else {
-                    var dialogOptions = {
-                        headerText: 'relationship_error',
-                        bodyText: $translate.instant('selected_tei_is_invalid')
-                    };
-                    DialogService.showDialog({}, dialogOptions);
+                    NotificationService.showNotifcationDialog($translate.instant("relationship_error"), $translate.instant("selected_tei_is_invalid"));
                     return;
                 }
             }
@@ -479,11 +467,7 @@ trackerCapture.controller('TEIAddController',
                     $modalInstance.close($scope.teiForRelationship);
                 }
                 else {
-                    var dialogOptions = {
-                        headerText: 'tracker_associate_error',
-                        bodyText: $translate.instant('selected_tei_is_invalid')
-                    };
-                    DialogService.showDialog({}, dialogOptions);
+                    NotificationService.showNotifcationDialog($translate.instant("tracker_associate_error"), $translate.instant("selected_tei_is_invalid"));
                     return;
                 }
 
@@ -530,13 +514,14 @@ trackerCapture.controller('TEIAddController',
         function($rootScope,
                 $scope,
                 $timeout,
+                $translate,
                 AttributesFactory,
                 MetaDataFactory,
                 TrackerRulesFactory,
                 CustomFormService,
                 TEService,
                 EnrollmentService,
-                DialogService,
+                NotificationService,
                 CurrentSelection,
                 DateUtils,
                 EventUtils,
@@ -694,35 +679,28 @@ trackerCapture.controller('TEIAddController',
                     enrollment.enrollmentDate = $scope.selectedEnrollment.enrollmentDate;
                     enrollment.incidentDate = $scope.selectedEnrollment.incidentDate === '' ? $scope.selectedEnrollment.enrollmentDate : $scope.selectedEnrollment.incidentDate;
                     EnrollmentService.enroll(enrollment).then(function(enrollmentResponse){
-                        var en = enrollmentResponse.response && enrollmentResponse.response.importSummaries && enrollmentResponse.response.importSummaries[0] ? enrollmentResponse.response.importSummaries[0] : {};
-                        if(en.reference && en.status === 'SUCCESS'){
-                            enrollment.enrollment = en.reference;
-                            $scope.selectedEnrollment = enrollment;
-                            var dhis2Events = EventUtils.autoGenerateEvents($scope.tei.trackedEntityInstance, $scope.selectedProgramForRelative, $scope.selectedOrgUnit, enrollment, null);
-                            if(dhis2Events.events.length > 0){
-                                DHIS2EventFactory.create(dhis2Events).then(function(){                                    
-                                });
+                        if(enrollmentResponse) {
+                            var en = enrollmentResponse.response && enrollmentResponse.response.importSummaries && enrollmentResponse.response.importSummaries[0] ? enrollmentResponse.response.importSummaries[0] : {};
+                            if (en.reference && en.status === 'SUCCESS') {
+                                enrollment.enrollment = en.reference;
+                                $scope.selectedEnrollment = enrollment;
+                                var dhis2Events = EventUtils.autoGenerateEvents($scope.tei.trackedEntityInstance, $scope.selectedProgramForRelative, $scope.selectedOrgUnit, enrollment, null);
+                                if (dhis2Events.events.length > 0) {
+                                    DHIS2EventFactory.create(dhis2Events);
+                                }
                             }
-                        }
-                        else{
-                            //enrollment has failed
-                            var dialogOptions = {
-                                    headerText: 'enrollment_error',
-                                    bodyText: enrollmentResponse.message
-                                };
-                            DialogService.showDialog({}, dialogOptions);
-                            return;
+                            else {
+                                //enrollment has failed
+                                NotificationService.showNotifcationDialog($translate.instant("enrollment_error"), enrollmentResponse.message);
+                                return;
+                            }
                         }
                     });
                 }
             }
             else{
                 //registration has failed
-                var dialogOptions = {
-                        headerText: 'registration_error',
-                        bodyText: registrationResponse.message
-                    };
-                DialogService.showDialog({}, dialogOptions);
+                NotificationService.showNotifcationDialog($translate.instant("registration_error"), enrollmentResponse.message);
                 return;
             }
             
