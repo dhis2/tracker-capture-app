@@ -18,7 +18,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service to fetch/store dasboard widgets */
-.service('DashboardLayoutService', function($http, DHIS2URL) {
+.service('DashboardLayoutService', function($http, DHIS2URL, NotificationService, $translate) {
     
     var ButtonIds = { Complete: "Complete", Incomplete: "Incomplete", Validate: "Validate", Delete: "Delete", Skip: "Skip", Unskip: "Unskip", Note: "Note" };
       
@@ -44,6 +44,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             angular.extend(dashboardLayout.defaultLayout, response.data);
             return dashboardLayout;
         }, function(){
+            if(!dashboardLayout.customLayout){
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("dashboard_layout_not_fetched"));
+            }
             return dashboardLayout;
         });
         return promise;        
@@ -58,7 +61,18 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 data: dashboardLayout,
                 headers: {'Content-Type': 'text/plain;charset=utf-8'}
             }).then(function(response){
+                NotificationService.showNotifcationDialog($translate.instant("success"), $translate.instant('dashboard_layout_saved'));
                 return response.data;
+            },function(error){
+                var errorMsgHdr, errorMsgBody;
+                errorMsgHdr = $translate.instant("error");
+                if(saveAsDefault) {
+                    errorMsgBody = $translate.instant("dashboard_layout_not_saved_as_default");
+                } else {
+                    errorMsgBody = $translate.instant("dashboard_layout_not_saved");
+                }
+                NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
+                return null;
             });
             return promise;            
         },
@@ -125,7 +139,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             angular.forEach(events, function(event){
                 occupiedPeriods.push({event: event.event, name: event.sortingDate, stage: stage.id});
             });            
-            
         }
         else{
 
@@ -528,7 +541,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service to deal with enrollment */
-.service('EnrollmentService', function($http, DHIS2URL, DateUtils, DialogService, $translate) {
+.service('EnrollmentService', function($http, DHIS2URL, DateUtils, NotificationService, $translate) {
     
     var convertFromApiToUser = function(enrollment){
         if(enrollment.enrollments){
@@ -550,16 +563,35 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         delete enrollment.orgUnitName;
         return enrollment;
     };
+    var errorHeader = $translate.instant("error");
     return {        
         get: function( enrollmentUid ){
             var promise = $http.get(  DHIS2URL + '/enrollments/' + enrollmentUid ).then(function(response){
                 return convertFromApiToUser(response.data);
+            },function(response){
+                var errorBody = $translate.instant('failed_to_fetch_enrollment');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
             return promise;
         },
         getByEntity: function( entity ){
             var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&fields=:all&paging=false').then(function(response){
                 return convertFromApiToUser(response.data);
+            },function(response){
+                var errorBody = $translate.instant('failed_to_fetch_enrollment');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
             return promise;
         },
@@ -567,19 +599,29 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&program=' + program + '&fields=:all&paging=false').then(function(response){
                 return convertFromApiToUser(response.data);
             }, function(response){
-                if( response && response.data && response.data.status === 'ERROR'){
-                    var dialogOptions = {
-                        headerText: response.data.status,
-                        bodyText: response.data.message ? response.data.message : $translate.instant('unable_to_fetch_data_from_server')
-                    };		
-                    DialogService.showDialog({}, dialogOptions);
-                }                
+                var errorBody = $translate.instant('failed_to_fetch_enrollment');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
             return promise;
         },
         getByStartAndEndDate: function( program, orgUnit, ouMode, startDate, endDate ){
             var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&program=' + program + '&orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&startDate=' + startDate + '&endDate=' + endDate + '&fields=:all&paging=false').then(function(response){
                 return convertFromApiToUser(response.data);
+            }, function(response){
+                var errorBody = $translate.instant('failed_to_fetch_enrollment');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
             return promise;
         },
@@ -587,6 +629,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var en = convertFromUserToApi(angular.copy(enrollment));
             var promise = $http.post(  DHIS2URL + '/enrollments', en ).then(function(response){
                 return response.data;
+            }, function(response){
+                var errorBody = $translate.instant('failed_to_save_enrollment');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
             return promise;
         },
@@ -594,18 +645,45 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var en = convertFromUserToApi(angular.copy(enrollment));
             var promise = $http.put( DHIS2URL + '/enrollments/' + en.enrollment , en ).then(function(response){
                 return response.data;
+            }, function(response){
+                var errorBody = $translate.instant('failed_to_update_enrollment');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
             return promise;
         },
         updateForNote: function( enrollment ){
             var promise = $http.post(DHIS2URL + '/enrollments/' + enrollment.enrollment + '/note', enrollment).then(function(response){
                 return response.data;         
+            }, function(response){
+                var errorBody = $translate.instant('failed_to_update_enrollment');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
             return promise;
         },
         updateForStatus: function( enrollment, status ){
             var promise = $http.put(DHIS2URL + '/enrollments/' + enrollment.enrollment + '/' + status).then(function(response){
                 return response.data;               
+            }, function(response){
+                var errorBody = $translate.instant('failed_to_update_enrollment');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
             return promise;
         }
@@ -644,8 +722,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service for getting tracked entity instances */
-.factory('TEIService', function($http, DHIS2URL, $q, AttributesFactory, DialogService, CommonUtils, CurrentSelection, DateUtils ) {
-    
+.factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService ) {
+    var errorHeader = $translate.instant("error");
+    var errorBody;
     return {
         get: function(entityUid, optionSets, attributesById){
             var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
@@ -659,18 +738,16 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return tei;
             }, function(error){
                 if(error){
-                    var dialogOptions = {
-                        headerText: 'error',
-                        bodyText: 'access_denied'
-                    };
+                    var headerText = $translate.instant('error');
+                    var bodyText = $translate.instant('access_denied');
+
                     if(error.statusText) {
-                        dialogOptions.headerText = error.statusText;
+                        headerText = error.statusText;
                     }
                     if(error.data && error.data.message) {
-                        dialogOptions.bodyText = error.data.message;
+                        bodyText = error.data.message;
                     }
-                    
-                    DialogService.showDialog({}, dialogOptions);
+                    NotificationService.showNotifcationDialog( headerText,  bodyText);
                 }
             });
             
@@ -791,11 +868,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             }, function(error){
                 if(error && error.status === 403){
-                    var dialogOptions = {
-                        headerText: 'error',
-                        bodyText: 'access_denied'
-                    };		
-                    DialogService.showDialog({}, dialogOptions);
+                    NotificationService.showNotifcationDialog( $translate.instant('error'),  $translate.instant('access_denied'));
                 }
                 deferred.resolve(null);
             });            
@@ -808,8 +881,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + formattedTei.trackedEntityInstance , formattedTei ).then(function(response){                    
                 return response.data;
+            }, function(response){
+                errorHeader = $translate.instant('update_error');
+                errorBody = $translate.instant('failed_to_update_tei');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
-            
             return promise;
         },
         register: function(tei, optionSets, attributesById){
@@ -825,7 +907,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }, function(response) {
                 //Necessary now that import errors gives a 409 response from the server.
                 //The 409 response is treated as an error response.
-                return response.data;
+                errorHeader = $translate.instant('register_error');
+                errorBody = $translate.instant('failed_to_register_tei');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });                    
             return promise;            
         },
@@ -862,8 +952,16 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 if (response && response.data) {
                     deferred.resolve(response.data);
                 }
-            }, function (error) {
-                deferred.resolve(error.data);
+            }, function (response) {
+                errorBody = $translate.instant('failed_to_generate_tracked_entity_attribute');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                deferred.resolve(response.data);
+                return null;
             });
             return deferred.promise;
         }
@@ -1003,15 +1101,26 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* factory for handling events */
-.factory('DHIS2EventFactory', function($http, DHIS2URL, DialogService, $translate) {   
-    
+.factory('DHIS2EventFactory', function($http, DHIS2URL, NotificationService, $translate) {
+
     var skipPaging = "&skipPaging=true";
+    var errorHeader = $translate.instant("error");
     return {     
         
         getEventsByStatus: function(entity, orgUnit, program, programStatus){   
             var promise = $http.get( DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + '&orgUnit=' + orgUnit + '&program=' + program + '&programStatus=' + programStatus  + skipPaging).then(function(response){
                 return response.data.events;
-            });            
+            }, function (response) {
+
+                var errorBody = $translate.instant('failed_to_fetch_events');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+            });
+
             return promise;
         },
         getEventsByProgram: function(entity, program, attributeCategory){            
@@ -1027,7 +1136,16 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             
             var promise = $http.get( url ).then(function(response){
                 return response.data.events;
-            });            
+            }, function (response) {
+                var errorBody = $translate.instant('failed_to_fetch_events');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
+            });
             return promise;
         },
         getEventsByProgramStage: function(entity, programStage){
@@ -1037,6 +1155,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
           }
           var promise = $http.get(url).then(function(response){
              return response.data.events;
+          }, function (response) {
+              var errorBody = $translate.instant('failed_to_fetch_events');
+              if (response && response.data && response.data.status === 'ERROR') {
+                  if (response.data.message) {
+                      errorBody = response.data.message
+                  }
+              }
+              NotificationService.showNotifcationDialog(errorHeader, errorBody);
+              return null;
           });
           return promise;
         },
@@ -1052,11 +1179,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return response.data.events;
             }, function(response){
                 if( response && response.data && response.data.status === 'ERROR'){
-                    var dialogOptions = {
-                        headerText: response.data.status,
-                        bodyText: response.data.message ? response.data.message : $translate.instant('unable_to_fetch_data_from_server')
-                    };		
-                    DialogService.showDialog({}, dialogOptions);
+                    var errorBody = $translate.instant('unable_to_fetch_data_from_server');
+                    if (response && response.data && response.data.status === 'ERROR') {
+                        if (response.data.message) {
+                            errorBody = response.data.message
+                        }
+                    }
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
                 }
             });            
             return promise;
@@ -1064,42 +1193,108 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         get: function(eventUid){            
             var promise = $http.get(DHIS2URL + '/events/' + eventUid + '.json').then(function(response){               
                 return response.data;
-            });            
+            }, function (response) {
+                if (response && response.data && response.data.status === 'ERROR') {
+                    var errorBody = $translate.instant('failed_to_fetch_events');
+                    if (response && response.data && response.data.status === 'ERROR') {
+                        if (response.data.message) {
+                            errorBody = response.data.message
+                        }
+                    }
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                }
+            });
             return promise;
         },        
         create: function(dhis2Event){    
             var promise = $http.post(DHIS2URL + '/events.json', dhis2Event).then(function(response){
                 return response.data;           
+            }, function (response) {
+                if (response && response.data && response.data.status === 'ERROR') {
+                    var errorBody = $translate.instant('event_creation_error');
+                    if (response && response.data && response.data.status === 'ERROR') {
+                        if (response.data.message) {
+                            errorBody = response.data.message;
+                        }
+                    }
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                    return null;
+                }
             });
             return promise;            
         },
         delete: function(dhis2Event){
             var promise = $http.delete(DHIS2URL + '/events/' + dhis2Event.event).then(function(response){
                 return response.data;               
+            }, function (response) {
+                if (response && response.data && response.data.status === 'ERROR') {
+                    var errorBody = $translate.instant('delete_error_audit');
+                    if (response && response.data && response.data.status === 'ERROR') {
+                        if (response.data.message) {
+                            errorBody = response.data.message;
+                        }
+                    }
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                }
             });
             return promise;           
         },
         update: function(dhis2Event){   
             var promise = $http.put(DHIS2URL + '/events/' + dhis2Event.event, dhis2Event).then(function(response){
                 return response.data;         
+            }, function (response) {
+                var errorBody = $translate.instant('failed_to_update_event');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message;
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
             });
             return promise;
         },        
         updateForSingleValue: function(singleValue){   
             var promise = $http.put(DHIS2URL + '/events/' + singleValue.event + '/' + singleValue.dataValues[0].dataElement, singleValue ).then(function(response){
                 return response.data;
+            }, function (response) {
+                var errorBody = $translate.instant('failed_to_update_event');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message;
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
             return promise;
         },
         updateForNote: function(dhis2Event){   
             var promise = $http.post(DHIS2URL + '/events/' + dhis2Event.event + '/note', dhis2Event).then(function(response){
                 return response.data;         
+            }, function (response) {
+                var errorBody = $translate.instant('failed_to_update_event');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message;
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
             return promise;
         },
         updateForEventDate: function(dhis2Event){
             var promise = $http.put(DHIS2URL + '/events/' + dhis2Event.event + '/eventDate', dhis2Event).then(function(response){
                 return response.data;         
+            }, function (response) {
+                var errorBody = $translate.instant('failed_to_update_event');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message;
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });
             return promise;
         }
@@ -1107,9 +1302,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* factory for handling event reports */
-.factory('EventReportService', function($http, DHIS2URL, DialogService, $translate) {   
-    
-    return {        
+.factory('EventReportService', function($http, DHIS2URL, $translate, NotificationService) {
+    var errorHeader = $translate.instant("error");
+    return {
+
         getEventReport: function(orgUnit, ouMode, program, startDate, endDate, programStatus, eventStatus, pager){
             
             var url = DHIS2URL + '/events/eventRows.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program;
@@ -1137,13 +1333,14 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var promise = $http.get( url ).then(function(response){
                 return response.data;
             }, function(response){
-                if( response && response.data && response.data.status === 'ERROR'){
-                    var dialogOptions = {
-                        headerText: response.data.status,
-                        bodyText: response.data.message ? response.data.message : $translate.instant('unable_to_fetch_data_from_server')
-                    };		
-                    DialogService.showDialog({}, dialogOptions);
-                }                
+                var errorBody = $translate.instant('failed_to_update_event');
+                if (response && response.data && response.data.status === 'ERROR') {
+                    if (response.data.message) {
+                        errorBody = response.data.message;
+                    }
+                }
+                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                return null;
             });            
             return promise;
         }
@@ -2037,15 +2234,35 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         };
         this.eventCreationActions = { add: 'ADD',  schedule: 'SCHEDULE', referral: 'REFERRAL'};
 })
-
-.service('MessagingService', function($http, DHIS2URL){
+.service('MessagingService', function($http, $translate,  NotificationService, DHIS2URL){
     return {
-        sendMessage: function(message, type){
+        sendMessage: function(message){
             var url=DHIS2URL +"/24/messages";
             var promise = $http.post(url, message).then(function(response){
-                return response.data;           
-            }, function(response){
+                var headerText, bodyText;
+                if (response && response.data && response.data.summaries) {
+                    var summary = response.data.summaries[0];
+                    if (summary.status) {
+                        headerText = summary.status;
+                        if (summary.responseMessage) {
+                            bodyText = summary.responseMessage;
+                        } else if (summary.errorMessage) {
+                            bodyText = summary.errorMessage;
+                        }else {
+                            bodyText = $translate.instant("failed_to_send_message");
+                        }
+                        NotificationService.showNotifcationDialog(headerText, bodyText);
+                    }
+                }
                 return response.data;
+            }, function(response){
+                var headerText = $translate.instant('error');
+                var bodyText = $translate.instant('failed_to_send_message');
+                if (response && response.summaries && response.summaries[0].errorMessage) {
+                    bodyText = response.summaries[0].errorMessage;
+                }
+                NotificationService.showNotifcationDialog(headerText, bodyText);
+                return null;
             });
             return promise;            
         }

@@ -158,11 +158,13 @@ trackerCapture.controller('TeiReportController',
                 });
 
                 //get enrollment details
-                EnrollmentService.get(enr).then(function(enrollment){            
-                    angular.forEach(enrollment.notes, function(note){
-                        note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
-                    });            
-                    $scope.enrollments.push(enrollment);               
+                EnrollmentService.get(enr).then(function(enrollment){
+                    if (enrollment) {
+                        angular.forEach(enrollment.notes, function (note) {
+                            note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
+                        });
+                        $scope.enrollments.push(enrollment);
+                    }
                 });
             });    
         });

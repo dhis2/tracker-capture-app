@@ -443,12 +443,7 @@ trackerCapture.controller('TEIAddController',
                     tei.relationships.push(relationship);
 
                     TEIService.update(tei, $scope.optionSets, $scope.attributesById).then(function (response) {
-                        if (response.response && response.response.status !== 'SUCCESS') {//update has failed
-                            var dialogOptions = {
-                                headerText: 'relationship_error',
-                                bodyText: response.message
-                            };
-                            DialogService.showDialog({}, dialogOptions);
+                        if (!response || response.response && response.response.status !== 'SUCCESS') {//update has failed
                             return;
                         }
 
@@ -694,24 +689,25 @@ trackerCapture.controller('TEIAddController',
                     enrollment.enrollmentDate = $scope.selectedEnrollment.enrollmentDate;
                     enrollment.incidentDate = $scope.selectedEnrollment.incidentDate === '' ? $scope.selectedEnrollment.enrollmentDate : $scope.selectedEnrollment.incidentDate;
                     EnrollmentService.enroll(enrollment).then(function(enrollmentResponse){
-                        var en = enrollmentResponse.response && enrollmentResponse.response.importSummaries && enrollmentResponse.response.importSummaries[0] ? enrollmentResponse.response.importSummaries[0] : {};
-                        if(en.reference && en.status === 'SUCCESS'){
-                            enrollment.enrollment = en.reference;
-                            $scope.selectedEnrollment = enrollment;
-                            var dhis2Events = EventUtils.autoGenerateEvents($scope.tei.trackedEntityInstance, $scope.selectedProgramForRelative, $scope.selectedOrgUnit, enrollment, null);
-                            if(dhis2Events.events.length > 0){
-                                DHIS2EventFactory.create(dhis2Events).then(function(){                                    
-                                });
+                        if(enrollmentResponse) {
+                            var en = enrollmentResponse.response && enrollmentResponse.response.importSummaries && enrollmentResponse.response.importSummaries[0] ? enrollmentResponse.response.importSummaries[0] : {};
+                            if (en.reference && en.status === 'SUCCESS') {
+                                enrollment.enrollment = en.reference;
+                                $scope.selectedEnrollment = enrollment;
+                                var dhis2Events = EventUtils.autoGenerateEvents($scope.tei.trackedEntityInstance, $scope.selectedProgramForRelative, $scope.selectedOrgUnit, enrollment, null);
+                                if (dhis2Events.events.length > 0) {
+                                    DHIS2EventFactory.create(dhis2Events);
+                                }
                             }
-                        }
-                        else{
-                            //enrollment has failed
-                            var dialogOptions = {
+                            else {
+                                //enrollment has failed
+                                var dialogOptions = {
                                     headerText: 'enrollment_error',
                                     bodyText: enrollmentResponse.message
                                 };
-                            DialogService.showDialog({}, dialogOptions);
-                            return;
+                                DialogService.showDialog({}, dialogOptions);
+                                return;
+                            }
                         }
                     });
                 }

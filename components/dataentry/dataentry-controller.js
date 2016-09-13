@@ -1401,6 +1401,17 @@ trackerCapture.controller('DataEntryController',
                 ]
             };
             return DHIS2EventFactory.updateForSingleValue(ev).then(function (response) {
+                if(!response) {
+                    if(!backgroundUpdate) {
+                        $scope.currentElement.saved = false;
+                        $scope.currentElement.pending = false;
+                        $scope.currentElement.failed = true;
+                    } else {
+                        $log.warn("Could not perform background update of " + prStDe.dataElement.id + " with value " +
+                            value);
+                    }
+                    return;
+                }
 
                 $scope.updateFileNames();
                 
@@ -1421,16 +1432,7 @@ trackerCapture.controller('DataEntryController',
                     //Run rules on updated data:
                     $scope.executeRules();
                 }
-            }, function(error) {
-                //Do not change the input notification variables for background updates
-                if(!backgroundUpdate) {
-                    $scope.currentElement.saved = false;
-                    $scope.currentElement.pending = false;
-                    $scope.currentElement.failed = true;      
-                } else {
-                    $log.warn("Could not perform background update of " + prStDe.dataElement.id + " with value " +
-                            value);
-                }
+
             });
 
         }
@@ -1498,8 +1500,6 @@ trackerCapture.controller('DataEntryController',
             } 
             $scope.currentElement = {id: "eventDate", event: eventToSave.event, saved: true};
             $scope.executeRules();
-        }, function(error){
-            
         });
     };
 
@@ -1604,7 +1604,6 @@ trackerCapture.controller('DataEntryController',
         };
 
         DHIS2EventFactory.updateForNote(e).then(function (data) {
-
             $scope.note = {};
         });
     };
@@ -1678,7 +1677,7 @@ trackerCapture.controller('DataEntryController',
                                 $scope.modalOptions.bodyList.splice(0, 0, {value1: date, value2: newNote.value});
                                 $scope.modalOptions.currentEvent.notes.splice(0,0,{storedDate: date,displayDate: today, value: newNote.value});
                             }
-                                $scope.note = $scope.textAreaValues["note"] = "";
+                            $scope.note = $scope.textAreaValues["note"] = "";
                         });
                     };                    
                 }            

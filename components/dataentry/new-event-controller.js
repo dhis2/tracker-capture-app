@@ -219,18 +219,11 @@ trackerCapture.controller('EventCreationController',
 
         newEvents.events.push(newEvent);
         DHIS2EventFactory.create(newEvents).then(function (response) {
-            if (response.response && response.response.importSummaries[0].status === 'SUCCESS') {
+            if (response && response.response && response.response.importSummaries[0].status === 'SUCCESS') {
                 newEvent.event = response.response.importSummaries[0].reference;
                 $modalInstance.close({dummyEvent: dummyEvent, ev: newEvent});
-            }
-            else {
-                var dialogOptions = {
-                    headerText: 'event_creation_error',
-                    bodyText: response.message
-                };
-                
+            } else {
                 $scope.eventCreationForm.submitted = false;
-                DialogService.showDialog({}, dialogOptions);
             }
         });
     };

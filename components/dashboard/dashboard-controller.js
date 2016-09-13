@@ -134,6 +134,9 @@ trackerCapture.controller('DashboardController',
 
                                     //get enrollments for the selected tei
                                     EnrollmentService.getByEntity($scope.selectedTeiId).then(function (response) {
+                                        if(!response) {
+                                            return;
+                                        }
                                         var enrollments = angular.isObject(response) && response.enrollments ? response.enrollments : [];
                                         var selectedEnrollment = null, backupSelectedEnrollment = null;
                                         if (enrollments.length === 1) {
@@ -355,22 +358,7 @@ trackerCapture.controller('DashboardController',
         var programId = $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT';        
         layout[programId] = getCurrentDashboardLayout();
         delete layout.DEFAULT;
-        
-        DashboardLayoutService.saveLayout(layout, true).then(function () {
-            var dialogOptions = {
-                headerText: 'success',
-                bodyText: $translate.instant('dashboard_layout_saved')
-            };
-            DialogService.showDialog({}, dialogOptions);
-            return;
-        }, function () {
-            var dialogOptions = {
-                headerText: 'error',
-                bodyText: $translate.instant('dashboard_layout_not_saved')
-            };
-            DialogService.showDialog({}, dialogOptions);
-            return;
-        });
+        DashboardLayoutService.saveLayout(layout, true);
     };
 
     //persist widget sorting

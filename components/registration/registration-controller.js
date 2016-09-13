@@ -319,27 +319,30 @@ trackerCapture.controller('RegistrationController',
                             }
 
                             EnrollmentService.enroll(enrollment).then(function (enrollmentResponse) {
-                                var en = enrollmentResponse.response && enrollmentResponse.response.importSummaries && enrollmentResponse.response.importSummaries[0] ? enrollmentResponse.response.importSummaries[0] : {};
-                                if (en.reference && en.status === 'SUCCESS') {
-                                    enrollment.enrollment = en.reference;
-                                    $scope.selectedEnrollment = enrollment;
-                                    var dhis2Events = EventUtils.autoGenerateEvents($scope.tei.trackedEntityInstance, $scope.selectedProgram, $scope.selectedOrgUnit, enrollment, $scope.currentEvent);
-                                    if (dhis2Events.events.length > 0) {
-                                        DHIS2EventFactory.create(dhis2Events).then(function () {
+                                if(enrollmentResponse) {
+                                    var en = enrollmentResponse.response && enrollmentResponse.response.importSummaries &&
+                                    enrollmentResponse.response.importSummaries[0] ? enrollmentResponse.response.importSummaries[0] : {};
+                                    if (en.reference && en.status === 'SUCCESS') {
+                                        enrollment.enrollment = en.reference;
+                                        $scope.selectedEnrollment = enrollment;
+                                        var dhis2Events = EventUtils.autoGenerateEvents($scope.tei.trackedEntityInstance, $scope.selectedProgram, $scope.selectedOrgUnit, enrollment, $scope.currentEvent);
+                                        if (dhis2Events.events.length > 0) {
+                                            DHIS2EventFactory.create(dhis2Events).then(function () {
+                                                notifyRegistrtaionCompletion(destination, $scope.tei.trackedEntityInstance);
+                                            });
+                                        } else {
                                             notifyRegistrtaionCompletion(destination, $scope.tei.trackedEntityInstance);
-                                        });
-                                    } else {
-                                        notifyRegistrtaionCompletion(destination, $scope.tei.trackedEntityInstance);
+                                        }
                                     }
-                                }
-                                else {
-                                    //enrollment has failed
-                                    var dialogOptions = {
-                                        headerText: 'enrollment_error',
-                                        bodyText: enrollmentResponse.message
-                                    };
-                                    DialogService.showDialog({}, dialogOptions);
-                                    return;
+                                    else {
+                                        //enrollment has failed
+                                        var dialogOptions = {
+                                            headerText: 'enrollment_error',
+                                            bodyText: enrollmentResponse.message
+                                        };
+                                        DialogService.showDialog({}, dialogOptions);
+                                        return;
+                                    }
                                 }
                             });
                         }

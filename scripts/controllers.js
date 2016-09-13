@@ -8,6 +8,7 @@ function($rootScope,
          $filter,
          $timeout,
          $translate,
+         $q,
          orderByFilter,
          Paginator,
          SessionStorageService,
@@ -23,8 +24,7 @@ function($rootScope,
          TEIService,
          EventReportService,
          TCStorageService,
-         GridColumnService,
-         $q) {
+         GridColumnService) {
     var savedAdvancedSeachOptions = null;
     var defaultColumn = {
         id: 'created',
@@ -143,9 +143,10 @@ function($rootScope,
             }
 
             GridColumnService.get("trackerCaptureGridColumns").then(function (gridColumns) {
-                if (gridColumns && gridColumns.status !== "ERROR") {
-                    $scope.gridColumnsInUserStore = gridColumns;
+                if (!gridColumns) {
+                    return;
                 }
+                $scope.gridColumnsInUserStore = gridColumns;
                 $scope.ouLevels = CurrentSelection.getOuLevels();
                 if(!$scope.ouLevels){
                     TCStorageService.currentStore.open().done(function(){

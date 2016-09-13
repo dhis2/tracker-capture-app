@@ -4,8 +4,7 @@ var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('MessagingController',
         function($scope, $translate,
                 MessagingService,
-                CurrentSelection,
-                DialogService) {
+                CurrentSelection) {
     $scope.dashboardReady = false;
 
     //$scope.messagingForm = {};
@@ -82,21 +81,7 @@ trackerCapture.controller('MessagingController',
             };
         }
 
-        MessagingService.sendMessage(message).then(function (response) {
-            var dialogOptions = {};
-            if (response && response.summaries) {
-                if (response.summaries[0].status) {
-                    dialogOptions.headerText = response.summaries[0].status;
-                    if (response.summaries[0].responseMessage) {
-                        dialogOptions.bodyText = response.summaries[0].responseMessage;
-                    } else if (response.summaries[0].errorMessage) {
-                        dialogOptions.bodyText = response.summaries[0].errorMessage;
-                    }
-                }
-            }
-            DialogService.showDialog({}, dialogOptions);
-
-        });
+        MessagingService.sendMessage(message);
 
     };
 

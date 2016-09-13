@@ -25,14 +25,16 @@ trackerCapture.controller('NotesController',
         $scope.dashboardReady = true;
         var selections = CurrentSelection.get();
         if(selections.selectedEnrollment && selections.selectedEnrollment.enrollment){
-            EnrollmentService.get(selections.selectedEnrollment.enrollment).then(function(data){    
-                $scope.selectedEnrollment = data;   
-                if(!angular.isUndefined( $scope.selectedEnrollment.notes)){
-                    $scope.selectedEnrollment.notes = orderByFilter($scope.selectedEnrollment.notes, '-storedDate');            
-                    angular.forEach($scope.selectedEnrollment.notes, function(note){
-                        note.displayDate = DateUtils.formatFromApiToUser(note.storedDate);
-                        note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
-                    });
+            EnrollmentService.get(selections.selectedEnrollment.enrollment).then(function(data){
+                if (data) {
+                    $scope.selectedEnrollment = data;
+                    if (!angular.isUndefined($scope.selectedEnrollment.notes)) {
+                        $scope.selectedEnrollment.notes = orderByFilter($scope.selectedEnrollment.notes, '-storedDate');
+                        angular.forEach($scope.selectedEnrollment.notes, function (note) {
+                            note.displayDate = DateUtils.formatFromApiToUser(note.storedDate);
+                            note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
+                        });
+                    }
                 }
             });
         }
