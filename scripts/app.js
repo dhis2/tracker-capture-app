@@ -1,3 +1,8 @@
+import L from 'leaflet';
+import 'leaflet-geocoder-mapzen';
+import 'leaflet-contextmenu';
+
+L.Icon.Default.imagePath = './styles/images';
 
 /* App Module */
 var trackerCapture = angular.module('trackerCapture',
@@ -20,11 +25,13 @@ var trackerCapture = angular.module('trackerCapture',
          'd2HeaderBar',
          'sticky',
          'nvd3ChartDirectives',
-         'pascalprecht.translate'])
+         'pascalprecht.translate',
+         'leaflet-directive',
+         'angularCSS'])
               
 .value('DHIS2URL', '../api')
 
-.config(function($httpProvider, $routeProvider, $translateProvider) {    
+.config(function($httpProvider, $routeProvider, $translateProvider, $logProvider) {    
             
     $httpProvider.defaults.useXDomain = true;
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
@@ -43,7 +50,8 @@ var trackerCapture = angular.module('trackerCapture',
         controller: 'ProgramSummaryController'
     }).when('/program-statistics',{
         templateUrl:'components/report/program-statistics.html',
-        controller: 'ProgramStatisticsController'
+        controller: 'ProgramStatisticsController',
+        css: '../dhis-web-commons/javascripts/nvd3/nv.d3.css'
     }).when('/overdue-events',{
         templateUrl:'components/report/overdue-events.html',
         controller: 'OverdueEventsController'
@@ -57,6 +65,8 @@ var trackerCapture = angular.module('trackerCapture',
     $translateProvider.preferredLanguage('en');
     $translateProvider.useSanitizeValueStrategy('escaped');
     $translateProvider.useLoader('i18nLoader');
+    
+    $logProvider.debugEnabled(false);
     
 })
 

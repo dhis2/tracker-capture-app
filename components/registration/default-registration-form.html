@@ -223,30 +223,15 @@
                         </span>
                     </span>
                     <span ng-switch-when="COORDINATE">
-                        <span class="input-group">                            
-                            <input type="text"
+                        <d2-map id="{{attribute.id}}"
                                 name="foo" 
-                                placeholder="{{'latitude_longitude_format' | translate}}"
-                                class="form-control"
-                                ng-model="selectedTei[attribute.id]" 
-                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                                d2-custom-coordinate-validator 
-                                attribute-data={{attribute}}
-                                selected-program-id={{selectedProgram.id}}  
-                                selected-tei-id={{selectedTei.trackedEntityInstance}}
-                                ng-disabled="isDisabled(attribute)"  
-                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                                ng-required="attribute.mandatory"/>
-                            <span class="input-group-btn">
-                                <button class="btn btn-grp hideInPrint trim" 
-                                        type="button" 
-                                        title="{{'get_from_map'| translate}}"
-                                        ng-if="!editingDisabled" 
-                                        ng-click="showAttributeMap(selectedTei, attribute.id)">
-                                        <i class="fa fa-map-marker"></i>                             
-                                </button>
-                            </span>
-                        </span>
+                                d2-object="selectedTei" 
+                                d2-coordinate-format="'TEXT'"
+                                d2-value="selectedTei[attribute.id]"
+                                d2-required={{attribute.mandatory}}
+                                d2-disabled="isDisabled(attribute)"
+                                d2-function="teiValueUpdated(selectedTei, attribute.id)">                            
+                        </d2-map>                        
                     </span>
                     <span ng-switch-when="ORGANISATION_UNIT">
                         <d2-org-unit-tree

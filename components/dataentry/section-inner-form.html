@@ -254,40 +254,23 @@
             <div class="not-for-screen">
                 <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
-        </div>
+        </div>        
         <div ng-switch-when="COORDINATE">
-            <div class="hideInPrint">
-                <span class="input-group">                            
-                    <input type="text"
-                       placeholder="{{'latitude_longitude_format' | translate}}"
-                       d2-custom-coordinate-validator 
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
-                       ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                       ng-required={{isCompulsory(de.dataElement)}}
-                       ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
-                       ng-change="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
-                       name="foo"/>
-                    <span class="input-group-btn">
-                        <button class="btn btn-grp trim" 
-                                type="button" 
-                                title="{{'get_from_map'| translate}}"
-                                ng-if="!(selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id])"
-                                ng-click="showDataElementMap(currentEvent, prStDes[de.dataElement.id].dataElement.id, innerForm.foo)">
-                                <i class="fa fa-map-marker"></i>                             
-                        </button>
-                    </span>
-                </span>
-            </div>
-            <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDes[de.dataElement.id].dataElement.id]}}>
-            </div>
-        </div>
+            <d2-map id="{{de.dataElement.id}}"
+                    pr-st-de="prStDes[de.dataElement.id]"
+                    d2-lat-saved="currentElement.saved"
+                    d2-lng-saved="currentElement.saved"
+                    d2-object="currentEvent" 
+                    d2-function="saveDatavalue(arg1)" 
+                    d2-coordinate-format="'TEXT'"
+                    d2-function-param="LATLNG">
+            </d2-map>
+        </div>        
         <div ng-switch-when="ORGANISATION_UNIT">
             <d2-org-unit-tree
                     selected-org-unit="selectedOrgUnit"
-                    id="{{prStDes[de.dataElement.id].dataElement.id}}"
-                    d2-value="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
+                    id="{{de.dataElement.id}}"
+                    d2-value="currentEvent[de.dataElement.id]"
                     d2-required={{isCompulsory(de.dataElement)}}
                     d2-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                     d2-object="currentEvent"

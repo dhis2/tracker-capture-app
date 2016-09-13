@@ -10,7 +10,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     var store = new dhis2.storage.Store({
         name: "dhis2tc",
         adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],        
-        objectStores: ['programs', 'programStages', 'trackedEntities', 'attributes', 'relationshipTypes', 'optionSets', 'programValidations', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements']
+        objectStores: ['programs', 'trackedEntities', 'attributes', 'relationshipTypes', 'optionSets', 'programValidations', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements']
     });
     return{
         currentStore: store
@@ -387,46 +387,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return def.promise;
         }
     };
-})
-
-/* Factory to fetch programStages */
-.factory('ProgramStageFactory', function($q, $rootScope, TCStorageService) {  
-    
-    return {        
-        get: function(uid){            
-            var def = $q.defer();
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.get('programStages', uid).done(function(pst){                    
-                    $rootScope.$apply(function(){
-                        def.resolve(pst);
-                    });
-                });
-            });            
-            return def.promise;
-        },
-        getByProgram: function(program){
-            var def = $q.defer();
-            var stageIds = [];
-            var programStages = [];
-            angular.forEach(program.programStages, function(stage){
-                stageIds.push(stage.id);
-            });
-            
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll('programStages').done(function(stages){   
-                    angular.forEach(stages, function(stage){
-                        if(stageIds.indexOf(stage.id) !== -1){                            
-                            programStages.push(stage);                               
-                        }                        
-                    });
-                    $rootScope.$apply(function(){
-                        def.resolve(programStages);
-                    });
-                });                
-            });            
-            return def.promise;
-        }
-    };    
 })
 
 /* Factory to fetch programValidations */

@@ -67,7 +67,13 @@
                                         {{'coordinate' | translate}}
                                     </td>
                                     <td>
-                                        <d2-map d2-object="selectedEnrollment"></d2-map>
+                                        <d2-map d2-lat-saved="enrollmentLatSaved"
+                                                d2-lng-saved="enrollmentLngSaved"
+                                                d2-object="selectedEnrollment" 
+                                                d2-function="saveCoordinate(arg1)" 
+                                                d2-coordinate-format="'COORDINATE'"
+                                                d2-function-param="LATLNG">
+                                        </d2-map>
                                     </td>
                                 </tr>
                             </table>

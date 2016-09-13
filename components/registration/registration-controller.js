@@ -9,6 +9,7 @@ trackerCapture.controller('RegistrationController',
                 $modal,
                 $translate,
                 orderByFilter,
+                SessionStorageService,
                 AttributesFactory,
                 DHIS2EventFactory,
                 TEService,
@@ -87,8 +88,8 @@ trackerCapture.controller('RegistrationController',
         return attribute.generated || $scope.assignedFields[attribute.id] || $scope.editingDisabled;
     }
     
-    OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
-        $scope.selectedOrgUnit = orgUnit;
+    //OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
+        $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
         $scope.selectedEnrollment = {
             enrollmentDate: $scope.today,
             incidentDate: $scope.today,
@@ -161,7 +162,7 @@ trackerCapture.controller('RegistrationController',
             $scope.customDataEntryForm = null;
             $scope.schedulingEnabled = true;
             
-            if( $scope.selectedProgram && $scope.selectedProgram.captureCoordinates ){
+            if( $scope.selectedProgram && $scope.selectedProgram.captureCoordinates ){                
                 $scope.selectedEnrollment.coordinate = angular.isObject($scope.selectedEnrollment) && angular.isObject($scope.selectedEnrollment.coordinate) ? $scope.selectedEnrollment.coordinate : {};
             }
             
@@ -194,7 +195,7 @@ trackerCapture.controller('RegistrationController',
                         $rootScope.ruleeffects[$scope.currentEvent.event] = {};
                         $scope.selectedEnrollment.status = 'ACTIVE';
                         
-                        if( $scope.currentStage.captureCoordinates ){
+                        if( $scope.currentStage.captureCoordinates ){                            
                             $scope.currentEvent.coordinate = {};
                         }
                         
@@ -626,5 +627,5 @@ trackerCapture.controller('RegistrationController',
         $scope.saveDatavalue = function () {
             $scope.executeRules();
         };
-    });
+    //});
 });

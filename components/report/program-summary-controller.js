@@ -8,7 +8,6 @@ trackerCapture.controller('ProgramSummaryController',
                 TEIGridService,
                 AttributesFactory,
                 ProgramFactory,
-                ProgramStageFactory,
                 CurrentSelection,
                 MetaDataFactory,
                 EventReportService) {    
@@ -59,13 +58,11 @@ trackerCapture.controller('ProgramSummaryController',
         if( angular.isObject($scope.model.selectedProgram)){            
             $scope.reportStarted = false;
             $scope.dataReady = false;            
-            ProgramStageFactory.getByProgram($scope.model.selectedProgram).then(function(stages){
-                $scope.programStages = stages;
-                $scope.stagesById = [];
-                angular.forEach(stages, function(stage){
-                    $scope.stagesById[stage.id] = stage;
-                });
-            });
+            $scope.programStages = $scope.model.selectedProgram.programStages;
+            $scope.stagesById = [];
+            angular.forEach($scope.programStages, function(stage){
+                $scope.stagesById[stage.id] = stage;
+            });            
         }
     });
     

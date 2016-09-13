@@ -22,6 +22,11 @@
     "url": "https://github.com/dhis2/tracker-capture-app/issues"
   },
   "homepage": "https://github.com/dhis2/tracker-capture-app#readme",
+  "dependencies": {    
+    "leaflet": "^0.7.7",
+    "leaflet-geocoder-mapzen": "1.4.1",
+    "leaflet-contextmenu": "^1.1.0"
+  },
   "devDependencies": {
     "babel-core": "^6.8.0",
     "babel-loader": "^6.2.4",

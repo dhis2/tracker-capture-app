@@ -279,5 +279,15 @@ trackerCapture.controller('EnrollmentController',
             }
             return true;
         };
+        
+        $scope.saveCoordinate = function(param){            
+            var en = angular.copy( $scope.currentEnrollment );            
+            $scope.enrollmentLatSaved = false;
+            $scope.enrollmentLngSaved = false;            
+            EnrollmentService.update( en ).then(function (data) {
+                $scope.enrollmentLatSaved = true;
+                $scope.enrollmentLngSaved = true;
+            });
+        };
     });
 });

@@ -48,10 +48,8 @@
             <td>
                 {{'coordinate'| translate}}
             </td>
-            <td>
-                <d2-map d2-object="selectedEnrollment"></d2-map>
-                <div ng-messages="outerForm.latitude.$error" ng-if="interacted(outerForm.latitude)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></div>
-                <div ng-messages="outerForm.longitude.$error" ng-if="interacted(outerForm.longitude)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></div>
+            <td>         
+                <d2-map d2-object="selectedEnrollment" d2-coordinate-format="'COORDINATE'"></d2-map>
             </td>                                            
         </tr>
 </table>
