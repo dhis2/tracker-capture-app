@@ -2,7 +2,7 @@ import L from 'leaflet';
 import 'leaflet-geocoder-mapzen';
 import 'leaflet-contextmenu';
 
-L.Icon.Default.imagePath = './styles/images';
+L.Icon.Default.imagePath = '../dhis-web-commons/leaflet/images';
 
 /* App Module */
 var trackerCapture = angular.module('trackerCapture',

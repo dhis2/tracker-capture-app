@@ -256,14 +256,14 @@
             </div>
         </div>        
         <div ng-switch-when="COORDINATE">
-            <d2-map id="{{de.dataElement.id}}"
-                    pr-st-de="prStDes[de.dataElement.id]"
+            <d2-map id="{{de.dataElement.id}}"                    
                     d2-lat-saved="currentElement.saved"
                     d2-lng-saved="currentElement.saved"
                     d2-object="currentEvent" 
                     d2-function="saveDatavalue(arg1)" 
                     d2-coordinate-format="'TEXT'"
-                    d2-function-param="LATLNG">
+                    d2-function-param-text="prStDes[de.dataElement.id]"
+                    d2-function-param-coordinate="LATLNG">
             </d2-map>
         </div>        
         <div ng-switch-when="ORGANISATION_UNIT">

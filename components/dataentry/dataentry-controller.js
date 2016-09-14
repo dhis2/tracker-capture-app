@@ -1549,14 +1549,9 @@ trackerCapture.controller('DataEntryController',
         DHIS2EventFactory.update(dhis2Event).then(function (response) {
             $scope.currentEventOriginal = angular.copy($scope.currentEvent);
             $scope.currentStageEventsOriginal = angular.copy($scope.currentStageEvents);
-
-            if (type === 'LAT' || type === 'LATLNG') {
-                $scope.latitudeSaved = true;
-            }
-            if (type === 'LAT' || type === 'LATLNG') {
-                $scope.longitudeSaved = true;
-            }
             
+            $scope.latitudeSaved = true;
+            $scope.longitudeSaved = true;            
             $scope.currentElement = {};
         });
     };
