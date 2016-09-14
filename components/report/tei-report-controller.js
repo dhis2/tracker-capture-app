@@ -156,6 +156,7 @@ trackerCapture.controller('TeiReportController',
                             $scope.enrollments.push(enrollment);
                         }
                     });
+                });
 
                 if(ev.dataValues){
                     ev = EventUtils.processEvent(ev, $scope.stagesById[ev.programStage], $scope.optionSets, $scope.prStDes);
@@ -169,7 +170,7 @@ trackerCapture.controller('TeiReportController',
                 });            
                 $scope.enrollments.push(enrollment);               
             });
-        });    
+        });
         
     };
     
