@@ -609,7 +609,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 var errorBody = $translate.instant('failed_to_update_enrollment');
                 if (response && response.data && response.data.status === 'ERROR') {
                     if (response.data.message) {
-                        errorBody = response.data.message
+                        errorBody = response.data.message;
                     }
                 }
                 NotificationService.showNotifcationDialog(errorHeader, errorBody);
@@ -624,22 +624,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 var errorBody = $translate.instant('failed_to_update_enrollment');
                 if (response && response.data && response.data.status === 'ERROR') {
                     if (response.data.message) {
-                        errorBody = response.data.message
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
-                return null;
-            });
-            return promise;
-        },
-        updateForStatus: function( enrollment, status ){
-            var promise = $http.put(DHIS2URL + '/enrollments/' + enrollment.enrollment + '/' + status).then(function(response){
-                return response.data;               
-            }, function(response){
-                var errorBody = $translate.instant('failed_to_update_enrollment');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message
+                        errorBody = response.data.message;
                     }
                 }
                 NotificationService.showNotifcationDialog(errorHeader, errorBody);

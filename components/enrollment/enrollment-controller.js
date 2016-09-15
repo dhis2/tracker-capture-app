@@ -193,14 +193,14 @@ trackerCapture.controller('EnrollmentController',
 
 
             ModalService.showModal({}, modalOptions).then(function (result) {
-                var status = 'cancelled';
-                if ($scope.selectedEnrollment.status === 'CANCELLED') {
-                    status = 'incompleted';
-                }
-
-                EnrollmentService.updateForStatus($scope.selectedEnrollment, status).then(function (data) {
-                    $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'CANCELLED' ? 'ACTIVE' : 'CANCELLED';
-                    $scope.loadEnrollmentDetails($scope.selectedEnrollment);
+                
+                var en = angular.copy( $scope.selectedEnrollment );
+                en.status = $scope.selectedEnrollment.status === 'CANCELLED' ? 'ACTIVE' : 'CANCELLED';
+                EnrollmentService.update( en ).then(function ( data ) {
+                    if( data && data.status === 'OK' ){
+                        $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'CANCELLED' ? 'ACTIVE' : 'CANCELLED';
+                        $scope.loadEnrollmentDetails($scope.selectedEnrollment);
+                    }                    
                 });
             });
         };
@@ -216,16 +216,14 @@ trackerCapture.controller('EnrollmentController',
 
 
             ModalService.showModal({}, modalOptions).then(function (result) {
-
-                var status = 'completed';
-
-                if ($scope.selectedEnrollment.status === 'COMPLETED') {
-                    status = 'incompleted';
-                }
-
-                EnrollmentService.updateForStatus($scope.selectedEnrollment, status).then(function (data) {
-                    $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
-                    $scope.loadEnrollmentDetails($scope.selectedEnrollment);
+                
+                var en = angular.copy( $scope.selectedEnrollment );
+                en.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
+                EnrollmentService.update( en ).then(function (data) {
+                    if( data && data.status === 'OK' ){
+                        $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
+                        $scope.loadEnrollmentDetails($scope.selectedEnrollment);
+                    }
                 });
             });
         };

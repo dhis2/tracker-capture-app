@@ -1745,14 +1745,17 @@ trackerCapture.controller('DataEntryController',
     
     var completeEnrollment = function () {
         $scope.deleteScheduleAndOverdueEvents().then(function(result){
-            EnrollmentService.updateForStatus($scope.selectedEnrollment, 'completed').then(function (data) {
-                $scope.selectedEnrollment.status = 'COMPLETED';
-                selection.load();
-                $location.path('/').search({program: $scope.selectedProgramId});
+            
+            var en = angular.copy( $scope.selectedEnrollment );
+            en.status = 'COMPLETED';
+            EnrollmentService.update(en).then(function (data) {
+                if( data && data.status === 'OK' ){
+                    $scope.selectedEnrollment.status = 'COMPLETED';
+                    selection.load();
+                    $location.path('/').search({program: $scope.selectedProgramId});
+                }                
             });
         });
-
-
     };
     
     $scope.makeDhis2EventToUpdate = function(){
