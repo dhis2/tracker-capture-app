@@ -1337,6 +1337,10 @@ trackerCapture.controller('DataEntryController',
     
     $scope.saveDataValueForEvent = function (prStDe, field, eventToSave, backgroundUpdate) {
         
+        if( !prStDe ){
+            return;
+        }
+        
         //Do not change the input notification variables for background updates
         if(!backgroundUpdate) {
             //Blank out the input-saved class on the last saved due date:

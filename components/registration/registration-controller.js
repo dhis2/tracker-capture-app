@@ -162,8 +162,8 @@ trackerCapture.controller('RegistrationController',
             $scope.customDataEntryForm = null;
             $scope.schedulingEnabled = true;
             
-            if( $scope.selectedProgram && $scope.selectedProgram.captureCoordinates ){                
-                $scope.selectedEnrollment.coordinate = angular.isObject($scope.selectedEnrollment) && angular.isObject($scope.selectedEnrollment.coordinate) ? $scope.selectedEnrollment.coordinate : {};
+            if( $scope.selectedProgram && $scope.selectedProgram.captureCoordinates && angular.isObject($scope.selectedEnrollment) ){                
+                $scope.selectedEnrollment.coordinate = $scope.selectedEnrollment.coordinate ? $scope.selectedEnrollment.coordinate : {};
             }
             
             AttributesFactory.getByProgram($scope.selectedProgram).then(function (atts) {

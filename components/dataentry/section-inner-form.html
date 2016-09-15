@@ -255,11 +255,13 @@
                 <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>        
-        <div ng-switch-when="COORDINATE">
+        <div ng-switch-when="COORDINATE">            
             <d2-map id="{{de.dataElement.id}}"                    
                     d2-lat-saved="currentElement.saved"
                     d2-lng-saved="currentElement.saved"
                     d2-object="currentEvent" 
+                    d2-required="isCompulsory(de.dataElement)"
+                    d2-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                     d2-function="saveDatavalue(arg1)" 
                     d2-coordinate-format="'TEXT'"
                     d2-function-param-text="prStDes[de.dataElement.id]"
@@ -271,7 +273,7 @@
                     selected-org-unit="selectedOrgUnit"
                     id="{{de.dataElement.id}}"
                     d2-value="currentEvent[de.dataElement.id]"
-                    d2-required={{isCompulsory(de.dataElement)}}
+                    d2-required="isCompulsory(de.dataElement)"
                     d2-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                     d2-object="currentEvent"
                     d2-function="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)">

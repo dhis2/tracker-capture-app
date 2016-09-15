@@ -228,7 +228,7 @@
                                 d2-object="selectedTei" 
                                 d2-coordinate-format="'TEXT'"
                                 d2-value="selectedTei[attribute.id]"
-                                d2-required={{attribute.mandatory}}
+                                d2-required="attribute.mandatory"
                                 d2-disabled="isDisabled(attribute)"
                                 d2-function="teiValueUpdated(selectedTei, attribute.id)">                            
                         </d2-map>                        
@@ -238,7 +238,7 @@
                                 selected-org-unit="selectedOrgUnit"
                                 id="{{attribute.id}}"
                                 d2-value="selectedTei[attribute.id]"
-                                d2-required={{attribute.mandatory}}
+                                d2-required="attribute.mandatory"
                                 d2-disabled="isDisabled(attribute)"
                                 d2-object="selectedTei"
                                 d2-function="teiValueUpdated(selectedTei, attribute.id)">

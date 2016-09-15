@@ -257,6 +257,8 @@
                     d2-lat-saved="currentElement.saved && currentElement.id === prStDe.dataElement.id"
                     d2-lng-saved="currentElement.saved && currentElement.id === prStDe.dataElement.id"
                     d2-object="currentEvent" 
+                    d2-required="prStDe.compulsory"
+                    d2-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
                     d2-function="saveDatavalue(arg1)" 
                     d2-coordinate-format="'TEXT'"
                     d2-function-param-text="prStDe"
@@ -268,7 +270,7 @@
                     selected-org-unit="selectedOrgUnit"
                     id="{{prStDe.dataElement.id}}"
                     d2-value="currentEvent[prStDe.dataElement.id]"
-                    d2-required={{prStDe.compulsory}}
+                    d2-required="prStDe.compulsory"
                     d2-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
                     d2-object="currentEvent"
                     d2-function="saveDatavalue(prStDe, innerForm.foo)">
