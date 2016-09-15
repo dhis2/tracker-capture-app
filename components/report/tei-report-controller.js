@@ -140,15 +140,15 @@ trackerCapture.controller('TeiReportController',
         });        
 
         //program reports come grouped in enrollment, process for each enrollment
-        $scope.enrollments = [];        
-        angular.forEach(Object.keys($scope.selectedReport.enrollments), function(enr){        
+        $scope.enrollments = [];
+        angular.forEach(Object.keys($scope.selectedReport.enrollments), function (enr) {
             //format report data values
-            angular.forEach($scope.selectedReport.enrollments[enr], function(ev){
+            angular.forEach($scope.selectedReport.enrollments[enr], function (ev) {
 
-                angular.forEach(ev.notes, function(note){
+                angular.forEach(ev.notes, function (note) {
                     note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
                     //get enrollment details
-                    EnrollmentService.get(enr).then(function(enrollment){
+                    EnrollmentService.get(enr).then(function (enrollment) {
                         if (enrollment) {
                             angular.forEach(enrollment.notes, function (note) {
                                 note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
@@ -157,20 +157,20 @@ trackerCapture.controller('TeiReportController',
                         }
                     });
 
-                if(ev.dataValues){
-                    ev = EventUtils.processEvent(ev, $scope.stagesById[ev.programStage], $scope.optionSets, $scope.prStDes);
-                }
-            });
+                    if (ev.dataValues) {
+                        ev = EventUtils.processEvent(ev, $scope.stagesById[ev.programStage], $scope.optionSets, $scope.prStDes);
+                    }
+                });
 
-            //get enrollment details
-            EnrollmentService.get(enr).then(function(enrollment){            
-                angular.forEach(enrollment.notes, function(note){
-                    note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
-                });            
-                $scope.enrollments.push(enrollment);               
+                //get enrollment details
+                EnrollmentService.get(enr).then(function (enrollment) {
+                    angular.forEach(enrollment.notes, function (note) {
+                        note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
+                    });
+                    $scope.enrollments.push(enrollment);
+                });
             });
-        });    
-        
+        });
     };
     
     $scope.close = function(){
