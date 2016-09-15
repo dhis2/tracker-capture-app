@@ -89,6 +89,22 @@ trackerCapture.controller('SelectionController',
             //watch for selection of org unit from tree
             $scope.$watch('selectedOrgUnit', function() {
                 if( angular.isObject($scope.selectedOrgUnit)){
+					var currentOrgUnit =  SessionStorageService.get('SELECTED_OU');
+            		var newOrgUnitSelected = false;
+            		if(currentOrgUnit) {
+                		if(currentOrgUnit.id !== $scope.selectedOrgUnit.id){
+                    		newOrgUnitSelected = true;
+                    		SessionStorageService.set('SELECTED_OU', $scope.selectedOrgUnit);
+                    		CurrentSelection.setAdvancedSearchOptions(null);
+                    		for (var index = 0; index < $scope.attributes.length; index++) {
+                        		if($scope.attributes[index].value && !$scope.attributes[index].confidential) {
+                            		$scope.attributes[index].value=null;
+                        		}
+                    		}
+                	}
+            	} else {
+                	SessionStorageService.set('SELECTED_OU', $scope.selectedOrgUnit);
+            	}
                     $scope.doSearch = true;
                     $scope.searchingOrgUnit = $scope.selectedOrgUnit;
 
@@ -102,7 +118,9 @@ trackerCapture.controller('SelectionController',
                     $scope.attributesById = CurrentSelection.getAttributesById();
                     savedAdvancedSeachOptions = CurrentSelection.getAdvancedSearchOptions();
                     if (savedAdvancedSeachOptions) {
-                        $scope.searchingOrgUnit = angular.copy(savedAdvancedSeachOptions.searchingOrgUnit);
+						if (!newOrgUnitSelected) {
+                    		$scope.searchingOrgUnit = angular.copy(savedAdvancedSeachOptions.searchingOrgUnit);
+                		}        
                         $scope.selectedOuMode = angular.copy(savedAdvancedSeachOptions.selectedOuMode);
                         $scope.enrollment.programEnrollmentStartDate = savedAdvancedSeachOptions.programEnrollmentStartDate;
                         $scope.enrollment.programEnrollmentEndDate = savedAdvancedSeachOptions.programEnrollmentEndDate;
@@ -119,7 +137,12 @@ trackerCapture.controller('SelectionController',
                         $scope.teiFetched = savedAdvancedSeachOptions.teiFetched;
                         $scope.doSearch = savedAdvancedSeachOptions.doSearch;
                     }
-                    $scope.savedTeis = CurrentSelection.getTrackedEntities();
+                    
+					if (newOrgUnitSelected) {
+                		$scope.savedTeis = null;
+            		} else {
+                		$scope.savedTeis = CurrentSelection.getTrackedEntities();
+            		}
 
                     if(!$scope.attributesById){
                         $scope.attributesById = [];
@@ -460,7 +483,7 @@ trackerCapture.controller('SelectionController',
                         }
 
                         //process tei grid
-                        TEIGridService.format(data, false, $scope.optionSets, null).then(function (response) {
+                        TEIGridService.format($scope.searchingOrgUnit.id, data, false, $scope.optionSets, null).then(function (response) {
                             $scope.trackedEntityList = response;
                             $scope.showSearchDiv = false;
                             $scope.teiFetched = true;

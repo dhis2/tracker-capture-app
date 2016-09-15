@@ -307,7 +307,7 @@ trackerCapture.controller('TEIAddController',
 
                 //process tei grid
                 
-                 TEIGridService.format(data, false, $scope.optionSets, invalidTeis).then(function (response) {
+                 TEIGridService.format($scope.selectedOrgUnit.id, data, false, $scope.optionSets, invalidTeis).then(function (response) {
                     $scope.trackedEntityList = response;
                     $scope.showTrackedEntityDiv = true;
                     $scope.teiFetched = true;
