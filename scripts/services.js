@@ -1712,9 +1712,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 .service('TEIGridService', function(OptionSetService, CurrentSelection, DateUtils, $location, $translate, $filter, OrgUnitFactory){
     
     return {
-        format: function(grid, map, optionSets, invalidTeis, isFollowUp){
-            
-            return OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function (orgUnit) {
+        format: function(selectedOrgUnitId, grid, map, optionSets, invalidTeis, isFollowUp){
+            var ou = ($location.search()).ou;
+            if (!ou) {
+                ou = selectedOrgUnitId;
+            }
+
+            return OrgUnitFactory.getOrgUnit(ou).then(function (orgUnit) {
                 var ou = orgUnit;
 
                 invalidTeis = !invalidTeis ? [] : invalidTeis;
@@ -2179,6 +2183,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         };
         this.eventCreationActions = { add: 'ADD',  schedule: 'SCHEDULE', referral: 'REFERRAL'};
 })
+
 .service('MessagingService', function($http, $translate,  NotificationService, DHIS2URL){
     return {
         sendMessage: function(message){
