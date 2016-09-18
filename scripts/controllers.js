@@ -162,9 +162,6 @@ function($rootScope,
             }
 
             GridColumnService.get("trackerCaptureGridColumns").then(function (gridColumns) {
-                if (!gridColumns) {
-                    return;
-                }
                 $scope.gridColumnsInUserStore = gridColumns;
                 $scope.ouLevels = CurrentSelection.getOuLevels();
                 if(!$scope.ouLevels){
