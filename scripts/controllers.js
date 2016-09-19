@@ -660,15 +660,16 @@ function($rootScope,
         });
         $scope.selectedSearchingOrgUnit = $scope.orgUnits[0] ? $scope.orgUnits[0] : null;
     });
-
+    
+    
     //expand/collapse of search orgunit tree
     $scope.expandCollapse = function(orgUnit) {
         if( orgUnit.hasChildren ){
             //Get children for the selected orgUnit
-            OrgUnitFactory.get(orgUnit.id).then(function(ou) {
+            OrgUnitFactory.getChildren(orgUnit.id).then(function(ou) {
                 orgUnit.show = !orgUnit.show;
                 orgUnit.hasChildren = false;
-                orgUnit.children = ou.organisationUnits[0].children;
+                orgUnit.children = ou.children;
                 angular.forEach(orgUnit.children, function(ou){
                     ou.hasChildren = ou.children && ou.children.length > 0 ? true : false;
                 });
@@ -678,7 +679,6 @@ function($rootScope,
             orgUnit.show = !orgUnit.show;
         }
     };
-
 
     $scope.filterByEnrollmentStatus = function(status, doNotFetch){
         if(status !== $scope.enrollmentStatus){
