@@ -4,7 +4,7 @@
             <accordion-heading>
                 {{orgUnitLabel}} <i class="pull-right" ng-class="{'fa fa-chevron-up vertical-center': searchOuTree.open, 'fa fa-chevron-down vertical-center': !searchOuTree.open}"></i>
             </accordion-heading>
-            <div class="org-unit-tree row" data-stop-propagation="true">
+            <div class="row" data-stop-propagation="true">
                 <script type="text/ng-template" id="orgUnitTree.html">
                     <span class="org-unit-tree-button" ng-click="expandCollapse(orgUnit)" ng-show="orgUnit.show && orgUnit.children.length > 0"><i class="fa fa-minus-square-o"></i></span>
                     <span class="org-unit-tree-button" ng-click="expandCollapse(orgUnit)" ng-show="(!orgUnit.show && orgUnit.children.length > 0) || (!orgUnit.show && orgUnit.hasChildren)"><i class="fa fa-plus-square-o"></i></span>
