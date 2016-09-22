@@ -10,8 +10,7 @@
                         {{getBackButtonText()}}
                     </button>
                 </div>
-                <div ng-include="'components/dashboard/dashboard-topbar.html'" class="dashboard-info-box-container"
-                     ng-class="topbarClass"></div>
+                <div ng-include="'components/dashboard/dashboard-topbar.html'" class="dashboard-info-box-container" ng-class="topbarClass"></div>
                 <div ng-class="topbarRightSizeClass">
                     <button type="button"
                             title="{{model.stickyDisabled ? stickLabel : unstickLabel}}"
@@ -21,18 +20,24 @@
                             ng-click="model.stickyDisabled = !model.stickyDisabled">
                         <i class="fa fa-thumb-tack"></i>
                     </button>
-                    <div class="btn-group trim" dropdown is-open="status.isopen" ng-if="showSettingsButton">
-                        <button type="button" title="{{settingsLabel}}"
-                                class="btn btn-default dropdown-toggle dashboard-info-btn-right-size" dropdown-toggle>
+                    
+                    <div class="btn-group trim">
+                        <button type="button" title="{{'manage' | translate}} {{trackedEntity.displayName}}" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-exclamation-circle"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">                            
+                            <li><a href ng-click="activiateTEI()">{{selectedTei.inactive ? 'activate' : 'deactivate' | translate}} {{trackedEntity.displayName}}</a></li>
+                            <li><a href ng-click="deleteTEI()">{{'delete' | translate}} {{trackedEntity.displayName}}</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="btn-group trim">
+                        <button type="button" title="{{settingsLabel}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-cog"></i>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
                             <li><a href ng-click="showHideWidgets()">{{showHideWidgetsLabel}}</a></li>
-                            <li ng-if="userAuthority.canAdministerDashboard"><a href
-                                                                                ng-click="saveDashboarLayoutAsDefault()">{{'save_layout_as_default'|
-                                translate}}</a></li>
-                            <li><a href ng-click="activiateTEI()">{{selectedTei.inactive ? 'activate' : 'deactivate' |
-                                translate}} {{trackedEntity.displayName}}</a></li>
+                            <li ng-if="userAuthority.canAdministerDashboard"><a href ng-click="saveDashboarLayoutAsDefault()">{{'save_layout_as_default' | translate}}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -94,18 +99,24 @@
                             ng-click="model.stickyDisabled = !model.stickyDisabled">
                         <i class="fa fa-thumb-tack"></i>
                     </button>
-                    <div class="btn-group trim" dropdown is-open="status.isopen">
-                        <button type="button" title="{{settingsLabel}}" class="btn btn-default dropdown-toggle"
-                                dropdown-toggle>
+                    
+                    <div class="btn-group trim">
+                        <button type="button" title="{{'manage' | translate}} {{trackedEntity.displayName}}" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-exclamation-circle"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">                            
+                            <li><a href ng-click="activiateTEI()">{{selectedTei.inactive ? 'activate' : 'deactivate' | translate}} {{trackedEntity.displayName}}</a></li>
+                            <li><a href ng-click="deleteTEI()">{{'delete' | translate}} {{trackedEntity.displayName}}</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="btn-group trim">
+                        <button type="button" title="{{settingsLabel}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-cog"></i>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
                             <li><a href ng-click="showHideWidgets()">{{showHideWidgetsLabel}}</a></li>
-                            <li ng-if="userAuthority.canAdministerDashboard"><a href
-                                                                                ng-click="saveDashboarLayoutAsDefault()">{{'save_layout_as_default'|
-                                translate}}</a></li>
-                            <li><a href ng-click="activiateTEI()">{{selectedTei.inactive ? 'activate' : 'deactivate' |
-                                translate}} {{trackedEntity.displayName}}</a></li>
+                            <li ng-if="userAuthority.canAdministerDashboard"><a href ng-click="saveDashboarLayoutAsDefault()">{{'save_layout_as_default' | translate}}</a></li>
                         </ul>
                     </div>
                 </div>

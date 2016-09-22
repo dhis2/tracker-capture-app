@@ -698,6 +698,24 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             
             return promise;
         },
+        delete: function(entityUid){
+            var promise = $http.delete(DHIS2URL + '/trackedEntityInstances/' + entityUid).then(function(response){
+                return response.data;               
+            }, function (response) {
+                if (response && response.data && response.data.status === 'ERROR') {
+                    var errorBody = $translate.instant('delete_error_audit');
+                    if (response && response.data && response.data.status === 'ERROR') {
+                        if (response.data.message) {
+                            errorBody = response.data.message;
+                        }
+                    }
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                }
+                
+                return response.data;
+            });
+            return promise;           
+        },
         search: function(ouId, ouMode, queryUrl, programUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
             var url;
             var deferred = $q.defer();

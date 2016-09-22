@@ -24,7 +24,8 @@ trackerCapture.controller('DashboardController',
             CurrentSelection,
             ModalService,
             AuthorityService,
-            OrgUnitFactory) {
+            OrgUnitFactory,
+            NotificationService) {
     
     //selections
     var orgUnitUrl = ($location.search()).ou;
@@ -479,6 +480,40 @@ trackerCapture.controller('DashboardController',
                 $scope.broadCastSelections($scope.selectedTei);
             });
         }, function () {
+        });
+    };
+    
+    $scope.deleteTEI = function () {
+        var modalOptions = {
+            closeButtonText: 'no',
+            actionButtonText: 'yes',
+            headerText: 'delete',
+            bodyText: $translate.instant('are_you_sure_to_proceed') + ' ' + $translate.instant('will_delete_everything_related') + ' ' + $scope.trackedEntity.displayName
+        };
+        
+        ModalService.showModal({}, modalOptions).then(function (result) {
+            TEIService.delete($scope.selectedTeiId).then(function (response) {
+                if( !response ){
+                    var teis = CurrentSelection.getTrackedEntities();                
+                    if( teis && teis.rows && teis.rows.own && teis.rows.own.length > 0 ){
+                        var index = -1;
+                        for( var i=0; i<teis.rows.own.length && index === -1; i++ ){
+                            if( teis.rows.own[i].id === $scope.selectedTeiId ){
+                                index = i;
+                            }
+                        }
+
+                        if( index !== -1 ){
+                            teis.rows.own.splice(index, 1);
+                            CurrentSelection.setTrackedEntities(teis);
+                        }
+                    }
+                    
+                    NotificationService.showNotifcationDialog($translate.instant('success'), $scope.trackedEntity.displayName + ' ' + $translate.instant('deleted'));                
+                    $scope.back();
+                }
+                
+            });
         });
     };
 

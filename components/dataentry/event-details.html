@@ -53,7 +53,7 @@
 <!-- coordinates begin -->
 <div class="row" ng-if="currentStage.captureCoordinates && currentEvent.eventDate || currentStage.captureCoordinates && registrationMode === 'REGISTRATION'">    
     <div class="col-sm-12">
-        {{'coordinate' | translate}} - {{!schedulingEnabled || currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed}}
+        {{'coordinate' | translate}}
         <d2-map d2-lat-saved="latitudeSaved"
                 d2-lng-saved="longitudeSaved"
                 d2-object="currentEvent" 
