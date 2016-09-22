@@ -12,7 +12,8 @@ trackerCapture.controller('EnrollmentController',
                 CurrentSelection,
                 EnrollmentService,
                 ModalService,
-                OrgUnitFactory) {
+                OrgUnitFactory,
+                DasboardWidgetService) {
     
     OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
         $scope.today = DateUtils.getToday();
@@ -144,8 +145,6 @@ trackerCapture.controller('EnrollmentController',
         $scope.broadCastSelections = function (listeners) {
             var selections = CurrentSelection.get();
             var tei = selections.tei;
-            $scope.dashboardReady = true;
-
             CurrentSelection.set({
                 tei: tei,
                 te: $scope.selectedEntity,
@@ -159,6 +158,8 @@ trackerCapture.controller('EnrollmentController',
             });
             $timeout(function () {
                 $rootScope.$broadcast(listeners, {});
+                $scope.dashboardReady = true;
+                DasboardWidgetService.updateDashboard();
             }, 200);
         };
 

@@ -12,7 +12,8 @@ trackerCapture.controller('TeiReportController',
                 EventUtils,
                 TEIService,
                 EnrollmentService,
-                OrgUnitFactory) {
+                OrgUnitFactory,
+                DasboardWidgetService) {
     $scope.showProgramReportDetailsDiv = false;
     $scope.enrollmentsByProgram = [];
     $scope.dashboardReady = false;
@@ -30,8 +31,7 @@ trackerCapture.controller('TeiReportController',
             $scope.programs = selections.prs;
             $scope.programNames = selections.prNames;
             $scope.programStageNames = selections.prStNames;
-            $scope.dashboardReady = true;
-
+            
             angular.forEach(selections.enrollments, function (en) {
                 $scope.enrollmentsByProgram[en.program] = en;
             });
@@ -39,6 +39,8 @@ trackerCapture.controller('TeiReportController',
             if ($scope.selectedTei) {
                 $scope.getEvents();
             }
+			$scope.dashboardReady = true;
+            DasboardWidgetService.updateDashboard();
 
         });
     });

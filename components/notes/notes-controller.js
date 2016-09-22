@@ -9,7 +9,8 @@ trackerCapture.controller('NotesController',
                 CurrentSelection,
                 NotificationService,
                 SessionStorageService,
-                orderByFilter) {
+                orderByFilter,
+                DasboardWidgetService) {
     $scope.dashboardReady = false;
     var userProfile = SessionStorageService.get('USER_PROFILE');
     var storedBy = userProfile && userProfile.username ? userProfile.username : '';
@@ -23,8 +24,7 @@ trackerCapture.controller('NotesController',
         $scope.selectedEnrollment = null;
         var selections = CurrentSelection.get();
         $scope.selectedTei = selections.tei;
-        $scope.dashboardReady = true;
-        var selections = CurrentSelection.get();
+        
         if(selections.selectedEnrollment && selections.selectedEnrollment.enrollment){
             EnrollmentService.get(selections.selectedEnrollment.enrollment).then(function(data){
                 if (data) {
@@ -37,7 +37,12 @@ trackerCapture.controller('NotesController',
                         });
                     }
                 }
+                $scope.dashboardReady = true;
+                DasboardWidgetService.updateDashboard();
             });
+        } else {
+            $scope.dashboardReady = true;
+            DasboardWidgetService.updateDashboard();
         }
     });
        

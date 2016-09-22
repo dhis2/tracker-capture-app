@@ -28,7 +28,8 @@ trackerCapture.controller('DataEntryController',
                 PeriodService,
                 OptionSetService,
                 TrackerRulesFactory,
-                EventCreationService) {
+                EventCreationService,
+                DasboardWidgetService) {
     $scope.printForm = false;
     $scope.printEmptyForm = false;
     $scope.eventPageSize = 4;
@@ -556,7 +557,6 @@ trackerCapture.controller('DataEntryController',
 
     //listen for the selected items
     $scope.$on('dashboardWidgets', function () {
-        $scope.dashboardReady = true;
         $scope.showDataEntryDiv = false;
         $scope.showEventCreationDiv = false;
         $scope.currentEvent = null;
@@ -654,7 +654,9 @@ trackerCapture.controller('DataEntryController',
 
                 TrackerRulesFactory.getRules($scope.selectedProgram.id).then(function(rules){                    
                     $scope.allProgramRules = rules;
-                    $scope.getEvents();                    
+                    $scope.getEvents();
+                    $scope.dashboardReady = true;
+                    DasboardWidgetService.updateDashboard();
                     broadcastDataEntryControllerData();
                 });    	        
     	    }

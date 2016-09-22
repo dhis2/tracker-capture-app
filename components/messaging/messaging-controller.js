@@ -4,7 +4,8 @@ var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('MessagingController',
         function($scope, $translate,
                 MessagingService,
-                CurrentSelection) {
+                CurrentSelection,
+                DasboardWidgetService) {
     $scope.dashboardReady = false;
 
     //$scope.messagingForm = {};
@@ -17,8 +18,6 @@ trackerCapture.controller('MessagingController',
         $scope.selectedEnrollment = null;
         $scope.selections = CurrentSelection.get();
         $scope.selectedTei = $scope.selections.tei;
-        $scope.dashboardReady = true;
-
         if ($scope.selectedTei) {
             //check if the selected TEI has any of the contact attributes
             //that can be used for messaging
@@ -38,6 +37,8 @@ trackerCapture.controller('MessagingController',
                 }
             }
         }
+        $scope.dashboardReady = true;
+        DasboardWidgetService.updateDashboard();
     });
 
     $scope.sendMessage = function(){

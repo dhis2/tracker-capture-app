@@ -11,7 +11,8 @@ trackerCapture.controller('RelationshipController',
                 CurrentSelection,
                 RelationshipFactory,
                 ModalService,
-                CommonUtils) {
+                CommonUtils,
+                DasboardWidgetService) {
     $scope.dashboardReady = false;
     $rootScope.showAddRelationshipDiv = false;    
     $scope.relatedProgramRelationship = false;
@@ -45,6 +46,7 @@ trackerCapture.controller('RelationshipController',
             });
             
             $scope.dashboardReady = true;
+            DasboardWidgetService.updateDashboard();
             setRelationships();            
         });
     });

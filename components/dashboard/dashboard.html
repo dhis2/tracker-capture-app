@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div ng-show="model.allWidgetsReady" class="row">
             <div height-change-target ng-if="useTopBar" class="vertical-spacing"></div>
             <!-- dashboard bigger widgets begin -->
             <div ng-class="widgetSize.bigger">
@@ -80,14 +80,15 @@
                      ng-repeat="biggerWidget in dashboardWidgets | orderBy:'order' | filter: {parent: 'biggerWidget'}">
                     <div ng-show="(biggerWidget.show && !temporaryHideWidgets[biggerWidget.title]) || temporaryShowWidgets[biggerWidget.title]"
                          ng-include="biggerWidget.view"
-                         ng-class="{true: 'hideInPrint'} [biggerWidget.title != 'report']"></div>
+                         ng-class="{true: 'hideInPrint'} [biggerWidget.title != 'report']">
+					</div>
                 </div>
             </div>
         </div>
         <!-- dashboard bigger widgets end -->
 
         <!-- dashboard smaller widgets begin -->
-        <div ng-class="[!model.stickyDisabled ? 'widgets-sticky' : '', widgetSize.smaller]">
+        <div ng-show="model.allWidgetsReady" ng-class="[!model.stickyDisabled ? 'widgets-sticky' : '', widgetSize.smaller]">
             <!-- dashboard setting begins -->
             <div class="row add-default-right-padding vertical-spacing" ng-if="!useTopBar">
                 <div class="pull-right">
@@ -137,12 +138,17 @@
 
 
     </div>
+    </div>
+    </div>
+
     <!-- dashboard widgets end -->
 
 
-    <div class="col-sm-12" ng-if="!metaDataCached">
-        <img src="../images/ajax-loader-bar.gif" alt="{{'in_progress'| translate}}"/><br>
-        {{'loading_metadata'| translate}}
+    <div class="spinner" ng-if="!metaDataCached || !model.allWidgetsReady">
+        <i class="fa fa-spinner fa-spin fa-5x"></i>
+        <br>
+        <span class="spinner-label" ng-if="!metaDataCached">{{'loading_metadata'| translate}}</span>
+        <span class="spinner-label" ng-if="metaDataCached && !model.allWidgetsReady">{{'loading_components'| translate}}</span>
     </div>
 
 </div>

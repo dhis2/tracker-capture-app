@@ -5,7 +5,8 @@ trackerCapture.controller('ProfileController',
         function($rootScope,
                 $scope,
                 $timeout,
-                CurrentSelection) {    
+                CurrentSelection, 
+                DasboardWidgetService) {
     $scope.dashboardReady = false;
     $scope.editingDisabled = true;
     $scope.enrollmentEditing = false;
@@ -28,7 +29,6 @@ trackerCapture.controller('ProfileController',
     });
     
     var listenToBroadCast = function(){
-        $scope.dashboardReady = true;
         $scope.editingDisabled = true;
         selections = CurrentSelection.get();
         $scope.selectedTei = angular.copy(selections.tei);
@@ -48,6 +48,9 @@ trackerCapture.controller('ProfileController',
 
         $timeout(function() { 
             $rootScope.$broadcast('registrationWidget', {registrationMode: 'PROFILE', selectedTei: $scope.selectedTei, enrollment: $scope.selectedEnrollment});
+			$scope.dashboardReady = true;
+			DasboardWidgetService.updateDashboard();
+
         }, 600);
     };
     

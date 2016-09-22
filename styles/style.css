@@ -2252,3 +2252,17 @@ button.list-group-item-danger.active:focus {
     border-color: #a94442;
 }
 /* End from Bootstrap 3.3.x */
+
+.spinner{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+    width:100px;
+    height:100px;
+}
+.spinner-label {
+    margin: -30px;
+}
