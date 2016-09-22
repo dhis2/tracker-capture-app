@@ -317,7 +317,6 @@ trackerCapture.controller('DashboardController',
                 numOfwidgetsOnDashboard = $rootScope.dashboardWidgets.filter(function(widget){
                     return widget.show;
                 }).length;
-                alert("num is set to "+numOfwidgetsOnDashboard);
             }   else  {
                 return;
             }
