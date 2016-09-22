@@ -87,6 +87,20 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     };
 })
 
+.service('DasboardWidgetService', function() {
+    var dashboardUpdateCallback;
+    var numberOfWidgetsReady = 0;
+    return {
+        registerDashboardUpdateCallback: function (callback) {
+            dashboardUpdateCallback = callback;
+        },
+        updateDashboard: function () {
+            numberOfWidgetsReady++;
+            dashboardUpdateCallback(numberOfWidgetsReady);
+        }
+    }
+})
+
 /* current selections */
 .service('PeriodService', function(DateUtils, CalendarService, $filter){
     
