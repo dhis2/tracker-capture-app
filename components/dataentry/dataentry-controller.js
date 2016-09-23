@@ -1553,12 +1553,19 @@ trackerCapture.controller('DataEntryController',
         var dhis2Event = $scope.makeDhis2EventToUpdate();
 
         DHIS2EventFactory.update(dhis2Event).then(function (response) {
-            $scope.currentEventOriginal = angular.copy($scope.currentEvent);
-            $scope.currentStageEventsOriginal = angular.copy($scope.currentStageEvents);
-            
-            $scope.latitudeSaved = true;
-            $scope.longitudeSaved = true;            
-            $scope.currentElement = {};
+            if( response ){
+                $scope.currentEventOriginal = angular.copy($scope.currentEvent);
+                $scope.currentStageEventsOriginal = angular.copy($scope.currentStageEvents);
+                
+                $scope.latitudeSaved = true;
+                $scope.longitudeSaved = true;
+            }
+            else{                
+                $scope.currentEvent = angular.copy( $scope.currentEventOriginal );
+                $scope.latitudeSaved = false;
+                $scope.longitudeSaved = false;
+            }            
+            $scope.currentElement = {};            
         });
     };
 
@@ -1818,6 +1825,12 @@ trackerCapture.controller('DataEntryController',
                 }
                 outerDataEntryForm.$setSubmitted();
                 if(outerDataEntryForm.$invalid){
+                    var dialogOptions = {
+                        headerText: 'errors',
+                        bodyText: 'form_invalid',
+                        sections: sections
+                    };
+                    NotificationService.showNotifcationWithOptions({}, dialogOptions);                    
                     return;
                 }
             }
@@ -2261,34 +2274,6 @@ trackerCapture.controller('DataEntryController',
         }
         
     };
-
-    /*$scope.showDataElementMap = function(obj, id, fieldId){
-        var lat = "",
-            lng = "";
-        if(obj[id] && obj[id].length > 0){
-            var coordinates = obj[id].split(",");
-            lng = coordinates[0];
-            lat = coordinates[1];
-        }
-        var modalInstance = $modal.open({
-            templateUrl: '../dhis-web-commons/angular-forms/map.html',
-            controller: 'MapController',
-            windowClass: 'modal-full-window',
-            resolve: {
-                location: function () {
-                    return {lat: lat, lng: lng};
-                }
-            }
-        });
-
-        modalInstance.result.then(function (location) {
-            if(angular.isObject(location)){
-                obj[id] = location.lng + ',' + location.lat;
-                $scope.saveDatavalue($scope.prStDes[id], fieldId);
-            }
-        }, function () {
-        });
-    };*/
     
     $scope.interacted = function (field, form) {        
         
