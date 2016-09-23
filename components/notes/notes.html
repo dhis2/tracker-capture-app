@@ -10,13 +10,9 @@
         </span>        
     </div>
     <div ng-show="notesWidget.expand" class="panel-body dashboard-widget-container">
-        
-        <div ng-if="!dashboardReady">
-            <img id="ouwt_loader" src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
-        </div>
-        
+
         <!-- notes section begins -->
-        <div ng-if="dashboardReady">
+        <div>
             <div ng-show="showNotesDiv">
                 <div ng-show="!selectedEnrollment" class="alert alert-danger">{{'not_yet_enrolled_note'| translate}}</div>
                 <div ng-show='selectedEnrollment' class='remove-default-padding overflow-ellipsis'>                

@@ -34,7 +34,6 @@ trackerCapture.controller('DataEntryController',
     $scope.printEmptyForm = false;
     $scope.eventPageSize = 4;
     $scope.maxOptionSize = 30;
-    $scope.dashboardReady = false;
     $scope.eventPagingStart = 0;
     $scope.eventPagingEnd = $scope.eventPageSize;
     
@@ -655,11 +654,12 @@ trackerCapture.controller('DataEntryController',
                 TrackerRulesFactory.getRules($scope.selectedProgram.id).then(function(rules){                    
                     $scope.allProgramRules = rules;
                     $scope.getEvents();
-                    $scope.dashboardReady = true;
                     DasboardWidgetService.updateDashboard();
                     broadcastDataEntryControllerData();
                 });    	        
-    	    }
+    	    } else {
+                DasboardWidgetService.updateDashboard();
+            }
         });
     });
     

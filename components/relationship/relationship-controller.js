@@ -13,8 +13,7 @@ trackerCapture.controller('RelationshipController',
                 ModalService,
                 CommonUtils,
                 DasboardWidgetService) {
-    $scope.dashboardReady = false;
-    $rootScope.showAddRelationshipDiv = false;    
+    $rootScope.showAddRelationshipDiv = false;
     $scope.relatedProgramRelationship = false;
     
     //listen for the selected entity       
@@ -44,8 +43,6 @@ trackerCapture.controller('RelationshipController',
             angular.forEach(rels, function(rel){
                 $scope.relationships[rel.id] = rel;
             });
-            
-            $scope.dashboardReady = true;
             DasboardWidgetService.updateDashboard();
             setRelationships();            
         });

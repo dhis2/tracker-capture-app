@@ -18,7 +18,6 @@ trackerCapture.controller('EnrollmentController',
     OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
         $scope.today = DateUtils.getToday();
         $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
-        $scope.dashboardReady = false;
 
         //listen for the selected items
         var selections = {};
@@ -158,7 +157,6 @@ trackerCapture.controller('EnrollmentController',
             });
             $timeout(function () {
                 $rootScope.$broadcast(listeners, {});
-                $scope.dashboardReady = true;
                 DasboardWidgetService.updateDashboard();
             }, 200);
         };

@@ -18,12 +18,7 @@
         </span>        
     </div>
     <div ng-show="relationshipsWidget.expand" class="panel-body dashboard-widget-container">
-        
-        <div ng-if="!dashboardReady">
-            <img id="ouwt_loader" src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
-        </div>
-        
-        <div ng-if="dashboardReady">
+        <div>
             <div ng-show="selectedTei && !selectedTei.relationships || selectedTei.relationships.length < 1" class="alert alert-warning">{{noRelationshipLabel}}</div> 
             <div ng-show="!selectedTei" class="alert alert-danger">{{'relationship_not_possible'| translate}}</div> 
 

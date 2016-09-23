@@ -11,14 +11,9 @@
         </span>        
     </div>
     <div ng-show="messagingWidget.expand" class="panel-body dashboard-widget-container">
-        
-        <div ng-if="!dashboardReady">
-            <img id="ouwt_loader" src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
-        </div>
-        
         <!-- sms section begins -->
         <form name="messagingForm">
-            <div ng-if="dashboardReady">
+            <div>
                 <ui-select ng-model="model.selectedMessageType"
                            theme="select2"
                            on-select=""

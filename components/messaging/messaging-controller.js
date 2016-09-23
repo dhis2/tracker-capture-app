@@ -6,7 +6,6 @@ trackerCapture.controller('MessagingController',
                 MessagingService,
                 CurrentSelection,
                 DasboardWidgetService) {
-    $scope.dashboardReady = false;
 
     //$scope.messagingForm = {};
     $scope.note = {};
@@ -37,7 +36,6 @@ trackerCapture.controller('MessagingController',
                 }
             }
         }
-        $scope.dashboardReady = true;
         DasboardWidgetService.updateDashboard();
     });
 

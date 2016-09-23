@@ -10,12 +10,7 @@
         </span>        
     </div>    
     <div ng-show="current_selectionsWidget.expand" class="panel-body dashboard-element-container">
-        
-        <div ng-if="!dashboardReady">
-            <img id="ouwt_loader" src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
-        </div>
-        
-        <div ng-if="dashboardReady">
+        <div>
             <div class="row" ng-repeat="selection in selections">
                 <div class="col-sm-6">
                     {{selection.title| translate}}

@@ -11,7 +11,6 @@ trackerCapture.controller('NotesController',
                 SessionStorageService,
                 orderByFilter,
                 DasboardWidgetService) {
-    $scope.dashboardReady = false;
     var userProfile = SessionStorageService.get('USER_PROFILE');
     var storedBy = userProfile && userProfile.username ? userProfile.username : '';
 
@@ -37,11 +36,9 @@ trackerCapture.controller('NotesController',
                         });
                     }
                 }
-                $scope.dashboardReady = true;
                 DasboardWidgetService.updateDashboard();
             });
         } else {
-            $scope.dashboardReady = true;
             DasboardWidgetService.updateDashboard();
         }
     });

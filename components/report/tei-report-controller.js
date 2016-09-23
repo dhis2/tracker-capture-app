@@ -16,7 +16,6 @@ trackerCapture.controller('TeiReportController',
                 DasboardWidgetService) {
     $scope.showProgramReportDetailsDiv = false;
     $scope.enrollmentsByProgram = [];
-    $scope.dashboardReady = false;
     $scope.orgUnitLabel = $translate.instant('org_unit');
 
     $scope.$on('dashboardWidgets', function(event, args) {
@@ -39,7 +38,6 @@ trackerCapture.controller('TeiReportController',
             if ($scope.selectedTei) {
                 $scope.getEvents();
             }
-			$scope.dashboardReady = true;
             DasboardWidgetService.updateDashboard();
 
         });
