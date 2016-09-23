@@ -92,6 +92,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     var numberOfWidgetsReady = 0;
     return {
         registerDashboardUpdateCallback: function (callback) {
+            numberOfWidgetsReady = 0;
             dashboardUpdateCallback = callback;
         },
         updateDashboard: function () {
