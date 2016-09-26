@@ -220,7 +220,7 @@ function getTrackedEntities()
 
 function getMetaPrograms()
 {    
-    return dhis2.tracker.getTrackerObjects('programs', 'programs', DHIS2URL + '/programs.json', 'filter=programType:eq:WITH_REGISTRATION&paging=false&fields=id,version,programTrackedEntityAttributes[trackedEntityAttribute[id,optionSet[id]]],programStages[id,programStageDataElements[dataElement[id,optionSet[id]]]]', 'temp', dhis2.tc.store);
+    return dhis2.tracker.getTrackerObjects('programs', 'programs', DHIS2URL + '/programs.json', 'filter=programType:eq:WITH_REGISTRATION&paging=false&fields=id,version,programTrackedEntityAttributes[trackedEntityAttribute[id,optionSet[id,version]]],programStages[id,programStageDataElements[dataElement[id,optionSet[id,version]]]]', 'temp', dhis2.tc.store);
 }
 
 function filterMissingPrograms( programs )
