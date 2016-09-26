@@ -61,7 +61,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 data: dashboardLayout,
                 headers: {'Content-Type': 'text/plain;charset=utf-8'}
             }).then(function(response){
-                NotificationService.showNotifcationDialog($translate.instant("success"), $translate.instant('dashboard_layout_saved'));
                 return response.data;
             },function(error){
                 var errorMsgHdr, errorMsgBody;
