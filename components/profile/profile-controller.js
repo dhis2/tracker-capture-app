@@ -47,9 +47,10 @@ trackerCapture.controller('ProfileController',
 
         $timeout(function() { 
             $rootScope.$broadcast('registrationWidget', {registrationMode: 'PROFILE', selectedTei: $scope.selectedTei, enrollment: $scope.selectedEnrollment});
-			DasboardWidgetService.updateDashboard();
-
-        }, 600);
+            $timeout(function() {
+                DasboardWidgetService.updateDashboard();
+            },600);
+        });
     };
     
     $scope.enableEdit = function(){
