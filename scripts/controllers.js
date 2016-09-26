@@ -377,17 +377,18 @@ function($rootScope,
             }
             if($scope.model.searchText){
                 $scope.queryUrl = 'query=LIKE:' + $scope.model.searchText;
-            }
-            else{
+            } else {
                 if(!$scope.selectedProgram || !$scope.selectedProgram.displayFrontPageList){
                     $scope.emptySearchText = true;
                     $scope.teiFetched = false;
                     return;
                 }
             }
-
             $scope.attributes = EntityQueryFactory.resetAttributesQuery($scope.attributes, $scope.enrollment);
             $scope.searchingOrgUnit = $scope.selectedSearchingOrgUnit && $scope.selectedSearchingOrgUnit.id ? $scope.selectedSearchingOrgUnit : $scope.selectedOrgUnit;
+        } else {
+            $scope.model.searchText = null;
+            $scope.queryUrl = null;
         }
 
         if($scope.selectedProgram){
@@ -397,19 +398,22 @@ function($rootScope,
             }
         }
 
-        if( $scope.selectedSearchMode === $scope.searchMode.attributeBased ){
-
-            $scope.model.searchText = null;
-
+        if( $scope.selectedSearchMode === $scope.searchMode.attributeBased ) {
             $scope.attributeUrl = EntityQueryFactory.getAttributesQuery($scope.attributes, $scope.enrollment);
 
-            if(!$scope.attributeUrl.hasValue){
+            if (!$scope.attributeUrl.hasValue) {
                 $scope.emptySearchAttribute = true;
                 $scope.teiFetched = false;
                 return;
             }
 
             $scope.searchingOrgUnit = $scope.selectedSearchingOrgUnit && $scope.selectedSearchingOrgUnit.id ? $scope.selectedSearchingOrgUnit : $scope.selectedOrgUnit;
+
+        } else {
+            if( $scope.attributeUrl && $scope.attributeUrl.hasValue) {
+                $scope.attributeUrl.url = null;
+                $scope.attributeUrl.hasValue = false;
+            }
         }
 
         if( $scope.selectedSearchMode === $scope.searchMode.listAll ){
