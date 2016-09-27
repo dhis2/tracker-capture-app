@@ -97,9 +97,11 @@ function($rootScope,
                     newOrgUnitSelected = true;
                     SessionStorageService.set('SELECTED_OU', $scope.selectedOrgUnit);
                     CurrentSelection.setAdvancedSearchOptions(null);
-                    for (var index = 0; index < $scope.attributes.length; index++) {
-                        if($scope.attributes[index].value && !$scope.attributes[index].confidential) {
-                            $scope.attributes[index].value=null;
+                    if ($scope.attributes) {
+                        for (var index = 0; index < $scope.attributes.length; index++) {
+                            if ($scope.attributes[index].value && !$scope.attributes[index].confidential) {
+                                $scope.attributes[index].value = null;
+                            }
                         }
                     }
                 }
