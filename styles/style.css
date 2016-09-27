@@ -733,7 +733,7 @@ table.table-striped tr td.optionset {
 
 #searchOuTree {
     max-height: 400px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 #searchOuTree::-webkit-scrollbar {
