@@ -432,6 +432,11 @@ trackerCapture.controller('RegistrationController',
         $scope.teiValueUpdated = function (tei, field) {
             $scope.executeRules();
         };
+        
+        $scope.saveDataValueForRadio = function(attributeId, value){
+            $scope.selectedTei[attributeId] = value;
+            $scope.executeRules();
+        }
 
         //listen for rule effect changes
         $scope.$on('ruleeffectsupdated', function (event, args) {
