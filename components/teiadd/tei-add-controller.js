@@ -535,7 +535,7 @@ trackerCapture.controller('TEIAddController',
     $scope.attributesById = CurrentSelection.getAttributesById();
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
-    $scope.customForm = null;
+    $scope.customRegistrationForm = null;
     $scope.selectedTei = {};
     $scope.teiOriginal = {};
     $scope.tei = {};
@@ -608,7 +608,7 @@ trackerCapture.controller('TEIAddController',
     //watch for selection of program
     $scope.$watch('selectedProgramForRelative', function() {        
         $scope.trackedEntityForm = null;
-        $scope.customForm = null;
+        $scope.customRegistrationForm = null;
         $scope.customFormExists = false;        
         AttributesFactory.getByProgram($scope.selectedProgramForRelative).then(function(atts){
             $scope.attributes = TEIGridService.generateGridColumns(atts, null,false).columns;                       
@@ -619,7 +619,7 @@ trackerCapture.controller('TEIAddController',
                 $scope.trackedEntityForm.selectIncidentDatesInFuture = $scope.selectedProgramForRelative.selectIncidentDatesInFuture;
                 $scope.trackedEntityForm.selectEnrollmentDatesInFuture = $scope.selectedProgramForRelative.selectEnrollmentDatesInFuture;
                 $scope.trackedEntityForm.displayIncidentDate = $scope.selectedProgramForRelative.displayIncidentDate;
-                $scope.customForm = CustomFormService.getForTrackedEntity($scope.trackedEntityForm, 'RELATIONSHIP');
+                $scope.customRegistrationForm = CustomFormService.getForTrackedEntity($scope.trackedEntityForm, 'RELATIONSHIP');
             }
             assignInheritance();
             getRules();                
