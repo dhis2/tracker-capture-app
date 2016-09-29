@@ -118,7 +118,7 @@ input.option {
 /*----------------------------------------------------------------------------*/
 
 .data-entry {
-    overflow: scroll;
+    overflow: auto;
 }
 
 .table-flow {
@@ -728,7 +728,7 @@ table.table-striped tr td.optionset {
     margin: 5px;
     padding: 5px 9px 5px 5px;
     max-height: 570px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 #searchOuTree {
@@ -759,7 +759,7 @@ table.table-striped tr td.optionset {
     padding: 5px;
     min-height: 500px;
     max-height: 500px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .trim {
