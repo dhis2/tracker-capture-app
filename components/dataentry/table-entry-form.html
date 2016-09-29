@@ -298,16 +298,9 @@
                                            name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
                                 </div>
                                 <div ng-switch-default>
-                                    <input type="text"
-                                           class="form-control"
-                                        ng-class='getInputNotifcationClass(prStDe.dataElement.id,false)'
-                                        ng-model="eventRow[prStDe.dataElement.id]"
-                                        ng-required={{prStDe.compulsory}}
-                                        title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
-                                        ng-dblclick="$event.stopPropagation();"
-                                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
-                                        ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
-                                        name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
+                                    <div class="alert alert-danger form-control">
+                                        {{'unsupported_value_type' | translate}}:  {{prStDe.dataElement.valueType}}
+                                    </div>
                                 </div>
                             </div>
 

@@ -244,7 +244,7 @@
                                 d2-function="teiValueUpdated(selectedTei, attribute.id)">
                         </d2-org-unit-tree>
                     </span>
-                    <span ng-switch-default>
+                    <span ng-switch-when="TEXT">
                         <input type="text"
                                name="foo" 
                                class="form-control"
@@ -257,6 +257,25 @@
                                ng-disabled="isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
+                    </span>
+                    <span ng-switch-when="PHONE_NUMBER">
+                        <input type="text"
+                               name="foo" 
+                               class="form-control"
+                               ng-model="selectedTei[attribute.id]" 
+                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                               d2-attribute-validator
+                               attribute-data={{attribute}}
+                               selected-program-id={{selectedProgram.id}}  
+                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
+                               ng-disabled="isDisabled(attribute)"
+                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                               ng-required="attribute.mandatory"/>
+                    </span>
+                    <span ng-switch-default>
+                        <span class="alert alert-danger form-control">
+                            {{'unsupported_value_type' | translate}}:  {{attribute.valueType}}
+                        </span>
                     </span>
                 </span>
                 <div ng-messages="innerForm.foo.$error" ng-if="interacted(innerForm.foo)" class="required hideInPrint" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">

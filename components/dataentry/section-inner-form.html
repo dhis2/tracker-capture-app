@@ -279,7 +279,7 @@
                     d2-function="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)">
             </d2-org-unit-tree>
         </div>
-        <div ng-switch-default>
+        <div ng-switch-when="TEXT">
             <div class="hideInPrint">
                 <input type="text"
                        class="form-control"
@@ -292,6 +292,11 @@
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" value={{currentEvent[prStDes[de.dataElement.id].dataElement.id]}}>
+            </div>
+        </div>
+        <div ng-switch-default>
+            <div class="alert alert-danger form-control">
+                {{'unsupported_value_type' | translate}}:  {{prStDes[de.dataElement.id].dataElement.valueType}}
             </div>
         </div>
         <div ng-messages="innerForm.foo.$error" ng-if="interacted(innerForm.foo, outerDataEntryForm)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">

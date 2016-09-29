@@ -2097,9 +2097,9 @@ a.disable-link-effects:focus {
     margin-bottom:20px;
 }
 
-.ui-select-dropdown, .select2-drop {
+/*.ui-select-dropdown, .select2-drop {
     z-index: 100;
-}
+}*/
 
 .empty-span {
     width: 0px;
