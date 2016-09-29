@@ -1891,6 +1891,7 @@ trackerCapture.controller('DataEntryController',
                 
                 modalDefaults.templateUrl = 'components/dataentry/modal-complete-event.html';
                 dhis2Event.status = 'COMPLETED';
+                dhis2Event.completedDate = today;
             }
         }
         ModalService.showModal(modalDefaults, modalOptions).then(function (modalResult) {

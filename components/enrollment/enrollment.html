@@ -90,9 +90,10 @@
                                     {{selectedEnrollment.status === 'CANCELLED' ? 'activate' : 'deactivate' | translate}}
                                 </button>
                                 <button type="button"
+                                        class="btn"
                                         ng-if="selectedEnrollment.status === 'ACTIVE'"
                                         title="{{selectedEnrollment.followup ? 'unmark_for_followup' : 'mark_for_followup' | translate}}"
-                                        ng-class="{true: 'btn btn-danger', false: 'btn btn-default'} [selectedEnrollment.followup]" 
+                                        ng-class="{true: 'btn-danger', false: 'btn-default'} [selectedEnrollment.followup]" 
                                         ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive"
                                         ng-click="markForFollowup()">
                                     <i class="fa fa-exclamation-triangle"></i>
