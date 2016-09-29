@@ -93,7 +93,7 @@ trackerCapture.controller('RegistrationController',
         $scope.selectedEnrollment = {
             enrollmentDate: $scope.today,
             incidentDate: $scope.today,
-            orgUnitName: $scope.selectedOrgUnit.displayName
+            orgUnitName: $scope.selectedOrgUnit ? $scope.selectedOrgUnit.displayName : ""
         };
 
         $scope.trackedEntities = {available: []};
