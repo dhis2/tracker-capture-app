@@ -2218,9 +2218,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 .service('MessagingService', function($http, $translate,  NotificationService, DHIS2URL){
     return {
-        sendMessage: function(message){
-            var url=DHIS2URL +"/24/messages";
-            var promise = $http.post(url, message).then(function(response){
+        sendMessage: function(message){            
+            var promise = $http.post( DHIS2URL + '/messages' , message).then(function(response){
                 var headerText, bodyText;
                 if (response && response.data && response.data.summaries) {
                     var summary = response.data.summaries[0];
