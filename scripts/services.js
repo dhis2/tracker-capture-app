@@ -631,6 +631,24 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        delete: function( enrollmentUid ){
+            var promise = $http.delete(DHIS2URL + '/enrollments/' + enrollmentUid).then(function(response){
+                return response.data;               
+            }, function (response) {
+                if (response && response.data && response.data.status === 'ERROR') {
+                    var errorBody = $translate.instant('failed_to_delete_enrollment');
+                    if (response && response.data && response.data.status === 'ERROR') {
+                        if (response.data.message) {
+                            errorBody = response.data.message;
+                        }
+                    }
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                }
+                
+                return response.data;
+            });
+            return promise;           
+        },
         updateForNote: function( enrollment ){
             var promise = $http.post(DHIS2URL + '/enrollments/' + enrollment.enrollment + '/note', enrollment).then(function(response){
                 return response.data;         

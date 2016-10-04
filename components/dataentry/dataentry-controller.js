@@ -595,9 +595,8 @@ trackerCapture.controller('DataEntryController',
         
     	    $scope.optionSets = selections.optionSets;
 
-    	    $scope.stagesById = [];
-    	    //$scope.dataElementTranslations = CurrentSelection.getDataElementTranslations();
-    	    if ($scope.selectedOrgUnit && $scope.selectedProgram && $scope.selectedProgram.id && $scope.selectedEntity && $scope.selectedEnrollment && $scope.selectedEnrollment.enrollment) {    	        
+    	    $scope.stagesById = [];    	    
+    	    if ($scope.selectedOrgUnit && $scope.selectedProgram && $scope.selectedProgram.id && $scope.selectedEntity ){
                 
                 $scope.programStages = $scope.selectedProgram.programStages;
 
@@ -651,15 +650,13 @@ trackerCapture.controller('DataEntryController',
                     $scope.optionsReady = true;
                 }
 
-                TrackerRulesFactory.getRules($scope.selectedProgram.id).then(function(rules){                    
+                TrackerRulesFactory.getRules($scope.selectedProgram.id).then(function(rules){
                     $scope.allProgramRules = rules;
                     $scope.getEvents();
                     DasboardWidgetService.updateDashboard();
                     broadcastDataEntryControllerData();
                 });    	        
-    	    } else {
-                DasboardWidgetService.updateDashboard();
-            }
+    	    }
         });
     });
     
@@ -694,7 +691,7 @@ trackerCapture.controller('DataEntryController',
         $scope.allEventsSorted = [];
         var events = CurrentSelection.getSelectedTeiEvents();        
         events = $filter('filter')(events, {program: $scope.selectedProgram.id});
-        if (angular.isObject(events)) {
+        if (angular.isObject(events) && events.length > 0) {
             angular.forEach(events, function (dhis2Event) {
                 if (dhis2Event.enrollment === $scope.selectedEnrollment.enrollment && dhis2Event.orgUnit) {
                     if (dhis2Event.notes) {
@@ -1255,7 +1252,7 @@ trackerCapture.controller('DataEntryController',
         return otherValues;
     };
     
-    $scope.getDataEntryForm = function () {
+    $scope.getDataEntryForm = function () {        
         $scope.currentFileNames = $scope.fileNames[$scope.currentEvent.event] ? $scope.fileNames[$scope.currentEvent.event] : [];
         $scope.currentStage = $scope.stagesById[$scope.currentEvent.programStage];
         $scope.currentStageEvents = $scope.eventsByStage[$scope.currentEvent.programStage];

@@ -14,7 +14,7 @@
     </div>
 
     <div ng-show="dataentryTabularWidget.expand" class="panel-body dashboard-widget-container">
-        <div ng-if="showSelf">
+        <div ng-if="selectedEnrollment && selectedEnrollment.enrollment">
             <div>
                 <div class="row">
                     <div class="col-sm-12">
@@ -58,8 +58,9 @@
                 </div>
             </div>
         </div>
-        <div ng-if="!showSelf">
+        <div ng-if="!selectedEnrollment">
             <div class="alert alert-warning">{{'no_active_enrollment'| translate}}</div>
-        </div>        
+        </div>
+        <div ng-if="selectedEnrollment && !selectedEnrollment.enrollment" class="alert alert-danger">{{notEnrolledLabel}}</div>
     </div>    
 </div>

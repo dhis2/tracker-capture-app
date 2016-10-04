@@ -89,8 +89,13 @@
                                         ng-click="activateDeactivateEnrollment()">
                                     {{selectedEnrollment.status === 'CANCELLED' ? 'activate' : 'deactivate' | translate}}
                                 </button>
+                                <button type="button" 
+                                        class="btn btn-danger"
+                                        ng-click="deleteEnrollment()">
+                                    {{'delete' | translate}}
+                                </button>                                
                                 <button type="button"
-                                        class="btn"
+                                        class="btn pull-right"
                                         ng-if="selectedEnrollment.status === 'ACTIVE'"
                                         title="{{selectedEnrollment.followup ? 'unmark_for_followup' : 'mark_for_followup' | translate}}"
                                         ng-class="{true: 'btn-danger', false: 'btn-default'} [selectedEnrollment.followup]" 

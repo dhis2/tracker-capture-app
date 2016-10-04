@@ -144,7 +144,7 @@ trackerCapture.controller('RegistrationController',
             $scope.teiOriginal = angular.copy($scope.tei);
 
             if ($scope.registrationMode === 'PROFILE') {
-                $scope.selectedEnrollment = args.enrollment;
+                $scope.selectedEnrollment = args.enrollment ? args.enrollment : {};
             }
 
             $scope.getAttributes($scope.registrationMode);

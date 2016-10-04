@@ -93,17 +93,11 @@ trackerCapture.controller('EnrollmentController',
             $scope.showEnrollmentHistoryDiv = false;
             $scope.selectedEnrollment = enrollment;
 
-            if ($scope.selectedEnrollment.enrollment && $scope.selectedEnrollment.orgUnit) {
-                $scope.broadCastSelections('dashboardWidgets');
-            }
+            $scope.broadCastSelections('dashboardWidgets');
         };
 
         $scope.showNewEnrollment = function () {
             $scope.showEnrollmentDiv = !$scope.showEnrollmentDiv;
-
-            $timeout(function () {
-                $rootScope.$broadcast('enrollmentEditing', {enrollmentEditing: $scope.showEnrollmentDiv});
-            }, 200);
 
             if ($scope.showEnrollmentDiv) {
 
@@ -115,7 +109,6 @@ trackerCapture.controller('EnrollmentController',
                 if( $scope.selectedProgram && $scope.selectedProgram.captureCoordinates ){
                     $scope.selectedEnrollment.coordinate = {};
                 }
-                $scope.loadEnrollmentDetails($scope.selectedEnrollment);
 
                 $timeout(function () {
                     $rootScope.$broadcast('registrationWidget', {
@@ -223,6 +216,23 @@ trackerCapture.controller('EnrollmentController',
                         $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
                         $scope.loadEnrollmentDetails($scope.selectedEnrollment);
                     }
+                });
+            });
+        };
+        
+        $scope.deleteEnrollment = function () {
+
+            var modalOptions = {
+                closeButtonText: 'no',
+                actionButtonText: 'yes',
+                headerText: 'delete_enrollment',
+                bodyText: 'are_you_sure_to_delete_enrollment'
+            };
+
+            ModalService.showModal({}, modalOptions).then(function (result) {                
+                EnrollmentService.delete( $scope.selectedEnrollment.enrollment ).then(function (data) {
+                    $scope.selectedEnrollment = null;
+                    $scope.broadCastSelections('mainDashboard');
                 });
             });
         };
