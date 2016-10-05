@@ -426,6 +426,10 @@ input[type=date]::-webkit-inner-spin-button, input[type=date]::-webkit-outer-spi
     margin: 0;
 }
 
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
 .big-button {
     padding-left: 40px;
     padding-right: 40px;
