@@ -31,80 +31,83 @@
                         </span>
                     </div>
                     <div class="vertical-spacing">
-                        <div ng-if="selectedEnrollment.enrollment">                    
-                            <table class="dhis2-list-table-striped default-form-table">
-                                <tr>
-                                    <td>
-                                        {{'enrolling_orgunit' | translate}}
-                                    </td>
-                                    <td class="absorbing-column">
-                                        <input type="text" class="form-control" value={{selectedEnrollment.orgUnitName}} ng-disabled="true"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        {{selectedProgram.enrollmentDateLabel}}
-                                    </td>
-                                    <td class="absorbing-column">
-                                        <input type="text" placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.enrollmentDate" ng-disabled="true"/>
-                                    </td>
-                                </tr>
-                                <tr ng-if="selectedProgram.displayIncidentDate">                    
-                                    <td>
-                                        {{selectedProgram.incidentDateLabel}}
-                                    </td>
-                                    <td class="absorbing-column">
-                                        <input type="text" placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.incidentDate" ng-disabled="true"/>
-                                    </td>
-                                </tr>
-                                <tr ng-if="selectedProgram.captureCoordinates">
-                                    <td>
-                                        {{'coordinate' | translate}}
-                                    </td>
-                                    <td>
-                                        <d2-map d2-lat-saved="enrollmentLatSaved"
-                                                d2-lng-saved="enrollmentLngSaved"
-                                                d2-object="selectedEnrollment" 
-                                                d2-disabled="selectedEnrollment.status !== 'ACTIVE'"
-                                                d2-function="saveCoordinate(arg1)" 
-                                                d2-coordinate-format="'COORDINATE'"
-                                                d2-function-param-coordinate="LATLNG">
-                                        </d2-map>
-                                    </td>
-                                </tr>
-                            </table>
+                        <form name="enrollmentForm" novalidate>
+                            <div ng-if="selectedEnrollment.enrollment">                    
+                                <table class="dhis2-list-table-striped default-form-table">
+                                    <tr>
+                                        <td>
+                                            {{'enrolling_orgunit' | translate}}
+                                        </td>
+                                        <td class="absorbing-column">
+                                            <input type="text" class="form-control" value={{selectedEnrollment.orgUnitName}} ng-disabled="true"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {{selectedProgram.enrollmentDateLabel}}
+                                        </td>
+                                        <td class="absorbing-column">
+                                            <input type="text" placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.enrollmentDate" ng-disabled="true"/>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="selectedProgram.displayIncidentDate">                    
+                                        <td>
+                                            {{selectedProgram.incidentDateLabel}}
+                                        </td>
+                                        <td class="absorbing-column">
+                                            <input type="text" placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.incidentDate" ng-disabled="true"/>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="selectedProgram.captureCoordinates">
+                                        <td>
+                                            {{'coordinate' | translate}}
+                                        </td>
+                                        <td>
+                                            <d2-map d2-lat-saved="enrollmentLatSaved"
+                                                    d2-lng-saved="enrollmentLngSaved"
+                                                    d2-object="selectedEnrollment" 
+                                                    d2-disabled="selectedEnrollment.status !== 'ACTIVE'"
+                                                    d2-function="saveCoordinate(arg1)" 
+                                                    d2-coordinate-format="'COORDINATE'"
+                                                    d2-function-param-coordinate="LATLNG">
+                                            </d2-map>
+                                        </td>
+                                    </tr>
+                                </table>
 
-                            <div class="vertical-spacing">
-                                <button type="button" 
-                                        class="btn btn-primary"
-                                        ng-if="selectedEnrollment.status !== 'CANCELLED'"
-                                        ng-disabled="!canUseEnrollment()"
-                                        ng-click="completeReopenEnrollment()">
-                                    {{selectedEnrollment.status === 'ACTIVE' ? 'complete' : 'reopen' | translate}}
-                                </button>
-                                <button type="button" 
-                                        class="btn btn-warning"
-                                        ng-if="selectedEnrollment.status !== 'COMPLETED'"
-                                        ng-disabled="!canUseEnrollment()"
-                                        ng-click="activateDeactivateEnrollment()">
-                                    {{selectedEnrollment.status === 'CANCELLED' ? 'activate' : 'deactivate' | translate}}
-                                </button>
-                                <button type="button" 
-                                        class="btn btn-danger"
-                                        ng-click="deleteEnrollment()">
-                                    {{'delete' | translate}}
-                                </button>                                
-                                <button type="button"
-                                        class="btn pull-right"
-                                        ng-if="selectedEnrollment.status === 'ACTIVE'"
-                                        title="{{selectedEnrollment.followup ? 'unmark_for_followup' : 'mark_for_followup' | translate}}"
-                                        ng-class="{true: 'btn-danger', false: 'btn-default'} [selectedEnrollment.followup]" 
-                                        ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive"
-                                        ng-click="markForFollowup()">
-                                    <i class="fa fa-exclamation-triangle"></i>
-                                </button>
+                                <div class="vertical-spacing">
+                                    <button type="button" 
+                                            class="btn btn-primary"
+                                            ng-if="selectedEnrollment.status !== 'CANCELLED'"
+                                            ng-disabled="!canUseEnrollment()"
+                                            ng-click="completeReopenEnrollment()">
+                                        {{selectedEnrollment.status === 'ACTIVE' ? 'complete' : 'reopen' | translate}}
+                                    </button>
+                                    <button type="button" 
+                                            class="btn btn-warning"
+                                            ng-if="selectedEnrollment.status !== 'COMPLETED'"
+                                            ng-disabled="!canUseEnrollment()"
+                                            ng-click="activateDeactivateEnrollment()">
+                                        {{selectedEnrollment.status === 'CANCELLED' ? 'activate' : 'deactivate' | translate}}
+                                    </button>
+                                    <button type="button" 
+                                            class="btn btn-danger"
+                                            ng-click="deleteEnrollment()">
+                                        {{'delete' | translate}}
+                                    </button>                                
+                                    <button type="button"
+                                            class="btn pull-right"
+                                            ng-if="selectedEnrollment.status === 'ACTIVE'"
+                                            title="{{selectedEnrollment.followup ? 'unmark_for_followup' : 'mark_for_followup' | translate}}"
+                                            ng-class="{true: 'btn-danger', false: 'btn-default'} [selectedEnrollment.followup]" 
+                                            ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive"
+                                            ng-click="markForFollowup()">
+                                        <i class="fa fa-exclamation-triangle"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
+                        
 
                         <!-- various alerts begin -->
                         <div ng-if="selectedProgram && !selectedEnrollment && !showEnrollmentDiv && !hasEnrollmentHistory">

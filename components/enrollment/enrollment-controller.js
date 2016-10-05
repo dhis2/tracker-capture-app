@@ -7,11 +7,13 @@ trackerCapture.controller('EnrollmentController',
                 $route,
                 $location,
                 $timeout,
+                $translate,
                 DateUtils,
                 SessionStorageService,
                 CurrentSelection,
                 EnrollmentService,
                 ModalService,
+                NotificationService,
                 OrgUnitFactory,
                 DasboardWidgetService) {
     
@@ -93,7 +95,9 @@ trackerCapture.controller('EnrollmentController',
             $scope.showEnrollmentHistoryDiv = false;
             $scope.selectedEnrollment = enrollment;
 
-            $scope.broadCastSelections('dashboardWidgets');
+            if ($scope.selectedEnrollment.enrollment && $scope.selectedEnrollment.orgUnit) {
+                $scope.broadCastSelections('dashboardWidgets');
+            }
         };
 
         $scope.showNewEnrollment = function () {
@@ -110,6 +114,8 @@ trackerCapture.controller('EnrollmentController',
                     $scope.selectedEnrollment.coordinate = {};
                 }
 
+                $scope.loadEnrollmentDetails($scope.selectedEnrollment);
+                
                 $timeout(function () {
                     $rootScope.$broadcast('registrationWidget', {
                         registrationMode: 'ENROLLMENT',
@@ -175,7 +181,12 @@ trackerCapture.controller('EnrollmentController',
         };
 
         $scope.activateDeactivateEnrollment = function () {
-
+            
+            if($scope.enrollmentForm && $scope.enrollmentForm.$invalid){
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("form_invalid"));
+                return;
+            }
+            
             var modalOptions = {
                 closeButtonText: 'no',
                 actionButtonText: 'yes',
@@ -198,7 +209,12 @@ trackerCapture.controller('EnrollmentController',
         };
 
         $scope.completeReopenEnrollment = function () {
-
+            
+            if($scope.enrollmentForm && $scope.enrollmentForm.$invalid){
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("form_invalid"));
+                return;
+            }
+            
             var modalOptions = {
                 closeButtonText: 'no',
                 actionButtonText: 'yes',
@@ -238,6 +254,12 @@ trackerCapture.controller('EnrollmentController',
         };
 
         $scope.markForFollowup = function () {
+            
+            if($scope.enrollmentForm && $scope.enrollmentForm.$invalid){
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("form_invalid"));
+                return;
+            }
+            
             $scope.selectedEnrollment.followup = !$scope.selectedEnrollment.followup;
             EnrollmentService.update($scope.selectedEnrollment);
         };

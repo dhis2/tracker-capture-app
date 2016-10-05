@@ -136,7 +136,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     
     this.getPeriods = function(events, stage, enrollment){
      
-        if(!stage){
+        if(!stage || !enrollment){
             return;
         }
         

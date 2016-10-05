@@ -693,7 +693,7 @@ trackerCapture.controller('DataEntryController',
         events = $filter('filter')(events, {program: $scope.selectedProgram.id});
         if (angular.isObject(events) && events.length > 0) {
             angular.forEach(events, function (dhis2Event) {
-                if (dhis2Event.enrollment === $scope.selectedEnrollment.enrollment && dhis2Event.orgUnit) {
+                if (dhis2Event.enrollment === $scope.selectedEnrollment && $scope.selectedEnrollment.enrollment && dhis2Event.orgUnit) {
                     if (dhis2Event.notes) {
                         dhis2Event.notes = orderByFilter(dhis2Event.notes, '-storedDate');
                         angular.forEach(dhis2Event.notes, function (note) {
@@ -2192,7 +2192,7 @@ trackerCapture.controller('DataEntryController',
 
             var stage = $scope.stagesById[key];            
             var sortedEvents = sortStageEvents(stage);           
-            if ($scope.eventsByStage.hasOwnProperty(key) && stage) {
+            if ($scope.eventsByStage.hasOwnProperty(key) && stage && $scope.selectedEnrollment && $scope.selectedEnrollment.enrollment ) {
            
                 var periods = PeriodService.getPeriods(sortedEvents, stage, $scope.selectedEnrollment).occupiedPeriods;
 
