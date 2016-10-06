@@ -6,8 +6,8 @@ L.Icon.Default.imagePath = '../dhis-web-commons/leaflet/images';
 
 /* App Module */
 var trackerCapture = angular.module('trackerCapture',
-        ['ui.bootstrap', 
-         'ngRoute', 
+        ['ui.bootstrap',
+         'ngRoute',
          'ngCookies',
          'ngSanitize',
          'ngMessages',
@@ -22,20 +22,19 @@ var trackerCapture = angular.module('trackerCapture',
          'ui.select',
          'ui.select2',
          'infinite-scroll',
-         'd2HeaderBar',
          'sticky',
          'nvd3ChartDirectives',
          'pascalprecht.translate',
          'leaflet-directive',
          'angularCSS'])
-              
+
 .value('DHIS2URL', '../api')
 
-.config(function($httpProvider, $routeProvider, $translateProvider, $logProvider) {    
-            
+.config(function($httpProvider, $routeProvider, $translateProvider, $logProvider) {
+
     $httpProvider.defaults.useXDomain = true;
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
-    
+
     $routeProvider.when('/', {
         templateUrl:'views/home.html',
         controller: 'SelectionController'
@@ -60,24 +59,24 @@ var trackerCapture = angular.module('trackerCapture',
         controller: 'UpcomingEventsController'
     }).otherwise({
         redirectTo : '../dhis-web-commons/security/login.action'
-    });  
-    
+    });
+
     $translateProvider.preferredLanguage('en');
     $translateProvider.useSanitizeValueStrategy('escaped');
     $translateProvider.useLoader('i18nLoader');
-    
+
     $logProvider.debugEnabled(false);
-    
+
 })
 
-.run(function($templateCache, $http, $rootScope){    
-    $http.get('components/dataentry/inner-form.html').then(function(page){        
+.run(function($templateCache, $http, $rootScope){
+    $http.get('components/dataentry/inner-form.html').then(function(page){
         $templateCache.put('components/dataentry/inner-form.html', page.data);
     });
-    $http.get('components/dataentry/section-inner-form.html').then(function(page){        
+    $http.get('components/dataentry/section-inner-form.html').then(function(page){
         $templateCache.put('components/dataentry/section-inner-form.html', page.data);
     });
-    
+
     $rootScope.maxGridColumnSize = 1;
     $rootScope.maxOptionSize = 30;
 });
