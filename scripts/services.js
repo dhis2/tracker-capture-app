@@ -1205,13 +1205,16 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var promise = $http.post(DHIS2URL + '/events.json', dhis2Event).then(function(response){
                 return response.data;           
             }, function (response) {
-                if (response && response.data && response.data.status === 'ERROR') {
-                    var errorBody = $translate.instant('event_creation_error');
-                    if (response && response.data && response.data.status === 'ERROR') {
-                        if (response.data.message) {
-                            errorBody = response.data.message;
+                if (response && response.data && response.data.status === 'ERROR' || response.data.status === 'WARNING') {
+                    var errorBody = $translate.instant('event_creation_error');                    
+                    if (response.data.message) {
+                        errorBody = response.data.message;                        
+                        if( response.data.response.importSummaries && response.data.response.importSummaries.length > 0 ){
+                            angular.forEach(response.data.response.importSummaries, function(im){
+                                errorBody += im.description;
+                            });
                         }
-                    }
+                    }                    
                     NotificationService.showNotifcationDialog(errorHeader, errorBody);
                     return null;
                 }
