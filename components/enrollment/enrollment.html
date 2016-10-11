@@ -89,20 +89,20 @@
                                             ng-disabled="!canUseEnrollment()"
                                             ng-click="activateDeactivateEnrollment()">
                                         {{selectedEnrollment.status === 'CANCELLED' ? 'activate' : 'deactivate' | translate}}
-                                    </button>
-                                    <button type="button" 
-                                            class="btn btn-danger"
-                                            ng-click="deleteEnrollment()">
-                                        {{'delete' | translate}}
-                                    </button>                                
+                                    </button>                                                                    
                                     <button type="button"
-                                            class="btn pull-right"
+                                            class="btn"
                                             ng-if="selectedEnrollment.status === 'ACTIVE'"
                                             title="{{selectedEnrollment.followup ? 'unmark_for_followup' : 'mark_for_followup' | translate}}"
                                             ng-class="{true: 'btn-danger', false: 'btn-default'} [selectedEnrollment.followup]" 
                                             ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive"
                                             ng-click="markForFollowup()">
                                         <i class="fa fa-exclamation-triangle"></i>
+                                    </button>                                    
+                                    <button type="button" 
+                                            class="btn btn-danger pull-right"
+                                            ng-click="deleteEnrollment()">
+                                        {{'delete' | translate}}
                                     </button>
                                 </div>
                             </div>
