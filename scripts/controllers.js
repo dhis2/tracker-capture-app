@@ -298,24 +298,25 @@ function($rootScope,
         });
 
         function restoreSavedTeis() {
-            $scope.gridColumns = angular.copy(savedAdvancedSeachOptions.gridColumns);
-            $scope.pager = angular.copy(savedAdvancedSeachOptions.pager);
-            Paginator.setPage($scope.pager.page);
-            Paginator.setPageCount($scope.pager.pageCount);
-            Paginator.setPageSize($scope.pager.pageSize);
-            Paginator.setItemCount($scope.pager.total);
+            if (savedAdvancedSeachOptions) {
+                $scope.gridColumns = angular.copy(savedAdvancedSeachOptions.gridColumns);
+                $scope.pager = angular.copy(savedAdvancedSeachOptions.pager);
+                Paginator.setPage($scope.pager.page);
+                Paginator.setPageCount($scope.pager.pageCount);
+                Paginator.setPageSize($scope.pager.pageSize);
+                Paginator.setItemCount($scope.pager.total);
 
-            $scope.frontPageListEnabled = savedAdvancedSeachOptions.frontPageListEnabled;
-            $scope.showTrackedEntityDiv = savedAdvancedSeachOptions.showTrackedEntityDiv;
+                $scope.frontPageListEnabled = savedAdvancedSeachOptions.frontPageListEnabled;
+                $scope.showTrackedEntityDiv = savedAdvancedSeachOptions.showTrackedEntityDiv;
 
+                //process tei grid
+                $scope.showSearchDiv = savedAdvancedSeachOptions.showSearchDiv;
+                $scope.teiFetched = savedAdvancedSeachOptions.teiFetched;
+                $scope.doSearch = savedAdvancedSeachOptions.doSearch;
+                $scope.reverse = savedAdvancedSeachOptions.reverse;
+                $scope.selectedSearchMode = savedAdvancedSeachOptions.searchMode;
+            }
             $scope.trackedEntityList = $scope.savedTeis;
-            //process tei grid
-            $scope.showSearchDiv = savedAdvancedSeachOptions.showSearchDiv;
-            $scope.teiFetched = savedAdvancedSeachOptions.teiFetched;
-            $scope.doSearch = savedAdvancedSeachOptions.doSearch;
-            $scope.reverse = savedAdvancedSeachOptions.reverse;
-            $scope.selectedSearchMode = savedAdvancedSeachOptions.searchMode;
-
             if (!$scope.sortColumn.id) {
                 $scope.sortColumn = defaultColumn;
             }
@@ -611,7 +612,7 @@ function($rootScope,
 
         modalInstance.result.then(function (gridColumns) {
             var gridColumnsChanged = false;
-            var created = false;
+
             for (var i = 0; i<gridColumns.length; i++) {
                 if (currentColumns[i].show !== $scope.gridColumns[i].show) {
                     gridColumnsChanged = true;
@@ -623,14 +624,12 @@ function($rootScope,
             }
             $scope.gridColumns = gridColumns;
             CurrentSelection.setGridColumns(angular.copy($scope.gridColumns));
-            if($scope.gridColumnsInUserStore) {
-                created = true;
-            }
+
             if(!$scope.gridColumnsInUserStore || ($scope.gridColumnsInUserStore && $scope.gridColumnsInUserStore.length===0)) {
                 $scope.gridColumnsInUserStore = {};
             }
             $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = $scope.gridColumns;
-            GridColumnService.set($scope.gridColumnsInUserStore, created, "trackerCaptureGridColumns");
+            GridColumnService.set($scope.gridColumnsInUserStore, "trackerCaptureGridColumns");
         }, function () {
         });
     };
