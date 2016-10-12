@@ -7,11 +7,14 @@
             <span d2-pop-over
                 details="{{'details'| translate}}"
                 content="attribute"
-                class="popover-label small-horizontal-spacing"
+                class="popover-label hideInPrint small-horizontal-spacing"
                 template="attribute-details.html"
                 trigger="click"
                 placement="right">
                 <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{attribute.displayName}}</a>
+            </span>
+            <span class="not-for-screen">
+                {{attribute.displayName}}
             </span>
             <span ng-if="attribute.mandatory" class="required">*</span>
         </td>
@@ -70,15 +73,22 @@
                                ng-required="attribute.mandatory"/>
                     </span>
                     <span ng-switch-when="BOOLEAN" class="form-control">
-                        <d2-radio-button
-                            dh-required="attribute.mandatory"
-                            dh-disabled="editingDisabled"
-                            dh-value="selectedTei[attribute.id]"
-                            dh-name="foo"
-                            dh-current-element="currentElement"
-                            dh-event="currentEvent.event"
-                            dh-id="attribute.id">
-                        </d2-radio-button>                        
+                        <span class="hideInPrint">
+                            <d2-radio-button
+                                dh-required="attribute.mandatory"
+                                dh-disabled="editingDisabled"
+                                dh-value="selectedTei[attribute.id]"
+                                dh-name="foo"
+                                dh-current-element="currentElement"
+                                dh-event="currentEvent.event"
+                                dh-id="attribute.id"
+                                dh-click="saveDataValueForRadio(attribute, selectedTei, value)">
+                            </d2-radio-button>
+                        </span>
+                        <span class="not-for-screen">
+                            <label class="radio-inline"><input type="radio" value="true" ng-model="selectedTei[attribute.id]">{{'yes' | translate}}</label>
+                            <label class="radio-inline"><input type="radio" value="false" ng-model="selectedTei[attribute.id]" >{{'no' | translate}}</label>
+                        </span>
                     </span>                    
                     <span ng-switch-when="NUMBER">
                         <input type="number"

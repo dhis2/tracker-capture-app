@@ -506,7 +506,7 @@ trackerCapture.controller('DashboardController',
             closeButtonText: 'no',
             actionButtonText: 'yes',
             headerText: 'delete',
-            bodyText: $translate.instant('are_you_sure_to_proceed') + ' ' + $translate.instant('will_delete_everything_related') + ' ' + $scope.trackedEntity.displayName
+            bodyText: $translate.instant('are_you_sure_to_proceed') + ' ' + $translate.instant('will_delete_all_data_associated') + ' ' + $scope.trackedEntity.displayName
         };
         
         ModalService.showModal({}, modalOptions).then(function (result) {

@@ -3,13 +3,16 @@
         <tr ng-repeat="prStDe in currentStage.programStageDataElements" ng-if="!isHidden(prStDe.dataElement.id, currentEvent)">
             <td>
                 <span d2-pop-over
-                    class="popover-label small-horizontal-spacing"
+                    class="popover-label hideInPrint small-horizontal-spacing"
                     details="{{'details'| translate}}"
                     content="prStDe.dataElement"
                     template="dataelement-details.html"
                     trigger="click"
                     placement="right">
                     <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDe.dataElement.displayFormName}}</a>
+                </span>
+                <span class="not-for-screen">
+                    {{prStDe.dataElement.displayFormName}}
                 </span>
                 <span ng-if="prStDe.compulsory" class="required">*</span>
                 <span class="hideInPrint">                    
@@ -50,13 +53,16 @@
                         <tr ng-repeat="de in section.programStageDataElements" ng-if="!isHidden(de.dataElement.id)">
                             <td>
                                 <span d2-pop-over
-                                    class="popover-label small-horizontal-spacing"
+                                    class="popover-label hideInPrint small-horizontal-spacing"
                                     details="{{'details'| translate}}"
                                     content="prStDes[de.dataElement.id].dataElement"
                                     template="dataelement-details.html"
                                     trigger="click"
                                     placement="right">
                                     <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDes[de.dataElement.id].dataElement.displayFormName}}</a>
+                                </span>
+                                <span class="not-for-screen">
+                                    {{prStDes[de.dataElement.id].dataElement.displayFormName}}
                                 </span>
                                 <span ng-if="isCompulsory(de.dataElement)" class="required">*</span>
                                 <span class="hideInPrint">

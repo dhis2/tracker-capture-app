@@ -151,8 +151,8 @@
                 </d2-radio-button>
             </div>
             <div class="not-for-screen">
-                <label class="radio-inline"><input type="radio" ng-checked="{{currentEvent[prStDes[de.dataElement.id].dataElement.id] === 'true'}}">{{'yes' | translate}}</label>
-                <label class="radio-inline"><input type="radio" ng-checked="{{currentEvent[prStDes[de.dataElement.id].dataElement.id] === 'false'}}">{{'no' | translate}}</label>
+                <label class="radio-inline"><input type="radio" value="true" ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]">{{'yes' | translate}}</label>
+                <label class="radio-inline"><input type="radio" value="false" ng-checked="currentEvent[prStDes[de.dataElement.id].dataElement.id]">{{'no' | translate}}</label>
             </div>
         </div>
         <div ng-switch-when="DATE">
