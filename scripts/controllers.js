@@ -606,30 +606,34 @@ function($rootScope,
                 },
                 hiddenGridColumns: function(){
                     return $scope.hiddenGridColumns;
+                },
+                saveGridColumns: function () {
+                    return function (gridColumns) {
+                        var gridColumnsChanged = false;
+
+                        for (var i = 0; i < gridColumns.length; i++) {
+                            if (currentColumns[i].show !== $scope.gridColumns[i].show) {
+                                gridColumnsChanged = true;
+                                break;
+                            }
+                        }
+                        if (!gridColumnsChanged) {
+                            return;
+                        }
+                        $scope.gridColumns = gridColumns;
+                        CurrentSelection.setGridColumns(angular.copy($scope.gridColumns));
+
+                        if (!$scope.gridColumnsInUserStore || ($scope.gridColumnsInUserStore && $scope.gridColumnsInUserStore.length === 0)) {
+                            $scope.gridColumnsInUserStore = {};
+                        }
+                        $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = $scope.gridColumns;
+                        GridColumnService.set($scope.gridColumnsInUserStore, "trackerCaptureGridColumns");
+                    }
                 }
             }
         });
 
         modalInstance.result.then(function (gridColumns) {
-            var gridColumnsChanged = false;
-
-            for (var i = 0; i<gridColumns.length; i++) {
-                if (currentColumns[i].show !== $scope.gridColumns[i].show) {
-                    gridColumnsChanged = true;
-                    break;
-                }
-            }
-            if(!gridColumnsChanged) {
-                return;
-            }
-            $scope.gridColumns = gridColumns;
-            CurrentSelection.setGridColumns(angular.copy($scope.gridColumns));
-
-            if(!$scope.gridColumnsInUserStore || ($scope.gridColumnsInUserStore && $scope.gridColumnsInUserStore.length===0)) {
-                $scope.gridColumnsInUserStore = {};
-            }
-            $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = $scope.gridColumns;
-            GridColumnService.set($scope.gridColumnsInUserStore, "trackerCaptureGridColumns");
         }, function () {
         });
     };
