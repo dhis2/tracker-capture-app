@@ -30,6 +30,8 @@ var trackerCapture = angular.module('trackerCapture',
 
 .value('DHIS2URL', '../api')
 
+.value('DHIS2COORDINATESIZE', 6)
+
 .config(function($httpProvider, $routeProvider, $translateProvider, $logProvider) {
 
     $httpProvider.defaults.useXDomain = true;
