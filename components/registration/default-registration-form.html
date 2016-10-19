@@ -20,7 +20,7 @@
         </td>
         <td class="absorbing-column">
             <ng-form name="innerForm">
-                <span ng-if="attribute.optionSetValue">
+                <span ng-if="attribute.optionSetValue" class="hideInPrint">
                     <ui-select  ng-model="selectedTei[attribute.id]"
                                 theme="select2"
                                 ng-required="attribute.mandatory"
