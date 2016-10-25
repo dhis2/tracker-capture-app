@@ -278,22 +278,7 @@
                     d2-object="currentEvent"
                     d2-function="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)">
             </d2-org-unit-tree>
-        </div>
-        <div ng-switch-when="TEXT">
-            <div class="hideInPrint">
-                <input type="text"
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
-                       ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                       ng-required={{isCompulsory(de.dataElement)}}
-                       ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
-                       ng-blur="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)""
-                       name="foo"/>
-            </div>
-            <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDes[de.dataElement.id].dataElement.id]}}>
-            </div>
-        </div>
+        </div>        
         <div ng-switch-default>
             <div class="alert alert-danger form-control">
                 {{'unsupported_value_type' | translate}}:  {{prStDes[de.dataElement.id].dataElement.valueType}}
