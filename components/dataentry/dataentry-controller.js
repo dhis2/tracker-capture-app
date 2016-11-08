@@ -1486,6 +1486,7 @@ trackerCapture.controller('DataEntryController',
             
             $scope.eventDateSaved = eventToSave.event;
             eventToSave.statusColor = EventUtils.getEventStatusColor(eventToSave); 
+            eventToSave.status = e.status;
             
             if(angular.isUndefined($scope.currentStage.displayEventsInTable) || $scope.currentStage.displayEventsInTable === false || (angular.isDefined(reOrder) && reOrder === true)){
                 sortEventsByStage('UPDATE');
@@ -1526,6 +1527,8 @@ trackerCapture.controller('DataEntryController',
             
             $scope.currentEvent.sortingDate = $scope.currentEvent.dueDate;
             $scope.currentEvent.statusColor = EventUtils.getEventStatusColor($scope.currentEvent);
+            $scope.currentEvent.status = e.status;
+            
             $scope.schedulingEnabled = !$scope.schedulingEnabled;
             sortEventsByStage('UPDATE');
         });        
