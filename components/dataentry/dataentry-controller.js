@@ -11,6 +11,7 @@ trackerCapture.controller('DataEntryController',
                 $translate,
                 $window,
                 $q,
+                $parse,
                 $location,
                 CommonUtils,
                 OrgUnitFactory,
@@ -126,6 +127,16 @@ trackerCapture.controller('DataEntryController',
             useInStage = false;            
         }
         return $scope.getDescriptionTextForDescription(description, $scope.descriptionTypes.full, useInStage);
+    };
+
+    $scope.verifyExpiryDate = function(eventDateStr) {
+        var dateGetter = $parse(eventDateStr);
+        var dateSetter = dateGetter.assign;
+        var date = dateGetter($scope);
+
+        if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
+            dateSetter($scope, null);
+        }
     };
     
     

@@ -8,6 +8,7 @@ trackerCapture.controller('EnrollmentController',
                 $location,
                 $timeout,
                 $translate,
+                $parse,
                 DateUtils,
                 SessionStorageService,
                 CurrentSelection,
@@ -91,6 +92,15 @@ trackerCapture.controller('EnrollmentController',
             $route.reload();
 
         });
+        $scope.verifyExpiryDate = function(eventDateStr) {
+            var dateGetter = $parse(eventDateStr);
+            var dateSetter = dateGetter.assign;
+            var date = dateGetter($scope);
+
+            if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
+                dateSetter($scope, null);
+            }
+        };
         $scope.loadEnrollmentDetails = function (enrollment) {
             $scope.showEnrollmentHistoryDiv = false;
             $scope.selectedEnrollment = enrollment;

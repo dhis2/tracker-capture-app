@@ -8,6 +8,7 @@ trackerCapture.controller('RegistrationController',
                 $timeout,
                 $modal,
                 $translate,
+                $parse,
                 orderByFilter,
                 SessionStorageService,
                 AttributesFactory,
@@ -631,5 +632,14 @@ trackerCapture.controller('RegistrationController',
         $scope.saveDatavalue = function () {
             $scope.executeRules();
         };
-    //});
+
+        $scope.verifyExpiryDate = function(eventDateStr) {
+            var dateGetter = $parse(eventDateStr);
+            var dateSetter = dateGetter.assign;
+            var date = dateGetter($scope);
+
+            if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
+                dateSetter($scope, null);
+            }
+        };
 });
