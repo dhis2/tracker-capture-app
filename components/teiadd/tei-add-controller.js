@@ -303,23 +303,21 @@ trackerCapture.controller('TEIAddController',
                 }
 
                 //process tei grid
-                
-                 TEIGridService.format($scope.selectedOrgUnit.id, data, false, $scope.optionSets, invalidTeis).then(function (response) {
-                    $scope.trackedEntityList = response;
-                    $scope.showTrackedEntityDiv = true;
-                    $scope.teiFetched = true;
 
-                    if (!$scope.sortColumn.id) {
-                        $scope.sortGrid({
-                            id: 'created',
-                            name: $translate.instant('registration_date'),
-                            valueType: 'date',
-                            displayInListNoProgram: false,
-                            showFilter: false,
-                            show: false
-                        });
-                    }
-                });
+                $scope.trackedEntityList = TEIGridService.format($scope.selectedOrgUnit.id, data, false, $scope.optionSets, invalidTeis);
+                $scope.showTrackedEntityDiv = true;
+                $scope.teiFetched = true;
+
+                if (!$scope.sortColumn.id) {
+                    $scope.sortGrid({
+                        id: 'created',
+                        name: $translate.instant('registration_date'),
+                        valueType: 'date',
+                        displayInListNoProgram: false,
+                        showFilter: false,
+                        show: false
+                    });
+                }
             });
         };
 

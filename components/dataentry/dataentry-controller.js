@@ -30,8 +30,7 @@ trackerCapture.controller('DataEntryController',
                 OptionSetService,
                 TrackerRulesFactory,
                 EventCreationService,
-                DasboardWidgetService,
-                OuService) {
+                DasboardWidgetService) {
     $scope.printForm = false;
     $scope.printEmptyForm = false;
     $scope.eventPageSize = 4;
@@ -134,8 +133,8 @@ trackerCapture.controller('DataEntryController',
         var dateGetter = $parse(eventDateStr);
         var dateSetter = dateGetter.assign;
         var date = dateGetter($scope);
-        if($scope.model.ouPeriod) {
-            if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouPeriod.startDate, $scope.model.ouPeriod.endDate)) {
+        if($scope.model.ouDates) {
+            if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouDates.startDate, $scope.model.ouDates.endDate)) {
                 dateSetter($scope, null);
                 return;
             }
@@ -603,8 +602,8 @@ trackerCapture.controller('DataEntryController',
             $scope.selectedEnrollment = selections.selectedEnrollment;
 
             if($scope.selectedOrgUnit) {
-                OuService.getPeriodDates($scope.selectedOrgUnit.id).then(function(period){
-                    $scope.model.ouPeriod = period;
+                OrgUnitFactory.getOrgUnitFromStore($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
+                    $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate };
                 });
             }
             $scope.showSelf = true;

@@ -28,8 +28,7 @@ trackerCapture.controller('RegistrationController',
                 TrackerRulesExecutionService,
                 TCStorageService,
                 ModalService,
-                OrgUnitFactory,
-                OuService) {
+                OrgUnitFactory) {
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
     $scope.customRegistrationForm = null;    
@@ -93,8 +92,8 @@ trackerCapture.controller('RegistrationController',
     //OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
         $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
         if($scope.selectedOrgUnit) {
-            OuService.getPeriodDates($scope.selectedOrgUnit.id).then(function (period) {
-                $scope.model.ouPeriod = period;
+            OrgUnitFactory.getOrgUnitFromStore($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
+                $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate };
             });
         }
         $scope.selectedEnrollment = {
@@ -644,8 +643,8 @@ trackerCapture.controller('RegistrationController',
             dateGetter = $parse(eventDateStr);
             dateSetter = dateGetter.assign;
             date = dateGetter($scope);
-            if($scope.model.ouPeriod) {
-                if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouPeriod.startDate, $scope.model.ouPeriod.endDate)) {
+            if($scope.model.ouDates) {
+                if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouDates.startDate, $scope.model.ouDates.endDate)) {
                     dateSetter($scope, null);
                     return;
                 }

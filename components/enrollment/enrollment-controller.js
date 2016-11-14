@@ -16,15 +16,14 @@ trackerCapture.controller('EnrollmentController',
                 ModalService,
                 NotificationService,
                 OrgUnitFactory,
-                DasboardWidgetService,
-                OuService) {
+                DasboardWidgetService) {
     
     OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
         $scope.today = DateUtils.getToday();
         $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
         if($scope.selectedOrgUnit) {
-            OuService.getPeriodDates($scope.selectedOrgUnit.id).then(function(period){
-                $scope.model.ouPeriod = period;
+            OrgUnitFactory.getOrgUnitFromStore($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
+                $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate};
             });
         }
 
@@ -102,8 +101,8 @@ trackerCapture.controller('EnrollmentController',
             var dateGetter = $parse(eventDateStr);
             var dateSetter = dateGetter.assign;
             var date = dateGetter($scope);
-            if($scope.model.ouPeriod) {
-                if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouPeriod.startDate, $scope.model.ouPeriod.endDate)) {
+            if($scope.model.ouDates) {
+                if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouDates.startDate, $scope.model.ouDates.endDate)) {
                     dateSetter($scope, null);
                     return;
                 }
