@@ -1755,10 +1755,37 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         }
         return deferred.promise;
     };
+
+    var getPeriodDates = function(uid) {
+        var deferred = $q.defer();
+
+        open().then(getDb, function() {
+            deferred.reject();
+        });
+
+        function getDb() {
+            get(uid).then(getStartEndDatesForOu, function(){
+                deferred.reject();
+            });
+        }
+
+        function getStartEndDatesForOu(orgUnit) {
+            var periods = {};
+            if(orgUnit) {
+                periods.startDate = orgUnit.odate;
+                periods.endDate = orgUnit.edate;
+                deferred.resolve(periods);
+            } else {
+                deferred.reject();
+            }
+        }
+        return deferred.promise;
+    };
     
     return {
         open: open,
-        get: get
+        get: get,
+        getPeriodDates: getPeriodDates
     };    
 })
 

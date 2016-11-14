@@ -28,7 +28,8 @@ trackerCapture.controller('RegistrationController',
                 TrackerRulesExecutionService,
                 TCStorageService,
                 ModalService,
-                OrgUnitFactory) {
+                OrgUnitFactory,
+                OuService) {
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
     $scope.customRegistrationForm = null;    
@@ -91,6 +92,11 @@ trackerCapture.controller('RegistrationController',
     
     //OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
         $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
+        if($scope.selectedOrgUnit) {
+            OuService.getPeriodDates($scope.selectedOrgUnit.id).then(function (period) {
+                $scope.model.ouPeriod = period;
+            });
+        }
         $scope.selectedEnrollment = {
             enrollmentDate: $scope.today,
             incidentDate: $scope.today,
@@ -634,10 +640,16 @@ trackerCapture.controller('RegistrationController',
         };
 
         $scope.verifyExpiryDate = function(eventDateStr) {
-            var dateGetter = $parse(eventDateStr);
-            var dateSetter = dateGetter.assign;
-            var date = dateGetter($scope);
-
+            var dateGetter, dateSetter, date;
+            dateGetter = $parse(eventDateStr);
+            dateSetter = dateGetter.assign;
+            date = dateGetter($scope);
+            if($scope.model.ouPeriod) {
+                if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouPeriod.startDate, $scope.model.ouPeriod.endDate)) {
+                    dateSetter($scope, null);
+                    return;
+                }
+            }
             if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
                 dateSetter($scope, null);
             }

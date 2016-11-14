@@ -30,7 +30,8 @@ trackerCapture.controller('DataEntryController',
                 OptionSetService,
                 TrackerRulesFactory,
                 EventCreationService,
-                DasboardWidgetService) {
+                DasboardWidgetService,
+                OuService) {
     $scope.printForm = false;
     $scope.printEmptyForm = false;
     $scope.eventPageSize = 4;
@@ -133,6 +134,12 @@ trackerCapture.controller('DataEntryController',
         var dateGetter = $parse(eventDateStr);
         var dateSetter = dateGetter.assign;
         var date = dateGetter($scope);
+        if($scope.model.ouPeriod) {
+            if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouPeriod.startDate, $scope.model.ouPeriod.endDate)) {
+                dateSetter($scope, null);
+                return;
+            }
+        }
 
         if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
             dateSetter($scope, null);
@@ -593,8 +600,13 @@ trackerCapture.controller('DataEntryController',
             $scope.selectedOrgUnit = orgUnit;
             $scope.selectedEntity = selections.tei;
             $scope.selectedProgram = selections.pr;
-            $scope.selectedEnrollment = selections.selectedEnrollment;        
+            $scope.selectedEnrollment = selections.selectedEnrollment;
 
+            if($scope.selectedOrgUnit) {
+                OuService.getPeriodDates($scope.selectedOrgUnit.id).then(function(period){
+                    $scope.model.ouPeriod = period;
+                });
+            }
             $scope.showSelf = true;
             if(angular.isUndefined($scope.selectedEnrollment) || $scope.selectedEnrollment === null || ($scope.dashBoardWidgetFirstRun && $scope.selectedEnrollment.status === "COMPLETED")){
                 //onOpenEnrollment

@@ -16,11 +16,17 @@ trackerCapture.controller('EnrollmentController',
                 ModalService,
                 NotificationService,
                 OrgUnitFactory,
-                DasboardWidgetService) {
+                DasboardWidgetService,
+                OuService) {
     
     OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
         $scope.today = DateUtils.getToday();
         $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
+        if($scope.selectedOrgUnit) {
+            OuService.getPeriodDates($scope.selectedOrgUnit.id).then(function(period){
+                $scope.model.ouPeriod = period;
+            });
+        }
 
         //listen for the selected items
         var selections = {};
@@ -96,6 +102,12 @@ trackerCapture.controller('EnrollmentController',
             var dateGetter = $parse(eventDateStr);
             var dateSetter = dateGetter.assign;
             var date = dateGetter($scope);
+            if($scope.model.ouPeriod) {
+                if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouPeriod.startDate, $scope.model.ouPeriod.endDate)) {
+                    dateSetter($scope, null);
+                    return;
+                }
+            }
 
             if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
                 dateSetter($scope, null);
