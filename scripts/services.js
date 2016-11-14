@@ -1773,7 +1773,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var periods = {};
             if(orgUnit) {
                 periods.startDate = orgUnit.odate;
-                periods.endDate = orgUnit.edate;
+                periods.endDate = orgUnit.cdate;
                 deferred.resolve(periods);
             } else {
                 deferred.reject();
