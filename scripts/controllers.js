@@ -503,39 +503,37 @@ function($rootScope,
                 }
 
                 //process tei grid
-                TEIGridService.format($scope.selectedOrgUnit.id, data, false, $scope.optionSets, null).then(function (response) {
-                    $scope.trackedEntityList = response;
-                    $scope.showSearchDiv = false;
-                    $scope.teiFetched = true;
-                    $scope.doSearch = true;
 
-                    if (!$scope.sortColumn.id) {
-                        $scope.sortGrid(defaultColumn);
-                    }
-                    CurrentSelection.setAdvancedSearchOptions({
-                        searchingOrgUnit: angular.copy($scope.searchingOrgUnit),
-                        searchMode: $scope.selectedSearchMode,
-                        gridColumns: angular.copy($scope.gridColumns),
-                        attributes: angular.copy($scope.attributes),
-                        selectedOuMode: angular.copy($scope.selectedOuMode),
-                        programEnrollmentStartDate: $scope.enrollment.programEnrollmentStartDate,
-                        programEnrollmentEndDate: $scope.enrollment.programEnrollmentEndDate,
-                        programIncidentStartDate: $scope.enrollment.programIncidentStartDate,
-                        programIncidentEndDate: $scope.enrollment.programIncidentEndDate,
-                        searchText: $scope.model.searchText,
-                        sortColumn: angular.copy($scope.sortColumn),
-                        pager: angular.copy($scope.pager),
-                        showSearchDiv: $scope.showSearchDiv,
-                        teiFetched: $scope.teiFetched,
-                        doSearch: $scope.doSearch,
-                        frontPageListEnabled: $scope.frontPageListEnabled,
-                        showTrackedEntityDiv: $scope.showTrackedEntityDiv,
-                        reverse: $scope.reverse
-                    });
-                    CurrentSelection.setTrackedEntities($scope.trackedEntityList);
+                $scope.trackedEntityList = TEIGridService.format($scope.selectedOrgUnit.id, data, false, $scope.optionSets, null);
+                $scope.showSearchDiv = false;
+                $scope.teiFetched = true;
+                $scope.doSearch = true;
+
+                if (!$scope.sortColumn.id) {
+                    $scope.sortGrid(defaultColumn);
+                }
+                CurrentSelection.setAdvancedSearchOptions({
+                    searchingOrgUnit: angular.copy($scope.searchingOrgUnit),
+                    searchMode: $scope.selectedSearchMode,
+                    gridColumns: angular.copy($scope.gridColumns),
+                    attributes: angular.copy($scope.attributes),
+                    selectedOuMode: angular.copy($scope.selectedOuMode),
+                    programEnrollmentStartDate: $scope.enrollment.programEnrollmentStartDate,
+                    programEnrollmentEndDate: $scope.enrollment.programEnrollmentEndDate,
+                    programIncidentStartDate: $scope.enrollment.programIncidentStartDate,
+                    programIncidentEndDate: $scope.enrollment.programIncidentEndDate,
+                    searchText: $scope.model.searchText,
+                    sortColumn: angular.copy($scope.sortColumn),
+                    pager: angular.copy($scope.pager),
+                    showSearchDiv: $scope.showSearchDiv,
+                    teiFetched: $scope.teiFetched,
+                    doSearch: $scope.doSearch,
+                    frontPageListEnabled: $scope.frontPageListEnabled,
+                    showTrackedEntityDiv: $scope.showTrackedEntityDiv,
+                    reverse: $scope.reverse
                 });
+                CurrentSelection.setTrackedEntities($scope.trackedEntityList);
             });
-
         }
     };
 

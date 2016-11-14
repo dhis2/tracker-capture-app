@@ -1704,176 +1704,87 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     }; 
 })
 
-/*Orgunit service for local db */
-.service('OuService', function($window, $q){
-    
-    var indexedDB = $window.indexedDB;
-    var db = null;
-    
-    var open = function(){
-        var deferred = $q.defer();
-        
-        var request = indexedDB.open("dhis2ou");
-        
-        request.onsuccess = function(e) {
-          db = e.target.result;
-          deferred.resolve();
-        };
-
-        request.onerror = function(){
-          deferred.reject();
-        };
-
-        return deferred.promise;
-    };
-    
-    var get = function(uid){
-        
-        var deferred = $q.defer();
-        
-        if( db === null){
-            deferred.reject("DB not opened");
-        }
-        else{
-            var tx = db.transaction(["ou"]);
-            var store = tx.objectStore("ou");
-            var query = store.get(uid);
-                
-            query.onsuccess = function(e){
-                if(e.target.result){
-                    deferred.resolve(e.target.result);
-                }
-                else{
-                    var t = db.transaction(["ouPartial"]);
-                    var s = t.objectStore("ouPartial");
-                    var q = s.get(uid);
-                    q.onsuccess = function(e){
-                        deferred.resolve(e.target.result);
-                    };
-                }            
-            };
-        }
-        return deferred.promise;
-    };
-
-    var getPeriodDates = function(uid) {
-        var deferred = $q.defer();
-
-        open().then(getDb, function() {
-            deferred.reject();
-        });
-
-        function getDb() {
-            get(uid).then(getStartEndDatesForOu, function(){
-                deferred.reject();
-            });
-        }
-
-        function getStartEndDatesForOu(orgUnit) {
-            var periods = {};
-            if(orgUnit) {
-                periods.startDate = orgUnit.odate;
-                periods.endDate = orgUnit.cdate;
-                deferred.resolve(periods);
-            } else {
-                deferred.reject();
-            }
-        }
-        return deferred.promise;
-    };
-    
-    return {
-        open: open,
-        get: get,
-        getPeriodDates: getPeriodDates
-    };    
-})
-
-.service('TEIGridService', function(OptionSetService, CurrentSelection, DateUtils, $location, $translate, $filter, OrgUnitFactory){
+.service('TEIGridService', function(OptionSetService, CurrentSelection, DateUtils, $location, $translate, $filter){
     
     return {
         format: function(selectedOrgUnitId, grid, map, optionSets, invalidTeis, isFollowUp){
-            var ou = ($location.search()).ou;
-            if (!ou) {
-                ou = selectedOrgUnitId;
+            var ouId = ($location.search()).ou;
+            if (!ouId) {
+                ouId = selectedOrgUnitId;
             }
 
-            return OrgUnitFactory.getOrgUnit(ou).then(function (orgUnit) {
-                var ou = orgUnit;
 
-                invalidTeis = !invalidTeis ? [] : invalidTeis;
-                if (!grid || !grid.rows) {
-                    return;
-                }
+            invalidTeis = !invalidTeis ? [] : invalidTeis;
+            if (!grid || !grid.rows) {
+                return;
+            }
 
-                //grid.headers[0-6] = Instance, Created, Last updated, OU ID, Ou Name, Tracked entity, Inactive
-                //grid.headers[7..] = Attribute, Attribute,....
-                var attributes = [];
-                for (var i = 6; i < grid.headers.length; i++) {
-                    attributes.push({
-                        id: grid.headers[i].name,
-                        displayName: grid.headers[i].column,
-                        type: grid.headers[i].type
-                    });
-                }
+            //grid.headers[0-6] = Instance, Created, Last updated, OU ID, Ou Name, Tracked entity, Inactive
+            //grid.headers[7..] = Attribute, Attribute,....
+            var attributes = [];
+            for (var i = 6; i < grid.headers.length; i++) {
+                attributes.push({
+                    id: grid.headers[i].name,
+                    displayName: grid.headers[i].column,
+                    type: grid.headers[i].type
+                });
+            }
 
-                var entityList = {own: [], other: []};
+            var entityList = {own: [], other: []};
 
-                var attributesById = CurrentSelection.getAttributesById();
+            var attributesById = CurrentSelection.getAttributesById();
 
-                angular.forEach(grid.rows, function (row) {
-                    if (invalidTeis.indexOf(row[0]) === -1) {
-                        var entity = {};
-                        var isEmpty = true;
+            angular.forEach(grid.rows, function (row) {
+                if (invalidTeis.indexOf(row[0]) === -1) {
+                    var entity = {};
+                    var isEmpty = true;
 
-                        entity.id = row[0];
-                        entity.created = DateUtils.formatFromApiToUser(row[1]);
+                    entity.id = row[0];
+                    entity.created = DateUtils.formatFromApiToUser(row[1]);
 
-                        entity.orgUnit = row[3];
-                        entity.orgUnitName = row[4];
-                        entity.type = row[5];
-                        entity.inactive = row[6] !== "" ? row[6] : false;
-                        entity.followUp = isFollowUp;
+                    entity.orgUnit = row[3];
+                    entity.orgUnitName = row[4];
+                    entity.type = row[5];
+                    entity.inactive = row[6] !== "" ? row[6] : false;
+                    entity.followUp = isFollowUp;
 
-                        for (var i = 7; i < row.length; i++) {
-                            if (row[i] && row[i] !== '') {
-                                isEmpty = false;
-                                var val = row[i];
+                    for (var i = 7; i < row.length; i++) {
+                        if (row[i] && row[i] !== '') {
+                            isEmpty = false;
+                            var val = row[i];
 
-                                if (attributesById[grid.headers[i].name] &&
-                                    attributesById[grid.headers[i].name].optionSetValue &&
-                                    optionSets &&
-                                    attributesById[grid.headers[i].name].optionSet &&
-                                    optionSets[attributesById[grid.headers[i].name].optionSet.id]) {
-                                    val = OptionSetService.getName(optionSets[attributesById[grid.headers[i].name].optionSet.id].options, val);
-                                }
-                                if (attributesById[grid.headers[i].name] && attributesById[grid.headers[i].name].valueType === 'date') {
-                                    val = DateUtils.formatFromApiToUser(val);
-                                }
-
-                                entity[grid.headers[i].name] = val;
+                            if (attributesById[grid.headers[i].name] &&
+                                attributesById[grid.headers[i].name].optionSetValue &&
+                                optionSets &&
+                                attributesById[grid.headers[i].name].optionSet &&
+                                optionSets[attributesById[grid.headers[i].name].optionSet.id]) {
+                                val = OptionSetService.getName(optionSets[attributesById[grid.headers[i].name].optionSet.id].options, val);
                             }
+                            if (attributesById[grid.headers[i].name] && attributesById[grid.headers[i].name].valueType === 'date') {
+                                val = DateUtils.formatFromApiToUser(val);
+                            }
+                            entity[grid.headers[i].name] = val;
                         }
+                    }
 
-                        if (!isEmpty) {
-                            if (map) {
-                                entityList[entity.id] = entity;
+                    if (!isEmpty) {
+                        if (map) {
+                            entityList[entity.id] = entity;
+                        }
+                        else {
+                            if (entity.orgUnit === ouId) {
+                                entityList.own.push(entity);
                             }
                             else {
-                                if (entity.orgUnit === ou.id) {
-                                    entityList.own.push(entity);
-                                }
-                                else {
-                                    entityList.other.push(entity);
-                                }
+                                entityList.other.push(entity);
                             }
                         }
                     }
-                });
-
-                var len = entityList.own.length + entityList.other.length;
-                return {headers: attributes, rows: entityList, pager: grid.metaData.pager, length: len};
+                }
             });
+
+            var len = entityList.own.length + entityList.other.length;
+            return {headers: attributes, rows: entityList, pager: grid.metaData.pager, length: len};
         },
         generateGridColumns: function(attributes, ouMode, nonConfidential){
             
