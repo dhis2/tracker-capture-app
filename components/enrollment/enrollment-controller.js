@@ -101,6 +101,9 @@ trackerCapture.controller('EnrollmentController',
             var dateGetter = $parse(eventDateStr);
             var dateSetter = dateGetter.assign;
             var date = dateGetter($scope);
+            if(!date) {
+                return;
+            }
             if($scope.model.ouDates) {
                 if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouDates.startDate, $scope.model.ouDates.endDate)) {
                     dateSetter($scope, null);
