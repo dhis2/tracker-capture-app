@@ -15,7 +15,7 @@
             {{selectedProgram.enrollmentDateLabel}}
         </td>
         <td class="absorbing-column">
-            <input type="text" 
+            <input type="text"
                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                    name="enrollmentDate" 
                    class="form-control hideInPrint" 
@@ -24,6 +24,7 @@
                    max-date="selectedProgram.selectEnrollmentDatesInFuture ? '' : 0"
                    min-date=""
                    ng-change="verifyExpiryDate('selectedEnrollment.enrollmentDate')"
+                   ng-disabled="model.orgUnitClosed"
                    ng-required="true"/>
             <input type="text" class="form-control not-for-screen"/>
             <span ng-show="outerForm.submitted && outerForm.enrollmentDate.$invalid" class="error">{{'required'| translate}}</span>
@@ -42,6 +43,7 @@
                    max-date="selectedProgram.selectIncidentDatesInFuture ? '' : 0"
                    min-date=""
                    ng-model="selectedEnrollment.incidentDate"
+                   ng-disabled="model.orgUnitClosed"
                    ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
             <input type="text" class="form-control not-for-screen"/>
         </td>

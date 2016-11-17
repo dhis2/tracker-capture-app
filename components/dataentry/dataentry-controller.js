@@ -606,7 +606,12 @@ trackerCapture.controller('DataEntryController',
 
             if($scope.selectedOrgUnit) {
                 OrgUnitFactory.getOrgUnitFromStore($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
-                    $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate };
+                    if(orgUnitFromStore) {
+                        $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate };
+                    }
+                });
+                OrgUnitFactory.getOrgUnitClosedStatus(orgUnit.id).then(function(closedStatus){
+                    $scope.model.orgUnitClosed = closedStatus;
                 });
             }
             $scope.showSelf = true;
@@ -1097,6 +1102,9 @@ trackerCapture.controller('DataEntryController',
     };
 
     $scope.setCurrentStage = function(stage){
+        if (!stage) {
+            return;
+        }
         $scope.currentStage = stage;
         $scope.currentEvent = null;
         $scope.eventGridColumns = EventUtils.getGridColumns($scope.currentStage, $scope.prStDes);

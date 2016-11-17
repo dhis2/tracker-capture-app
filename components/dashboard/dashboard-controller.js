@@ -34,7 +34,7 @@ trackerCapture.controller('DashboardController',
     $scope.displayEnrollment = false;
     $scope.dataEntryMainMenuItemSelected = false;    
     $scope.metaDataCached = false;
-    
+    $scope.model = {orgUnitClosed: false};
     if ( !dhis2.tc.metaDataCached){
         downloadMetaData().then(function () {
             updateDashboard();
@@ -52,6 +52,9 @@ trackerCapture.controller('DashboardController',
             if (!orgUnit) {
                 return;
             }
+            OrgUnitFactory.getOrgUnitClosedStatus(orgUnit.id).then(function(closedStatus){
+                $scope.model.orgUnitClosed = closedStatus;
+            });
         
             $scope.selectedTeiId = ($location.search()).tei;
             $scope.selectedProgramId = ($location.search()).program;
@@ -477,6 +480,9 @@ trackerCapture.controller('DashboardController',
         });
         $timeout(function () {
             $rootScope.$broadcast('selectedItems', {programExists: $scope.programs.length > 0});
+            if ($scope.model.orgUnitClosed) {
+                setHeaderMessage($translate.instant("orgunit_closed"));
+            }
         }, 500);
     };
 

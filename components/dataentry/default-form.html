@@ -29,7 +29,7 @@
                         <input type="checkbox"
                            class="form-control-checkbox"
                            ng-model="currentEvent.providedElsewhere[prStDe.dataElement.id]"
-                           ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
+                           ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
                            ng-change="saveDatavalueLocation(prStDe)"/>
                     </span>
                 </div>
@@ -80,7 +80,7 @@
                                     <input type="checkbox"
                                            class="form-control-checkbox"
                                            ng-model="currentEvent.providedElsewhere[prStDes[de.dataElement.id].dataElement.id]"
-                                           ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
+                                           ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
                                            ng-change="saveDatavalueLocation(prStDes[de.dataElement.id])"/>
                                 </div>
                             </td>

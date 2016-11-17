@@ -14,7 +14,7 @@
         
         <div>
             <!-- operations on selected enrollment begins -->
-            <div class="row equal-height-columns">
+            <div class="row equal-height-columns" ng-class="{'disable-clicks':model.orgUnitClosed}">
                 <div class="col-sm-6">             
                     <div class="title small-vertical-spacing">
                         <span ng-if="hasOtherPrograms">
@@ -66,7 +66,7 @@
                                             <d2-map d2-lat-saved="enrollmentLatSaved"
                                                     d2-lng-saved="enrollmentLngSaved"
                                                     d2-object="selectedEnrollment" 
-                                                    d2-disabled="selectedEnrollment.status !== 'ACTIVE'"
+                                                    d2-disabled="selectedEnrollment.status !== 'ACTIVE' || model.orgUnitClosed"
                                                     d2-function="saveCoordinate(arg1)" 
                                                     d2-coordinate-format="'COORDINATE'"
                                                     d2-function-param-coordinate="LATLNG">
@@ -79,14 +79,14 @@
                                     <button type="button" 
                                             class="btn btn-primary"
                                             ng-if="selectedEnrollment.status !== 'CANCELLED'"
-                                            ng-disabled="!canUseEnrollment()"
+                                            ng-disabled="!canUseEnrollment() || model.orgUnitClosed"
                                             ng-click="completeReopenEnrollment()">
                                         {{selectedEnrollment.status === 'ACTIVE' ? 'complete' : 'reopen' | translate}}
                                     </button>
                                     <button type="button" 
                                             class="btn btn-warning"
                                             ng-if="selectedEnrollment.status !== 'COMPLETED'"
-                                            ng-disabled="!canUseEnrollment()"
+                                            ng-disabled="!canUseEnrollment() || model.orgUnitClosed"
                                             ng-click="activateDeactivateEnrollment()">
                                         {{selectedEnrollment.status === 'CANCELLED' ? 'activate' : 'deactivate' | translate}}
                                     </button>                                                                    
@@ -95,12 +95,13 @@
                                             ng-if="selectedEnrollment.status === 'ACTIVE'"
                                             title="{{selectedEnrollment.followup ? 'unmark_for_followup' : 'mark_for_followup' | translate}}"
                                             ng-class="{true: 'btn-danger', false: 'btn-default'} [selectedEnrollment.followup]" 
-                                            ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive"
+                                            ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive || model.orgUnitClosed"
                                             ng-click="markForFollowup()">
                                         <i class="fa fa-exclamation-triangle"></i>
                                     </button>                                    
                                     <button type="button" 
                                             class="btn btn-danger pull-right"
+                                            ng-disabled="model.orgUnitClosed"
                                             ng-click="deleteEnrollment()">
                                         {{'delete' | translate}}
                                     </button>

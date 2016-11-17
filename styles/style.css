@@ -2048,6 +2048,10 @@ a.disable-link-effects:focus {
     margin-left: 5px;
 }
 
+.icon-disabled {
+    opacity : .50;
+}
+
 .scroll {
     height: 400px;
     overflow: auto;

@@ -1,5 +1,6 @@
 <div ng-class="getTopLineColumnStyle(2)">
-    <div ng-if="showStageTasks && eventsLoaded" class="panel panel-default-custom">
+    <div ng-class="{'disable-clicks icon-disabled': model.orgUnitClosed}">
+        <div ng-if="showStageTasks && eventsLoaded" class="panel panel-default-custom">
         <div class="panel-heading">{{'new_event'| translate}}
             <span class="pull-right">
                 <a class="small-horizontal-spacing" href ng-click="toggleShowStageTasks()">
@@ -36,7 +37,7 @@
             <div ng-if="!creatableStagesExist(creatableStages)" class="alert alert-warning">{{'no_stages_available'| translate}}</div> 
         </div>
     </div>       
-    <div ng-if="!showStageTasks && selectedEnrollment.status === 'ACTIVE'" class="pull-right">
+        <div ng-if="!showStageTasks && selectedEnrollment.status === 'ACTIVE'" class="pull-right">
         <div ng-if="!useMainMenu">
             <a href ng-click="toggleShowStageTasks()" title="{{'show_new_event_menu'| translate}}">
                 <span class="stage-tasks-badge stage-tasks-badge-back">                                     
@@ -68,4 +69,5 @@
             </div>
         </div>
     </div>
-</div>  
+    </div>
+</div>

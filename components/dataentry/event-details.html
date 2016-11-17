@@ -14,7 +14,7 @@
                name="eventDate"
                ng-model="currentEvent.eventDate"
                ng-change="verifyExpiryDate('currentEvent.eventDate')"
-               ng-disabled="currentEvent.status === 'SKIPPED' || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"    
+               ng-disabled="model.orgUnitClosed || currentEvent.status === 'SKIPPED' || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
                ng-required="true"
                blur-or-change="saveEventDate()"/>
         <input type="text"
@@ -41,7 +41,7 @@
                ng-model="currentEvent.dueDate"
                ng-change="verifyExpiryDate('currentEvent.dueDate')"
                blur-or-change="saveDueDate()" 
-               ng-disabled="currentEvent.eventDate || !schedulingEnabled || currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"/>
+               ng-disabled="model.orgUnitClosed || currentEvent.eventDate || !schedulingEnabled || currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"/>
         <input type="text"
                class="form-control not-for-screen"
                ng-class="{'input-success': dueDateSaved}"
@@ -59,7 +59,7 @@
         <d2-map d2-lat-saved="latitudeSaved"
                 d2-lng-saved="longitudeSaved"
                 d2-object="currentEvent" 
-                d2-disabled="currentEvent.status !== 'ACTIVE' || currentEvent.editingNotAllowed || selectedEnrollment.status !== 'ACTIVE'"
+                d2-disabled="model.orgUnitClosed || currentEvent.status !== 'ACTIVE' || currentEvent.editingNotAllowed || selectedEnrollment.status !== 'ACTIVE'"
                 d2-function="saveCoordinate(arg1)" 
                 d2-coordinate-format="'COORDINATE'"
                 d2-function-param-coordinate="LATLNG">

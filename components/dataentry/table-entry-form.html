@@ -94,7 +94,7 @@
                                ng-class="getInputNotifcationClass('eventDate',false)"
                                d2-date
                                ng-model="eventRow.eventDate"
-                               ng-disabled="eventRow.status === 'SKIPPED' || eventRow.enrollmentStatus !== 'ACTIVE' || eventRow.editingNotAllowed "
+                               ng-disabled="model.orgUnitClosed || eventRow.status === 'SKIPPED' || eventRow.enrollmentStatus !== 'ACTIVE' || eventRow.editingNotAllowed "
                                ng-required="true"
                                ng-dblclick="$event.stopPropagation();"
                                title="{{currentStage.executionDateLabel}}"
@@ -120,7 +120,7 @@
                                                     ng-dblclick="$event.stopPropagation();"
                                                     title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                                     ng-required={{prStDe.compulsory}}
-                                                    ng-disabled="selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
+                                                    ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
                                                     name="{{eventRow.event}}{{prStDe.dataElement.id}}"
                                                     on-select="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                                     style="width:100%;">
@@ -140,7 +140,7 @@
                                             ng-required={{prStDe.compulsory}}
                                             title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                             ng-dblclick="$event.stopPropagation();"
-                                            ng-disabled="selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
+                                            ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
                                             ng-model="eventRow[prStDe.dataElement.id]"
                                             ng-change="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                             value=""> {{'no_value' | translate}}<br>
@@ -154,7 +154,7 @@
                                                 ng-required={{prStDe.compulsory}}
                                                 title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                                 ng-dblclick="$event.stopPropagation();"
-                                                ng-disabled="selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
+                                                ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
                                                 ng-model="eventRow[prStDe.dataElement.id]"
                                                 ng-change="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                                 value={{option.displayName}}> {{option.displayName}}
@@ -173,7 +173,7 @@
                                            ng-required={{prStDe.compulsory}}
                                            ng-dblclick="$event.stopPropagation();"
                                            title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
-                                           ng-disabled="selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
+                                           ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
                                            ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                            name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
                                 </div>
@@ -187,7 +187,7 @@
                                            ng-required={{prStDe.compulsory}}
                                            title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                            ng-dblclick="$event.stopPropagation();"
-                                           ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
+                                           ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
                                            ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                            name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
                                 </div>
@@ -201,7 +201,7 @@
                                            ng-required={{prStDe.compulsory}}
                                            title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                            ng-dblclick="$event.stopPropagation();"
-                                           ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
+                                           ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
                                            ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                            name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
                                 </div>
@@ -215,7 +215,7 @@
                                            ng-required={{prStDe.compulsory}}
                                            title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                            ng-dblclick="$event.stopPropagation();"
-                                           ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
+                                           ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
                                            ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                            name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
                                 </div>
@@ -229,7 +229,7 @@
                                            ng-required={{prStDe.compulsory}}
                                            title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                            ng-dblclick="$event.stopPropagation();"
-                                           ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
+                                           ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
                                            ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                            name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
                                 </div>
@@ -241,7 +241,7 @@
                                             ng-required={{prStDe.compulsory}}
                                             title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                             ng-dblclick="$event.stopPropagation();"
-                                            ng-disabled="selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
+                                            ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
                                             ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                             name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
                                         </textarea>
@@ -254,7 +254,7 @@
                                             ng-required={{prStDe.compulsory}}
                                             title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                             ng-dblclick="$event.stopPropagation();"
-                                            ng-disabled="selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
+                                            ng-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
                                             ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                             name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
                                 </div>
@@ -263,7 +263,7 @@
                                         ng-dblclick="$event.stopPropagation();"
                                         title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                         dh-required="prStDe.compulsory"
-                                        dh-disabled="selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][de.dataElement.id] === true"
+                                        dh-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][de.dataElement.id] === true"
                                         dh-value="eventRow[prStDe.dataElement.id]"
                                         dh-name="{{eventRow.event}}{{prStDe.dataElement.id}}"
                                         dh-click="saveDataValueForRadio(prStDe, eventRow, value)">
@@ -277,7 +277,7 @@
                                            max-date="prStDe.allowFutureDate ? '' : 0"
                                            class="form-control"
                                            ng-class='getInputNotifcationClass(prStDe.dataElement.id,false)'
-                                           ng-model="eventRow[prStDe.dataElement.id]"
+                                           ng-model="model.orgUnitClosed || eventRow[prStDe.dataElement.id]"
                                            ng-required={{prStDe.compulsory}}
                                            title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                            ng-dblclick="$event.stopPropagation();"
@@ -289,7 +289,7 @@
                                     <input type="checkbox"
                                            class="form-control"
                                            ng-class='getInputNotifcationClass(prStDe.dataElement.id,false)'
-                                           ng-model="eventRow[prStDe.dataElement.id]"
+                                           ng-model="model.orgUnitClosed || eventRow[prStDe.dataElement.id]"
                                            ng-required={{prStDe.compulsory}}
                                            title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                            ng-dblclick="$event.stopPropagation();"
@@ -318,7 +318,7 @@
                                     <d2-radio-button
                                         dh-required="prStDe.compulsory"
                                         title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
-                                        dh-disabled="selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][de.dataElement.id] === true"
+                                        dh-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][de.dataElement.id] === true"
                                         dh-value="eventRow[prStDe.dataElement.id]"
                                         dh-name="{{eventRow.event}}{{prStDe.dataElement.id}}"
                                         dh-click="saveDataValueForRadio(prStDe, eventRow, value)">
@@ -416,6 +416,7 @@
             <div class="col-md-12" style="text-align: right;padding-right: 4px;">
                 <button type="button"
                         class="btn btn-default"
+                        ng-disabled="model.orgUnitClosed"
                         ng-click="showCreateEvent(currentStage, eventCreationActions.add)">
                     {{'add'| translate}}
                 </button>

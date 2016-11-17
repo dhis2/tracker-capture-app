@@ -10,6 +10,7 @@ trackerCapture.controller('RelationshipController',
                 AttributesFactory,
                 CurrentSelection,
                 RelationshipFactory,
+                OrgUnitFactory,
                 ModalService,
                 CommonUtils,
                 DasboardWidgetService) {
@@ -46,6 +47,11 @@ trackerCapture.controller('RelationshipController',
             DasboardWidgetService.updateDashboard();
             setRelationships();            
         });
+        if ($scope.selectedTei.orgUnit) {
+            OrgUnitFactory.getOrgUnitClosedStatus($scope.selectedTei.orgUnit).then(function (closedStatus) {
+                $scope.model.orgUnitClosed = closedStatus;
+            });
+        }
     });
     
     $scope.showAddRelationship = function(related) {

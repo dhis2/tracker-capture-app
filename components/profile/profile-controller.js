@@ -6,7 +6,8 @@ trackerCapture.controller('ProfileController',
                 $scope,
                 $timeout,
                 CurrentSelection, 
-                DasboardWidgetService) {
+                DasboardWidgetService,
+                OrgUnitFactory) {
     $scope.editingDisabled = true;
     $scope.enrollmentEditing = false;
     $scope.widget = 'PROFILE';
@@ -51,6 +52,11 @@ trackerCapture.controller('ProfileController',
                 DasboardWidgetService.updateDashboard();
             },600);
         });
+        if ($scope.selectedTei && $scope.selectedTei.orgUnit) {
+            OrgUnitFactory.getOrgUnitClosedStatus($scope.selectedTei.orgUnit).then(function (closedStatus) {
+                $scope.model.orgUnitClosed = closedStatus;
+            });
+        }
     };
     
     $scope.enableEdit = function(){

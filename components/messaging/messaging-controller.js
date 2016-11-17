@@ -5,7 +5,8 @@ trackerCapture.controller('MessagingController',
         function($scope, $translate,
                 MessagingService,
                 CurrentSelection,
-                DasboardWidgetService) {
+                DasboardWidgetService,
+                OrgUnitFactory) {
 
     //$scope.messagingForm = {};
     $scope.note = {};
@@ -34,6 +35,11 @@ trackerCapture.controller('MessagingController',
                 if (foundPhoneNumber && foundEmailId) {
                     break;
                 }
+            }
+            if ($scope.selectedTei.orgUnit) {
+                OrgUnitFactory.getOrgUnitClosedStatus($scope.selectedTei.orgUnit).then(function (closedStatus) {
+                    $scope.model.orgUnitClosed = closedStatus;
+                });
             }
         }
         DasboardWidgetService.updateDashboard();
