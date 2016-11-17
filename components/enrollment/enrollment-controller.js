@@ -27,10 +27,6 @@ trackerCapture.controller('EnrollmentController',
             });
             OrgUnitFactory.getOrgUnitClosedStatus($scope.selectedOrgUnit.id).then(function (closedStatus) {
                 $scope.model.orgUnitClosed = closedStatus;
-                alert("from enrollment controller");
-                if($scope.model.orgUnitClosed)  {
-
-                }
             });
         }
 
