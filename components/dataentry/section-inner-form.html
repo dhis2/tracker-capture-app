@@ -136,7 +136,21 @@
                 <input type="text" class="form-control" value={{currentEvent[prStDes[de.dataElement.id].dataElement.id]}}>
             </div>
         </div>
-
+        <div ng-switch-when="PHONE_NUMBER">
+            <div class="hideInPrint">
+                <input type="text"
+                       class="form-control"
+                       ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
+                       ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
+                       ng-required={{isCompulsory(de.dataElement)}}
+                       ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
+                       ng-blur="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
+                       name="foo"/>
+            </div>
+            <div class="not-for-screen">
+                <input type="text" class="form-control" value={{currentEvent[prStDes[de.dataElement.id].dataElement.id]}}>
+            </div>
+        </div>
         <div ng-switch-when="BOOLEAN">
             <div class="hideInPrint form-control">
                 <d2-radio-button
