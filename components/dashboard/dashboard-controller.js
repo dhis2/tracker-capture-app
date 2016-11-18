@@ -480,9 +480,6 @@ trackerCapture.controller('DashboardController',
         });
         $timeout(function () {
             $rootScope.$broadcast('selectedItems', {programExists: $scope.programs.length > 0});
-            if ($scope.model.orgUnitClosed) {
-                setHeaderMessage($translate.instant("orgunit_closed"));
-            }
         }, 500);
     };
 
