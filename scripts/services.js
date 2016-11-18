@@ -478,7 +478,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             tei.attributes = [];
             var formEmpty = true;            
             for(var k in attributesById){
-                if(formTei[k] !== originalTei[k] && !formTei[k] && !originalTei[k]){
+                if(originalTei && formTei[k] !== originalTei[k] && !formTei[k] && !originalTei[k]){
                     formChanged = true;
                 }
                 if( formTei[k] ){
@@ -492,7 +492,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             
             var formChanged = false;
             for(var k in attributesById){                
-                if(formTei[k] !== originalTei[k]){
+                if(originalTei && formTei[k] !== originalTei[k]){
                     if(!formEmpty){
                         formChanged = true;
                         break;
@@ -503,12 +503,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     }                    
                 }
             }
-
-            angular.forEach(originalTei.attributes, function(att){
-                if( tei[att.attribute]) {
-                    delete tei[att.attribute];
-                }
-            });
+            if (originalTei) {
+                angular.forEach(originalTei.attributes, function (att) {
+                    if (tei[att.attribute]) {
+                        delete tei[att.attribute];
+                    }
+                });
+            }
             return {tei: tei, formEmpty: formEmpty, formChanged: formChanged};
         }
     };
