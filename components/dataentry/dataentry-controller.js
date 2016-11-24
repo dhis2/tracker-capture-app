@@ -136,15 +136,17 @@ trackerCapture.controller('DataEntryController',
         if(!date) {
             return;
         }
-        if($scope.model.ouDates) {
+        if($scope.model.ouDates && $scope.model.ouDates.startDate && $scope.model.ouDates.endDate) {
             if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouDates.startDate, $scope.model.ouDates.endDate)) {
                 dateSetter($scope, null);
                 return;
             }
         }
 
-        if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
-            dateSetter($scope, null);
+        if($scope.selectedProgram.expiryPeriodType && $scope.selectedProgram.expiryDays) {
+            if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
+                dateSetter($scope, null);
+            }
         }
     };
     
