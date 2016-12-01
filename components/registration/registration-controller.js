@@ -260,7 +260,8 @@ trackerCapture.controller('RegistrationController',
             if (destination === 'DASHBOARD') {
                 $location.path('/dashboard').search({
                     tei: teiId,
-                    program: $scope.selectedProgram ? $scope.selectedProgram.id : null
+                    program: $scope.selectedProgram ? $scope.selectedProgram.id : null,
+                    ou:$scope.selectedOrgUnit.id
                 });
             }
             else if (destination === 'SELF') {
