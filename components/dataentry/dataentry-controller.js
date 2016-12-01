@@ -607,7 +607,7 @@ trackerCapture.controller('DataEntryController',
             $scope.selectedEnrollment = selections.selectedEnrollment;
 
             if($scope.selectedOrgUnit) {
-                OrgUnitFactory.getOrgUnitFromStore($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
+                OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
                     if(orgUnitFromStore) {
                         $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate };
                     }

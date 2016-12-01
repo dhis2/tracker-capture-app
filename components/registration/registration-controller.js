@@ -92,7 +92,7 @@ trackerCapture.controller('RegistrationController',
     //OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
         $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
         if($scope.selectedOrgUnit) {
-            OrgUnitFactory.getOrgUnitFromStore($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
+            OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
                 $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate };
             });
             $scope.model.orgUnitId = $scope.selectedOrgUnit.id;

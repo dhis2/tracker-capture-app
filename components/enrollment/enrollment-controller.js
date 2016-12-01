@@ -22,7 +22,7 @@ trackerCapture.controller('EnrollmentController',
         $scope.today = DateUtils.getToday();
         $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
         if ($scope.selectedOrgUnit) {
-            OrgUnitFactory.getOrgUnitFromStore($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
+            OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
                 $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate};
             });
             OrgUnitFactory.getOrgUnitClosedStatus($scope.selectedOrgUnit.id).then(function (closedStatus) {
