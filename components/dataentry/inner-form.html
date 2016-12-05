@@ -282,7 +282,7 @@
         </div>
         <div ng-switch-when="ORGANISATION_UNIT">
             <d2-org-unit-tree
-                    selected-org-unit="selectedOrgUnit"
+                    selected-org-unit-id="{{selectedOrgUnit.id}}"
                     id="{{prStDe.dataElement.id}}"
                     d2-value="currentEvent[prStDe.dataElement.id]"
                     d2-required="prStDe.compulsory"
