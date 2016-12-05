@@ -38,9 +38,8 @@ function($rootScope,
     $scope.eventsTodayFilters = [{name: $translate.instant('events_today_all'), value: 'all'},{name: $translate.instant('events_today_completeoractive'),value: 'completedOrActive', status:['COMPLETED', 'ACTIVE']},{name: $translate.instant('events_today_skipped') , value: 'skipped', status:['SKIPPED']},{name: $translate.instant('events_today_scheduled'), value: 'scheduled', status:['SCHEDULE']}];
     $scope.selectedEventsTodayFilter = $scope.eventsTodayFilters[0];
     $scope.availablePrograms = {};
-
-
-
+    $scope.fileNames = {};
+    $scope.orgUnitNames = {};
 
     //Selection
     $scope.ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];
@@ -536,6 +535,8 @@ function($rootScope,
                     reverse: $scope.reverse
                 });
                 CurrentSelection.setTrackedEntities($scope.trackedEntityList);
+                $scope.fileNames = CurrentSelection.getFileNames();
+                $scope.orgUnitNames = CurrentSelection.getOrgUnitNames();
             });
         }
     };
@@ -586,17 +587,12 @@ function($rootScope,
 
         modalInstance.result.then(function () {
         }, function () {});
-    };
+    };    
 
     $scope.showHideColumns = function(){
-        $scope.hiddenGridColumns = 0;
-        var currentColumns = angular.copy($scope.gridColumns);
-
-        angular.forEach($scope.gridColumns, function(gridColumn){
-            if(!gridColumn.show){
-                $scope.hiddenGridColumns++;
-            }
-        });
+        
+        $scope.gridColumnsInUserStore = $scope.gridColumnsInUserStore ? $scope.gridColumnsInUserStore : {};        
+        $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = angular.copy( $scope.gridColumns );
 
         var modalInstance = $modal.open({
             templateUrl: 'views/column-modal.html',
@@ -606,30 +602,16 @@ function($rootScope,
                     return $scope.gridColumns;
                 },
                 hiddenGridColumns: function(){
-                    return $scope.hiddenGridColumns;
+                    return ($filter('filter')($scope.gridColumns, {show: false})).length;
                 },
-                saveGridColumns: function () {
-                    return function (gridColumns) {
-                        var gridColumnsChanged = false;
-
-                        for (var i = 0; i < gridColumns.length; i++) {
-                            if (currentColumns[i].show !== $scope.gridColumns[i].show) {
-                                gridColumnsChanged = true;
-                                break;
-                            }
-                        }
-                        if (!gridColumnsChanged) {
-                            return;
-                        }
-                        $scope.gridColumns = gridColumns;
-                        CurrentSelection.setGridColumns(angular.copy($scope.gridColumns));
-
-                        if (!$scope.gridColumnsInUserStore || ($scope.gridColumnsInUserStore && $scope.gridColumnsInUserStore.length === 0)) {
-                            $scope.gridColumnsInUserStore = {};
-                        }
-                        $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = $scope.gridColumns;
-                        GridColumnService.set($scope.gridColumnsInUserStore, "trackerCaptureGridColumns");
-                    }
+                gridColumnDomainKey: function(){
+                    return "trackerCaptureGridColumns";
+                },
+                gridColumnKey: function(){
+                    return $scope.selectedProgram.id;
+                },
+                gridColumnsInUserStore: function(){
+                    return $scope.gridColumnsInUserStore;
                 }
             }
         });

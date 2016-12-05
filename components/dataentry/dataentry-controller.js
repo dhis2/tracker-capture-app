@@ -59,6 +59,7 @@ trackerCapture.controller('DataEntryController',
     $scope.eventsLoaded = false;
     $scope.dashBoardWidgetFirstRun = true;
     $scope.showSelf = true;
+    $scope.orgUnitNames = {};
     
     var eventLockEnabled = false;
     var eventLockHours = 8; //Number of hours before event is locked after completing.
@@ -605,6 +606,10 @@ trackerCapture.controller('DataEntryController',
             $scope.selectedEntity = selections.tei;
             $scope.selectedProgram = selections.pr;
             $scope.selectedEnrollment = selections.selectedEnrollment;
+            
+            var ouNames = CurrentSelection.getOrgUnitNames();            
+            ouNames[orgUnit.id] = orgUnit.displayName;
+            CurrentSelection.setOrgUnitNames( ouNames );
 
             if($scope.selectedOrgUnit) {
                 OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
@@ -760,7 +765,8 @@ trackerCapture.controller('DataEntryController',
                 }
             });
             
-            $scope.fileNames = CurrentSelection.getFileNames();            
+            $scope.orgUnitNames = CurrentSelection.getOrgUnitNames();
+            $scope.fileNames = CurrentSelection.getFileNames();
             $scope.allEventsSorted = orderByFilter($scope.allEventsSorted, '-sortingDate').reverse();
             sortEventsByStage(null);
             $scope.showDataEntry($scope.currentEvent, true, true);

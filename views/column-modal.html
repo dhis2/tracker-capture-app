@@ -9,7 +9,7 @@
                     {{gridColumn.displayName}}
                 </td>
                 <td>
-                    <input type="checkbox" ng-model="gridColumn.show" ng-change="showHideColumns(gridColumn)">
+                    <input type="checkbox" ng-model="gridColumn.show" ng-change="showHideColumns(gridColumn)" ng-disabled="gridColumn.show && hiddenGridColumns + 2 > gridColumns.length">
                 </td>
             </tr>                                    
         </table>

@@ -290,7 +290,8 @@
                     d2-required="isCompulsory(de.dataElement)"
                     d2-disabled="model.orgUnitClosed || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
                     d2-object="currentEvent"
-                    d2-function="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)">
+                    d2-function="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
+                    d2-orgunit-names="orgUnitNames">
             </d2-org-unit-tree>
         </div>        
         <div ng-switch-default>
