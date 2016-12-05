@@ -245,7 +245,7 @@
                     </span>
                     <span ng-switch-when="ORGANISATION_UNIT">
                         <d2-org-unit-tree
-                                selected-org-unit="selectedOrgUnit"
+                                selected-org-unit-id="{{selectedOrgUnit.id}}"
                                 id="{{attribute.id}}"
                                 d2-value="selectedTei[attribute.id]"
                                 d2-required="attribute.mandatory"
