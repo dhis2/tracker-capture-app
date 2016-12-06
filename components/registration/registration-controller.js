@@ -308,8 +308,9 @@ trackerCapture.controller('RegistrationController',
                                 var en = enrollmentResponse.response && enrollmentResponse.response.importSummaries && enrollmentResponse.response.importSummaries[0] ? enrollmentResponse.response.importSummaries[0] : {};
                                 if (en.reference && en.status === 'SUCCESS') {
                                     enrollment.enrollment = en.reference;
-                                    $scope.selectedEnrollment = enrollment;
-                                    var dhis2Events = EventUtils.autoGenerateEvents($scope.tei.trackedEntityInstance, $scope.selectedProgram, $scope.selectedOrgUnit, enrollment, $scope.currentEvent);
+                                    $scope.selectedEnrollment = enrollment;                                    
+                                    var availableEvent = $scope.currentEvent && $scope.currentEvent.event ? $scope.currentEvent : null;
+                                    var dhis2Events = EventUtils.autoGenerateEvents($scope.tei.trackedEntityInstance, $scope.selectedProgram, $scope.selectedOrgUnit, enrollment, availableEvent);
                                     if (dhis2Events.events.length > 0) {
                                         DHIS2EventFactory.create(dhis2Events).then(function () {
                                             notifyRegistrtaionCompletion(destination, $scope.tei.trackedEntityInstance);
