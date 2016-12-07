@@ -304,7 +304,7 @@ trackerCapture.controller('DataEntryController',
                 if(effect.programStageSection){
                     if(effect.ineffect){
                         $scope.hiddenSections[event][effect.programStageSection] = true;
-                    } else{
+                    } else if (!$scope.hiddenSections[event][effect.programStageSection]) {
                         $scope.hiddenSections[event][effect.programStageSection] = false;
                     }
                 }
