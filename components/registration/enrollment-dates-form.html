@@ -19,7 +19,8 @@
                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                    name="enrollmentDate" 
                    class="form-control hideInPrint" 
-                   d2-date 
+                   d2-date
+                   d2-date-validator 
                    ng-model="selectedEnrollment.enrollmentDate" 
                    max-date="selectedProgram.selectEnrollmentDatesInFuture ? '' : 0"
                    min-date=""
@@ -38,6 +39,7 @@
                    name="incidentDate"
                    class="form-control hideInPrint" 
                    d2-date 
+                   d2-date-validator 
                    max-date="selectedProgram.selectIncidentDatesInFuture ? '' : 0"
                    min-date=""
                    ng-model="selectedEnrollment.incidentDate"/>
