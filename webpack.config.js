@@ -4,7 +4,6 @@ var webpack = require('webpack');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 var colors = require('colors');
-const version = require('./package.json').version;
 
 const dhisConfigPath = process.env.DHIS2_HOME && `${process.env.DHIS2_HOME}/config.json`;
 let dhisConfig;
@@ -27,12 +26,37 @@ function bypass(req, res, opt) {
     req.headers.Authorization = dhisConfig.authorization;
 }
 
+function makeLinkTags(stylesheets) {
+    return function (hash) {
+        return stylesheets
+            .map(([url, attributes]) => {
+                const attributeMap = Object.assign({ media: 'screen' }, attributes);
+
+                const attributesString = Object
+                    .keys(attributeMap)
+                    .map(key => `${key}="${attributeMap[key]}"`)
+                    .join(' ');
+
+                return `<link type="text/css" rel="stylesheet" href="${url}?_=${hash}" ${attributesString} />`;
+            })
+            .join(`\n`);
+    };
+}
+
+function makeScriptTags(scripts) {
+    return function (hash) {
+        return scripts
+            .map(script => (`<script src="${script}?_=${hash}"></script>`))
+            .join(`\n`);
+    };
+}
+
 module.exports = {
     context: __dirname,
     entry: './scripts/index.js',
     output: {
         path: path.join(__dirname, '/build'),
-        filename: 'app.js'
+        filename: 'app-[hash].js'
     },
     module: {
         loaders: [
@@ -51,20 +75,14 @@ module.exports = {
         new webpack.optimize.DedupePlugin(),
         new HTMLWebpackPlugin({
             template: './index.ejs',
-            stylesheets: [
+            stylesheets: makeLinkTags([
                 ['styles/style.css'],
                 ['styles/print.css', { media: 'print' }],
-            ].map(([url, attributes]) => {
-                const attributeMap = Object.assign({ media: 'screen'}, attributes);
-
-                const attributesString = Object
-                    .keys(attributeMap)
-                    .map(key => `${key}="${attributeMap[key]}"`)
-                    .join(' ');
-
-                return `<link type="text/css" rel="stylesheet" href="${url}?_=${version}" ${attributesString} />`;
-            })
-            .join(`\n`),
+            ]),
+            scripts: makeScriptTags([
+                'core/tracker-capture.js',
+                '../main.js',
+            ]),
         }),
     ],
     devtool: ['sourcemap'],
