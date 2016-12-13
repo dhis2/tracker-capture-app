@@ -20,8 +20,8 @@
         <link type="text/css" rel="stylesheet" media="screen" href="../dhis-web-core-resource/angular.ui-select/0.12.0/select.min.css" />
         <link type="text/css" rel="stylesheet" media="screen" href="../dhis-web-core-resource/angular-plugins/select2-3c4dc0b207.css" />
         <link type="text/css" rel="stylesheet" href="../api/files/style" />
-        <!-- needs version --><link type="text/css" rel="stylesheet" media="screen" href="styles/style.css">
-        <!-- needs version --><link type="text/css" rel="stylesheet" media="print" href="styles/print.css">
+
+        <%= htmlWebpackPlugin.options.stylesheets %>
         
         <script type="text/javascript" src="../dhis-web-core-resource/jquery/1.8.2/jquery.min.js"></script>
         <script type="text/javascript" src="../dhis-web-core-resource/jquery.ui/1.11.4/jquery-ui.min.js"></script>
@@ -91,7 +91,7 @@
         <script type="text/javascript" src="../dhis-web-core-resource/lodash/4.15.0/lodash.min.js"></script>
         <script type="text/javascript" src="../dhis-web-core-resource/lodash-functional/1.0.1/lodash-functional.js"></script>
         <script type="text/javascript" src="../dhis-web-core-resource/babel-polyfill/6.20.0/dist/polyfill.min.js"></script>
-        <!-- needs version --><script type="text/javascript" src="../dhis-web-commons/javascripts/header-bar/header-bar.js"></script>
+        <script type="text/javascript" src="../dhis-web-core-resource/d2-ui/25.5.4/dist/header-bar.js"></script>
         <script>
             // Needs to be wrapped in jQuery to be sure the DOM is parsed as the script is not at the bottom.
             jQuery(function () {
