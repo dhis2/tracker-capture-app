@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild": "(rm -r build && mkdir build) || mkdir build",
-    "build": "webpack && cp -r i18n build/i18n && cp -r core build/core && cp -r scripts build/scripts && cp -r views build/views && cp -r components build/components && cp -r styles build/styles && cp index.html build/",
+    "build": "webpack -p && cp -r i18n build/i18n && cp -r core build/core && cp -r views build/views && cp -r styles build/styles",
     "start": "webpack-dev-server"
   },
   "repository": {
@@ -34,6 +34,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "css-loader": "^0.23.1",
     "html-webpack-plugin": "^2.24.1",
+    "ng-annotate-loader": "^0.2.0",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.0",
     "webpack-dev-server": "^1.14.1"

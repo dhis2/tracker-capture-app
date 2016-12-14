@@ -63,13 +63,13 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 exclude: [/(node_modules)/],
-                loader: 'babel'
+                loaders: ['ng-annotate-loader', 'babel-loader'],
             },
             {
                 test: /\.css$/,
-                loader: 'style-loader!css-loader'
-            }
-        ]
+                loader: 'style-loader!css-loader',
+            },
+        ],
     },
     plugins: [
         new webpack.optimize.DedupePlugin(),
