@@ -19,13 +19,15 @@
         <link type="text/css" rel="stylesheet" media="print" href="../dhis-web-core-resource/dhis/css/print-5ebb8063eb.css" />
         <link type="text/css" rel="stylesheet" media="screen" href="../dhis-web-core-resource/angular.ui-select/0.12.0/select.min.css" />
         <link type="text/css" rel="stylesheet" media="screen" href="../dhis-web-core-resource/angular-plugins/select2-3c4dc0b207.css" />
-        <link type="text/css" rel="stylesheet" href="../api/files/style" />
 
         <%= htmlWebpackPlugin.options.stylesheets(webpack.hash) %>
+
+        <link type="text/css" rel="stylesheet" href="../api/files/style" />
         
         <script src="../dhis-web-core-resource/jquery/1.8.2/jquery.min.js"></script>
         <script src="../dhis-web-core-resource/jquery.ui/1.11.4/jquery-ui.min.js"></script>
-        
+
+        <script src="../dhis-web-core-resource/jquery-plugin/jquery-719d66b53f.plugin.min.js"></script>
         <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.min.js"></script>
         <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.picker.min.js"></script>
         <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.plus.min.js"></script>
@@ -82,7 +84,6 @@
         <script src="../dhis-web-core-resource/angular-css/1.0.8/angular-css.min.js"></script>
         <script src="../dhis-web-core-resource/angular-leaflet-directive/0.10.0/dist/angular-leaflet-directive.js"></script>
 
-        <!-- Menu scripts -->
         <script src="../dhis-web-core-resource/react/15.3.2/react-with-touch-tap-plugin.min.js"></script>
         <script src="../dhis-web-core-resource/rxjs/4.1.0/rx.lite.min.js"></script>
         <script src="../dhis-web-core-resource/lodash/4.15.0/lodash.min.js"></script>
@@ -98,7 +99,6 @@
         
         <%= htmlWebpackPlugin.options.scripts(webpack.hash) %>
 
-        <!-- Custom user scripts -->
         <script src="../api/files/script"></script>
 
     </head>
