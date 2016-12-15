@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html ng-app='trackerCapture'>
+    <head>
+        <title>Tracker Capture</title>
+        <meta name="description" content="DHIS 2">
+        <meta name="keywords" content="DHIS 2">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <link type="text/css" rel="stylesheet" href="../dhis-web-core-resource/dhis/light_blue/light_blue-b332a6918f.css" />
+        <link type="text/css" rel="stylesheet" href="../dhis-web-core-resource/bootstrap/3.0.2/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="../dhis-web-core-resource/jquery.ui/1.11.4/themes/redmond/jquery-ui.css" />
+        <link type="text/css" rel="stylesheet" href="../dhis-web-core-resource/jquery.calendars.package-1.2.1/ui-redmond.calendars.picker.css" />
+        <link type="text/css" rel="stylesheet" href="../dhis-web-core-resource/leaflet/0.7.7/leaflet.css" />
+        <link type="text/css" rel="stylesheet" href="../dhis-web-core-resource/leaflet-geocoder-mapzen/1.4.1/dist/leaflet-geocoder-mapzen.css" />
+        <link type="text/css" rel="stylesheet" href="../dhis-web-core-resource/leaflet-contextmenu/1.1.0/dist/leaflet.contextmenu.css" />
+        <link type="text/css" rel="stylesheet" media="screen" href="../dhis-web-core-resource/fontawesome/4.7.0/css/font-awesome.min.css" />
+        <link type="text/css" rel="stylesheet" media="screen" href="../dhis-web-core-resource/dhis/css/widgets-2318061e45.css" />
+        <link type="text/css" rel="stylesheet" media="print" href="../dhis-web-core-resource/dhis/css/print-5ebb8063eb.css" />
+        <link type="text/css" rel="stylesheet" media="screen" href="../dhis-web-core-resource/angular.ui-select/0.12.0/select.min.css" />
+        <link type="text/css" rel="stylesheet" media="screen" href="../dhis-web-core-resource/angular-plugins/select2-3c4dc0b207.css" />
+        <link type="text/css" rel="stylesheet" href="../api/files/style" />
+
+        <%= htmlWebpackPlugin.options.stylesheets(webpack.hash) %>
+        
+        <script src="../dhis-web-core-resource/jquery/1.8.2/jquery.min.js"></script>
+        <script src="../dhis-web-core-resource/jquery.ui/1.11.4/jquery-ui.min.js"></script>
+        
+        <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.min.js"></script>
+        <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.picker.min.js"></script>
+        <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.plus.min.js"></script>
+        <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.picker.ext.js"></script>
+
+        <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.coptic.min.js"></script>
+        <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.ethiopian.min.js"></script>
+        <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.islamic.min.js"></script>
+        <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.julian.min.js"></script>
+        <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.nepali.min.js"></script>
+        <script src="../dhis-web-core-resource/jquery.calendars.package-1.2.1/jquery.calendars.thai.min.js"></script>
+        
+        <script src="../dhis-web-core-resource/select2/3.4.5/select2.min.js"></script>
+        <script src="../dhis-web-core-resource/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+        <script src="../dhis-web-core-resource/d3js/3.4.13/d3.min.js"></script>
+        <script src="../dhis-web-core-resource/nvd3/1.1.15-beta/nv.d3.min.js"></script>
+
+        <script src="../dhis-web-core-resource/angularjs/1.3.15/angular.min.js"></script>
+        <script src="../dhis-web-core-resource/angularjs/1.3.15/angular-resource.min.js"></script>
+        <script src="../dhis-web-core-resource/angularjs/1.3.15/angular-route.min.js"></script>
+        <script src="../dhis-web-core-resource/angularjs/1.3.15/angular-cookies.min.js"></script>
+        <script src="../dhis-web-core-resource/angularjs/1.3.15/angular-animate.min.js"></script>
+        <script src="../dhis-web-core-resource/angularjs/1.3.15/angular-messages.min.js"></script>
+        <script src="../dhis-web-core-resource/angularjs/1.3.15/angular-sanitize.min.js"></script>
+        <script src="../dhis-web-core-resource/angular.bootstrap/0.13.0/ui-bootstrap.min.js"></script>
+        <script src="../dhis-web-core-resource/angular.bootstrap/0.13.0/ui-bootstrap-tpls.js"></script>
+        <script src="../dhis-web-core-resource/momentjs/2.5.0/moment-with-langs.min.js"></script>
+
+        <script src="../dhis-web-core-resource/dhis/dhis2-1554e6a5ab.util.js"></script>
+        <script src="../dhis-web-core-resource/dhis/commons-147b38397f.js"></script>
+        <script src="../dhis-web-core-resource/dhis/commons-e9bf10487b.ajax.js"></script>
+        <script src="../dhis-web-core-resource/dhis/dhis2-280f5a3ab3.availability.js"></script>
+        <script src="../dhis-web-core-resource/dhis/dhis2-792850e798.trigger.js"></script>
+        <script src="../dhis-web-core-resource/dhis/lists-eee6a26ae0.js"></script>
+        <script src="../dhis-web-core-resource/dhis/periodTypeNoDep-5809fc740b.js"></script>
+        <script src="../dhis-web-core-resource/dhis/dhis2-29192e93f8.validation.js"></script>
+        <script src="../dhis-web-core-resource/dhis/dhis2-ce7b1fc4ce.period.js"></script>
+        <script src="../dhis-web-core-resource/dhis/dhis2-6da08511fb.storage.ss.js"></script>
+        <script src="../dhis-web-core-resource/dhis/dhis2-1b9f647ef2.storage.ls.js"></script>
+        <script src="../dhis-web-core-resource/dhis/dhis2-e5bdf19229.storage.idb.js"></script>
+        <script src="../dhis-web-core-resource/dhis/dhis2-992eeb1c0e.storage.memory.js"></script>
+        <script src="../dhis-web-core-resource/dhis/dhis2-04afdd4f4c.storage.js"></script>
+        <script src="../dhis-web-core-resource/dhis/dhis2-67ed866cc1.contextmenu.js"></script>
+
+        <!-- needs version --><script src="../dhis-web-commons/ouwt/ouwt.js"></script>
+        <script src="../dhis-web-core-resource/dhis/dhis2-01fa829255.tracker.metadata.js"></script>
+
+        <script src="../dhis-web-core-resource/angular-plugins/select-01349cd337.js"></script>
+        <script src="../dhis-web-core-resource/angular-ui-select2/0.0.5/src/select2.js"></script>
+        <script src="../dhis-web-core-resource/angularjs.nvd3-directives/v0.0.7/angularjs-nvd3-directives.min.js"></script>
+        <script src="../dhis-web-core-resource/angular-plugins/angularLocalStorage-12a21d2dab.js"></script>
+        <script src="../dhis-web-core-resource/angular.translate/2.7.0/angular-translate.min.js"></script>
+        <script src="../dhis-web-core-resource/ng-infinite-scroll/1.0.0/build/ng-infinite-scroll.min.js"></script>
+        <script src="../dhis-web-core-resource/angular-css/1.0.8/angular-css.min.js"></script>
+        <script src="../dhis-web-core-resource/angular-leaflet-directive/0.10.0/dist/angular-leaflet-directive.js"></script>
+
+        <!-- Menu scripts -->
+        <script src="../dhis-web-core-resource/react/15.3.2/react-with-touch-tap-plugin.min.js"></script>
+        <script src="../dhis-web-core-resource/rxjs/4.1.0/rx.lite.min.js"></script>
+        <script src="../dhis-web-core-resource/lodash/4.15.0/lodash.min.js"></script>
+        <script src="../dhis-web-core-resource/lodash-functional/1.0.1/lodash-functional.js"></script>
+        <script src="../dhis-web-core-resource/babel-polyfill/6.20.0/dist/polyfill.min.js"></script>
+        <script src="../dhis-web-core-resource/d2-ui/25.5.4/dist/header-bar.js"></script>
+        <script>
+            // Needs to be wrapped in jQuery to be sure the DOM is parsed as the script is not at the bottom.
+            jQuery(function () {
+                Dhis2HeaderBar.initHeaderBar(document.querySelector('#header'), undefined, { noLoadingIndicator: true });
+            });
+        </script>
+        
+        <%= htmlWebpackPlugin.options.scripts(webpack.hash) %>
+
+        <!-- Custom user scripts -->
+        <script src="../api/files/script"></script>
+
+    </head>
+    <body>
+        <div id="header"></div>
+        <div id="headerMessage"></div>
+
+        <div ng-view></div>
+
+    </body>
+</html>
