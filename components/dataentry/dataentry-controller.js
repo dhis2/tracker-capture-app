@@ -220,7 +220,7 @@ trackerCapture.controller('DataEntryController',
 
         //In most cases the updated effects apply to the current event. In case the affected event is not the current event, fetch the correct event to affect:
         if (event !== affectedEvent.event) {
-            angular.forEach($scope.currentStageEvents, function (searchedEvent) {
+            angular.forEach($scope.allEventsSorted, function (searchedEvent) {
                 if (searchedEvent.event === event) {
                     affectedEvent = searchedEvent;
                 }
@@ -304,7 +304,7 @@ trackerCapture.controller('DataEntryController',
                 if(effect.programStageSection){
                     if(effect.ineffect){
                         $scope.hiddenSections[event][effect.programStageSection] = true;
-                    } else{
+                    } else if (!$scope.hiddenSections[event][effect.programStageSection]) {
                         $scope.hiddenSections[event][effect.programStageSection] = false;
                     }
                 }
