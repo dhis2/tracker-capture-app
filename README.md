@@ -24,6 +24,8 @@ cd tracker-core
 npm link
 ```
 
+> To make your changes to any `tracker-core` files propagate to your apps you'll need to run `npm run build` in the tracker-core directory.
+
 Now we can clone the `tracker-core-app` in its own directory and set up the link to `tracker-core`.
 
 The following steps will clone the repo, install the dependencies and link up with `tracker-core`.
