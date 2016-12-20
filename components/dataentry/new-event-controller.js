@@ -82,7 +82,7 @@ trackerCapture.controller('EventCreationController',
             var lastStageForEvents;
             
             if(angular.isUndefined($scope.suggestedStage)){
-                for(i = 0; i < events.length; i++){
+                for(var i = 0; i < events.length; i++){
                     var event = events[i];
                     var eventStage = stagesById[event.programStage];
                         if(i > 0){
@@ -107,7 +107,7 @@ trackerCapture.controller('EventCreationController',
             }
 
             
-            for(j = 0; j < availableStagesOrdered.length; j++){
+            for(var j = 0; j < availableStagesOrdered.length; j++){
                 var availableStage = availableStagesOrdered[j];
                 
                 if(availableStage.id === lastStageForEvents.id){
