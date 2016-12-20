@@ -1,0 +1,14 @@
+<div class="panel panel-danger">
+    <div class="panel-heading bold">
+        {{'validation_errors'| translate}}
+    </div>
+    <div class="panel-body">
+        <table>
+            <tr ng-repeat="msg in errorMessages">
+                <td class="warning-message-label">
+                    {{msg}}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
