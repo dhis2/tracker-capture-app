@@ -367,7 +367,7 @@ trackerCapture.controller('RegistrationController',
                     //There is unresolved program rule errors - show error message.
                     var sections = [
                         {
-                            bodyList:$scope.errorMessages,
+                            bodyList:allErrors,
                             itemType:'danger'
                         }
                     ];
@@ -508,7 +508,7 @@ trackerCapture.controller('RegistrationController',
                 $scope.hiddenSections = effectResult.hiddenSections;
                 $scope.assignedFields = effectResult.assignedFields;
                 $scope.warningMessages = effectResult.warningMessages;
-                $scope.errorMessagesOnComplete = effectResult.errorMessagesOnComplete;
+                $scope.errorMessages = effectResult.errorMessages;
                 $scope.warningMessages = angular.extend($scope.warningMessages, effectResult.warningMessagesOnComplete);
                 $scope.errorMessagesOnComplete = effectResult.errorMessagesOnComplete;
             }
