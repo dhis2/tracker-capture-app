@@ -618,6 +618,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         update: function( enrollment ){
             var en = convertFromUserToApi(angular.copy(enrollment));
+            delete en.notes;
             var promise = $http.put( DHIS2URL + '/enrollments/' + en.enrollment , en ).then(function(response){
                 return response.data;
             }, function(response){
