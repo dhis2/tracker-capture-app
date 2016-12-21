@@ -297,7 +297,7 @@ trackerCapture.controller('EnrollmentController',
                 $route.reload();
             }
             else {
-                $location.path('/dashboard').search({tei: $scope.selectedTeiId, program: program});
+                $location.path('/dashboard').search({tei: $scope.selectedTeiId, program: program, ou: $scope.selectedOrgUnit.id});
             }
         };
 

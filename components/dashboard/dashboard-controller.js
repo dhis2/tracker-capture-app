@@ -435,10 +435,6 @@ trackerCapture.controller('DashboardController',
 
         }
     });
-
-    $scope.$on('$locationChangeSuccess', function () {
-        selection.load();
-    });
     
     $scope.applySelectedProgram = function (pr) {
         $scope.selectedProgram = pr;
