@@ -39,7 +39,7 @@ trackerCapture.controller('DataEntryController',
     $scope.eventPagingEnd = $scope.eventPageSize;
     
     //Data entry form
-    $scope.outerDataEntryForm = {longitude: {}r, latitude: {}};
+    $scope.outerDataEntryForm = {longitude: {}, latitude: {}};
     $scope.displayCustomForm = false;
     $scope.currentElement = {};
     $scope.schedulingEnabled = false;
@@ -688,8 +688,7 @@ trackerCapture.controller('DataEntryController',
                 });    	        
     	    }
         });
-    });
-    
+
     $scope.openEventExternal = function(event){
         if($scope.useMainMenu){
             var stage = $scope.stagesById[event.programStage];
