@@ -51,7 +51,6 @@ trackerCapture.controller('RegistrationController',
     $rootScope.ruleeffects = {};
 
     $scope.attributesById = CurrentSelection.getAttributesById();
-    var selection = CurrentSelection.get();
 
     if(!$scope.attributesById){
         $scope.attributesById = [];
@@ -89,13 +88,17 @@ trackerCapture.controller('RegistrationController',
     
     $scope.isDisabled = function(attribute) {
         return attribute.generated || $scope.assignedFields[attribute.id] || $scope.editingDisabled;
-    }
-    
-    
+    };
+
     $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
-    if (selection && selection.orgUnit) {
-        $scope.model.ouDates = { startDate: selection.orgUnit.odate, endDate: selection.orgUnit.cdate };
-        $scope.model.orgUnitClosed = selection.orgUnit.closedStatus;
+
+    if ($scope.selectedOrgUnit && $scope.selectedOrgUnit.id) {
+        OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function (ou) {
+            if(ou) {
+                $scope.model.ouDates = { startDate: ou.odate, endDate: ou.cdate };
+                $scope.model.orgUnitClosed = ou.closedStatus;
+            }
+        });
     }
 
     if($scope.selectedOrgUnit) {

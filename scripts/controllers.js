@@ -108,8 +108,8 @@ function($rootScope,
                 SessionStorageService.set('SELECTED_OU', $scope.selectedOrgUnit);
 
             }
-            OrgUnitFactory.getOrgUnitClosedStatus($scope.selectedOrgUnit.id).then(function (closedStatus) {
-                $scope.model.orgUnitClosed = closedStatus;
+            OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function (ou) {
+                $scope.model.orgUnitClosed = ou.closedStatus;
             });
             $scope.doSearch = true;
             $scope.searchingOrgUnit = $scope.selectedOrgUnit;

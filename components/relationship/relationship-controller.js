@@ -47,9 +47,9 @@ trackerCapture.controller('RelationshipController',
             DasboardWidgetService.updateDashboard();
             setRelationships();            
         });
-        if ($scope.selectedTei.orgUnit) {
-            OrgUnitFactory.getOrgUnitClosedStatus($scope.selectedTei.orgUnit).then(function (closedStatus) {
-                $scope.model.orgUnitClosed = closedStatus;
+        if ($scope.selectedTei && $scope.selectedTei.orgUnit) {
+            OrgUnitFactory.getFromStoreOrServer($scope.selectedTei.orgUnit).then(function (ou) {
+                $scope.model.orgUnitClosed = ou.closedStatus;
             });
         }
     });
