@@ -51,6 +51,8 @@ trackerCapture.controller('RegistrationController',
     $rootScope.ruleeffects = {};
 
     $scope.attributesById = CurrentSelection.getAttributesById();
+    var selection = CurrentSelection.get();
+
     if(!$scope.attributesById){
         $scope.attributesById = [];
         AttributesFactory.getAll().then(function(atts){
@@ -91,19 +93,17 @@ trackerCapture.controller('RegistrationController',
     
     
     $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
+    if (selection && selection.orgUnit) {
+        $scope.model.ouDates = { startDate: selection.orgUnit.odate, endDate: selection.orgUnit.cdate };
+        $scope.model.orgUnitClosed = selection.orgUnit.closedStatus;
+    }
+
     if($scope.selectedOrgUnit) {
-        OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
-            $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate };
-        });
         $scope.model.orgUnitId = $scope.selectedOrgUnit.id;
     } else {
         $scope.model.orgUnitId = ($location.search()).ou;
     }
-    if ($scope.model.orgUnitId) {
-        OrgUnitFactory.getOrgUnitClosedStatus($scope.model.orgUnitId).then(function (closedStatus) {
-            $scope.model.orgUnitClosed = closedStatus;
-        });
-    }
+
     $scope.selectedEnrollment = {
         enrollmentDate: $scope.today,
         incidentDate: $scope.today,
@@ -286,7 +286,8 @@ trackerCapture.controller('RegistrationController',
             prStNames: selections.prStNames,
             enrollments: selections.enrollments,
             selectedEnrollment: $scope.selectedEnrollment,
-            optionSets: selections.optionSets
+            optionSets: selections.optionSets,
+            orgUnit: selections.orgUnit
         });
         $timeout(function () {
             $rootScope.$broadcast('profileWidget', {});

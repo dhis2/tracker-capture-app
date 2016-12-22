@@ -18,20 +18,16 @@ trackerCapture.controller('EnrollmentController',
                 OrgUnitFactory,
                 DasboardWidgetService) {
     
-    OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
+        var selections = CurrentSelection.get();
         $scope.today = DateUtils.getToday();
         $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
-        if ($scope.selectedOrgUnit) {
-            OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
-                $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate};
-            });
-            OrgUnitFactory.getOrgUnitClosedStatus($scope.selectedOrgUnit.id).then(function (closedStatus) {
-                $scope.model.orgUnitClosed = closedStatus;
-            });
-        }
+        $scope.model.ouDates = {
+            startDate: selections.orgUnit.odate,
+            endDate: selections.orgUnit.cdate
+        };
+        $scope.model.orgUnitClosed = selections.orgUnit.closedStatus;
 
         //listen for the selected items
-        var selections = {};
         $scope.$on('selectedItems', function (event, args) {
             $scope.attributes = [];
             $scope.historicalEnrollments = [];
@@ -42,7 +38,6 @@ trackerCapture.controller('EnrollmentController',
             $scope.currentEnrollment = null;
             $scope.newEnrollment = {};
 
-            selections = CurrentSelection.get();
             processSelectedTei();
 
             $scope.selectedEntity = selections.te;
@@ -179,7 +174,8 @@ trackerCapture.controller('EnrollmentController',
                 prStNames: $scope.programStageNames,
                 enrollments: $scope.enrollments,
                 selectedEnrollment: $scope.selectedEnrollment,
-                optionSets: $scope.optionSets
+                optionSets: $scope.optionSets,
+                orgUnit: selections.orgUnit
             });
             $timeout(function () {
                 $rootScope.$broadcast(listeners, {});
@@ -324,5 +320,4 @@ trackerCapture.controller('EnrollmentController',
                 $scope.enrollmentLngSaved = true;
             });
         };
-    });
 });

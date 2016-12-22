@@ -48,14 +48,15 @@ trackerCapture.controller('DashboardController',
         
         $scope.metaDataCached = true;
         
-        OrgUnitFactory.getOrgUnit(orgUnitUrl).then(function (orgUnit) {
+        OrgUnitFactory.getFromStoreOrServer(orgUnitUrl).then(function (orgUnit) {
             if (!orgUnit) {
                 return;
             }
-            OrgUnitFactory.getOrgUnitClosedStatus(orgUnit.id).then(function(closedStatus){
-                $scope.model.orgUnitClosed = closedStatus;
-            });
-        
+
+            $scope.model.ouDates = { startDate: orgUnit.odate, endDate: orgUnit.cdate };
+            $scope.model.orgUnitClosed = orgUnit.closedStatus;
+            $scope.model.orgUnit = orgUnit;
+
             $scope.selectedTeiId = ($location.search()).tei;
             $scope.selectedProgramId = ($location.search()).program;
             $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
@@ -78,7 +79,6 @@ trackerCapture.controller('DashboardController',
             $scope.stickLabel = $translate.instant('stick_right_widgets');
             $scope.unstickLabel = $translate.instant('unstick_right_widgets');
 
-            $scope.model = {};
             $scope.model.stickyDisabled = true;
             $scope.previousTeiExists = false;
             $scope.nextTeiExists = false;
@@ -206,7 +206,8 @@ trackerCapture.controller('DashboardController',
                                                     prStNames: $scope.programStageNames,
                                                     enrollments: enrollments,
                                                     selectedEnrollment: selectedEnrollment,
-                                                    optionSets: $scope.optionSets
+                                                    optionSets: $scope.optionSets,
+                                                    orgUnit: $scope.model.orgUnit
                                                 });
                                                 getDashboardLayout();
                                             });
@@ -472,7 +473,8 @@ trackerCapture.controller('DashboardController',
             prStNames: $scope.programStageNames,
             enrollments: selections.enrollments,
             selectedEnrollment: $scope.selectedEnrollment,
-            optionSets: $scope.optionSets
+            optionSets: $scope.optionSets,
+            orgUnit: $scope.model.orgUnit
         });
         $timeout(function () {
             $rootScope.$broadcast('selectedItems', {programExists: $scope.programs.length > 0});

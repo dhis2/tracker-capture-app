@@ -39,7 +39,7 @@ trackerCapture.controller('DataEntryController',
     $scope.eventPagingEnd = $scope.eventPageSize;
     
     //Data entry form
-    $scope.outerDataEntryForm = {longitude: {}, latitude: {}};
+    $scope.outerDataEntryForm = {longitude: {}r, latitude: {}};
     $scope.displayCustomForm = false;
     $scope.currentElement = {};
     $scope.schedulingEnabled = false;
@@ -601,25 +601,18 @@ trackerCapture.controller('DataEntryController',
         $scope.optionsReady = false;
         
         var selections = CurrentSelection.get();
-        OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function (orgUnit) {
-            $scope.selectedOrgUnit = orgUnit;
+            $scope.selectedOrgUnit = selections.orgUnit;
             $scope.selectedEntity = selections.tei;
             $scope.selectedProgram = selections.pr;
             $scope.selectedEnrollment = selections.selectedEnrollment;
             
             var ouNames = CurrentSelection.getOrgUnitNames();            
-            ouNames[orgUnit.id] = orgUnit.displayName;
+            ouNames[$scope.selectedOrgUnit.id] = $scope.selectedOrgUnit.displayName;
             CurrentSelection.setOrgUnitNames( ouNames );
 
             if($scope.selectedOrgUnit) {
-                OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
-                    if(orgUnitFromStore) {
-                        $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate };
-                    }
-                });
-                OrgUnitFactory.getOrgUnitClosedStatus(orgUnit.id).then(function(closedStatus){
-                    $scope.model.orgUnitClosed = closedStatus;
-                });
+                $scope.model.ouDates = {startDate: $scope.selectedOrgUnit.odate, endDate: $scope.selectedOrgUnit.cdate };
+                $scope.model.orgUnitClosed = $scope.selectedOrgUnit.closedStatus;
             }
             $scope.showSelf = true;
             if(angular.isUndefined($scope.selectedEnrollment) || $scope.selectedEnrollment === null || ($scope.dashBoardWidgetFirstRun && $scope.selectedEnrollment.status === "COMPLETED")){

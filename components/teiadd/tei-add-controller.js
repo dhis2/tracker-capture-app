@@ -27,6 +27,7 @@ trackerCapture.controller('TEIAddController',
             existingAssociateUid,
             addingRelationship,
             selectedTei){
+    var selection = CurrentSelection.get();
     $scope.attributesById = CurrentSelection.getAttributesById();
     if(!$scope.attributesById){
         $scope.attributesById = [];
@@ -72,10 +73,10 @@ trackerCapture.controller('TEIAddController',
         angular.forEach($scope.mainTei.relationships, function(rel){
             invalidTeis.push(rel.trackedEntityInstanceB);
         });
-    }    
-    
-    OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
-        $scope.selectedOrgUnit = orgUnit;
+    }
+
+
+        $scope.selectedOrgUnit = selection.orgUnit;
         $scope.selectedEnrollment = {
             enrollmentDate: $scope.today,
             incidentDate: $scope.today,
@@ -505,7 +506,6 @@ trackerCapture.controller('TEIAddController',
         $scope.setSelectedSearchingOrgUnit = function (orgUnit) {
             $scope.selectedSearchingOrgUnit = orgUnit;
         };
-    });
 })
 
 .controller('TEIRegistrationController', 
