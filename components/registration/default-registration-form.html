@@ -170,6 +170,13 @@
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
+                    <span ng-switch-when="AGE">
+                        <d2-age id="{{attribute.id}}" 
+                                d2-object="selectedTei" 
+                                d2-required="attribute.mandatory"
+                                d2-disabled="model.orgUnitClosed || isDisabled(attribute)">                                                    
+                        </d2-age>
+                    </span>
                     <span ng-switch-when="EMAIL">
                         <input type="email"
                                name="foo" 
@@ -247,13 +254,14 @@
                     </span>
                     <span ng-switch-when="ORGANISATION_UNIT">
                         <d2-org-unit-tree
-                                selected-org-unit="selectedOrgUnit"
+                                selected-org-unit-id="{{selectedOrgUnit.id}}"
                                 id="{{attribute.id}}"
                                 d2-value="selectedTei[attribute.id]"
                                 d2-required="attribute.mandatory"
                                 d2-disabled="model.orgUnitClosed || isDisabled(attribute)"
                                 d2-object="selectedTei"
-                                d2-function="teiValueUpdated(selectedTei, attribute.id)">
+                                d2-function="teiValueUpdated(selectedTei, attribute.id)"
+                                d2-orgunit-names="orgUnitNames">
                         </d2-org-unit-tree>
                     </span>
                     <span ng-switch-when="TEXT">

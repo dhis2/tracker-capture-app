@@ -12,42 +12,42 @@
     <div ng-show="notesWidget.expand" class="panel-body dashboard-widget-container">
 
         <!-- notes section begins -->
-        <div>
-            <div ng-show="showNotesDiv">
-                <div ng-show="!selectedEnrollment" class="alert alert-danger">{{'not_yet_enrolled_note'| translate}}</div>
-                <div ng-show='selectedEnrollment' class='remove-default-padding overflow-ellipsis'>                
-                    <div class="add-default-padding">
-                        <textarea class="form-control" rows="3" ng-model="note.value" placeholder="{{'your_note_here'| translate}}"></textarea> 
-                        <div class="vertical-spacing">
-                            <button type="button" 
-                                    class="btn btn-primary"
-                                    ng-click="addNote()">
-                                {{'add'| translate}}
-                            </button>        
-                            <button type="button" 
-                                    class="btn btn-default small-horizontal-spacing" 
-                                    ng-click="clear()">
-                                {{'clear'| translate}}
-                            </button>
-                        </div>
+        <div ng-show="showNotesDiv">
+            <div ng-show="!selectedEnrollment" class="alert alert-danger">{{'not_yet_enrolled_note'| translate}}</div>
+            <div ng-show="selectedEnrollment" class="remove-default-padding">                
+                <div class="add-default-padding">
+                    <textarea class="form-control" rows="3" ng-model="note.value" placeholder="{{'your_note_here'| translate}}"></textarea> 
+                    <div class="vertical-spacing">
+                        <button type="button" 
+                                class="btn btn-primary"
+                                ng-click="addNote()">
+                            {{'add'| translate}}
+                        </button>        
+                        <button type="button" 
+                                class="btn btn-default small-horizontal-spacing" 
+                                ng-click="clear()">
+                            {{'clear'| translate}}
+                        </button>
                     </div>
-                    <table class="table table-striped dhis2-table-hover">
-                        <tr ng-repeat="note in selectedEnrollment.notes| filter:noteSearchText">
-                            <td d2-pop-over content="note" template="popover.html" details="{{'details'| translate}}">
-                                <span>{{note.heading}}</span>
-                                <span class="pull-right">{{note.displayDate}}</span>                                
-                            </td>
-                            <script type="text/ng-template" id="popover.html">
-                                <div class="wrap-text">{{content.value}}</div>
-                                <hr>
-                                <p><strong>{{'created_by' | translate}}: </strong>{{content.storedBy}}</p>
-                                <p><strong>{{'date' | translate}}: </strong>{{content.storedDate}}</p>                           
-                            </script>
-                        </tr>
-                    </table>
                 </div>
-                <div ng-show="selectedEnrollment && !selectedEnrollment.notes" class="alert alert-warning">{{'no_notes_exist'| translate}}</div> 
-            </div>            
+                <script type="text/ng-template" id="popover.html">
+                    <div class="wrap-text">{{content.value}}</div>
+                    <hr>
+                    <p><strong>{{'created_by' | translate}}: </strong>{{content.storedBy}}</p>
+                    <p><strong>{{'date' | translate}}: </strong>{{content.storedDate}}</p>                           
+                </script>
+                <table class="table table-striped table-bordered dhis2-table-hover table-borderless">
+                    <tr ng-repeat="note in selectedEnrollment.notes| filter:noteSearchText" d2-pop-over content="note" template="popover.html" details="{{'details'| translate}}">
+                        <td class="notes-heading-column">
+                            <span>{{note.value}}</span>
+                        </td>
+                        <td class="notes-date-column">
+                            <span class="pull-right">{{note.displayDate}}</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div ng-show="selectedEnrollment && !selectedEnrollment.notes" class="alert alert-warning">{{'no_notes_exist'| translate}}</div> 
         </div>
         <!-- notes section ends -->
         

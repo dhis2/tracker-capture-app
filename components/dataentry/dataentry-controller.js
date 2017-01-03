@@ -59,6 +59,7 @@ trackerCapture.controller('DataEntryController',
     $scope.eventsLoaded = false;
     $scope.dashBoardWidgetFirstRun = true;
     $scope.showSelf = true;
+    $scope.orgUnitNames = {};
     
     var eventLockEnabled = false;
     var eventLockHours = 8; //Number of hours before event is locked after completing.
@@ -219,7 +220,7 @@ trackerCapture.controller('DataEntryController',
 
         //In most cases the updated effects apply to the current event. In case the affected event is not the current event, fetch the correct event to affect:
         if (event !== affectedEvent.event) {
-            angular.forEach($scope.currentStageEvents, function (searchedEvent) {
+            angular.forEach($scope.allEventsSorted, function (searchedEvent) {
                 if (searchedEvent.event === event) {
                     affectedEvent = searchedEvent;
                 }
@@ -303,7 +304,7 @@ trackerCapture.controller('DataEntryController',
                 if(effect.programStageSection){
                     if(effect.ineffect){
                         $scope.hiddenSections[event][effect.programStageSection] = true;
-                    } else{
+                    } else if (!$scope.hiddenSections[event][effect.programStageSection]) {
                         $scope.hiddenSections[event][effect.programStageSection] = false;
                     }
                 }
@@ -600,21 +601,18 @@ trackerCapture.controller('DataEntryController',
         $scope.optionsReady = false;
         
         var selections = CurrentSelection.get();
-        OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function (orgUnit) {
-            $scope.selectedOrgUnit = orgUnit;
+            $scope.selectedOrgUnit = selections.orgUnit;
             $scope.selectedEntity = selections.tei;
             $scope.selectedProgram = selections.pr;
             $scope.selectedEnrollment = selections.selectedEnrollment;
+            
+            var ouNames = CurrentSelection.getOrgUnitNames();            
+            ouNames[$scope.selectedOrgUnit.id] = $scope.selectedOrgUnit.displayName;
+            CurrentSelection.setOrgUnitNames( ouNames );
 
             if($scope.selectedOrgUnit) {
-                OrgUnitFactory.getOrgUnitFromStore($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
-                    if(orgUnitFromStore) {
-                        $scope.model.ouDates = {startDate: orgUnitFromStore.odate, endDate: orgUnitFromStore.cdate };
-                    }
-                });
-                OrgUnitFactory.getOrgUnitClosedStatus(orgUnit.id).then(function(closedStatus){
-                    $scope.model.orgUnitClosed = closedStatus;
-                });
+                $scope.model.ouDates = {startDate: $scope.selectedOrgUnit.odate, endDate: $scope.selectedOrgUnit.cdate };
+                $scope.model.orgUnitClosed = $scope.selectedOrgUnit.closedStatus;
             }
             $scope.showSelf = true;
             if(angular.isUndefined($scope.selectedEnrollment) || $scope.selectedEnrollment === null || ($scope.dashBoardWidgetFirstRun && $scope.selectedEnrollment.status === "COMPLETED")){
@@ -690,8 +688,7 @@ trackerCapture.controller('DataEntryController',
                 });    	        
     	    }
         });
-    });
-    
+
     $scope.openEventExternal = function(event){
         if($scope.useMainMenu){
             var stage = $scope.stagesById[event.programStage];
@@ -760,7 +757,8 @@ trackerCapture.controller('DataEntryController',
                 }
             });
             
-            $scope.fileNames = CurrentSelection.getFileNames();            
+            $scope.orgUnitNames = CurrentSelection.getOrgUnitNames();
+            $scope.fileNames = CurrentSelection.getFileNames();
             $scope.allEventsSorted = orderByFilter($scope.allEventsSorted, '-sortingDate').reverse();
             sortEventsByStage(null);
             $scope.showDataEntry($scope.currentEvent, true, true);

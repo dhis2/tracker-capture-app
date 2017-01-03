@@ -618,6 +618,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         update: function( enrollment ){
             var en = convertFromUserToApi(angular.copy(enrollment));
+            delete en.notes;
             var promise = $http.put( DHIS2URL + '/enrollments/' + en.enrollment , en ).then(function(response){
                 return response.data;
             }, function(response){
@@ -1705,7 +1706,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     }; 
 })
 
-.service('TEIGridService', function(OptionSetService, CurrentSelection, DateUtils, $location, $translate, $filter){
+.service('TEIGridService', function(OptionSetService, CommonUtils, CurrentSelection, DateUtils, $location, $translate, $filter){
     
     return {
         format: function(selectedOrgUnitId, grid, map, optionSets, invalidTeis, isFollowUp){
@@ -1734,7 +1735,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var entityList = {own: [], other: []};
 
             var attributesById = CurrentSelection.getAttributesById();
-
+            
             angular.forEach(grid.rows, function (row) {
                 if (invalidTeis.indexOf(row[0]) === -1) {
                     var entity = {};
@@ -1761,9 +1762,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                 optionSets[attributesById[grid.headers[i].name].optionSet.id]) {
                                 val = OptionSetService.getName(optionSets[attributesById[grid.headers[i].name].optionSet.id].options, val);
                             }
-                            if (attributesById[grid.headers[i].name] && attributesById[grid.headers[i].name].valueType === 'date') {
-                                val = DateUtils.formatFromApiToUser(val);
+                            if (attributesById[grid.headers[i].name] && attributesById[grid.headers[i].name].valueType ) {                                
+                                switch ( attributesById[grid.headers[i].name].valueType ){
+                                    case "ORGANISATION_UNIT":
+                                        CommonUtils.checkAndSetOrgUnitName( val );
+                                        break;
+                                    case "DATE":
+                                        val = DateUtils.formatFromApiToUser(val);
+                                        break;
+                                }
                             }
+                            
                             entity[grid.headers[i].name] = val;
                         }
                     }
@@ -2078,6 +2087,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     event[dataValue.dataElement] = val;
                     if(dataValue.providedElsewhere){
                         event.providedElsewhere[dataValue.dataElement] = dataValue.providedElsewhere;
+                    }
+                    
+                    switch( prStDe.dataElement.valueType ){                        
+                        case "ORGANISATION_UNIT":
+                            CommonUtils.checkAndSetOrgUnitName( val );
+                            break;
                     }
                 }
 
