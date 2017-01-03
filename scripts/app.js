@@ -42,6 +42,7 @@ import '../components/messaging/messaging-controller.js';
 import L from 'leaflet';
 import 'leaflet-geocoder-mapzen';
 import 'leaflet-contextmenu';
+import 'tracker-core/lib/Google.js';
 
 L.Icon.Default.imagePath = '../dhis-web-commons/leaflet/images';
 
