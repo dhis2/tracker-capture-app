@@ -325,11 +325,17 @@ function getBatchPrograms( programs, batch )
 
         if(response.programs){
             _.each(_.values( response.programs), function(program){
-                var ou = {};
-                _.each(_.values( program.organisationUnits), function(o){
-                    ou[o.id] = o.displayName;
-                });
-                program.organisationUnits = ou;
+                if( program.organisationUnits ){
+                    var ou = {};
+                    _.each(_.values( program.organisationUnits), function(o){
+                        ou[o.id] = o.displayName;
+                    });
+                    program.organisationUnits = ou;
+                }
+                
+                if( program.programStages ){
+                    program.programStages = _.sortBy( program.programStages, 'sortOrder' );
+                }
 
                 dhis2.tc.store.set( 'programs', program );
             });
