@@ -53,6 +53,7 @@ trackerCapture.controller('DataEntryController',
     $scope.errorMessages = {};
     $scope.warningMessages = {};
     $scope.hiddenSections = {};
+    $scope.stagesNotShowingInStageTasks = {};
     $scope.tableMaxNumberOfDataElements = 15;
     $scope.xVisitScheduleDataElement = false;
     $scope.reSortStageEvents = true;
@@ -332,6 +333,14 @@ trackerCapture.controller('DataEntryController',
                         $scope.assignedFields[event][effect.dataElement.id] = true;
                         $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
                     }
+                }
+            }
+            else if (effect.action === "HIDEPROGRAMSTAGE") {
+                if (effect.programStage) {
+                    $scope.stagesNotShowingInStageTasks[effect.programStage] = effect.ineffect;
+                }
+                else {
+                    $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEPROGRAMSTAGE, bot does not have a stage defined");
                 }
             }
         });
@@ -932,11 +941,6 @@ trackerCapture.controller('DataEntryController',
                 return 'col-xs-2 col-sm-1';
             }
         }        
-    };
-    
-    $scope.stagesNotShowingInStageTasks = angular.copy($scope.neverShowItems);  
-    for(var key in $scope.bottomLineItems){
-        $scope.stagesNotShowingInStageTasks[key] = $scope.bottomLineItems[key];
     };    
     
     $scope.displayStageTasksInTopLine = function(stage) {
