@@ -54,6 +54,7 @@ trackerCapture.controller('DataEntryController',
     $scope.warningMessages = {};
     $scope.hiddenSections = {};
     $scope.stagesNotShowingInStageTasks = {};
+    $scope.tabularEntryStages = [];
     $scope.tableMaxNumberOfDataElements = 15;
     $scope.xVisitScheduleDataElement = false;
     $scope.reSortStageEvents = true;
@@ -168,7 +169,7 @@ trackerCapture.controller('DataEntryController',
     //listen for rule effect changes
     $scope.$on('ruleeffectsupdated', function (event, args) {
         if ($rootScope.ruleeffects[args.event]) {
-            processRuleEffect(args.event);            
+            processRuleEffect(args.event);          
         }
     });
     $scope.useReferral = false;
@@ -336,14 +337,30 @@ trackerCapture.controller('DataEntryController',
                 }
             }
             else if (effect.action === "HIDEPROGRAMSTAGE") {
-                if (effect.programStage) {
-                    $scope.stagesNotShowingInStageTasks[effect.programStage] = effect.ineffect;
+                if (effect.programStage.id) {
+                    if($scope.stagesNotShowingInStageTasks[effect.programStage.id] !== effect.ineffect )
+                    {
+                        $scope.stagesNotShowingInStageTasks[effect.programStage.id] = effect.ineffect;
+                        updateTabularEntryStages();
+                    }
                 }
                 else {
                     $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEPROGRAMSTAGE, bot does not have a stage defined");
                 }
             }
         });
+    };
+    
+    function updateTabularEntryStages() {
+        $scope.tabularEntryStages = [];
+        angular.forEach($scope.programStages, function(programStage){
+            if(!$scope.stagesNotShowingInStageTasks[programStage.id]
+                    || ($scope.eventsByStage[programStage.id] && 
+                    $scope.eventsByStage[programStage.id].length > 0)) {
+                $scope.tabularEntryStages.push(programStage);
+            }
+        });
+        $scope.tabularEntryStages = orderByFilter($scope.tabularEntryStages, '-sortOrder').reverse();
     };
     
     $scope.mainMenuStageSelected = function(){
@@ -638,7 +655,7 @@ trackerCapture.controller('DataEntryController',
     	    if ($scope.selectedOrgUnit && $scope.selectedProgram && $scope.selectedProgram.id && $scope.selectedEntity ){
                 
                 $scope.programStages = $scope.selectedProgram.programStages;
-
+                
                 angular.forEach($scope.selectedProgram.programStages, function (stage) {
                     if (stage.openAfterEnrollment) {
                         $scope.currentStage = stage;
@@ -777,7 +794,7 @@ trackerCapture.controller('DataEntryController',
     
 
     var setEventEditing = function (dhis2Event, stage) {
-        return dhis2Event.editingNotAllowed = dhis2Event.orgUnit !== $scope.selectedOrgUnit.id && dhis2Event.eventDate || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || $scope.selectedEntity.inactive;
+        return dhis2Event.editingNotAllowed = dhis2Event.orgUnit !== $scope.selectedOrgUnit.id && dhis2Event.eventDate !== "" || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || $scope.selectedEntity.inactive;
     };
 
     $scope.enableRescheduling = function () {
@@ -973,7 +990,7 @@ trackerCapture.controller('DataEntryController',
         else {
             var applicableStages = [];
             angular.forEach($scope.programStages, function(stage){
-                if(angular.isUndefined($scope.stagesNotShowingInStageTasks[stage.id])){
+                if(!$scope.stagesNotShowingInStageTasks[stage.id]){
                     applicableStages.push(stage);
                 }
             });
@@ -1331,6 +1348,10 @@ trackerCapture.controller('DataEntryController',
         
         var period = {event: $scope.currentEvent.event, stage: $scope.currentEvent.programStage, name: $scope.currentEvent.sortingDate};
         $scope.currentPeriod[$scope.currentEvent.programStage] = period;        
+        
+        //Because of separatae dataentry-controllers for tabular and timeline data entry,
+        //the rule effects might already be in place:
+        processRuleEffect($scope.currentEvent.event);
         
         //Execute rules for the first time, to make the initial page appear correctly.
         //Subsequent calls will be made from the "saveDataValue" function.
