@@ -341,7 +341,6 @@ trackerCapture.controller('DataEntryController',
                     if($scope.stagesNotShowingInStageTasks[effect.programStage.id] !== effect.ineffect )
                     {
                         $scope.stagesNotShowingInStageTasks[effect.programStage.id] = effect.ineffect;
-                        updateTabularEntryStages();
                     }
                 }
                 else {
@@ -349,6 +348,8 @@ trackerCapture.controller('DataEntryController',
                 }
             }
         });
+        
+        updateTabularEntryStages();
     };
     
     function updateTabularEntryStages() {
