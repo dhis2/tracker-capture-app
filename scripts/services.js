@@ -1964,7 +1964,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                               programStage: programStage.id, 
                               program: program.id,
                               orgUnit: orgUnit.id,
-                              orgUnitName: orgUnit.displayName,
+                              orgUnitName: orgUnit.n,
                               name: programStage.displayName,
                               executionDateLabel: programStage.executionDateLabel ? programStage.executionDateLabel : $translate.instant('report_date'),
                               enrollmentStatus: 'ACTIVE',
