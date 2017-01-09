@@ -1211,7 +1211,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     var errorBody = $translate.instant('event_creation_error');                    
                     if (response.data.message) {
                         errorBody = response.data.message;                        
-                        if( response.data.response.importSummaries && response.data.response.importSummaries.length > 0 ){
+                        if( response.data.response && response.data.response.importSummaries && response.data.response.importSummaries.length > 0 ){
                             angular.forEach(response.data.response.importSummaries, function(im){
                                 errorBody += im.description;
                             });
@@ -1963,7 +1963,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var dummyEvent = {trackedEntityInstance: tei.trackedEntityInstance, 
                               programStage: programStage.id, 
                               program: program.id,
-                              orgUnit: orgUnit.id ? orgUnit.id : orgUnit.pid ? orgUnit.pid : null,
+                              orgUnit: orgUnit.id,
                               orgUnitName: orgUnit.displayName ? orgUnit.displayName : orgUnit.n ? orgUnit.n : null,
                               name: programStage.displayName,
                               executionDateLabel: programStage.executionDateLabel ? programStage.executionDateLabel : $translate.instant('report_date'),
