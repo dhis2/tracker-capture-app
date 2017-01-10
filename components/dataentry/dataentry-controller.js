@@ -139,8 +139,8 @@ trackerCapture.controller('DataEntryController',
         if(!date) {
             return;
         }
-        if($scope.model.ouDates && $scope.model.ouDates.startDate && $scope.model.ouDates.endDate) {
-            if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouDates.startDate, $scope.model.ouDates.endDate)) {
+        if($scope.selectedOrgUnit && $scope.selectedOrgUnit.odate && $scope.selectedOrgUnit.cdate) {
+            if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.selectedOrgUnit.odate, $scope.selectedOrgUnit.cdate)) {
                 dateSetter($scope, null);
                 return;
             }

@@ -18,6 +18,7 @@ trackerCapture.controller('MessagingController',
         $scope.selectedEnrollment = null;
         $scope.selections = CurrentSelection.get();
         $scope.selectedTei = $scope.selections.tei;
+        $scope.selectedOrgUnit = $scope.selections.orgUnit;
         if ($scope.selectedTei) {
             //check if the selected TEI has any of the contact attributes
             //that can be used for messaging
@@ -35,11 +36,6 @@ trackerCapture.controller('MessagingController',
                 if (foundPhoneNumber && foundEmailId) {
                     break;
                 }
-            }
-            if ($scope.selectedTei.orgUnit) {
-                OrgUnitFactory.getFromStoreOrServer($scope.selectedTei.orgUnit).then(function (ou) {
-                    $scope.model.orgUnitClosed = ou.closedStatus;
-                });
             }
         }
         DasboardWidgetService.updateDashboard();

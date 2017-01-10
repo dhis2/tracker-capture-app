@@ -36,6 +36,7 @@ trackerCapture.controller('ProfileController',
         $scope.selectedProgram = selections.pr;   
         $scope.selectedEnrollment = selections.selectedEnrollment;
         $scope.optionSets = selections.optionSets;
+        $scope.selectedOrgUnit = selections.orgUnit;
         $scope.trackedEntityForm = null;
         $scope.customForm = null;
         $scope.attributesById = CurrentSelection.getAttributesById();

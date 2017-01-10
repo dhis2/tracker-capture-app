@@ -18,17 +18,13 @@ trackerCapture.controller('EnrollmentController',
                 OrgUnitFactory,
                 DasboardWidgetService) {
     
-        var selections = CurrentSelection.get();
-        $scope.today = DateUtils.getToday();
-        $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
-        $scope.model.ouDates = {
-            startDate: selections.orgUnit.odate,
-            endDate: selections.orgUnit.cdate
-        };
-        $scope.model.orgUnitClosed = selections.orgUnit.closedStatus;
+        var selections;
 
         //listen for the selected items
         $scope.$on('selectedItems', function (event, args) {
+            selections = CurrentSelection.get();
+            $scope.today = DateUtils.getToday();
+            $scope.selectedOrgUnit = selections.orgUnit;
             $scope.attributes = [];
             $scope.historicalEnrollments = [];
             $scope.showEnrollmentDiv = false;
@@ -163,7 +159,6 @@ trackerCapture.controller('EnrollmentController',
         };
 
         $scope.broadCastSelections = function (listeners) {
-            var selections = CurrentSelection.get();
             var tei = selections.tei;
             CurrentSelection.set({
                 tei: tei,
