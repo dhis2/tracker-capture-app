@@ -17,7 +17,7 @@
                 <ui-select ng-model="model.selectedMessageType"
                            theme="select2"
                            on-select=""
-                           ng-disabled="model.orgUnitClosed"
+                           ng-disabled="selectedOrgUnit.closedStatus"
                            style="width:100%;">
                     <ui-select-match allow-clear="true" class="form-control-ui-select" placeholder="Message Type">{{model.selectedMessageType| translate}}</ui-select-match>
                     <ui-select-choices  repeat="messageType in model.messageTypes">
@@ -30,7 +30,7 @@
                            placeholder="{{'phone_number' | translate}}"
                            class="form-control"
                            ng-required="true"
-                           ng-disabled="model.orgUnitClosed"
+                           ng-disabled="selectedOrgUnit.closedStatus"
                            ng-model="message.phoneNumber"/>
                     <span ng-show="messagingForm.submitted && messagingForm.phoneNumber.$invalid" class="error">{{'required'| translate}}</span>
                     <textarea name="message"
@@ -38,7 +38,7 @@
                           rows="3"
                           maxlength="160"
                           ng-model="message.smsMessage"
-                          ng-disabled="model.orgUnitClosed"
+                          ng-disabled="selectedOrgUnit.closedStatus"
                           ng-required="true"
                           placeholder="{{'message'| translate}}"></textarea>
                         <span ng-show="messagingForm.submitted && messagingForm.message.$invalid" class="error">{{'required'| translate}}</span>
@@ -49,7 +49,7 @@
                            placeholder="{{'email_address' | translate}}"
                            class="form-control"
                            ng-required="true"
-                           ng-disabled="model.orgUnitClosed"
+                           ng-disabled="selectedOrgUnit.closedStatus"
                            ng-model="message.emailId">
                     <span ng-show="messagingForm.submitted && messagingForm.emailId.$invalid" class="error">{{'wrong_email'| translate}}</span>
                     <input type="text"
@@ -57,7 +57,7 @@
                            placeholder="{{'email_subject' | translate}}"
                            class="form-control"
                            ng-required="true"
-                           ng-disabled="model.orgUnitClosed"
+                           ng-disabled="selectedOrgUnit.closedStatus"
                            ng-model="message.emailSubject"/>
                     <span ng-show="messagingForm.submitted && messagingForm.subject.$invalid" class="error">{{'required'| translate}}</span>
                     <textarea name="emailmessage"
@@ -65,7 +65,7 @@
                               rows="3"
                               maxlength="1200"
                               ng-model="message.emailMessage"
-                              ng-disabled="model.orgUnitClosed"
+                              ng-disabled="selectedOrgUnit.closedStatus"
                               ng-required="true"
                               placeholder="{{'message'| translate}}"></textarea>
                     <span ng-show="messagingForm.submitted && messagingForm.emailmessage.$invalid" class="error">{{'required'| translate}}</span>
@@ -74,13 +74,13 @@
                     <div class="vertical-spacing">
                         <button type="button"
                                 class="btn btn-primary"
-                                ng-disabled="model.orgUnitClosed"
+                                ng-disabled="selectedOrgUnit.closedStatus"
                                 ng-click="sendMessage()">
                                 {{'send'| translate}}
                         </button>
                         <button type="button"
                                 class="btn btn-default small-horizontal-spacing"
-                                ng-disabled="model.orgUnitClosed"
+                                ng-disabled="selectedOrgUnit.closedStatus"
                                 ng-click="clear()">
                                 {{'clear'| translate}}
                         </button>

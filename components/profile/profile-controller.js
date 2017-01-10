@@ -53,11 +53,6 @@ trackerCapture.controller('ProfileController',
                 DasboardWidgetService.updateDashboard();
             },600);
         });
-        if ($scope.selectedTei && $scope.selectedTei.orgUnit) {
-            OrgUnitFactory.getFromStoreOrServer($scope.selectedTei.orgUnit).then(function (ou) {
-                $scope.model.orgUnitClosed = ou.closedStatus;
-            });
-        }
     };
     
     $scope.enableEdit = function(){

@@ -1,4 +1,4 @@
-<div class="panel panel-default-custom" ng-class="{'disable-clicks':model.orgUnitClosed}" ng-controller="RelationshipController">
+<div class="panel panel-default-custom" ng-class="{'disable-clicks':selectedOrgUnit.closedStatus}" ng-controller="RelationshipController">
     <div class="panel-heading handle bold">
         {{relationshipsWidget.title| translate}}
         <span class="nav-pills" ng-if="selectedTei && selectedProgram.relationshipText  && !selectedTei.inactive">

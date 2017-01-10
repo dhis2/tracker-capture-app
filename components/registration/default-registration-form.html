@@ -29,7 +29,7 @@
                                 attribute-data={{attribute}}
                                 selected-program-id={{selectedProgram.id}}  
                                 selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                                ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                 on-select="teiValueUpdated(selectedTei, attribute.id)"
                                 ng-style="{'width': '100%'}">
                         <ui-select-match allow-clear="true"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
@@ -54,7 +54,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                blur-or-change="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -68,7 +68,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-change="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -76,7 +76,7 @@
                         <span class="hideInPrint">
                             <d2-radio-button
                                 dh-required="attribute.mandatory"
-                                dh-disabled="model.orgUnitClosed || editingDisabled"
+                                dh-disabled="selectedOrgUnit.closedStatus || editingDisabled"
                                 dh-value="selectedTei[attribute.id]"
                                 dh-name="foo"
                                 dh-current-element="currentElement"
@@ -102,7 +102,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -118,7 +118,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -134,7 +134,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -150,7 +150,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -166,7 +166,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -174,7 +174,7 @@
                         <d2-age id="{{attribute.id}}" 
                                 d2-object="selectedTei" 
                                 d2-required="attribute.mandatory"
-                                d2-disabled="model.orgUnitClosed || isDisabled(attribute)">                                                    
+                                d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)">
                         </d2-age>
                     </span>
                     <span ng-switch-when="EMAIL">
@@ -187,7 +187,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -201,7 +201,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory">
                         </textarea>
@@ -223,7 +223,7 @@
                                 <button class="btn btn-grp hideInPrint trim"
                                         ng-if="!selectedTei[attribute.id]" 
                                         ng-class="{true: 'disable-clicks'} [editingDisabled]"
-                                        ng-disabled="model.orgUnitClosed"
+                                        ng-disabled="selectedOrgUnit.closedStatus"
                                         type="button" 
                                         title="{{'add'| translate}} {{attribute.displayName}}"
                                         ng-click="getTrackerAssociate(attribute, selectedTei[attribute.id])">
@@ -232,7 +232,7 @@
                                 <button class="btn btn-grp hideInPrint trim"
                                         ng-if="selectedTei[attribute.id]" 
                                         ng-class="{true: 'disable-clicks'} [editingDisabled]"
-                                        ng-disabled="model.orgUnitClosed"
+                                        ng-disabled="selectedOrgUnit.closedStatus"
                                         type="button" 
                                         title="{{'remove'| translate}} {{attribute.displayName}}"
                                         ng-click="selectedTei[attribute.id] = null">
@@ -248,7 +248,7 @@
                                 d2-coordinate-format="'TEXT'"
                                 d2-value="selectedTei[attribute.id]"
                                 d2-required="attribute.mandatory"
-                                d2-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                                d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                 d2-function="teiValueUpdated(selectedTei, attribute.id)">                            
                         </d2-map>                        
                     </span>
@@ -258,7 +258,7 @@
                                 id="{{attribute.id}}"
                                 d2-value="selectedTei[attribute.id]"
                                 d2-required="attribute.mandatory"
-                                d2-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                                d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                 d2-object="selectedTei"
                                 d2-function="teiValueUpdated(selectedTei, attribute.id)"
                                 d2-orgunit-names="orgUnitNames">
@@ -274,7 +274,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -288,7 +288,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="model.orgUnitClosed || isDisabled(attribute)"
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>

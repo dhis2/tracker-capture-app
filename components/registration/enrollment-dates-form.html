@@ -43,7 +43,7 @@
                    max-date="selectedProgram.selectIncidentDatesInFuture ? '' : 0"
                    min-date=""
                    ng-model="selectedEnrollment.incidentDate"
-                   ng-disabled="model.orgUnitClosed"
+                   ng-disabled="selectedOrgUnit.closedStatus"
                    ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
             <input type="text" class="form-control not-for-screen"/>
         </td>

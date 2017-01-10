@@ -42,7 +42,7 @@
                         <td>
                             <select class="form-control" 
                                     ng-model="trackedEntities.selected"
-                                    ng-disabled="model.orgUnitClosed"
+                                    ng-disabled="selectedOrgUnit.closedStatus"
                                     ng-options="trackedEntity.displayName for trackedEntity in trackedEntities.available | orderBy: 'displayName'">                                
                             </select>                            
                         </td>
@@ -88,18 +88,18 @@
 
         <!-- registration buttons begin -->
         <div ng-if="!editingDisabled && registrationMode === 'PROFILE'" class="vertical-spacing btn-group">
-            <button type="button" class="btn btn-primary" ng-disabled="model.orgUnitClosed" ng-click="registerEntity(null)">{{'save'| translate}}</button>
-            <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="model.orgUnitClosed" ng-click="cancelRegistrationWarning(cancel)">{{'cancel'| translate}}</button>
+            <button type="button" class="btn btn-primary" ng-disabled="selectedOrgUnit.closedStatus" ng-click="registerEntity(null)">{{'save'| translate}}</button>
+            <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="selectedOrgUnit.closedStatus" ng-click="cancelRegistrationWarning(cancel)">{{'cancel'| translate}}</button>
         </div>
 
         <div class="vertical-spacing btn-group" ng-if="registrationMode === 'ENROLLMENT'">            
-            <button type="button" class="btn btn-primary" ng-disabled="model.orgUnitClosed" ng-click="registerEntity(null)">{{'enroll'| translate}}</button>  
-            <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="model.orgUnitClosed" ng-click="cancelRegistrationWarning(showNewEnrollment)">{{'cancel'| translate}}</button>
+            <button type="button" class="btn btn-primary" ng-disabled="selectedOrgUnit.closedStatus" ng-click="registerEntity(null)">{{'enroll'| translate}}</button>
+            <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="selectedOrgUnit.closedStatus" ng-click="cancelRegistrationWarning(showNewEnrollment)">{{'cancel'| translate}}</button>
         </div>
 
         <div class="vertical-spacing hideInPrint btn-group" ng-if="registrationMode === 'REGISTRATION'">
-            <button type="button" ng-disabled="model.savingRegistration || model.orgUnitClosed" class="btn btn-primary" ng-click="registerEntity('DASHBOARD')">{{'save_and_continue'| translate}}</button>
-            <button type="button" ng-disabled="model.savingRegistration || model.orgUnitClosed" class="btn btn-success small-horizontal-spacing" ng-click="registerEntity('SELF')">{{'save_and_add_new'| translate}}</button>
+            <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-primary" ng-click="registerEntity('DASHBOARD')">{{'save_and_continue'| translate}}</button>
+            <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-success small-horizontal-spacing" ng-click="registerEntity('SELF')">{{'save_and_add_new'| translate}}</button>
             <button type="button" class="btn btn-info small-horizontal-spacing" onclick="javascript:window.print()">{{'print_form'| translate}}</button>
             <button type="button"  ng-disabled="model.savingRegistration" class="btn btn-default small-horizontal-spacing" ng-click="cancelRegistrationWarning(showRegistration)">{{'cancel'| translate}}</button>
             <i ng-if="model.savingRegistration" class="fa fa-spinner fa-spin" style="font-size:28px;margin-left:15px"></i>

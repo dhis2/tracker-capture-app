@@ -637,10 +637,6 @@ trackerCapture.controller('DataEntryController',
             ouNames[$scope.selectedOrgUnit.id] = $scope.selectedOrgUnit.displayName;
             CurrentSelection.setOrgUnitNames( ouNames );
 
-            if($scope.selectedOrgUnit) {
-                $scope.model.ouDates = {startDate: $scope.selectedOrgUnit.odate, endDate: $scope.selectedOrgUnit.cdate };
-                $scope.model.orgUnitClosed = $scope.selectedOrgUnit.closedStatus;
-            }
             $scope.showSelf = true;
             if(angular.isUndefined($scope.selectedEnrollment) || $scope.selectedEnrollment === null || ($scope.dashBoardWidgetFirstRun && $scope.selectedEnrollment.status === "COMPLETED")){
                 //onOpenEnrollment

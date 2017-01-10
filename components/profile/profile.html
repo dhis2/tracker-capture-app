@@ -14,7 +14,7 @@
             <a class="small-horizontal-spacing" href ng-click="removeWidget(profileWidget)" title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>
         </span>        
     </div>
-    <div ng-show="profileWidget.expand" class="panel-body dashboard-widget-container" ng-class="{'disable-clicks':model.orgUnitClosed}">
+    <div ng-show="profileWidget.expand" class="panel-body dashboard-widget-container" ng-class="{'disable-clicks':selectedOrgUnit.closedStatus}">
         <div>
             <form name="outerForm" novalidate>
                 <div ng-if="!enrollmentEditing">
