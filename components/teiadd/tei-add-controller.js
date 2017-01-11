@@ -542,7 +542,8 @@ trackerCapture.controller('TEIAddController',
     
     var selections = CurrentSelection.get();
     $scope.programs = selections.prs;
-    
+    $scope.selectedOrgUnit = selections.orgUnit;
+
     $scope.attributesById = CurrentSelection.getAttributesById();
     if(!$scope.attributesById){
         $scope.attributesById = [];

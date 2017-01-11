@@ -89,12 +89,13 @@ function($rootScope,
     //watch for selection of org unit from tree
     $scope.$watch('selectedOrgUnit', function() {
         if( angular.isObject($scope.selectedOrgUnit)){
-            var currentOrgUnit =  SessionStorageService.get('SELECTED_OU');
+            var selections = CurrentSelection.get();
+            var currentOrgUnit =  selections.orgUnit;//SessionStorageService.get('SELECTED_OU');
             var newOrgUnitSelected = false;
             if(currentOrgUnit) {
                 if(currentOrgUnit.id !== $scope.selectedOrgUnit.id){
                     newOrgUnitSelected = true;
-                    SessionStorageService.set('SELECTED_OU', $scope.selectedOrgUnit);
+                    updateOrgUnitInCurrentSelection();
                     CurrentSelection.setAdvancedSearchOptions(null);
                     if ($scope.attributes) {
                         for (var index = 0; index < $scope.attributes.length; index++) {
@@ -105,8 +106,16 @@ function($rootScope,
                     }
                 }
             } else {
-                SessionStorageService.set('SELECTED_OU', $scope.selectedOrgUnit);
+                updateOrgUnitInCurrentSelection();
+            }
 
+            function updateOrgUnitInCurrentSelection() {
+                OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function (orgUnitFromStore) {
+                    if(orgUnitFromStore) {
+                        selections.orgUnit = orgUnitFromStore;
+                        CurrentSelection.set(selections);
+                    }
+                });
             }
 
             $scope.doSearch = true;

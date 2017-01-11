@@ -10,6 +10,7 @@ trackerCapture.controller('DashboardController',
             $timeout,
             $filter,
             $translate,
+            $q,
             TCStorageService,
             orderByFilter,
             SessionStorageService,
@@ -44,11 +45,24 @@ trackerCapture.controller('DashboardController',
         updateDashboard();
     }
 
+    function getOrgUnit() {
+        var def = $q.defer();
+        var selection = CurrentSelection.get();
+        if(selection.orgUnit && selection.orgUnit.id === orgUnitUrl) {
+            def.resolve(selection.orgUnit);
+        } else {
+            OrgUnitFactory.getFromStoreOrServer(orgUnitUrl).then(function(ou){
+                def.resolve(ou);
+            })
+        }
+        return def.promise;
+    }    
+
     function updateDashboard() {
         
         $scope.metaDataCached = true;
-        
-        OrgUnitFactory.getFromStoreOrServer(orgUnitUrl).then(function (orgUnit) {
+
+        getOrgUnit().then(function (orgUnit) {
             if (!orgUnit) {
                 return;
             }

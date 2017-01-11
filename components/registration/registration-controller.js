@@ -27,8 +27,7 @@ trackerCapture.controller('RegistrationController',
                 TrackerRulesFactory,
                 TrackerRulesExecutionService,
                 TCStorageService,
-                ModalService,
-                OrgUnitFactory) {
+                ModalService) {
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
     $scope.customRegistrationForm = null;    
@@ -89,18 +88,13 @@ trackerCapture.controller('RegistrationController',
         return attribute.generated || $scope.assignedFields[attribute.id] || $scope.editingDisabled;
     };
 
-    var selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
+    var selectedOrgUnit = CurrentSelection.get()["orgUnit"];
 
-
-    if (selectedOrgUnit && selectedOrgUnit.id) {
-        OrgUnitFactory.getFromStoreOrServer(selectedOrgUnit.id).then(function (ou) {
-            if (ou) {
-                $scope.selectedOrgUnit = ou;
-                $scope.model.orgUnitId = $scope.selectedOrgUnit.id;
-            } else {
-                $scope.model.orgUnitId = ($location.search()).ou;
-            }
-        });
+    if (selectedOrgUnit) {
+        $scope.selectedOrgUnit = selectedOrgUnit;
+        $scope.model.orgUnitId = $scope.selectedOrgUnit.id;
+    } else {
+        $scope.model.orgUnitId = ($location.search()).ou;
     }
 
     $scope.selectedEnrollment = {
