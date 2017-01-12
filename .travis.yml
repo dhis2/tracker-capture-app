@@ -7,7 +7,7 @@ cache:
 before_script:
 - cd $HOME
 - git clone --depth=10 https://github.com/dhis2/tracker-core.git
-- cd $HOME/gis-api
+- cd $HOME/tracker-core
 - npm install
 - npm run build
 script:
