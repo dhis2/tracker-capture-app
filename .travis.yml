@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+- '6'
+cache:
+  directories:
+  - node_modules
+before_script:
+- cd $HOME
+- git clone --depth=10 https://github.com/dhis2/tracker-core.git
+- cd $HOME/gis-api
+- npm install
+- npm run build
+script:
+- npm link tracker-core
+- npm run build
+#after_success:
+#- if ( [ "$TRAVIS_BRANCH" == "master" ]  && [ "$TRAVIS_REPO_SLUG" == "dhis2/tracker-capture-app" ]  &&  [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then
+#        mvn clean deploy --settings deploy/settings.xml && exit 0;
+#  fi
