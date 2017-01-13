@@ -218,7 +218,16 @@ trackerCapture.controller('DataEntryController',
     var processRuleEffect = function(event){
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
-        if(event === 'registration' || event === 'dataEntryInit' || !affectedEvent || !affectedEvent.event) return;
+        if (!affectedEvent || !affectedEvent.event) {
+            //The data entry widget does not have an event selected. 
+            //Therefore applying rule effects from registration instead.
+            affectedEvent = 'registration';
+        }
+        else if(event === 'registration' || event === 'dataEntryInit') {
+           //The data entry widget is associated with an event, 
+           //and therefore we do not want to process rule effects from the registration form
+           return;
+        }
 
         //In most cases the updated effects apply to the current event. In case the affected event is not the current event, fetch the correct event to affect:
         if (event !== affectedEvent.event) {
@@ -579,7 +588,10 @@ trackerCapture.controller('DataEntryController',
     };
 
     $scope.executeRules = function () {        
-        //$scope.allEventsSorted cannot be used, as it is not reflecting updates that happened within the current session
+        if (!$scope.currentEvent) {
+            return;
+        }
+        
         var allSorted = [];
         for(var ps = 0; ps < $scope.programStages.length; ps++ ) {
             for(var e = 0; e < $scope.eventsByStage[$scope.programStages[ps].id].length; e++) {
@@ -590,10 +602,9 @@ trackerCapture.controller('DataEntryController',
         
         var evs = {all: allSorted, byStage: $scope.eventsByStage};
         var flag = {debug: true, verbose: true};
-        $scope.currentEvent = $scope.currentEvent ? $scope.currentEvent : {};
-
+        
         //If the events is displayed in a table, it is necessary to run the rules for all visible events.        
-        if ($scope.currentStage && $scope.currentStage.displayEventsInTable && angular.isUndefined($scope.currentStage.rulesExecuted)){
+        if ($scope.currentStage && $scope.currentStage.displayEventsInTable && angular.isUndefined($scope.currentStage.rulesExecuted)) {
             angular.forEach($scope.currentStageEvents, function (event) {
                 TrackerRulesExecutionService.executeRules($scope.allProgramRules, event, evs, $scope.prStDes, $scope.selectedTei, $scope.selectedEnrollment, $scope.optionSets, flag);
                 $scope.currentStage.rulesExecuted = true;
@@ -785,6 +796,10 @@ trackerCapture.controller('DataEntryController',
             $scope.allEventsSorted = orderByFilter($scope.allEventsSorted, '-sortingDate').reverse();
             sortEventsByStage(null);
             $scope.showDataEntry($scope.currentEvent, true, true);
+            $scope.eventsLoaded = true;
+        }
+        else {
+            //There is no events - so loading is finished:
             $scope.eventsLoaded = true;
         }
     };
@@ -1304,7 +1319,7 @@ trackerCapture.controller('DataEntryController',
     };
     
     $scope.getDataEntryForm = function () {        
-        $scope.currentFileNames = $scope.fileNames[$scope.currentEvent.event] ? $scope.fileNames[$scope.currentEvent.event] : [];
+        $scope.currentFileNames = $scope.fileNames ? ($scope.fileNames[$scope.currentEvent.event] ? $scope.fileNames[$scope.currentEvent.event] : []) : [];
         $scope.currentStage = $scope.stagesById[$scope.currentEvent.programStage];
         $scope.currentStageEvents = $scope.eventsByStage[$scope.currentEvent.programStage];
 
