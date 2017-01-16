@@ -38,7 +38,7 @@
                                 <img src="../images/ajax-loader-bar.gif" alt="{{'loading'| translate}}"/>
                             </div>
                         </div>
-                        <div style="width: 3%; float: left;">
+                        <div style="width: 3%; float: left;" ng-hide="stagesNotShowingInStageTasks[currentStage.id] || !currentStage">
                             <button type="button" 
                                     title="{{'add_new_event'|translate}}"
                                     class="btn btn-primary" 
