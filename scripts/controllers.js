@@ -629,7 +629,14 @@ function($rootScope,
     };
 
     $scope.showDashboard = function(currentEntity){
-        var sortedTei = $filter('orderBy')($scope.trackedEntityList.rows, function(tei) {
+        var sortedTei = [];
+        if($scope.trackedEntityList.rows && $scope.trackedEntityList.rows.own) {
+            angular.extend(sortedTei, $scope.trackedEntityList.rows.own);
+        }
+        if($scope.trackedEntityList.rows && $scope.trackedEntityList.rows.other) {
+            angular.extend(sortedTei, $scope.trackedEntityList.rows.other);
+        }
+        sortedTei = $filter('orderBy')(sortedTei, function(tei) {
             return $scope.d2Sort(tei);
         }, $scope.reverse);
 

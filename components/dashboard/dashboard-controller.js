@@ -602,6 +602,6 @@ trackerCapture.controller('DashboardController',
         } else {
             tei = $scope.sortedTeiIds[current - 1];
         }
-        $location.path('/dashboard').search({tei: tei, program: pr ? pr : null});
+        $location.path('/dashboard').search({tei: tei, program: pr ? pr : null, ou: orgUnitUrl ? orgUnitUrl : null});
     };
 });
