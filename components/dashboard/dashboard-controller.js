@@ -448,7 +448,9 @@ trackerCapture.controller('DashboardController',
     });
     
     $scope.applySelectedProgram = function (pr) {
-        $scope.selectedProgram = pr;
+        if (pr) {
+            $scope.selectedProgram = pr;
+        }
         getDashboardLayout();
     };
 
