@@ -1533,6 +1533,9 @@ trackerCapture.controller('DataEntryController',
     };
 
     $scope.saveEventDateForEvent = function (eventToSave, reOrder) {
+        if(!eventToSave.eventDate) {
+            return;
+        }
         $scope.eventDateSaved = false;
         
         $scope.currentElement = {id: "eventDate", event: eventToSave.event, saved: false};
