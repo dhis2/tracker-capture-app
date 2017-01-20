@@ -634,17 +634,17 @@ function($rootScope,
 
     $scope.showDashboard = function(currentEntity){
         var sortedTei = [];
+        var sortedTeiIds = [];
         if($scope.trackedEntityList.rows && $scope.trackedEntityList.rows.own) {
-            angular.extend(sortedTei, $scope.trackedEntityList.rows.own);
+            sortedTei = sortedTei.concat($scope.trackedEntityList.rows.own);
         }
         if($scope.trackedEntityList.rows && $scope.trackedEntityList.rows.other) {
-            angular.extend(sortedTei, $scope.trackedEntityList.rows.other);
+            sortedTei = sortedTei.concat($scope.trackedEntityList.rows.other);
         }
         sortedTei = $filter('orderBy')(sortedTei, function(tei) {
             return $scope.d2Sort(tei);
         }, $scope.reverse);
 
-        var sortedTeiIds = [];
         angular.forEach(sortedTei, function(tei){
             sortedTeiIds.push(tei.id);
         });
