@@ -598,8 +598,12 @@ function($rootScope,
 
     $scope.showHideColumns = function(){
         
-        $scope.gridColumnsInUserStore = $scope.gridColumnsInUserStore ? $scope.gridColumnsInUserStore : {};        
+        if (!$scope.selectedProgram) {
+            return;
+        }
+        $scope.gridColumnsInUserStore = $scope.gridColumnsInUserStore ? $scope.gridColumnsInUserStore : {};
         $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = angular.copy( $scope.gridColumns );
+
 
         var modalInstance = $modal.open({
             templateUrl: 'views/column-modal.html',
