@@ -120,6 +120,9 @@ trackerCapture.controller('EnrollmentController',
 
         $scope.showNewEnrollment = function () {
             $scope.showEnrollmentDiv = !$scope.showEnrollmentDiv;
+            if(!$scope.showEnrollmentDiv) {
+                return;
+            }
 
             if ($scope.showEnrollmentDiv) {
 
