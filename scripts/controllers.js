@@ -597,12 +597,10 @@ function($rootScope,
     };    
 
     $scope.showHideColumns = function(){
-        
-        if (!$scope.selectedProgram) {
-            return;
-        }
         $scope.gridColumnsInUserStore = $scope.gridColumnsInUserStore ? $scope.gridColumnsInUserStore : {};
-        $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = angular.copy( $scope.gridColumns );
+        if($scope.selectedProgram) {
+            $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = angular.copy( $scope.gridColumns );
+        }
 
 
         var modalInstance = $modal.open({
@@ -619,6 +617,9 @@ function($rootScope,
                     return "trackerCaptureGridColumns";
                 },
                 gridColumnKey: function(){
+                    if(!$scope.selectedProgram) {
+                        return null;
+                    }
                     return $scope.selectedProgram.id;
                 },
                 gridColumnsInUserStore: function(){
