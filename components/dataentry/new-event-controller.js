@@ -110,6 +110,10 @@ trackerCapture.controller('EventCreationController',
             for(j = 0; j < availableStagesOrdered.length; j++){
                 var availableStage = availableStagesOrdered[j];
                 
+                if( !availableStage || !availableStage.id || lastStageForEvents || lastStageForEvents.id ){
+                    break;
+                }
+                
                 if(availableStage.id === lastStageForEvents.id){
                     suggestedStage = availableStage;
                     break;
