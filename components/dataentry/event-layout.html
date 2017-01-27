@@ -12,16 +12,25 @@
             <script type="text/ng-template" id="event-details.html">                
                 <table class="table table-striped table-bordered">
                 <tr>
-                <td>{{'org_unit' | translate}}</td>
-                <td>{{content.orgUnitName}}</td>
+                    <td>{{'org_unit' | translate}}</td>
+                    <td>{{content.orgUnitName}}</td>
                 </tr>
                 <tr>
-                <td>{{'program_stage' | translate}}</td>
-                <td>{{content.name}}</td>
+                    <td>{{'program_stage' | translate}}</td>
+                    <td>{{content.name}}</td>
                 </tr>
                 <tr>
-                <td>{{'date' | translate}}</td>
-                <td>{{content.eventDate ? content.eventDate : content.dueDate}}</td>
+                    <td>{{'date' | translate}}</td>
+                    <td>{{content.eventDate ? content.eventDate : content.dueDate}}</td>
+                </tr>        
+                <tr ng-if="program.categoryCombo && !program.categoryCombo.isDefault && content && content.attributeCategoryOptions && content.attributeOptionCombo" 
+                    ng-repeat="category in program.categoryCombo.categories" ng-init="catIndex = $index">
+                    <td>
+                        {{category.displayName}}
+                    </td>
+                    <td ng-repeat="option in category.categoryOptions" ng-if="option.id === content.attributeCategoryOptions.split(';')[catIndex]">
+                        {{option.displayName}}                        
+                    </td>
                 </tr>
                 </table>
             </script>
@@ -29,6 +38,7 @@
                  d2-pop-over 
                  details="{{'details'| translate}}"
                  content="dhis2Event"
+                 program="selectedProgram"
                  template="event-details.html"  
                  placement="top" 
                  ng-class="getEventStyle(dhis2Event)" 
