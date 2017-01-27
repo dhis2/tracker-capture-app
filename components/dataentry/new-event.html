@@ -18,6 +18,23 @@
                     </select>
                 </td>
             </tr>
+            
+            <tr ng-if="selectedProgram.categoryCombo && !selectedProgram.categoryCombo.isDefault && selectedProgram.categoryCombo.categories"
+                ng-repeat="category in selectedProgram.categoryCombo.categories">
+                <td>
+                    {{category.displayName}}
+                </td>
+                <td>
+                    <select class="form-control"
+                            name="option"
+                            ng-model="category.selectedOption"
+                            ng-options="option as option.displayName for option in category.categoryOptions"
+                            ng-change="getCategoryOptions()">
+                        <option value="" ng-selected="selectDefault.selected">{{'please_select' | translate}}</option>
+                    </select>
+                </td>
+            </tr>
+            
             <tr ng-if="isScheduleEvent && !isReferralEvent && !model.selectedStage.hideDueDate && !model.selectedStage.periodType">
                 <td>
                     {{'scheduled_date'| translate}}
@@ -55,7 +72,7 @@
                     <div ng-messages="eventCreationForm.eventDate.$error" ng-if="interacted(eventCreationForm.eventDate)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">                        
                     </div>
                 </td>
-            </tr>
+            </tr>            
             <tr ng-if="model.selectedStage.periodType">
                 <td>
                     {{'period'| translate}}
@@ -70,7 +87,7 @@
                     <button type="button" ng-disabled="model.currentSelectedIndex===0" class="btn btn-default small-horizontal-spacing trim" ng-click="fetchPeriod('PREV')" title="{{'prev_period'| translate}}"><i class="fa fa-backward"></i></button>
                     <button type="button" ng-disabled="model.currentSelectedIndex===(dhis2Event.periods.length-1)" class="btn btn-default small-horizontal-spacing trim" ng-click="fetchPeriod('NEXT')" title="{{'nxt_period'| translate}}"><i class="fa fa-forward"></i></button>
                 </td>
-            </tr>
+            </tr>            
         </table>
         
         <div ng-if="model.selectedStage && !model.selectedStage.periodType">
@@ -116,8 +133,6 @@
                 <span ng-if="model.dueDateInvalid" class="error">{{'required'| translate}}</span>
             </div>
         </div>
-        <div ng-include="'components/dataentry/category-option-form.html'"></div>        
-
     </form>  
 </div>
 <div class="modal-footer page">        
