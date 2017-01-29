@@ -588,6 +588,7 @@ function($rootScope,
     };
 
     $scope.showHideColumns = function(){
+
         $scope.hiddenGridColumns = 0;
         var currentColumns = angular.copy($scope.gridColumns);
 
@@ -626,7 +627,9 @@ function($rootScope,
                         if (!$scope.gridColumnsInUserStore || ($scope.gridColumnsInUserStore && $scope.gridColumnsInUserStore.length === 0)) {
                             $scope.gridColumnsInUserStore = {};
                         }
-                        $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = $scope.gridColumns;
+                        if($scope.selectedProgram) {
+                            $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = $scope.gridColumns;
+                        }
                         GridColumnService.set($scope.gridColumnsInUserStore, "trackerCaptureGridColumns");
                     }
                 }
