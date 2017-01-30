@@ -67,3 +67,39 @@
     </div>    
 </div>
 <!-- coordinates end -->
+
+<!-- attribute category options begin -->
+<div class="row" ng-if="selectedProgram.categoryCombo && !selectedProgram.categoryCombo.isDefault && currentEvent && currentEvent.attributeCategoryOptions && currentEvent.attributeOptionCombo">
+    <div class="col-sm-12">
+        
+        <a href 
+           ng-click="editAttributeCategoryOptions()" 
+           title="{{'edit' | translate}}">
+            {{selectedProgram.categoryCombo.displayName}}  <i class="fa fa-pencil-square-o"></i>
+        </a>        
+        
+        <div ng-if="showAttributeCategoryOptions">
+            <table class="table table-striped table-bordered">
+                <tr ng-repeat="category in selectedProgram.categoryCombo.categories">
+                    <td>
+                        {{category.displayName}}
+                    </td>
+                    <td>
+                        <ui-select ng-model="category.selectedOption"
+                                theme="select2"
+                                name="foo"
+                                on-select="saveAttributeCategoryOptions()"
+                                style="width: 100%">
+                            <ui-select-match allow-clear="false" ng-class="getOptionSaveNotifcationClass(category.id)"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+                            <ui-select-choices  repeat="option in category.categoryOptions | filter: $select.search | limitTo:maxOptionSize">
+                              <span ng-bind-html="option.displayName | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>    
+    
+</div>
+<!-- attribute category options end -->
