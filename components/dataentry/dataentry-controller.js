@@ -36,6 +36,7 @@ trackerCapture.controller('DataEntryController',
     $scope.maxOptionSize = 30;
     $scope.eventPagingStart = 0;
     $scope.eventPagingEnd = $scope.eventPageSize;
+    $scope.showAttributeCategoryOptions = false;
     
     //Data entry form
     $scope.outerDataEntryForm = {longitude: {}, latitude: {}};
@@ -1078,6 +1079,8 @@ trackerCapture.controller('DataEntryController',
         if( $scope.eventsByStage[stage.id].length === 1 ){
             $scope.currentEvent = $scope.eventsByStage[stage.id][0];
         }
+        
+        $scope.showAttributeCategoryOptions = false;
     };
 
     $scope.showDataEntry = function (event, suppressToggling, resetStage) {
@@ -1114,7 +1117,7 @@ trackerCapture.controller('DataEntryController',
                         $scope.currentEvent.notes = orderByFilter($scope.currentEvent.notes, '-storedDate');
                     }
                 }
-
+                
                 $scope.getDataEntryForm();
             }
         }
@@ -1250,17 +1253,14 @@ trackerCapture.controller('DataEntryController',
         }
         
         return otherValues;
-    };
-    
-    $scope.getDataEntryForm = function () {        
-        $scope.currentFileNames = $scope.fileNames[$scope.currentEvent.event] ? $scope.fileNames[$scope.currentEvent.event] : [];
-        $scope.currentStage = $scope.stagesById[$scope.currentEvent.programStage];
-        $scope.currentStageEvents = $scope.eventsByStage[$scope.currentEvent.programStage];
+    };    
 
-        for(var i = $scope.currentStage.programStageDataElements.length-1;i >=0;i--) {
-            var s = $scope.currentStage.programStageDataElements[i].dataElement;
-        }
-        
+    $scope.getDataEntryForm = function () {
+        $scope.showAttributeCategoryOptions = false;
+        $scope.currentFileNames = $scope.fileNames ? ($scope.fileNames[$scope.currentEvent.event] ? $scope.fileNames[$scope.currentEvent.event] : []) : [];
+
+        $scope.currentStage = $scope.stagesById[$scope.currentEvent.programStage];
+        $scope.currentStageEvents = $scope.eventsByStage[$scope.currentEvent.programStage];       
 
         angular.forEach($scope.currentStage.programStageSections, function (section) {
             section.open = true;
@@ -1287,7 +1287,7 @@ trackerCapture.controller('DataEntryController',
             $scope.displayCustomForm = "DEFAULT";
         }
 
-
+        
         $scope.currentEventOriginal = angular.copy($scope.currentEvent);
         
         $scope.currentStageEventsOriginal = angular.copy($scope.currentStageEvents);
@@ -1296,7 +1296,7 @@ trackerCapture.controller('DataEntryController',
         $scope.currentPeriod[$scope.currentEvent.programStage] = period;        
         
         //Execute rules for the first time, to make the initial page appear correctly.
-        //Subsequent calls will be made from the "saveDataValue" function.
+        //Subsequent calls will be made from the "saveDataValue" function.        
         $scope.executeRules();
     };
 
@@ -1998,7 +1998,6 @@ trackerCapture.controller('DataEntryController',
         if($scope.currentEvent.status === 'COMPLETED'){
             var now = moment();
             var completedDate = moment($scope.currentEvent.completedDate);
-            var diff= now.diff(completedDate, 'hours');
             if(now.diff(completedDate, 'hours') > eventLockHours){
                 return true;
             }
@@ -2950,10 +2949,110 @@ trackerCapture.controller('DataEntryController',
                 $scope.getEvents();
             }
         }, function () {
-        });
+        });        
+    };
+    
+    $scope.editAttributeCategoryOptions = function(){
+        $scope.showAttributeCategoryOptions = !$scope.showAttributeCategoryOptions;
         
+        if( $scope.showAttributeCategoryOptions && $scope.currentEvent && $scope.currentEvent.attributeCategoryOptions ){                        
+            var selectedOptions = $scope.currentEvent.attributeCategoryOptions.split(";");
+            var reverse = false;
+            for (var i=0; i<$scope.selectedCategories.length; i++) {
+                for(var j=0; j<$scope.selectedCategories[i].categoryOptions.length; j++) {
+                    if($scope.selectedCategories[i].categoryOptions[j].id === selectedOptions[i]){
+                        $scope.selectedCategories[i].selectedOption = $scope.selectedCategories[i].categoryOptions[j];
+                        break;
+                    }
+                    else{
+                        reverse = true;
+                    }
+                }
+            }
+            
+            if( reverse ){
+                selectedOptions = selectedOptions.reverse();
+                $scope.currentEvent.attributeCategoryOptions = selectedOptions.join(';');
+                for (var i=0; i<$scope.selectedCategories.length; i++) {
+                    for(var j=0; j<$scope.selectedCategories[i].categoryOptions.length; j++) {
+                        if($scope.selectedCategories[i].categoryOptions[j].id === selectedOptions[i]){
+                            $scope.selectedCategories[i].selectedOption = $scope.selectedCategories[i].categoryOptions[j];
+                            break;
+                        }
+                    }
+                }
+            }
+        }        
+    };
+    
+    $scope.saveAttributeCategoryOptions = function(){
+        var selectedOptions = [], optionsReady = true;
+        $scope.changedCat = {id: -1, saved: false};
+        for (var i = 0; i < $scope.selectedCategories.length; i++) {
+            
+            if( $scope.selectedCategories[i].selectedOption.id !== $scope.currentEvent.attributeCategoryOptions.split(';')[i] ){                
+                $scope.changedCat.id = $scope.selectedCategories[i].id;
+            }
+            if ($scope.selectedCategories[i].selectedOption && $scope.selectedCategories[i].selectedOption.id) {
+                selectedOptions.push($scope.selectedCategories[i].selectedOption.id);
+            }
+            else{
+                optionsReady = false;
+            }
+        }
+        
+        var acos = selectedOptions.join(';');
+        if( optionsReady && acos !== $scope.currentEvent.attributeCategoryOptions ){
+            
+            var ev = EventUtils.processEvent($scope.currentEvent, $scope.currentStage, $scope.optionSets, $scope.prStDes);
+            
+            if( ev.event && ev.enrollment && ev.trackedEntityInstance && ev.attributeCategoryOptions && ev.attributeOptionCombo){
+                var dhis2Event = {event: ev.event, orgUnit: ev.orgUnit, enrollment: ev.enrollment, program: ev.program, programStage: ev.programStage, dataValues: ev.dataValues};
+                
+                if( ev.status ){
+                    dhis2Event.status = ev.status;
+                }
+                
+                if( ev.eventDate ){
+                    dhis2Event.eventDate = ev.eventDate;
+                }
+                
+                if( ev.notes ){
+                    dhis2Event.notes = ev.notes;
+                }
+                
+                if( ev.coordinate ){
+                    dhis2Event.coordinate = ev.coordinate;
+                }
+                
+                dhis2Event.attributeCategoryOptions = acos;
+            }            
+            
+            DHIS2EventFactory.update(dhis2Event).then(function(data){            
+                $scope.currentEvent.attributeCategoryOptions = dhis2Event.attributeCategoryOptions;
+                $scope.changedCat.saved = true;
+            });
+        }
+    };
+    
+    //$scope.getInputNotifcationClass = function(id, custom, event){
+    $scope.getOptionSaveNotifcationClass = function( id ){
+        if($scope.changedCat && $scope.changedCat.id && $scope.changedCat.id === id){            
+            if($scope.changedCat.saved){
+                return 'form-control input-success';
+            }            
+            else{
+                return 'form-control input-error';
+            }            
+        }
+        return 'form-control';
+    };
+    
+    $scope.hideEditAttributeCategoryOptions = function(){
+        $scope.showAttributeCategoryOptions = !$scope.showAttributeCategoryOptions;
     };
 })
+
 .controller('EventOptionsInTableController', function($scope, $translate){
     
     var COMPLETE = "Complete";

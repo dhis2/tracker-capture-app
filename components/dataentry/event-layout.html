@@ -28,7 +28,7 @@
                     <td>
                         {{category.displayName}}
                     </td>
-                    <td ng-repeat="option in category.categoryOptions" ng-if="option.id === content.attributeCategoryOptions.split(';')[catIndex]">
+                    <td ng-repeat="option in category.categoryOptions" ng-if="option.id === content.attributeCategoryOptions.split(';')[catIndex] || option.id === content.attributeCategoryOptions.split(';')[program.categoryCombo.categories.length - catIndex - 1]">
                         {{option.displayName}}                        
                     </td>
                 </tr>
