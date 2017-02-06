@@ -267,14 +267,15 @@ trackerCapture.controller('DataEntryController',
                             affectedEvent[effect.dataElement.id] = "";
                             $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
                         }
-
-                        if(effect.ineffect) {
-                            $scope.hiddenFields[event][effect.dataElement.id] = true;
-                        } 
-                        else if( !$scope.hiddenFields[event][effect.dataElement.id]) {
-                            $scope.hiddenFields[event][effect.dataElement.id] = false;
-                        }
                     }
+
+                    if(effect.ineffect) {
+                        $scope.hiddenFields[event][effect.dataElement.id] = true;
+                    } 
+                    else if( !$scope.hiddenFields[event][effect.dataElement.id]) {
+                        $scope.hiddenFields[event][effect.dataElement.id] = false;
+                    }
+                    
                 }
                 else {
                     $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEFIELD, bot does not have a dataelement defined");
