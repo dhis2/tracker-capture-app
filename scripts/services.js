@@ -2134,6 +2134,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 allColumns.push({id: stage.programStageDataElements[i].dataElement.id, valueType: stage.programStageDataElements[i].dataElement.valueType, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
             }            
             return {partial: partial, all: allColumns};
+        },
+        getEditingStatus: function(dhis2Event, stage, orgUnit, tei){
+            return (dhis2Event.orgUnit !== orgUnit.id && DateUtils.isValid(dhis2Event.eventDate)) || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || tei.inactive;
         }
     };    
 })

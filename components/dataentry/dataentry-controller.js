@@ -775,8 +775,8 @@ trackerCapture.controller('DataEntryController',
                             dhis2Event.eventDate = DateUtils.formatFromApiToUser(dhis2Event.eventDate);
                             dhis2Event.sortingDate = dhis2Event.eventDate;                            
                         }
-
-                        dhis2Event.editingNotAllowed = setEventEditing(dhis2Event, eventStage);
+                        
+                        dhis2Event.editingNotAllowed = EventUtils.getEditingStatus(dhis2Event, eventStage, $scope.selectedOrgUnit, $scope.selectedTei);
                         
                         dhis2Event.statusColor = EventUtils.getEventStatusColor(dhis2Event);
                         dhis2Event = EventUtils.processEvent(dhis2Event, eventStage, $scope.optionSets, $scope.prStDes);
@@ -802,11 +802,6 @@ trackerCapture.controller('DataEntryController',
             //There is no events - so loading is finished:
             $scope.eventsLoaded = true;
         }
-    };
-    
-
-    var setEventEditing = function (dhis2Event, stage) {
-        return dhis2Event.editingNotAllowed = dhis2Event.orgUnit !== $scope.selectedOrgUnit.id && dhis2Event.eventDate !== "" || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || $scope.selectedEntity.inactive;
     };
 
     $scope.enableRescheduling = function () {
@@ -1246,9 +1241,11 @@ trackerCapture.controller('DataEntryController',
     };
         
     $scope.openEventEditFormModal = function(event){
-       
-        //setEventEditing        
-        setEventEditing(event, $scope.currentStage);                
+
+        var stage = $scope.stagesById[event.programStage];        
+        if( stage && stage.id ){
+            event.editingNotAllowed = EventUtils.getEditingStatus(event, stage, $scope.selectedOrgUnit, $scope.selectedTei);
+        }        
         
         $scope.eventEditFormModalInstance = modalInstance = $modal.open({
             templateUrl: 'components/dataentry/modal-default-form.html',
@@ -1351,6 +1348,7 @@ trackerCapture.controller('DataEntryController',
             $scope.displayCustomForm = "DEFAULT";
         }
 
+        $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei);
         
         $scope.currentEventOriginal = angular.copy($scope.currentEvent);
         
@@ -2017,8 +2015,7 @@ trackerCapture.controller('DataEntryController',
                 }
 
                 setStatusColor();
-
-                setEventEditing($scope.currentEvent, $scope.currentStage);
+                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei);
                 
                 for(var i=0;i<$scope.allEventsSorted.length;i++){
                     if($scope.allEventsSorted[i].event === $scope.currentEvent.event){
@@ -2117,8 +2114,8 @@ trackerCapture.controller('DataEntryController',
                     $scope.currentEvent.status = 'SKIPPED';
                 }
 
-                setStatusColor();
-                setEventEditing($scope.currentEvent, $scope.currentStage);
+                setStatusColor();                
+                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei);
             });
         
     };
