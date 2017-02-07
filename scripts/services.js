@@ -560,12 +560,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return convertFromApiToUser(response.data);
             },function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
             });
             return promise;
@@ -575,12 +570,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return convertFromApiToUser(response.data);
             }, function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
             });
             return promise;
@@ -590,12 +580,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return convertFromApiToUser(response.data);
             }, function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
             });
             return promise;
@@ -606,17 +591,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return response.data;
             }, function(response){
                 var errorBody = $translate.instant('failed_to_save_enrollment');
-                var importSummaries = null;
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message
-                    }
-                }
-                if(response.data && response.data.response && response.data.response.importSummaries) {
-                    importSummaries = JSON.stringify(response.data.response.importSummaries)
-                }
-
-                NotificationService.showNotifcationDialog(errorHeader, errorBody, importSummaries);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
             });
             return promise;
@@ -628,16 +603,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return response.data;
             }, function(response){
                 var errorBody = $translate.instant('failed_to_update_enrollment');
-                var importSummaries = null;
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message;
-                    }
-                }
-                if(response.data && response.data.response && response.data.response.importSummaries) {
-                    importSummaries = JSON.stringify(response.data.response.importSummaries)
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody, importSummaries);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
             });
             return promise;
@@ -648,16 +614,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }, function (response) {
                 if (response && response.data && response.data.status === 'ERROR') {
                     var errorBody = $translate.instant('failed_to_delete_enrollment');
-                    var importSummaries = null;
-                    if (response && response.data && response.data.status === 'ERROR') {
-                        if (response.data.message) {
-                            errorBody = response.data.message;
-                        }
-                    }
-                    if(response.data && response.data.response && response.data.response.importSummaries) {
-                        importSummaries = JSON.stringify(response.data.response.importSummaries)
-                    }
-                    NotificationService.showNotifcationDialog(errorHeader, errorBody, importSummaries);
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 }
                 
                 return response.data;
@@ -669,16 +626,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return response.data;         
             }, function(response){
                 var errorBody = $translate.instant('failed_to_update_enrollment');
-                var importSummaries = null;
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message;
-                    }
-                }
-                if(response.data && response.data.response && response.data.response.importSummaries) {
-                    importSummaries = JSON.stringify(response.data.response.importSummaries)
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody, importSummaries);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
             });
             return promise;
@@ -720,7 +668,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 /* Service for getting tracked entity instances */
 .factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService ) {
     var errorHeader = $translate.instant("error");
-    var errorBody;
     return {
         get: function(entityUid, optionSets, attributesById){
             var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
@@ -734,7 +681,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return tei;
             }, function(error){
                 if(error){
-                    var headerText = $translate.instant('error');
+                    var headerText = errorHeader;
                     var bodyText = $translate.instant('access_denied');
 
                     if(error.statusText) {
@@ -753,14 +700,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var promise = $http.delete(DHIS2URL + '/trackedEntityInstances/' + entityUid).then(function(response){
                 return response.data;               
             }, function (response) {
+                var errorBody;
                 if (response && response.data && response.data.status === 'ERROR') {
-                    var errorBody = $translate.instant('delete_error_audit');
-                    if (response && response.data && response.data.status === 'ERROR') {
-                        if (response.data.message) {
-                            errorBody = response.data.message;
-                        }
-                    }
-                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                    errorBody = $translate.instant('delete_error_audit');
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 }
                 
                 return response.data;
@@ -896,14 +839,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + formattedTei.trackedEntityInstance , formattedTei ).then(function(response){                    
                 return response.data;
             }, function(response){
-                errorHeader = $translate.instant('update_error');
-                errorBody = $translate.instant('failed_to_update_tei');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                NotificationService.showNotifcationDialog($translate.instant('update_error'), $translate.instant('failed_to_update_tei'), response);
                 return null;
             });
             return promise;
@@ -921,14 +857,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }, function(response) {
                 //Necessary now that import errors gives a 409 response from the server.
                 //The 409 response is treated as an error response.
-                errorHeader = $translate.instant('register_error');
-                errorBody = $translate.instant('failed_to_register_tei');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                var errorBody = $translate.instant('failed_to_register_tei');
+                NotificationService.showNotifcationDialog($translate.instant('register_error'), errorBody, response);
                 return null;
             });                    
             return promise;            
@@ -967,13 +897,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     deferred.resolve(response.data);
                 }
             }, function (response) {
-                errorBody = $translate.instant('failed_to_generate_tracked_entity_attribute');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                var errorBody = $translate.instant('failed_to_generate_tracked_entity_attribute');
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 deferred.resolve(response.data);
                 return null;
             });
@@ -1127,12 +1052,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }, function (response) {
 
                 var errorBody = $translate.instant('failed_to_fetch_events');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
             });
 
             return promise;
@@ -1152,12 +1072,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return response.data.events;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_fetch_events');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
             });
             return promise;
@@ -1171,12 +1086,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
              return response.data.events;
           }, function (response) {
               var errorBody = $translate.instant('failed_to_fetch_events');
-              if (response && response.data && response.data.status === 'ERROR') {
-                  if (response.data.message) {
-                      errorBody = response.data.message
-                  }
-              }
-              NotificationService.showNotifcationDialog(errorHeader, errorBody);
+              NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
               return null;
           });
           return promise;
@@ -1194,14 +1104,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }, function(response){
                 if( response && response.data && response.data.status === 'ERROR'){
                     var errorBody = $translate.instant('unable_to_fetch_data_from_server');
-                    if (response && response.data && response.data.status === 'ERROR') {
-                        if (response.data.message) {
-                            errorBody = response.data.message
-                        }
-                    }
-                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 }
-            });            
+            });
             return promise;
         },
         get: function(eventUid){            
@@ -1210,12 +1115,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }, function (response) {
                 if (response && response.data && response.data.status === 'ERROR') {
                     var errorBody = $translate.instant('failed_to_fetch_events');
-                    if (response && response.data && response.data.status === 'ERROR') {
-                        if (response.data.message) {
-                            errorBody = response.data.message
-                        }
-                    }
-                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 }
             });
             return promise;
@@ -1224,17 +1124,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var promise = $http.post(DHIS2URL + '/events.json', dhis2Event).then(function(response){
                 return response.data;           
             }, function (response) {
-                if (response && response.data && response.data.status === 'ERROR' || response.data.status === 'WARNING') {
-                    var errorBody = $translate.instant('event_creation_error');                    
-                    if (response.data.message) {
-                        errorBody = response.data.message;                        
-                        if( response.data.response && response.data.response.importSummaries && response.data.response.importSummaries.length > 0 ){
-                            angular.forEach(response.data.response.importSummaries, function(im){
-                                errorBody += im.description;
-                            });
-                        }
-                    }                    
-                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                if (response && response.data && (response.data.status === 'ERROR' || response.data.status === 'WARNING')) {
+                    var errorBody = $translate.instant('event_creation_error');
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                     return null;
                 }
             });
@@ -1246,12 +1138,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }, function (response) {
                 if (response && response.data && response.data.status === 'ERROR') {
                     var errorBody = $translate.instant('delete_error_audit');
-                    if (response && response.data && response.data.status === 'ERROR') {
-                        if (response.data.message) {
-                            errorBody = response.data.message;
-                        }
-                    }
-                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 }
             });
             return promise;           
@@ -1261,12 +1148,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return response.data;         
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_update_event');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message;
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
             });
             return promise;
         },        
@@ -1275,12 +1157,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return response.data;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_update_event');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message;
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
             });
             return promise;
@@ -1290,12 +1167,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return response.data;         
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_update_event');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message;
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
             });
             return promise;
@@ -1305,12 +1177,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return response.data;         
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_update_event');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message;
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
             });
             return promise;
@@ -1351,12 +1218,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return response.data;
             }, function(response){
                 var errorBody = $translate.instant('failed_to_update_event');
-                if (response && response.data && response.data.status === 'ERROR') {
-                    if (response.data.message) {
-                        errorBody = response.data.message;
-                    }
-                }
-                NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
             });            
             return promise;
