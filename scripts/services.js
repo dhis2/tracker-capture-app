@@ -2152,8 +2152,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }            
             return {partial: partial, all: allColumns};
         },
-        getEditingStatus: function(dhis2Event, stage, orgUnit, tei){
-            return (dhis2Event.orgUnit !== orgUnit.id && DateUtils.isValid(dhis2Event.eventDate)) || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || tei.inactive;
+        getEditingStatus: function(dhis2Event, stage, orgUnit, tei, enrollment){
+            return (dhis2Event.orgUnit !== orgUnit.id && DateUtils.isValid(dhis2Event.eventDate)) || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || tei.inactive || enrollment.status !== 'ACTIVE';
         }
     };    
 })

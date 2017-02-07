@@ -777,7 +777,7 @@ trackerCapture.controller('DataEntryController',
                             dhis2Event.sortingDate = dhis2Event.eventDate;                            
                         }
                         
-                        dhis2Event.editingNotAllowed = EventUtils.getEditingStatus(dhis2Event, eventStage, $scope.selectedOrgUnit, $scope.selectedTei);
+                        dhis2Event.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
                         
                         dhis2Event.statusColor = EventUtils.getEventStatusColor(dhis2Event);
                         dhis2Event = EventUtils.processEvent(dhis2Event, eventStage, $scope.optionSets, $scope.prStDes);
@@ -1245,7 +1245,7 @@ trackerCapture.controller('DataEntryController',
 
         var stage = $scope.stagesById[event.programStage];        
         if( stage && stage.id ){
-            event.editingNotAllowed = EventUtils.getEditingStatus(event, stage, $scope.selectedOrgUnit, $scope.selectedTei);
+            event.editingNotAllowed = EventUtils.getEditingStatus(event, stage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
         }        
         
         $scope.eventEditFormModalInstance = modalInstance = $modal.open({
@@ -1349,7 +1349,7 @@ trackerCapture.controller('DataEntryController',
             $scope.displayCustomForm = "DEFAULT";
         }
 
-        $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei);
+        $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
         
         $scope.currentEventOriginal = angular.copy($scope.currentEvent);
         
@@ -1558,9 +1558,14 @@ trackerCapture.controller('DataEntryController',
             eventToSave.statusColor = EventUtils.getEventStatusColor(eventToSave); 
             eventToSave.status = e.status;
             
-            if(angular.isUndefined($scope.currentStage.displayEventsInTable) || $scope.currentStage.displayEventsInTable === false || (angular.isDefined(reOrder) && reOrder === true)){
-                sortEventsByStage('UPDATE');
-            } 
+            $scope.currentEvent.sortingDate = eventToSave.sortingDate;
+            $scope.currentEvent.orgUnit = e.orgUnit;
+            $scope.currentEvent.statusColor = eventToSave.statusColor;
+            $scope.currentEvent.status = eventToSave.status;
+            $scope.currentEvent.orgUnitName = $scope.selectedOrgUnit.displayName;
+            
+            sortEventsByStage('UPDATE');
+            
             $scope.currentElement = {id: "eventDate", event: eventToSave.event, saved: true};
             $scope.executeRules();
         });
@@ -2016,7 +2021,7 @@ trackerCapture.controller('DataEntryController',
                 }
 
                 setStatusColor();
-                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei);
+                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
                 
                 for(var i=0;i<$scope.allEventsSorted.length;i++){
                     if($scope.allEventsSorted[i].event === $scope.currentEvent.event){
@@ -2116,7 +2121,7 @@ trackerCapture.controller('DataEntryController',
                 }
 
                 setStatusColor();                
-                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei);
+                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
             });
         
     };
@@ -2274,7 +2279,7 @@ trackerCapture.controller('DataEntryController',
         }
         
         if (operation) {
-            if (operation === 'ADD') {
+            if (operation === 'ADD' && newEvent && newEvent.event) {
                 var ev = EventUtils.reconstruct(newEvent, $scope.currentStage, $scope.optionSets);                
                 ev.enrollment = newEvent.enrollment;
                 ev.visited = newEvent.visited;
