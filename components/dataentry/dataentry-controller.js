@@ -777,7 +777,7 @@ trackerCapture.controller('DataEntryController',
                             dhis2Event.sortingDate = dhis2Event.eventDate;                            
                         }
                         
-                        dhis2Event.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
+                        dhis2Event.editingNotAllowed = EventUtils.getEditingStatus(dhis2Event, eventStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
                         
                         dhis2Event.statusColor = EventUtils.getEventStatusColor(dhis2Event);
                         dhis2Event = EventUtils.processEvent(dhis2Event, eventStage, $scope.optionSets, $scope.prStDes);
