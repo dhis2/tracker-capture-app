@@ -50,8 +50,7 @@
                                 <span ng-if="trackedEntity[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
                             </span>
                             <span ng-switch-when="ORGANISATION_UNIT">
-                                <!--{{trackedEntity[gridColumn.id] && orgUnitNames[trackedEntity[gridColumn.id]] ? orgUnitNames[trackedEntity[gridColumn.id]] : trackedEntity[gridColumn.id]}}-->
-                                {{orgUnitNames}}
+                                {{trackedEntity[gridColumn.id] && orgUnitNames[trackedEntity[gridColumn.id]] ? orgUnitNames[trackedEntity[gridColumn.id]] : trackedEntity[gridColumn.id]}}
                             </span>
                             <span ng-switch-default>{{trackedEntity[gridColumn.id]}}</span>
                         </span>
@@ -60,7 +59,7 @@
                 <tr ng-if="!addingTeiAssociate"
                     ng-repeat="trackedEntity in trackedEntityList.rows.other| orderBy:d2Sort:reverse" 
                     ng-click="mainTei.trackedEntityInstance ? assignRelationship(trackedEntity) : showDashboard(trackedEntity)"
-                    ng-class="{true: 'inactive - tei'} [trackedEntity.inactive]"
+                    ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
                     title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
@@ -82,7 +81,7 @@
                 <tr ng-if="addingTeiAssociate"
                     ng-repeat="trackedEntity in trackedEntityList.rows.own| orderBy:d2Sort:reverse" 
                     ng-click="assignRelationship(trackedEntity)"
-                    ng-class="{true: 'inactive - tei'} [trackedEntity.inactive]"
+                    ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
                     title="{{'select'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
@@ -103,7 +102,7 @@
                 <tr ng-if="addingTeiAssociate"
                     ng-repeat="trackedEntity in trackedEntityList.rows.other| orderBy:d2Sort:reverse" 
                     ng-click="assignRelationship(trackedEntity)"
-                    ng-class="{true: 'inactive - tei'} [trackedEntity.inactive]"
+                    ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
                     title="{{'select'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">

@@ -672,7 +672,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         get: function(entityUid, optionSets, attributesById){
             var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
                 var tei = response.data;
-                angular.forEach(tei.attributes, function(att){                    
+                angular.forEach(tei.attributes, function(att){
                     if(attributesById[att.attribute]){
                         att.displayName = attributesById[att.attribute].displayName;                        
                         att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');
