@@ -39,10 +39,10 @@
                             </div>
                         </div>
                         <div style="width: 3%; float: left;" ng-hide="stagesNotShowingInStageTasks[currentStage.id] || !currentStage">
-                            <button type="button" 
+                            <button type="button"
                                     title="{{'add_new_event'|translate}}"
                                     class="btn btn-primary" 
-                                    ng-click="showCreateEvent(stage, eventCreationActions.add, currentStage)"
+                                    ng-click="showCreateEvent(currentStage, eventCreationActions.add, currentStage)"
                                     ng-disabled="selectedEntity.inactive || selectedEnrollment.status !== 'ACTIVE' || selectedOrgUnit.closedStatus">
                                 <i class="fa fa-plus"></i>
                             </button>
