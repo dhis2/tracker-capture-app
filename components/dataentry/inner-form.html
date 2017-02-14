@@ -16,31 +16,15 @@
                 </ui-select>
             </div>
             <div ng-if="selectedProgram.dataEntryMethod && optionSets[prStDe.dataElement.optionSet.id].options.length < 7">
-                <label>
-                    <input type="radio"
-                           class="form-control"
-                           ng-class="getInputNotifcationClass(prStDe.dataElement.id,false, currentEvent)"
-                           name={{prStDe.dataElement.id}}
-                           ng-required={{prStDe.compulsory}}
-                           ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
-                           ng-model="currentEvent[prStDe.dataElement.id]"
-                           ng-change="saveDatavalue(prStDe, innerForm.foo)"
-                           value=""> {{'no_value' | translate}}
-                    <br>
-                </label><br>
-                <span ng-repeat="option in optionSets[prStDe.dataElement.optionSet.id].options">
-                    <label>
-                        <input type="radio"
-                               class="form-control"
-                               ng-class="getInputNotifcationClass(prStDe.dataElement.id,false, currentEvent)"
-                               name={{prStDe.dataElement.id}}
-                               ng-required={{prStDe.compulsory}}
-                               ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
-                               ng-model="currentEvent[prStDe.dataElement.id]"
-                               ng-change="saveDatavalue(prStDe, innerForm.foo)"
-                               value={{option.displayName}}> {{option.displayName}}
-                    </label><br>
-                </span>
+                <d2-radio id="prStDe.dataElement.id" 
+                    d2-name="foo" 
+                    d2-value-saved="currentElement.saved && currentElement.id === prStDe.dataElement.id"
+                    d2-object="currentEvent" 
+                    d2-options="optionSets[prStDe.dataElement.optionSet.id].options"
+                    d2-required="prStDe.compulsory"
+                    d2-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                    d2-function="saveDataValueForRadio(prStDe, currentEvent, value)">                                                    
+                </d2-radio>
             </div>
         </div>
         <div class="not-for-screen">

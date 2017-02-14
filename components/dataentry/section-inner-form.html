@@ -14,36 +14,17 @@
                         <span ng-bind-html="option.displayName | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
-
             </div>
             <div ng-if="selectedProgram.dataEntryMethod && optionSets[prStDes[de.dataElement.id].dataElement.optionSet.id].options.length < 7">
-                <label>
-                      <span>
-                        <input type="radio"
-                               class="form-control"
-                               ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
-                               name={{currentEvent[prStDes[de.dataElement.id].dataElement.id]}}
-                               ng-required={{isCompulsory(de.dataElement)}}
-                               ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
-                               ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                               ng-change="saveDatavalue(prStDes[de.dataElement.id])"
-                               value=""> {{'no_value' | translate}}<br>
-                        </span>
-
-                </label><br>
-                    <span ng-repeat="option in optionSets[prStDes[de.dataElement.id].dataElement.optionSet.id].options">
-                        <label>
-                            <input type="radio"
-                                   class="form-control"
-                                   ng-class="getInputNotifcationClass(prStDes[de.dataElement.id].dataElement.id,false, currentEvent)"
-                                   name={{currentEvent[prStDes[de.dataElement.id].dataElement.id]}}
-                                   ng-required={{isCompulsory(de.dataElement)}}
-                                   ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
-                                   ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
-                                   ng-change="saveDatavalue(prStDes[de.dataElement.id])"
-                                   value={{option.displayName}}> {{option.displayName}}
-                        </label><br>
-                    </span>
+                <d2-radio id="de.dataElement.id" 
+                    d2-name="foo" 
+                    d2-value-saved="currentElement.saved && currentElement.id === de.dataElement.id"
+                    d2-object="currentEvent" 
+                    d2-options="optionSets[prStDes[de.dataElement.id].dataElement.optionSet.id].options"
+                    d2-required="isCompulsory(de.dataElement)"
+                    d2-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
+                    d2-function="saveDataValueForRadio(prStDes[de.dataElement.id], currentEvent, value)">
+                </d2-radio>                
             </div>
         </div>
         <div class="not-for-screen">
@@ -280,8 +261,8 @@
         </div>        
         <div ng-switch-when="COORDINATE">            
             <d2-map id="{{de.dataElement.id}}"                    
-                    d2-lat-saved="currentElement.saved"
-                    d2-lng-saved="currentElement.saved"
+                    d2-lat-saved="currentElement.saved && currentElement.id === de.dataElement.id"
+                    d2-lng-saved="currentElement.saved && currentElement.id === de.dataElement.id"
                     d2-object="currentEvent" 
                     d2-required="isCompulsory(de.dataElement)"
                     d2-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.dataElement.id]"
