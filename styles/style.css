@@ -2278,3 +2278,10 @@ button.list-group-item-danger.active:focus {
     padding-left: 0px;
     padding-right: 7px;
 }
+
+.ui-select-style {
+    width:100%;
+    font-size: 14px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}

@@ -32,7 +32,7 @@
                                     selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                     ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                     on-select="teiValueUpdated(selectedTei, attribute.id)"
-                                    ng-style="{'width': '100%'}">
+                                    class="ui-select-style">
                             <ui-select-match allow-clear="true"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                             <ui-select-choices  repeat="option.displayName as option in optionSets[attributesById[attribute.id].optionSet.id].options | filter: $select.search | limitTo:maxOptionSize">
                               <span ng-bind-html="option.displayName | highlight: $select.search"></span>
