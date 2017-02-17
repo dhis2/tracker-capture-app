@@ -297,6 +297,19 @@
                                            ng-change="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                            name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
                                 </div>
+                                <div ng-switch-when="EMAIL">
+                                    <input type="email"
+                                           name="foo"
+                                           class="form-control"
+                                           ng-model="eventRow[prStDe.dataElement.id]"
+                                           ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                           d2-attribute-validator
+                                           selected-program-id={{selectedProgram.id}}
+                                           selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                           ng-disabled="selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id]"
+                                           ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
+                                           ng-required="{{prStDe.compulsory}}"/>
+                                </div>
                                 <div ng-switch-default>
                                     <div class="alert alert-danger form-control">
                                         {{'unsupported_value_type' | translate}}:  {{prStDe.dataElement.valueType}}
