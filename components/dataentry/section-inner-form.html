@@ -283,7 +283,20 @@
                     d2-function="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
                     d2-orgunit-names="orgUnitNames">
             </d2-org-unit-tree>
-        </div>        
+        </div>
+        <div ng-switch-when="EMAIL">
+            <input type="email"
+                   name="foo"
+                   class="form-control"
+                   ng-model="currentEvent[prStDes[de.dataElement.id].dataElement.id]"
+                   ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                   d2-attribute-validator
+                   selected-program-id={{selectedProgram.id}}
+                   selected-tei-id={{selectedTei.trackedEntityInstance}}
+                   ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                   ng-blur="saveDatavalue(prStDes[de.dataElement.id], innerForm.foo)"
+                   ng-required="isCompulsory(de.dataElement)"/>
+        </div>
         <div ng-switch-default>
             <div class="alert alert-danger form-control">
                 {{'unsupported_value_type' | translate}}:  {{prStDes[de.dataElement.id].dataElement.valueType}}

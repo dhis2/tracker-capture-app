@@ -292,7 +292,6 @@
                    ng-model="currentEvent[prStDe.dataElement.id]"
                    ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
                    d2-attribute-validator
-                   attribute-data={{attribute}}
                    selected-program-id={{selectedProgram.id}}
                    selected-tei-id={{selectedTei.trackedEntityInstance}}
                    ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
