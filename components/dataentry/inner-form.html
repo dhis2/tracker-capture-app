@@ -285,6 +285,19 @@
                     d2-orgunit-names="orgUnitNames">
             </d2-org-unit-tree>
         </div>
+        <span ng-switch-when="EMAIL">
+            <input type="email"
+                   name="foo"
+                   class="form-control"
+                   ng-model="currentEvent[prStDe.dataElement.id]"
+                   ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                   d2-attribute-validator
+                   attribute-data={{attribute}}
+                   selected-program-id={{selectedProgram.id}}
+                   selected-tei-id={{selectedTei.trackedEntityInstance}}
+                   ng-blur="saveDatavalue(prStDe, innerForm.foo)"
+                   ng-required={{prStDe.compulsory}}/>
+        </span>
         <div ng-switch-default>
             <div class="alert alert-danger form-control">
                 {{'unsupported_value_type' | translate}}:  {{prStDe.dataElement.valueType}}
