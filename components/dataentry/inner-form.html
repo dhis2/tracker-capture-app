@@ -295,6 +295,7 @@
                    attribute-data={{attribute}}
                    selected-program-id={{selectedProgram.id}}
                    selected-tei-id={{selectedTei.trackedEntityInstance}}
+                   ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
                    ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                    ng-required={{prStDe.compulsory}}/>
         </span>
