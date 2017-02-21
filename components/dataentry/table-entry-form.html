@@ -177,6 +177,20 @@
                                            ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                            name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
                                 </div>
+                                <div ng-switch-when="PERCENTAGE">
+                                    <input type="number"
+                                           number-type={{prStDe.dataElement.numberType}}
+                                           class="form-control"
+                                           ng-class='getInputNotifcationClass(prStDe.dataElement.id,false)'
+                                           ng-model="eventRow[prStDe.dataElement.id]"
+                                           d2-number-validator
+                                           ng-required={{prStDe.compulsory}}
+                                           ng-dblclick="$event.stopPropagation();"
+                                           title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
+                                           ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
+                                           ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
+                                           name="{{eventRow.event}}{{prStDe.dataElement.id}}"/>
+                                </div>
                                 <div ng-switch-when="INTEGER">
                                     <input type="number"
                                            number-type={{prStDe.dataElement.valueType}}

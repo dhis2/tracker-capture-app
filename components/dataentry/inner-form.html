@@ -49,6 +49,23 @@
                 <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
+        <div ng-switch-when="PERCENTAGE">
+            <div class="hideInPrint">
+                <input type="number"
+                       number-type={{prStDe.dataElement.valueType}}
+                       class="form-control"
+                       ng-class="getInputNotifcationClass(prStDe.dataElement.id,false, currentEvent)"
+                       ng-model="currentEvent[prStDe.dataElement.id]"
+                       d2-number-validator
+                       ng-required={{prStDe.compulsory}}
+                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-blur="saveDatavalue(prStDe, innerForm.foo)"
+                       name="foo"/>
+            </div>
+            <div class="not-for-screen">
+                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+            </div>
+        </div>
         <div ng-switch-when="INTEGER">
             <div class="hideInPrint">
                 <input type="number"
