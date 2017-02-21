@@ -194,7 +194,17 @@ trackerCapture.controller('DataEntryController',
     var processRuleEffect = function(event){
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
-        if(event === 'registration' || event === 'dataEntryInit' || !affectedEvent || !affectedEvent.event) return;
+        
+        if (!affectedEvent || !affectedEvent.event) {
+            //The data entry widget does not have an event selected. 
+            //Therefore applying rule effects from registration instead.
+            affectedEvent = 'registration';
+        }
+        else if(event === 'registration' || event === 'dataEntryInit') {
+           //The data entry widget is associated with an event, 
+           //and therefore we do not want to process rule effects from the registration form
+           return;
+        }
 
         //In most cases the updated effects apply to the current event. In case the affected event is not the current event, fetch the correct event to affect:
         if (event !== affectedEvent.event) {
