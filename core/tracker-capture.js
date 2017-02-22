@@ -10,7 +10,7 @@ var i18n_offline_notification = 'You are offline';
 var i18n_online_notification = 'You are online';
 var i18n_ajax_login_failed = 'Login failed, check your username and password and try again';
 
-var DHIS2URL = '../api';
+var DHIS2URL = '../api/26';
 var optionSetIds = [];
 var trackedEntityAttributeIds = [];
 var batchSize = 50;
@@ -131,8 +131,7 @@ function downloadMetaData()
     var promise = def.promise();
 
     promise = promise.then( dhis2.tc.store.open );
-    promise = promise.then( getUserRoles );
-    promise = promise.then( getSystemSetting );
+    promise = promise.then( getUserProfile );
     promise = promise.then( getConstants );
     promise = promise.then( getOrgUnitLevels );
     promise = promise.then( getRelationships );       
@@ -159,23 +158,14 @@ function downloadMetaData()
     return def2.promise();
 }
 
-function getUserRoles()
+function getUserProfile()
 {
     var SessionStorageService = angular.element('body').injector().get('SessionStorageService');    
-    if( SessionStorageService.get('USER_ROLES') ){
+    if( SessionStorageService.get('USER_PROFILE') ){
        return; 
     }
     
-    return dhis2.tracker.getTrackerObject(null, 'USER_ROLES', DHIS2URL + '/me.json', 'fields=id,displayName,userCredentials[userRoles[id,programs,authorities]]', 'sessionStorage', dhis2.tc.store);
-}
-
-function getSystemSetting()
-{   
-    if(localStorage['SYSTEM_SETTING']){
-       return; 
-    }
-    
-    return dhis2.tracker.getTrackerObject(null, 'SYSTEM_SETTING', DHIS2URL + '/systemSettings', 'key=keyGoogleMapsApiKey&key=keyMapzenSearchApiKey&key=keyCalendar&key=keyDateFormat', 'localStorage', dhis2.tc.store);
+    return dhis2.tracker.getTrackerObject(null, 'USER_PROFILE', DHIS2URL + '/me.json', 'fields=id,displayName,userCredentials[username,userRoles[id,programs,authorities]],organisationUnits[id,displayName,level,path,children[id,displayName,level,children[id]]],dataViewOrganisationUnits[id,displayName,level,path,children[id,displayName,level,children[id]]],teiSearchOrganisationUnits[id,displayName,level,path,children[id,displayName,level,children[id]]]', 'sessionStorage', dhis2.ec.store);
 }
 
 function getConstants()

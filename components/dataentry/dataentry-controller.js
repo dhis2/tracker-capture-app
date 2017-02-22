@@ -176,7 +176,7 @@ trackerCapture.controller('DataEntryController',
     $scope.showReferral = false;
     //Check if user is allowed to make referrals
     if($scope.useReferral){
-        var roles = SessionStorageService.get('USER_ROLES');
+        var roles = SessionStorageService.get('USER_PROFILE');
         if( roles && roles.userCredentials && roles.userCredentials.userRoles){
             var userRoles = roles.userCredentials.userRoles;
             for(var i=0; i<userRoles.length; i++){

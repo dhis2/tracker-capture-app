@@ -70,7 +70,7 @@ trackerCapture.controller('DashboardController',
             $scope.selectedTeiId = ($location.search()).tei;
             $scope.selectedProgramId = ($location.search()).program;
             $scope.selectedOrgUnit = orgUnit;
-            $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_ROLES'));
+            $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
             $scope.sortedTeiIds = CurrentSelection.getSortedTeiIds();
             $scope.useTopBar = false;
             $scope.showSettingsButton = true;

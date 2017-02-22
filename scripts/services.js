@@ -279,7 +279,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         
         getAll: function(){
             
-            var roles = SessionStorageService.get('USER_ROLES');
+            var roles = SessionStorageService.get('USER_PROFILE');
             var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
             var def = $q.defer();
             OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function (orgUnit) {
@@ -303,7 +303,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return def.promise;            
         },
         getAllForUser: function(selectedProgram){
-            var roles = SessionStorageService.get('USER_ROLES');
+            var roles = SessionStorageService.get('USER_PROFILE');
             var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
             var def = $q.defer();
             
@@ -365,7 +365,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return def.promise;            
         },
         getProgramsByOu: function(ou, selectedProgram){
-            var roles = SessionStorageService.get('USER_ROLES');
+            var roles = SessionStorageService.get('USER_PROFILE');
             var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
             var def = $q.defer();
             
