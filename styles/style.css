@@ -1278,7 +1278,7 @@ ul.tree, ul.tree ul {
 }
 
 ul.tree ul {
-    margin-left:10px; /* indentation */
+    margin-left:5px; /* indentation */
     position:relative;
 }
 
@@ -1290,12 +1290,12 @@ ul.tree ul:before {
     top:0;
     bottom:0;
     left:0;
-    border-left:1px dotted;
+    border-left:1px solid #999;
 }
 
 ul.tree li {
     margin:0;
-    padding:0 12px; /* indentation + 2 */
+    padding:0 10px; /* indentation + 2 */
     line-height:20px; /* default list item `line-height` */
     position:relative;
 }
@@ -1305,7 +1305,7 @@ ul.tree ul li:before {
     display:block;
     width:10px; /* same with indentation */
     height:0;
-    border-top:1px dotted;
+    border-top:1px solid #999;
     position:absolute;
     top:10px;
     left:0;
