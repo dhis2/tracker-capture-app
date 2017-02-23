@@ -39,36 +39,36 @@
     <div ng-if='currentEvent && currentStage.programStageSections.length'>
         <accordion close-others='false'>
             <!-- The inline style was needed to override overflow:hidden in the css. Can possibly be replaced with a CSS update. -->
-            <accordion-group is-open="section.open" ng-repeat='section in currentStage.programStageSections' ng-if="!hiddenSections[currentEvent.event][section.id]" style="overflow:visible">
+            <accordion-group is-open="section.open" ng-repeat="section in currentStage.programStageSections | orderBy: 'sortOrder'" ng-if="!hiddenSections[currentEvent.event][section.id]" style="overflow:visible">
                 <accordion-heading>
                     {{section.displayName}}
                 </accordion-heading>
                 
-                <div class="vertical-spacing" ng-if="!section.programStageDataElements || section.programStageDataElements.length === 0">
+                <div class="vertical-spacing" ng-if="!section.dataElements || section.dataElements.length === 0">
                     <div class="alert alert-warning">{{'section'| translate}} {{section.displayName}} {{'has_no_dataelements'| translate}}</div>
                 </div>
 
                 <div class="row">
-                   <table class="dhis2-list-table-striped default-form-table" ng-if="section.programStageDataElements && section.programStageDataElements.length > 0">                        
-                        <tr ng-repeat="de in section.programStageDataElements" ng-if="!isHidden(de.dataElement.id)">
+                   <table class="dhis2-list-table-striped default-form-table" ng-if="section.dataElements && section.dataElements.length > 0">                        
+                        <tr ng-repeat="de in section.dataElements" ng-if="!isHidden(de.id)">
                             <td>
                                 <span d2-pop-over
                                     class="popover-label hideInPrint small-horizontal-spacing"
                                     details="{{'details'| translate}}"
-                                    content="prStDes[de.dataElement.id].dataElement"
+                                    content="prStDes[de.id].dataElement"
                                     template="dataelement-details.html"
                                     trigger="click"
                                     placement="right">
-                                    <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDes[de.dataElement.id].dataElement.displayFormName}}</a>
+                                    <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDes[de.id].dataElement.displayFormName}}</a>
                                 </span>
                                 <span class="not-for-screen">
-                                    {{prStDes[de.dataElement.id].dataElement.displayFormName}}
+                                    {{prStDes[de.id].dataElement.displayFormName}}
                                 </span>
-                                <span ng-if="isCompulsory(de.dataElement)" class="required">*</span>
+                                <span ng-if="isCompulsory(de)" class="required">*</span>
                                 <span class="hideInPrint">
-                                    <d2-info ng-if="prStDes[de.dataElement.id].dataElement.description" data-content='[{"name":"{{"description" | translate}}", "data":"{{prStDes[de.dataElement.id].dataElement.description}}"}]'>
+                                    <d2-info ng-if="prStDes[de.id].dataElement.description" data-content='[{"name":"{{"description" | translate}}", "data":"{{prStDes[de.id].dataElement.description}}"}]'>
                                     </d2-info>
-                                    <span ng-if="otherValuesLists[de.dataElement.id] && showOtherValuesLists" ng-repeat="altValue in otherValuesLists[de.dataElement.id]">
+                                    <span ng-if="otherValuesLists[de.id] && showOtherValuesLists" ng-repeat="altValue in otherValuesLists[de.id]">
                                         <span class="label label-default">{{altValue | translate}}</span>
                                     </span>
                                 </span>
@@ -76,12 +76,12 @@
                             <td class="absorbing-column" dhis2-compiled-include="components/dataentry/section-inner-form.html">
                             </td>
                             <td ng-if="allowProvidedElsewhereExists[currentStage.id]">
-                                <div class="align-center" ng-show="prStDes[de.dataElement.id].allowProvidedElsewhere">
+                                <div class="align-center" ng-show="prStDes[de.id].allowProvidedElsewhere">
                                     <input type="checkbox"
                                            class="form-control-checkbox"
-                                           ng-model="currentEvent.providedElsewhere[prStDes[de.dataElement.id].dataElement.id]"
+                                           ng-model="currentEvent.providedElsewhere[prStDes[de.id].dataElement.id]"
                                            ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
-                                           ng-change="saveDatavalueLocation(prStDes[de.dataElement.id])"/>
+                                           ng-change="saveDatavalueLocation(prStDes[de.id])"/>
                                 </div>
                             </td>
                         </tr>
