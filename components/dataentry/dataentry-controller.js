@@ -673,6 +673,7 @@ trackerCapture.controller('DataEntryController',
                     stage.programStageDataElementsCollection = {};
 
                     stage.executionDateLabel = stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date');
+                    stage.dueDateLabel = stage.dueDateLabel ? stage.dueDateLabel : $translate.instant('due_date');
                     angular.forEach(stage.programStageDataElements, function (prStDe) {
                         $scope.prStDes[prStDe.dataElement.id] = prStDe;
                         if(prStDe.allowProvidedElsewhere){
@@ -769,6 +770,7 @@ trackerCapture.controller('DataEntryController',
                     if (angular.isObject(eventStage)) {
                         dhis2Event.name = eventStage.displayName;
                         dhis2Event.executionDateLabel = eventStage.executionDateLabel ? eventStage.executionDateLabel : $translate.instant('report_date');
+                        dhis2Event.dueDateLabel = eventStage.dueDateLabel ? eventStage.dueDateLabel : $translate.instant('due_date');
                         dhis2Event.dueDate = DateUtils.formatFromApiToUser(dhis2Event.dueDate);
                         dhis2Event.sortingDate = dhis2Event.dueDate;
 
@@ -1108,6 +1110,7 @@ trackerCapture.controller('DataEntryController',
                             newEvent.orgUnitName = dummyEvent.orgUnitName;
                             newEvent.name = dummyEvent.name;
                             newEvent.executionDateLabel = dummyEvent.executionDateLabel;
+                            newEvent.dueDateLabel = dummyEvent.dueDateLabel;
                             newEvent.sortingDate = ev.eventDate ? ev.eventDate : ev.dueDate,
                             newEvent.statusColor = EventUtils.getEventStatusColor(ev);
                             newEvent.eventDate = DateUtils.formatFromApiToUser(ev.eventDate);

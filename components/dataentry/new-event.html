@@ -37,7 +37,7 @@
             
             <tr ng-if="isScheduleEvent && !isReferralEvent && !model.selectedStage.hideDueDate && !model.selectedStage.periodType">
                 <td>
-                    {{'scheduled_date'| translate}}
+                    {{model.selectedStage.dueDateLabel}}
                 </td>
                 <td class="absorbing-column">
                     <input type="text" 
