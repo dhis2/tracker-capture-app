@@ -18,7 +18,7 @@
                                 {{'add'|translate}}
                             </a>
 
-                            <span ng-if="!stage.hideDueDate">
+                            <span ng-if="!stage.hideDueDate || stage.periodType">
                                 |
                                 <a href title="{{'schedule_new_event'| translate}}" ng-click="showCreateEvent(stage, eventCreationActions.schedule)" style="vertical-align:middle">
                                     {{'schedule'|translate}}

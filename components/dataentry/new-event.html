@@ -78,14 +78,31 @@
                     {{'period'| translate}}
                 </td>
                 <td class="absorbing-column">
-                    <select class="form-control-program" 
-                            id="period"
-                            ng-model="dhis2Event.selectedPeriod"
-                            ng-change="updateSelection()"
-                            ng-options="period.name for period in dhis2Event.periods">
-                    </select>
-                    <button type="button" ng-disabled="model.currentSelectedIndex===0" class="btn btn-default small-horizontal-spacing trim" ng-click="fetchPeriod('PREV')" title="{{'prev_period'| translate}}"><i class="fa fa-backward"></i></button>
-                    <button type="button" ng-disabled="model.currentSelectedIndex===(dhis2Event.periods.length-1)" class="btn btn-default small-horizontal-spacing trim" ng-click="fetchPeriod('NEXT')" title="{{'nxt_period'| translate}}"><i class="fa fa-forward"></i></button>
+                    
+                    <span class="input-group">
+                        <select class="form-control" 
+                                id="period"
+                                ng-model="dhis2Event.selectedPeriod"
+                                ng-options="period.name for period in periods">
+                        </select>
+                        <span class="input-group-btn">
+                            <button type="button"
+                                    class="btn btn-default trim" 
+                                    ng-disabled="periodOffset <= referenceOffset" 
+                                    ng-click="fetchPeriod('PREV')" 
+                                    title="{{'prev_period'| translate}}">
+                                <i class="fa fa-backward"></i>
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-default trim" 
+                                     ng-disabled="isNewEvent && hasFuturePeriod" 
+                                    ng-click="fetchPeriod('NEXT')" 
+                                    title="{{'nxt_period'| translate}}">
+                                <i class="fa fa-forward"></i>
+                            </button>                                    
+                        </span>
+                    </span>
+                    
                 </td>
             </tr>            
         </table>
