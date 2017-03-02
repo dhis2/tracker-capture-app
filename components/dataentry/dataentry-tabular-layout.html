@@ -50,7 +50,7 @@
                                     title="{{'schedule_new_event'|translate}}"
                                     class="btn btn-info long-vertical-spacing" 
                                     ng-click="showCreateEvent(stage, eventCreationActions.schedule, currentStage)"
-                                    ng-disabled="selectedEntity.inactive || selectedEnrollment.status !== 'ACTIVE' || selectedOrgUnit.closedStatus">
+                                    ng-disabled="selectedEntity.inactive || selectedEnrollment.status !== 'ACTIVE' || selectedOrgUnit.closedStatus || currentStage.hideDueDate || currentStage.periodType">
                                 <i class="fa fa-calendar"></i>
                             </button>
                         </div>                            

@@ -1803,21 +1803,6 @@ trackerCapture.controller('DataEntryController',
         return 'form-control';
     };
 
-    //Infinite Scroll
-    $scope.infiniteScroll = {};
-    $scope.infiniteScroll.optionsToAdd = 20;
-    $scope.infiniteScroll.currentOptions = 20;
-
-    $scope.resetInfScroll = function () {
-        $scope.infiniteScroll.currentOptions = $scope.infiniteScroll.optionsToAdd;
-    };
-
-    $scope.addMoreOptions = function () {
-        $scope.infiniteScroll.currentOptions += $scope.infiniteScroll.optionsToAdd;
-    };
-
-
-
     var completeEnrollmentAllowed = function(ignoreEventId){
         for(var i = 0; i < $scope.programStages.length; i++ ) {
             for(var e = 0; e < $scope.eventsByStage[$scope.programStages[i].id].length; e++) {
@@ -3128,6 +3113,7 @@ trackerCapture.controller('DataEntryController',
     $scope.hideEditAttributeCategoryOptions = function(){
         $scope.showAttributeCategoryOptions = !$scope.showAttributeCategoryOptions;
     };
+    
 })
 .controller('EventOptionsInTableController', function($scope, $translate){
     

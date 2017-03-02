@@ -1,7 +1,7 @@
 <!-- event dates/scheduling begin -->
-<div class="row" ng-if="displayCustomForm !== 'TABLE' && displayCustomForm !== 'COMPARE' && !currentStage.periodType">
-
-    <div ng-class="{true: 'col-sm-12', false: 'col-sm-6'} [currentStage.hideDueDate]">
+<div class="row" ng-if="displayCustomForm !== 'TABLE' && displayCustomForm !== 'COMPARE'">
+        
+    <div ng-class="{true: 'col-sm-12', false: 'col-sm-6'} [currentStage.hideDueDate || currentStage.periodType !== undefined]">
         {{currentEvent.executionDateLabel ? currentEvent.executionDateLabel : 'report_date' | translate}}
         <input type="text"
                placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
@@ -14,7 +14,7 @@
                name="eventDate"
                ng-model="currentEvent.eventDate"
                ng-change="verifyExpiryDate('currentEvent.eventDate')"
-               ng-disabled="selectedOrgUnit.closedStatus || currentEvent.status === 'SKIPPED' || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
+               ng-disabled="selectedOrgUnit.closedStatus || currentEvent.status === 'SKIPPED' || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || currentStage.periodType"
                ng-required="true"
                blur-or-change="saveEventDate()"/>
         <input type="text"
@@ -24,8 +24,8 @@
         <div ng-messages="outerDataEntryForm.eventDate.$error" ng-if="interacted(outerDataEntryForm.eventDate)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">                        
         </div>        
     </div>
-    <div ng-if="!currentStage.hideDueDate && !registrationAndDataEntry"  class="col-md-6">
-        <span ng-if="currentEvent.eventDate || currentEvent.status === 'SKIPPED' || currentEvent.dueDate || registrationMode === 'REGISTRATION'">            
+    <div ng-if="!currentStage.hideDueDate && !registrationAndDataEntry && !currentStage.periodType"  class="col-md-6">
+        <span ng-if="currentEvent.eventDate || currentEvent.status === 'SKIPPED' || currentEvent.dueDate || registrationMode === 'REGISTRATION'">
             {{currentEvent.dueDateLabel ? currentEvent.dueDateLabel : 'due_date' | translate}}
         </span>
         <span ng-if="!currentEvent.eventDate && currentEvent.status !== 'SKIPPED' && !selectedEntity.inactive && selectedEnrollment.status === 'ACTIVE' && registrationMode !== 'REGISTRATION'">
@@ -48,7 +48,7 @@
                value={{currentEvent.dueDate}}>        
         <div ng-messages="outerDataEntryForm.dueDate.$error" ng-if="interacted(outerDataEntryForm.dueDate)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">                        
         </div>
-    </div>
+    </div>    
 </div>
 <!-- event dates/scheduling end -->
 
