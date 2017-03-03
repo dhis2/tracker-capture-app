@@ -1,12 +1,12 @@
 import './trackerCaptureModule';
 
 // Tracker core
-import 'tracker-core/lib/dhis2.angular.services.js';
-import 'tracker-core/lib/dhis2.angular.directives.js';
-import 'tracker-core/lib/dhis2.angular.validations.js';
-import 'tracker-core/lib/dhis2.angular.filters.js';
-import 'tracker-core/lib/dhis2.angular.controllers.js';
-import 'tracker-core/lib/dhis2.angular.templates.js';
+import 'd2-tracker/lib/dhis2.angular.services.js';
+import 'd2-tracker/lib/dhis2.angular.directives.js';
+import 'd2-tracker/lib/dhis2.angular.validations.js';
+import 'd2-tracker/lib/dhis2.angular.filters.js';
+import 'd2-tracker/lib/dhis2.angular.controllers.js';
+import 'd2-tracker/lib/dhis2.angular.templates.js';
 
 // App files
 import '../scripts/services.js';
@@ -42,7 +42,7 @@ import '../components/messaging/messaging-controller.js';
 import L from 'leaflet';
 import 'leaflet-geocoder-mapzen';
 import 'leaflet-contextmenu';
-import 'tracker-core/lib/Google.js';
+import 'd2-tracker/lib/Google.js';
 
 L.Icon.Default.imagePath = '../dhis-web-commons/leaflet/images';
 
