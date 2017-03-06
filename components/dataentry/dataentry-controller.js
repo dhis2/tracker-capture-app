@@ -30,6 +30,9 @@ trackerCapture.controller('DataEntryController',
                 OptionSetService,
                 TrackerRulesFactory,
                 EventCreationService) {
+
+    //Unique instance id for the controller:
+    $scope.instanceId = Math.floor(Math.random() * 1000000000);
     $scope.printForm = false;
     $scope.printEmptyForm = false;
     $scope.eventPageSize = 4;
@@ -145,7 +148,7 @@ trackerCapture.controller('DataEntryController',
     //listen for rule effect changes
     $scope.$on('ruleeffectsupdated', function (event, args) {
         if ($rootScope.ruleeffects[args.event]) {
-            processRuleEffect(args.event);            
+            processRuleEffect(args.event, args.callerId);            
         }
     });
     $scope.useReferral = false;
@@ -191,7 +194,7 @@ trackerCapture.controller('DataEntryController',
         $scope.printEmptyForm = false;
     };
 
-    var processRuleEffect = function(event){
+    var processRuleEffect = function(event, callerId){
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
         if(event === 'registration' || event === 'dataEntryInit' || !affectedEvent || !affectedEvent.event) return;
@@ -287,14 +290,28 @@ trackerCapture.controller('DataEntryController',
                     $log.warn("ProgramRuleAction " + effect.id + " is of type HIDESECTION, bot does not have a section defined");
                 }
             } else if (effect.action === "ASSIGN") {
-                if(effect.ineffect && effect.dataElement) {
-                    //For "ASSIGN" actions where we have a dataelement, we save the calculated value to the dataelement:
-                    //Blank out the value:
-                    var processedValue = $filter('trimquotes')(effect.data);
-                    
-                    if($scope.prStDes[effect.dataElement.id].dataElement.optionSet) {
-                        processedValue = OptionSetService.getName(
-                                $scope.optionSets[$scope.prStDes[effect.dataElement.id].dataElement.optionSet.id].options, processedValue)
+                if(affectedEvent.status !== 'SCHEDULE' &&
+                        affectedEvent.status !== 'SKIPPED' &&
+                        !affectedEvent.editingNotAllowed) {
+                    if(effect.ineffect && effect.dataElement) {
+                        //For "ASSIGN" actions where we have a dataelement, we save the calculated value to the dataelement:
+                        //Blank out the value:
+                        var processedValue = $filter('trimquotes')(effect.data);
+
+                        if($scope.prStDes[effect.dataElement.id].dataElement.optionSet) {
+                            processedValue = OptionSetService.getName(
+                                    $scope.optionSets[$scope.prStDes[effect.dataElement.id].dataElement.optionSet.id].options, processedValue);
+                        }
+
+                        processedValue = processedValue === "true" ? true : processedValue;
+                        processedValue = processedValue === "false" ? false : processedValue;
+
+                        affectedEvent[effect.dataElement.id] = processedValue;
+                        $scope.assignedFields[event][effect.dataElement.id] = true;
+                        
+                        if(callerId === $scope.instanceId) {
+                            $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
+                        }
                     }
                     
                     processedValue = processedValue === "true" ? true : processedValue;
@@ -533,7 +550,7 @@ trackerCapture.controller('DataEntryController',
         allSorted = orderByFilter(allSorted, '-sortingDate').reverse();
         
         var evs = {all: allSorted, byStage: $scope.eventsByStage};
-        var flag = {debug: true, verbose: true};
+        var flag = {debug: true, verbose: true, callerId: $scope.instanceId};
         $scope.currentEvent = $scope.currentEvent ? $scope.currentEvent : {};
 
         //If the events is displayed in a table, it is necessary to run the rules for all visible events.        
