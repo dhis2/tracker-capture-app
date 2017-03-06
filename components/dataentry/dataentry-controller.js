@@ -30,6 +30,9 @@ trackerCapture.controller('DataEntryController',
                 TrackerRulesFactory,
                 EventCreationService,
                 DasboardWidgetService) {
+    
+    //Unique instance id for the controller:
+    $scope.instanceId = Math.floor(Math.random() * 1000000000);
     $scope.printForm = false;
     $scope.printEmptyForm = false;
     $scope.eventPageSize = 4;
@@ -169,7 +172,7 @@ trackerCapture.controller('DataEntryController',
     //listen for rule effect changes
     $scope.$on('ruleeffectsupdated', function (event, args) {
         if ($rootScope.ruleeffects[args.event]) {
-            processRuleEffect(args.event);          
+            processRuleEffect(args.event, args.callerId);
         }
     });
     $scope.useReferral = false;
@@ -215,7 +218,7 @@ trackerCapture.controller('DataEntryController',
         $scope.printEmptyForm = false;
     };
 
-    var processRuleEffect = function(event){
+    var processRuleEffect = function(event, callerId){
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
         if (!affectedEvent || !affectedEvent.event) {
@@ -342,7 +345,10 @@ trackerCapture.controller('DataEntryController',
 
                         affectedEvent[effect.dataElement.id] = processedValue;
                         $scope.assignedFields[event][effect.dataElement.id] = true;
-                        $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
+                        
+                        if(callerId === $scope.instanceId) {
+                            $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
+                        }
                     }
                 }
             }
@@ -602,7 +608,8 @@ trackerCapture.controller('DataEntryController',
         allSorted = orderByFilter(allSorted, '-sortingDate').reverse();
         
         var evs = {all: allSorted, byStage: $scope.eventsByStage};
-        var flag = {debug: true, verbose: true};
+        
+        var flag = {debug: true, verbose: true, callerId: $scope.instanceId};
         
         //If the events is displayed in a table, it is necessary to run the rules for all visible events.        
         if ($scope.currentStage && $scope.currentStage.displayEventsInTable && angular.isUndefined($scope.currentStage.rulesExecuted)) {
