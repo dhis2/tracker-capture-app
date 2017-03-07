@@ -353,7 +353,7 @@ trackerCapture.controller('DataEntryController',
                 }
             }
             else if (effect.action === "HIDEPROGRAMSTAGE") {
-                if (effect.programStage.id) {
+                if (effect.programStage) {
                     if($scope.stagesNotShowingInStageTasks[effect.programStage.id] !== effect.ineffect )
                     {
                         $scope.stagesNotShowingInStageTasks[effect.programStage.id] = effect.ineffect;
