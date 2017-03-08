@@ -4,14 +4,7 @@ node_js:
 cache:
   directories:
   - node_modules
-before_script:
-- cd $HOME
-- git clone --depth=10 https://github.com/dhis2/tracker-core.git
-- cd $HOME/tracker-core
-- npm install
-- npm run build
 script:
-- npm link tracker-core
 - npm run build
 #after_success:
 #- if ( [ "$TRAVIS_BRANCH" == "master" ]  && [ "$TRAVIS_REPO_SLUG" == "dhis2/tracker-capture-app" ]  &&  [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then
