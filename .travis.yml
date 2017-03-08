@@ -6,7 +6,12 @@ cache:
   - node_modules
 script:
 - npm run build
-#after_success:
-#- if ( [ "$TRAVIS_BRANCH" == "master" ]  && [ "$TRAVIS_REPO_SLUG" == "dhis2/tracker-capture-app" ]  &&  [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then
-#        mvn clean deploy --settings deploy/settings.xml && exit 0;
-#  fi
+after_success:
+- if ( [ "$TRAVIS_BRANCH" == "master" ]  && [ "$TRAVIS_REPO_SLUG" == "dhis2/tracker-capture-app"
+  ]  &&  [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then mvn clean deploy --settings
+  deploy/settings.xml && exit 0;
+  fi
+env:
+  global:
+  - secure: rnJyR4adIWAm0rgjDEu3lV21m79K4NUUbuyn3kHnfkj/+cnyKVc3lpAEgaGHFoYE3a7njeSxQyjpGNwJZwPi43sPikYrBuAP3dvvfMEKzpVdXnrR5F32C1DNDCkYgauSLi2kSNcLftgtULTiT1+/wrZK61ZABaOw4DhYI8baLtHuK8yM3I1x4VhzJvAvIOtVdSydEUWIphgqM9LcmAhwScFLUo87v0qGyYsqoo/TdN7Qk/BGLGTa3xCOB5g6te4HYTF8ZJU760/NLc1v8DLrH+aKj8LRau+CG67DqT8AhXd+PqPX9AeTlNqtwPU78scgypbriFTd1l83XlkyXWnPIHNEIvc1ASnQRCkxLBSN5h56Hkpawuv5p30+8db2i7u/xI/dvWEqwIEILjkrIP1/Nbe1f8iqhAqqnDDpnDosjeBNlYs4xds9c4tfSTnWQtXT/7yLMZ7EghRw8Wov58EK4B8+4vk0ZgvMxF6LMS2T7Npe66gKaZ1R2BQ6j5/0m68LPza7O0JN018+jZ5O5AsyPwg1yljORl9NehZ1lSgPnK/s3AihQLxdeX580W5ON8KGjeRmW7h0KjFkRWxr7TY3JilI4gVxci0YbI6k0OYpdqwruKOb2gHc5fYs/2BNjtxlBzo/7XVGWsUTskuwTea8cR4fQurMf74ads/5HEWO93U=
+  - secure: DCXfElhuhoqjIzIlskEsfoEApWItMfugNY8LQNVQhWB98DPhZleRKaHGA6MKBpo1iX3lJa/N80mvBKPjnyirHlQRFhTJmdd+ONn/YU5VvfmLVO1Bgdx9FoxpyttPEQlJvDYyl3C+Hca+MwW9699SDB4dkLvbvdzc2NnH/jbZd2tLGIPceP+JJboOZZQc7AbjDpC+chQwz23uaa7cCKlmGrdjOpul8GXYaGyL26IS8f6S350kq95K9GhJ4BTt2936a3UWq4s/v748RMYSS1sx8U36ptdzrGkEiBpPBHon24d7Hnt4wvz13vKROvfV3RADMCP9mE+j28Aau97UXsF8onl5X15zjIO+A0yputxRl2wZURHxmvHNBrSRnWxW+He+xe8bptWLmcVy9H8XY1G43ZY/jBs1fj1HH7AuZEJeSfgzQOj924DPooCw41322uJMxJKojsrOR8jPMUu2D+kNob/y2ESNq3BGL2x6Hp6bEqLjdF7d8c1yKVthLoq5GefubVvqL7oiUXG+zLIgP4x/xjHzFh4F2BJrPxYZn9Q/PjjGrAIpi/z/w8uEe0xKEvopm3sBYk9RC4SIih0rh7lr0QgYkDtVqKoUWPV7GhmtjDKcd7WX5Mvob7mweZjNkzsQoh1tjdmWNMwE6od62beyjNCAuXgBQ/UlHftx0cPRZ9E=
