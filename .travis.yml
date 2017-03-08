@@ -7,7 +7,7 @@ cache:
 script:
 - npm run build
 after_success:
-- if if ( [ "$TRAVIS_BRANCH" == "master" ] || [ ! -z "$TRAVIS_TAG" ] ) && [ "$TRAVIS_REPO_SLUG" == "dhis2/tracker-capture-app" ]  &&  [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then 
+- if ( [ "$TRAVIS_BRANCH" == "master" ] || [ ! -z "$TRAVIS_TAG" ] ) && [ "$TRAVIS_REPO_SLUG" == "dhis2/tracker-capture-app" ]  &&  [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then 
     mvn clean deploy --settings deploy/settings.xml && exit 0;
   fi
 env:
