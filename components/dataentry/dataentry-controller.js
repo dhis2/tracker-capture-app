@@ -640,6 +640,7 @@ trackerCapture.controller('DataEntryController',
         $scope.eventsByStage = [];
         $scope.eventsByStageDesc = [];
         $scope.programStages = [];
+        $scope.tabularEntryStages = [];
         $rootScope.ruleeffects = {};        
         $scope.prStDes = [];
         $scope.allProgramRules = [];
@@ -670,7 +671,7 @@ trackerCapture.controller('DataEntryController',
     	    $scope.stagesById = [];    	    
     	    if ($scope.selectedOrgUnit && $scope.selectedProgram && $scope.selectedProgram.id && $scope.selectedEntity ){
                 
-                $scope.programStages = $scope.selectedProgram.programStages;
+                $scope.programStages = $scope.tabularEntryStages = $scope.selectedProgram.programStages;
                 
                 angular.forEach($scope.selectedProgram.programStages, function (stage) {
                     if (stage.openAfterEnrollment) {
