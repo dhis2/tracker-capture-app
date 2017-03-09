@@ -40,6 +40,7 @@ function($rootScope,
     $scope.availablePrograms = {};
     $scope.fileNames = {};
     $scope.orgUnitNames = {};
+    $scope.reverse = false;
 
     //Selection
     $scope.ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];
@@ -344,7 +345,7 @@ function($rootScope,
 
     //sortGrid
     $scope.sortGrid = function(gridHeader){
-        if ($scope.sortColumn && $scope.sortColumn.id === gridHeader.id){
+        /*if ($scope.sortColumn && $scope.sortColumn.id === gridHeader.id){
             $scope.reverse = !$scope.reverse;
             CurrentSelection.setColumnReverse( $scope.reverse);
             return;
@@ -357,7 +358,15 @@ function($rootScope,
             $scope.reverse = false;
         }
         CurrentSelection.setSortColumn( $scope.sortColumn);
+        CurrentSelection.setColumnReverse( $scope.reverse);*/
+
+        if ($scope.sortColumn && $scope.sortColumn.id === gridHeader.id){
+            $scope.reverse = !$scope.reverse;            
+        }        
+        $scope.sortColumn = {id: gridHeader.id, direction: $scope.reverse ? 'desc' : 'asc'};
+        CurrentSelection.setSortColumn( $scope.sortColumn);
         CurrentSelection.setColumnReverse( $scope.reverse);
+        $scope.search($scope.selectedSearchMode, true);
     };
 
     $scope.d2Sort = function(tei){
@@ -379,7 +388,6 @@ function($rootScope,
 
         $scope.selectedSearchMode = mode;
         $scope.savedTeis = null;
-
 
         //check search mode
         if( $scope.selectedSearchMode === $scope.searchMode.freeText ){
@@ -485,7 +493,16 @@ function($rootScope,
         });
     };
 
-    $scope.fetchTeis = function(){
+    $scope.fetchTeis = function(){        
+        if( $scope.queryUrl === null || $scope.queryUrl === "" ){
+            $scope.queryUrl = "";
+        }
+        var order = '';
+        if( $scope.sortColumn && $scope.sortColumn.id !== undefined ){
+            order = '&order=' + $scope.sortColumn.id + ':';
+            order = order.concat($scope.reverse ? 'desc' : 'asc');
+        }
+        $scope.queryUrl = $scope.queryUrl.concat( order );
         $scope.teiFetched = false;
         $scope.trackedEntityList = null;
         $scope.showTrackedEntityDiv = true;
@@ -499,7 +516,7 @@ function($rootScope,
                 $scope.queryUrl,
                 $scope.programUrl,
                 $scope.attributeUrl.url,
-                $scope.pager,
+                $scope.pager,                
                 true).then(function(data){
                 if (data && data.metaData && data.metaData.pager) {
                     $scope.pager = data.metaData.pager;
