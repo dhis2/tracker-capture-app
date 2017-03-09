@@ -345,21 +345,6 @@ function($rootScope,
 
     //sortGrid
     $scope.sortGrid = function(gridHeader){
-        /*if ($scope.sortColumn && $scope.sortColumn.id === gridHeader.id){
-            $scope.reverse = !$scope.reverse;
-            CurrentSelection.setColumnReverse( $scope.reverse);
-            return;
-        }
-        $scope.sortColumn = gridHeader;
-        if($scope.sortColumn.valueType === 'date'){
-            $scope.reverse = true;
-        }
-        else{
-            $scope.reverse = false;
-        }
-        CurrentSelection.setSortColumn( $scope.sortColumn);
-        CurrentSelection.setColumnReverse( $scope.reverse);*/
-
         if ($scope.sortColumn && $scope.sortColumn.id === gridHeader.id){
             $scope.reverse = !$scope.reverse;            
         }        
