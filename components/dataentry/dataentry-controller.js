@@ -313,13 +313,6 @@ trackerCapture.controller('DataEntryController',
                             $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
                         }
                     }
-                    
-                    processedValue = processedValue === "true" ? true : processedValue;
-                    processedValue = processedValue === "false" ? false : processedValue;
-                    
-                    affectedEvent[effect.dataElement.id] = processedValue;
-                    $scope.assignedFields[event][effect.dataElement.id] = true;
-                    $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
                 }
             }
         });
