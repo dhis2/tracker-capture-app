@@ -1,7 +1,7 @@
 <ng-form name="innerForm">
     <div ng-if="prStDe.dataElement.optionSetValue">
         <div class="hideInPrint">
-            <div ng-if="!selectedProgram.dataEntryMethod || optionSets[prStDe.dataElement.optionSet.id].options.length >= 7">
+            <div ng-if="!prStDe.renderOptionsAsRadio || optionSets[prStDe.dataElement.optionSet.id].options.length >= 7">
                 <ui-select  ng-model="currentEvent[prStDe.dataElement.id]"
                             theme="select2"
                             ng-required={{prStDe.compulsory}}
@@ -15,7 +15,7 @@
                     </ui-select-choices>
                 </ui-select>
             </div>
-            <div ng-if="selectedProgram.dataEntryMethod && optionSets[prStDe.dataElement.optionSet.id].options.length < 7">
+            <div ng-if="prStDe.renderOptionsAsRadio && optionSets[prStDe.dataElement.optionSet.id].options.length < 7">
                 <d2-radio id="prStDe.dataElement.id" 
                     d2-name="foo" 
                     d2-value-saved="currentElement.saved && currentElement.id === prStDe.dataElement.id"

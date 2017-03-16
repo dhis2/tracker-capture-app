@@ -959,6 +959,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             if (pAttribute.displayInList) {
                                 att.displayInListNoProgram = true;
                             }
+                            if(pAttribute.renderOptionsAsRadio){
+                                att.renderOptionsAsRadio = pAttribute.renderOptionsAsRadio;
+                            }
                             programAttributes.push(att);
                         }
                     });
@@ -1717,7 +1720,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             columns = columns.concat(returnAttributes ? returnAttributes : []);
             
             //generate grid column for the selected program/attributes
-            angular.forEach(columns, function(column){
+            angular.forEach(columns, function(column){                
                 column.attribute = angular.isUndefined(column.attribute) ? true : false;
                 column.show = false;
 

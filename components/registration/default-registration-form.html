@@ -21,7 +21,7 @@
         <td class="absorbing-column">
             <ng-form name="innerForm">
                 <span ng-if="attribute.optionSetValue" class="hideInPrint">
-                    <span ng-if="selectedProgram && !selectedProgram.dataEntryMethod || optionSets[attributesById[attribute.id].optionSet.id].options.length >= 7">
+                    <span ng-if="!attribute.renderOptionsAsRadio || optionSets[attributesById[attribute.id].optionSet.id].options.length >= 7">
                         <ui-select  ng-model="selectedTei[attribute.id]"
                                     theme="select2"
                                     ng-required="attribute.mandatory"
@@ -39,7 +39,7 @@
                             </ui-select-choices>
                         </ui-select>
                     </span>
-                    <span ng-if="selectedProgram && selectedProgram.dataEntryMethod && optionSets[attributesById[attribute.id].optionSet.id].options.length < 7">
+                    <span ng-if="attribute.renderOptionsAsRadio && optionSets[attributesById[attribute.id].optionSet.id].options.length < 7">
                         <d2-radio id="attribute.id" 
                                 d2-name="foo" 
                                 d2-object="selectedTei"
