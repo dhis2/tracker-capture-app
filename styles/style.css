@@ -2275,3 +2275,17 @@ button.list-group-item-danger.active:focus {
     padding-left: 0px;
     padding-right: 7px;
 }
+
+.audit-spinner {
+    font-size: x-large;
+    margin-left: 50%;
+    margin-top: 20%;
+}
+
+.waiting-box {
+    height: 300px;
+}
+
+.loading-audit-data {
+    margin-left: 43%;
+}
