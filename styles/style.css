@@ -2285,3 +2285,17 @@ button.list-group-item-danger.active:focus {
     border: 1px solid #aaa;
     border-radius: 4px;
 }
+
+.audit-spinner {
+    font-size: x-large;
+    margin-left: 50%;
+    margin-top: 20%;
+}
+
+.waiting-box {
+    height: 300px;
+}
+
+.loading-audit-data {
+    margin-left: 43%;
+}
