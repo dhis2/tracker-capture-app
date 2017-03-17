@@ -207,6 +207,11 @@ trackerCapture.controller('DataEntryController',
                 }
             });
         }
+        
+        if (event !== affectedEvent.event) {
+            //The affected event was not found. Do not apply rule effects.
+            return;
+        }
 
         $scope.assignedFields[event] = [];
         $scope.hiddenSections[event] = [];
