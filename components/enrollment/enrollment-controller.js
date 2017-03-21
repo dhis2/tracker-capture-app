@@ -98,12 +98,6 @@ trackerCapture.controller('EnrollmentController',
             if(!date) {
                 return;
             }
-            if($scope.model.ouDates) {
-                if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouDates.startDate, $scope.model.ouDates.endDate)) {
-                    dateSetter($scope, null);
-                    return;
-                }
-            }
 
             if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
                 dateSetter($scope, null);

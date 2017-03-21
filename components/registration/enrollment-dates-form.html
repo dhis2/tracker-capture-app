@@ -20,9 +20,9 @@
                    name="enrollmentDate" 
                    class="form-control hideInPrint" 
                    d2-date 
-                   ng-model="selectedEnrollment.enrollmentDate" 
-                   max-date="selectedProgram.selectEnrollmentDatesInFuture ? '' : 0"
-                   min-date=""
+                   ng-model="selectedEnrollment.enrollmentDate"
+                   min-date="model.minEnrollmentDate"
+                   max-date="model.maxEnrollmentDate"
                    ng-change="verifyExpiryDate('selectedEnrollment.enrollmentDate')"
                    ng-disabled="model.orgUnitClosed"
                    ng-required="true"/>
@@ -35,7 +35,7 @@
             {{selectedProgram.incidentDateLabel}}
         </td>
         <td class="absorbing-column">
-            <input type="text" 
+            <input type="text"
                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                    name="incidentDate"
                    class="form-control hideInPrint" 

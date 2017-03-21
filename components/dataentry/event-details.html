@@ -5,12 +5,12 @@
         {{currentEvent.executionDateLabel ? currentEvent.executionDateLabel : 'report_date' | translate}}
         <input type="text"
                placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
-               class="form-control hideInPrint" 
+               class="form-control hideInPrint"
                ng-class="{'input-success': eventDateSaved}"
-               d2-date-validator 
-               d2-date 
-               max-date="0"
-               min-date=""
+               d2-date-validator
+               d2-date
+               max-date="model.maxDate?model.maxDate : '0'"
+               min-date="model.minDate?model.minDate : ''"
                name="eventDate"
                ng-model="currentEvent.eventDate"
                ng-change="verifyExpiryDate('currentEvent.eventDate')"
@@ -18,29 +18,31 @@
                ng-required="true"
                blur-or-change="saveEventDate()"/>
         <input type="text"
-               class="form-control not-for-screen" 
-               ng-class="{'input-success': eventDateSaved}"               
+               class="form-control not-for-screen"
+               ng-class="{'input-success': eventDateSaved}"
                value={{currentEvent.eventDate}}>
-        <div ng-messages="outerDataEntryForm.eventDate.$error" ng-if="interacted(outerDataEntryForm.eventDate)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">                        
-        </div>        
+        <div ng-messages="outerDataEntryForm.eventDate.$error" ng-if="interacted(outerDataEntryForm.eventDate)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
+        </div>
     </div>
     <div ng-if="!currentStage.hideDueDate && !registrationAndDataEntry && !currentStage.periodType"  class="col-md-6">
         <span ng-if="currentEvent.eventDate || currentEvent.status === 'SKIPPED' || currentEvent.dueDate || registrationMode === 'REGISTRATION'">
             {{'due_date'| translate}}
         </span>
         <span ng-if="!currentEvent.eventDate && currentEvent.status !== 'SKIPPED' && !selectedEntity.inactive && selectedEnrollment.status === 'ACTIVE' && registrationMode !== 'REGISTRATION'">
-            <a href ng-click="enableRescheduling()" title="{{ schedulingEnabled ? 'disable_rescheduling' : 'enable_rescheduling' | translate}}"><span class="text-primary bold">{{'reschedule_duedate'| translate}}</span></a>                        
-        </span>                    
+            <a href ng-click="enableRescheduling()" title="{{ schedulingEnabled ? 'disable_rescheduling' : 'enable_rescheduling' | translate}}"><span class="text-primary bold">{{'reschedule_duedate'| translate}}</span></a>
+        </span>
         <input type="text"
                placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                class="form-control hideInPrint"
                ng-class="{'input-success': dueDateSaved}"
-               d2-date-validator 
-               d2-date       
+               d2-date-validator
+               d2-date
                name="dueDate"
+               max-date="model.maxDate?model.maxDate : ''"
+               min-date="model.minDate?model.minDate : ''"
                ng-model="currentEvent.dueDate"
                ng-change="verifyExpiryDate('currentEvent.dueDate')"
-               blur-or-change="saveDueDate()" 
+               blur-or-change="saveDueDate()"
                ng-disabled="selectedOrgUnit.closedStatus || currentEvent.eventDate || !schedulingEnabled || currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"/>
         <input type="text"
                class="form-control not-for-screen"

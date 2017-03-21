@@ -142,13 +142,6 @@ trackerCapture.controller('DataEntryController',
         if(!date) {
             return;
         }
-        if($scope.selectedOrgUnit && $scope.selectedOrgUnit.odate && $scope.selectedOrgUnit.cdate) {
-            if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.selectedOrgUnit.odate, $scope.selectedOrgUnit.cdate)) {
-                dateSetter($scope, null);
-                return;
-            }
-        }
-
         if($scope.selectedProgram.expiryPeriodType && $scope.selectedProgram.expiryDays) {
             if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
                 dateSetter($scope, null);
@@ -670,6 +663,14 @@ trackerCapture.controller('DataEntryController',
 
     	    $scope.stagesById = [];    	    
     	    if ($scope.selectedOrgUnit && $scope.selectedProgram && $scope.selectedProgram.id && $scope.selectedEntity ){
+                if ($scope.selectedOrgUnit.reportDateRange) {
+                    if ($scope.selectedOrgUnit.reportDateRange.minDate) {
+                        $scope.model.minDate = $scope.selectedOrgUnit.reportDateRange.minDate;
+                    }
+                    if ($scope.selectedOrgUnit.reportDateRange.maxDate) {
+                        $scope.model.maxDate = $scope.selectedOrgUnit.reportDateRange.maxDate;
+                    }
+                }
                 
                 $scope.programStages = $scope.tabularEntryStages = $scope.selectedProgram.programStages;
                 

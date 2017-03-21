@@ -133,7 +133,19 @@ trackerCapture.controller('RegistrationController',
                 $scope.getAttributes($scope.registrationMode);
             }
         }
+        $scope.model.minEnrollmentDate = "";
+        $scope.model.maxEnrollmentDate = $scope.selectedProgram.selectEnrollmentDatesInFuture ? '' : "0";
+        if ($scope.selectedOrgUnit.reportDateRange) {
+            if ($scope.selectedOrgUnit.reportDateRange.minDate) {
+                $scope.model.minEnrollmentDate = $scope.selectedOrgUnit.reportDateRange.minDate;
+            }
+            if ($scope.selectedOrgUnit.reportDateRange.maxDate) {
+                $scope.model.maxEnrollmentDate = $scope.selectedOrgUnit.reportDateRange.maxDate;
+            }
+        }
     });
+
+
 
     //listen to modes of registration
     $scope.$on('registrationWidget', function (event, args) {
