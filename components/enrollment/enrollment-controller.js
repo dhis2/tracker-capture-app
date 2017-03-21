@@ -90,6 +90,24 @@ trackerCapture.controller('EnrollmentController',
             $route.reload();
 
         });
+        $scope.verifyExpiryDate = function(eventDateStr) {
+            var dateGetter = $parse(eventDateStr);
+            var dateSetter = dateGetter.assign;
+            var date = dateGetter($scope);
+            if(!date) {
+                return;
+            }
+            if($scope.model.ouDates) {
+                if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouDates.startDate, $scope.model.ouDates.endDate)) {
+                    dateSetter($scope, null);
+                    return;
+                }
+            }
+
+            if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
+                dateSetter($scope, null);
+            }
+        };
         $scope.loadEnrollmentDetails = function (enrollment) {
             $scope.showEnrollmentHistoryDiv = false;
             $scope.selectedEnrollment = enrollment;

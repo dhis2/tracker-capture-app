@@ -130,6 +130,20 @@ trackerCapture.controller('DataEntryController',
         }
         return $scope.getDescriptionTextForDescription(description, $scope.descriptionTypes.full, useInStage);
     };
+
+    $scope.verifyExpiryDate = function(eventDateStr) {
+        var dateGetter = $parse(eventDateStr);
+        var dateSetter = dateGetter.assign;
+        var date = dateGetter($scope);
+        if(!date) {
+            return;
+        }
+        if($scope.selectedProgram.expiryPeriodType && $scope.selectedProgram.expiryDays) {
+            if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
+                dateSetter($scope, null);
+            }
+        }
+    };
     
     
     //listen for new events created
@@ -147,7 +161,7 @@ trackerCapture.controller('DataEntryController',
     //listen for rule effect changes
     $scope.$on('ruleeffectsupdated', function (event, args) {
         if ($rootScope.ruleeffects[args.event]) {
-            processRuleEffect(args.event, args.callerId);            
+            processRuleEffect(args.event, args.callerId);
         }
     });
     $scope.useReferral = false;
@@ -196,7 +210,7 @@ trackerCapture.controller('DataEntryController',
     var processRuleEffect = function(event, callerId){
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
-        
+
         if (!affectedEvent || !affectedEvent.event) {
             //The data entry widget does not have an event selected. 
             //Therefore applying rule effects from registration instead.
@@ -249,7 +263,7 @@ trackerCapture.controller('DataEntryController',
 
                         if(effect.ineffect) {
                             $scope.hiddenFields[event][effect.dataElement.id] = true;
-                        } 
+                        }
                         else if( !$scope.hiddenFields[event][effect.dataElement.id]) {
                             $scope.hiddenFields[event][effect.dataElement.id] = false;
                         }
@@ -598,7 +612,7 @@ trackerCapture.controller('DataEntryController',
             $scope.selectedOrgUnit = orgUnit;
             $scope.selectedEntity = selections.tei;
             $scope.selectedProgram = selections.pr;
-            $scope.selectedEnrollment = selections.selectedEnrollment;        
+            $scope.selectedEnrollment = selections.selectedEnrollment;
 
             $scope.showSelf = true;
             if(angular.isUndefined($scope.selectedEnrollment) || $scope.selectedEnrollment === null || ($scope.dashBoardWidgetFirstRun && $scope.selectedEnrollment.status === "COMPLETED")){
@@ -613,7 +627,15 @@ trackerCapture.controller('DataEntryController',
 
     	    $scope.stagesById = [];    	    
     	    if ($scope.selectedOrgUnit && $scope.selectedProgram && $scope.selectedProgram.id && $scope.selectedEntity ){
-                
+                if ($scope.selectedOrgUnit.reportDateRange) {
+                    if ($scope.selectedOrgUnit.reportDateRange.minDate) {
+                        $scope.model.minDate = $scope.selectedOrgUnit.reportDateRange.minDate;
+                    }
+                    if ($scope.selectedOrgUnit.reportDateRange.maxDate) {
+                        $scope.model.maxDate = $scope.selectedOrgUnit.reportDateRange.maxDate;
+                    }
+                }
+
                 $scope.programStages = $scope.selectedProgram.programStages;
 
                 angular.forEach($scope.selectedProgram.programStages, function (stage) {
@@ -674,7 +696,7 @@ trackerCapture.controller('DataEntryController',
     	    }
         });
     });
-    
+
     $scope.openEventExternal = function(event){
         if($scope.useMainMenu){
             var stage = $scope.stagesById[event.programStage];
@@ -743,14 +765,14 @@ trackerCapture.controller('DataEntryController',
                 }
             });
             
-            $scope.fileNames = CurrentSelection.getFileNames();            
+            $scope.fileNames = CurrentSelection.getFileNames();
             $scope.allEventsSorted = orderByFilter($scope.allEventsSorted, '-sortingDate').reverse();
             sortEventsByStage(null);
             $scope.showDataEntry($scope.currentEvent, true, true);
             $scope.eventsLoaded = true;
         }
     };
-    
+
 
     var setEventEditing = function (dhis2Event, stage) {
         return dhis2Event.editingNotAllowed = dhis2Event.orgUnit !== $scope.selectedOrgUnit.id && dhis2Event.eventDate || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || $scope.selectedEntity.inactive;
@@ -919,11 +941,11 @@ trackerCapture.controller('DataEntryController',
         }        
     };
     
-    $scope.stagesNotShowingInStageTasks = angular.copy($scope.neverShowItems);  
+    $scope.stagesNotShowingInStageTasks = angular.copy($scope.neverShowItems);
     for(var key in $scope.bottomLineItems){
         $scope.stagesNotShowingInStageTasks[key] = $scope.bottomLineItems[key];
-    };    
-    
+    };
+
     $scope.displayStageTasksInTopLine = function(stage) {
         if($scope.stagesNotShowingInStageTasks[stage.id]){
             return false;
@@ -1098,7 +1120,7 @@ trackerCapture.controller('DataEntryController',
 
         if( openDataEntry ){
             $scope.getDataEntryForm();
-        } 
+        }
     };
 
     $scope.showDataEntry = function (event, suppressToggling, resetStage) {
@@ -1199,7 +1221,7 @@ trackerCapture.controller('DataEntryController',
     };
         
     $scope.openEventEditFormModal = function(event){
-       
+
         var stage = $scope.stagesById[event.programStage];
         if( stage && stage.id ){
             event.editingNotAllowed = EventUtils.getEditingStatus(event, stage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
@@ -1273,7 +1295,7 @@ trackerCapture.controller('DataEntryController',
         }
         
         return otherValues;
-    };    
+    };
 
     $scope.getDataEntryForm = function () {
         $scope.showAttributeCategoryOptions = false;
@@ -1315,7 +1337,7 @@ trackerCapture.controller('DataEntryController',
         
         var period = {event: $scope.currentEvent.event, stage: $scope.currentEvent.programStage, name: $scope.currentEvent.sortingDate};
         $scope.currentPeriod[$scope.currentEvent.programStage] = period;        
-        
+
         //Execute rules for the first time, to make the initial page appear correctly.
         //Subsequent calls will be made from the "saveDataValue" function.        
         $scope.executeRules();
@@ -2090,7 +2112,7 @@ trackerCapture.controller('DataEntryController',
             }
         }
     };
-    
+
     $scope.eventEditable = function(){
         if(!$scope.currentStage) return false;
         if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE') return false;
