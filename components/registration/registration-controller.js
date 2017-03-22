@@ -134,7 +134,7 @@ trackerCapture.controller('RegistrationController',
             }
         }
         $scope.model.minEnrollmentDate = "";
-        $scope.model.maxEnrollmentDate = $scope.selectedProgram.selectEnrollmentDatesInFuture ? '' : "0";
+        $scope.model.maxEnrollmentDate =  ($scope.selectedProgram && $scope.selectedProgram.selectEnrollmentDatesInFuture) ? '' : "0";
         if ($scope.selectedOrgUnit.reportDateRange) {
             if ($scope.selectedOrgUnit.reportDateRange.minDate) {
                 $scope.model.minEnrollmentDate = $scope.selectedOrgUnit.reportDateRange.minDate;
