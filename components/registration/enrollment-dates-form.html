@@ -24,7 +24,7 @@
                    min-date="model.minEnrollmentDate"
                    max-date="model.maxEnrollmentDate"
                    ng-change="verifyExpiryDate('selectedEnrollment.enrollmentDate')"
-                   ng-disabled="model.orgUnitClosed"
+                   ng-disabled="selectedOrgUnit.closedStatus"
                    ng-required="true"/>
             <input type="text" class="form-control not-for-screen"/>
             <span ng-show="outerForm.submitted && outerForm.enrollmentDate.$invalid" class="error">{{'required'| translate}}</span>
@@ -53,7 +53,7 @@
                 {{'coordinate'| translate}}
             </td>
             <td>         
-                <d2-map d2-object="selectedEnrollment" d2-coordinate-format="'COORDINATE'"></d2-map>
+                <d2-map d2-object="selectedEnrollment" d2-coordinate-format="'COORDINATE'" d2-disabled="selectedOrgUnit.closedStatus"></d2-map>
             </td>                                            
         </tr>
 </table>

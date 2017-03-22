@@ -114,6 +114,7 @@ function($rootScope,
                     if(orgUnitFromStore) {
                         selections.orgUnit = orgUnitFromStore;
                         CurrentSelection.set(selections);
+                        $scope.selectedOrgUnit.closedStatus = orgUnitFromStore.closedStatus;
                     }
                 });
             }
