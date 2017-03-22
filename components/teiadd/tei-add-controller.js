@@ -586,7 +586,7 @@ trackerCapture.controller('TEIAddController',
     };
     
     var getRules = function(){
-        $scope.allProgramRules = {constants: [], programIndicators: {}, programValidations: [], programVariables: [], programRules: []};
+        $scope.allProgramRules = {constants: [], programIndicators: {}, programVariables: [], programRules: []};
         if( angular.isObject($scope.selectedProgramForRelative) && $scope.selectedProgramForRelative.id ){
             TrackerRulesFactory.getRules($scope.selectedProgramForRelative.id).then(function(rules){                    
                 $scope.allProgramRules = rules;
