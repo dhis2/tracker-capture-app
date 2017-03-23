@@ -5,8 +5,7 @@ trackerCapture.controller('ProfileController',
         function($rootScope,
                 $scope,
                 $timeout,
-                CurrentSelection, 
-                DasboardWidgetService) {
+                CurrentSelection) {
     $scope.editingDisabled = true;
     $scope.enrollmentEditing = false;
     $scope.widget = 'PROFILE';
@@ -47,9 +46,6 @@ trackerCapture.controller('ProfileController',
 
         $timeout(function() { 
             $rootScope.$broadcast('registrationWidget', {registrationMode: 'PROFILE', selectedTei: $scope.selectedTei, enrollment: $scope.selectedEnrollment});
-            $timeout(function() {
-                DasboardWidgetService.updateDashboard();
-            },600);
         });
     };
     

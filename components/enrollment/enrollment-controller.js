@@ -14,8 +14,7 @@ trackerCapture.controller('EnrollmentController',
                 EnrollmentService,
                 ModalService,
                 NotificationService,
-                OrgUnitFactory,
-                DasboardWidgetService) {
+                OrgUnitFactory) {
     
     OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function(orgUnit) {
         $scope.today = DateUtils.getToday();
@@ -156,7 +155,6 @@ trackerCapture.controller('EnrollmentController',
             });
             $timeout(function () {
                 $rootScope.$broadcast(listeners, {});
-                DasboardWidgetService.updateDashboard();
             }, 200);
         };
 
