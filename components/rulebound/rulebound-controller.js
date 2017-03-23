@@ -6,8 +6,7 @@ trackerCapture.controller('RuleBoundController',
                 $rootScope,
                 $scope,
                 $translate,
-                $log,
-                DasboardWidgetService) {
+                $log) {
     $scope.widget = $scope.$parent.$parent.biggerWidget ? $scope.$parent.$parent.biggerWidget
     : $scope.$parent.$parent.smallerWidget ? $scope.$parent.$parent.smallerWidget : null;
     $scope.widgetTitle = $scope.widget ? $scope.widget.title : null;    
@@ -19,9 +18,7 @@ trackerCapture.controller('RuleBoundController',
     
     $scope.displayTextEffects = {};
     $scope.displayKeyDataEffects = {};
-    $scope.$on('dashboardWidgets',function(){
-        DasboardWidgetService.updateDashboard();
-    });
+
     //listen for updated rule effects
     $scope.$on('ruleeffectsupdated', function(event, args) {
         var textInEffect = false;

@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        <div ng-show="model.allWidgetsReady" class="row">
+        <div class="row">
             <div height-change-target ng-if="useTopBar" class="vertical-spacing"></div>
             <!-- dashboard bigger widgets begin -->
             <div ng-class="widgetSize.bigger">
@@ -88,7 +88,7 @@
         <!-- dashboard bigger widgets end -->
 
         <!-- dashboard smaller widgets begin -->
-        <div ng-show="model.allWidgetsReady" ng-class="[!model.stickyDisabled ? 'widgets-sticky' : '', widgetSize.smaller]">
+        <div ng-class="[!model.stickyDisabled ? 'widgets-sticky' : '', widgetSize.smaller]">
             <!-- dashboard setting begins -->
             <div class="row add-default-right-padding vertical-spacing" ng-if="!useTopBar">
                 <div class="pull-right">
@@ -144,11 +144,9 @@
     <!-- dashboard widgets end -->
 
 
-    <div class="spinner" ng-if="!metaDataCached || !model.allWidgetsReady">
-        <i class="fa fa-spinner fa-spin fa-5x"></i>
-        <!--<br>-->
-        <!--<span class="spinner-label" ng-if="!metaDataCached">{{'loading_metadata'| translate}}</span>-->
-        <!--<span class="spinner-label" ng-if="metaDataCached && !model.allWidgetsReady">{{'loading_components'| translate}}</span>-->
+    <div class="col-sm-12" ng-if="!metaDataCached">
+        <img src="../images/ajax-loader-bar.gif" alt="{{'in_progress'| translate}}"/><br>
+            {{'loading_metadata'| translate}}
     </div>
 
 </div>

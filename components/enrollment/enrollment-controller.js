@@ -14,9 +14,7 @@ trackerCapture.controller('EnrollmentController',
                 CurrentSelection,
                 EnrollmentService,
                 ModalService,
-                NotificationService,
-                OrgUnitFactory,
-                DasboardWidgetService) {
+                NotificationService) {
     
         var selections;
 
@@ -171,7 +169,6 @@ trackerCapture.controller('EnrollmentController',
             });
             $timeout(function () {
                 $rootScope.$broadcast(listeners, {});
-                DasboardWidgetService.updateDashboard();
             }, 200);
         };
 

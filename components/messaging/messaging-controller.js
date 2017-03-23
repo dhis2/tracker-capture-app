@@ -4,9 +4,7 @@ var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('MessagingController',
         function($scope, $translate,
                 MessagingService,
-                CurrentSelection,
-                DasboardWidgetService,
-                OrgUnitFactory) {
+                CurrentSelection) {
 
     //$scope.messagingForm = {};
     $scope.note = {};
@@ -38,7 +36,6 @@ trackerCapture.controller('MessagingController',
                 }
             }
         }
-        DasboardWidgetService.updateDashboard();
     });
 
     $scope.sendMessage = function(){

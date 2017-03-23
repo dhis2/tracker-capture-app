@@ -28,8 +28,7 @@ trackerCapture.controller('DataEntryController',
                 PeriodService,
                 OptionSetService,
                 TrackerRulesFactory,
-                EventCreationService,
-                DasboardWidgetService) {
+                EventCreationService) {
     
     //Unique instance id for the controller:
     $scope.instanceId = Math.floor(Math.random() * 1000000000);
@@ -728,7 +727,6 @@ trackerCapture.controller('DataEntryController',
                 TrackerRulesFactory.getRules($scope.selectedProgram.id).then(function(rules){
                     $scope.allProgramRules = rules;
                     $scope.getEvents();
-                    DasboardWidgetService.updateDashboard();
                     broadcastDataEntryControllerData();
                 });    	        
     	    }
