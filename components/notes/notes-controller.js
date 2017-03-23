@@ -9,8 +9,7 @@ trackerCapture.controller('NotesController',
                 CurrentSelection,
                 NotificationService,
                 SessionStorageService,
-                orderByFilter,
-                DasboardWidgetService) {
+                orderByFilter) {
     var userProfile = SessionStorageService.get('USER_PROFILE');
     var storedBy = userProfile && userProfile.username ? userProfile.username : '';
 
@@ -36,10 +35,7 @@ trackerCapture.controller('NotesController',
                         });
                     }
                 }
-                DasboardWidgetService.updateDashboard();
             });
-        } else {
-            DasboardWidgetService.updateDashboard();
         }
     });
        

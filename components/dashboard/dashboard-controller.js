@@ -26,8 +26,7 @@ trackerCapture.controller('DashboardController',
             ModalService,
             AuthorityService,
             OrgUnitFactory,
-            NotificationService,
-			DasboardWidgetService) {
+            NotificationService) {
     
     //selections
     var orgUnitUrl = ($location.search()).ou;
@@ -321,23 +320,6 @@ trackerCapture.controller('DashboardController',
         });
 
         $scope.applySelectedProgram();
-    });
-
-    var numOfwidgetsOnDashboard = null;
-
-    DasboardWidgetService.registerDashboardUpdateCallback(function(countOfWidgetsLoaded) {
-        if(!numOfwidgetsOnDashboard) {
-            if ($rootScope.dashboardWidgets) {
-                numOfwidgetsOnDashboard = $rootScope.dashboardWidgets.filter(function(widget){
-                    return widget.show;
-                }).length;
-            }   else  {
-                return;
-            }
-        }
-        if (countOfWidgetsLoaded === numOfwidgetsOnDashboard) {
-            $scope.model.allWidgetsReady = true;
-        }
     });
 
     function getCurrentDashboardLayout() {
