@@ -2051,12 +2051,6 @@ trackerCapture.controller('DataEntryController',
                             }
                         }
                     }
-
-                    if($scope.displayCustomForm !== "TABLE" && $scope.displayCustomForm !== "COMPARE") {
-                        //Close the event when the event is completed, to make it 
-                        //more clear that the completion went through.
-                        $scope.showDataEntry($scope.currentEvent, false, true);
-                    }
                 }
             }
             broadcastDataEntryControllerData();
