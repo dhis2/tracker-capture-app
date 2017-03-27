@@ -3,6 +3,7 @@
         
     <div ng-class="{true: 'col-sm-12', false: 'col-sm-6'} [currentStage.hideDueDate || currentStage.periodType !== undefined]">
         {{currentEvent.executionDateLabel ? currentEvent.executionDateLabel : 'report_date' | translate}}
+        <span class="required">*</span>
         <input type="text"
                placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                class="form-control hideInPrint"
