@@ -137,7 +137,7 @@ trackerCapture.controller('RelationshipController',
             }
         }        
     
-        $location.path('/dashboard').search({tei: teiId, program: dashboardProgram}); 
+        $location.path('/dashboard').search({tei: teiId, program: dashboardProgram, ou: $scope.selectedOrgUnit.id}); 
     };
     
     var setRelationships = function(){
