@@ -534,8 +534,9 @@ function getOptionSets()
     return dhis2.tracker.getBatches( optionSetIds, batchSize, null, 'optionSets', 'optionSets', DHIS2URL + '/optionSets.json', 'paging=false&fields=id,displayName,version,options[id,displayName,code]', 'idb', dhis2.tc.store );
 }
 
-function getMetaProgramIndicators( programs )
-{    
+function getMetaProgramIndicators( programs, programIds )
+{   
+    programs.programIds = programIds;
     return dhis2.tracker.getTrackerMetaObjects(programs, 'programIndicators', DHIS2URL + '/programIndicators.json', 'paging=false&fields=id&filter=program.id:in:');
 }
 
