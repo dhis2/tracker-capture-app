@@ -521,9 +521,6 @@ function($rootScope,
                 $scope.teiFetched = true;
                 $scope.doSearch = true;
 
-                if (!$scope.sortColumn.id) {
-                    $scope.sortGrid(defaultColumn);
-                }
                 CurrentSelection.setAdvancedSearchOptions({
                     searchingOrgUnit: angular.copy($scope.searchingOrgUnit),
                     searchMode: $scope.selectedSearchMode,
