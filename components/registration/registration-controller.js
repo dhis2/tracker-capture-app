@@ -274,7 +274,10 @@ trackerCapture.controller('RegistrationController',
             NotificationService.showNotifcationDialog(headerText, bodyText);
             $scope.selectedTei = {};
             $scope.tei = {};
-            fetchGeneratedAttributes();
+            $scope.currentEvent = {};
+            $timeout(function() {
+                $rootScope.$broadcast('registrationWidget', {registrationMode: 'REGISTRATION'});
+            });
         }
     };
 
