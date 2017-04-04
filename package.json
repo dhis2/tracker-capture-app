@@ -1,6 +1,6 @@
 {
   "name": "tracker-capture-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "DHIS2 tracker capture app",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,7 @@
     "url": "https://github.com/dhis2/tracker-capture-app/issues"
   },
   "homepage": "https://github.com/dhis2/tracker-capture-app#readme",
-  "dependencies": {    
+  "dependencies": {
     "leaflet": "^0.7.7",
     "leaflet-geocoder-mapzen": "1.4.1",
     "leaflet-contextmenu": "^1.1.0"
