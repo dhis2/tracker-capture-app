@@ -430,6 +430,7 @@ trackerCapture.controller('RegistrationController',
 
     $scope.executeRules = function () {
         //repopulate attributes with updated values
+        $scope.selectedTei = $scope.selectedTei || {};
         $scope.selectedTei.attributes = [];
         angular.forEach($scope.attributes, function (metaAttribute) {
             var newAttributeInArray = {
@@ -443,7 +444,7 @@ trackerCapture.controller('RegistrationController',
             $scope.selectedTei.attributes.push(newAttributeInArray);
         });
 
-        if ($scope.selectedProgram && $scope.selectedProgram.id) {
+        if ($scope.selectedProgram && $scope.selectedProgram.id) {            
             var eventExists = $scope.currentEvent && $scope.currentEvent.event;
             var evs = null;
             if( eventExists ){
@@ -468,7 +469,12 @@ trackerCapture.controller('RegistrationController',
     $scope.isHidden = function (id) {
         //In case the field contains a value, we cant hide it.
         //If we hid a field with a value, it would falsely seem the user was aware that the value was entered in the UI.
-        return $scope.selectedTei[id] ? false : $scope.hiddenFields[id];
+
+        if( $scope.attributesById[id] ){//it is attributes
+            return $scope.selectedTei[id] ? false : $scope.hiddenFields[id];
+        }
+        // it is data elements
+        return $scope.currentEvent[id] ? false : $scope.hiddenFields[id];                
     };
 
     $scope.teiValueUpdated = function (tei, field) {
@@ -489,16 +495,26 @@ trackerCapture.controller('RegistrationController',
         $scope.executeRules();
     }
 
-    //listen for rule effect changes
-    $scope.$on('ruleeffectsupdated', function (event, args) {
-        if (args.event === "registration" || args.event === 'SINGLE_EVENT') {
-            $scope.warningMessages = [];
-            $scope.hiddenFields = [];
-            $scope.assignedFields = [];
-            $scope.errorMessages = {};
-            $scope.hiddenSections = [];
+    $scope.warningMessages = [];
+    $scope.hiddenFields = [];
+    $scope.assignedFields = [];
+    $scope.errorMessages = {};
+    $scope.hiddenSections = [];
 
+    //listen for rule effect changes attribute / data element
+    $scope.$on('ruleeffectsupdated', function (event, args) {
+        if (args.event === "registration") {
             var effectResult = TrackerRulesExecutionService.processRuleEffectAttribute(args.event, $scope.selectedTei, $scope.tei, $scope.currentEvent, {}, $scope.currentEvent, $scope.attributesById, $scope.prStDes, $scope.hiddenFields, $scope.hiddenSections, $scope.warningMessages, $scope.assignedFields, $scope.optionSets);
+            $scope.selectedTei = effectResult.selectedTei;
+            $scope.currentEvent = effectResult.currentEvent;
+            $scope.hiddenFields = effectResult.hiddenFields;
+            $scope.hiddenSections = effectResult.hiddenSections;
+            $scope.assignedFields = effectResult.assignedFields;
+            $scope.warningMessages = effectResult.warningMessages;
+        }
+
+        if (args.event === "SINGLE_EVENT" ) {
+            var effectResult = TrackerRulesExecutionService.processRuleEffectsForEvent('SINGLE_EVENT', $scope.currentEvent, {}, $scope.prStDes, $scope.optionSets);
             $scope.selectedTei = effectResult.selectedTei;
             $scope.currentEvent = effectResult.currentEvent;
             $scope.hiddenFields = effectResult.hiddenFields;
