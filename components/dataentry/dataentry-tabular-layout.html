@@ -19,7 +19,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="list-group" style="width: 10%; float: left;">
-                            <a ng-repeat="stage in tabularEntryStages" class="list-group-item cursor-pointer" ng-class="{true: 'active'} [stage.id === currentStage.id]" ng-click="setCurrentStage(stage)">
+                            <a ng-repeat="stage in tabularEntryStages" class="list-group-item cursor-pointer" ng-class="{true: 'active'} [stage.id === currentStage.id]" ng-click="setCurrentStage(stage, true)">
                                 {{stage.displayName}}
                             </a>
                         </div>

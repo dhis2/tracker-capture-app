@@ -1137,7 +1137,7 @@ trackerCapture.controller('DataEntryController',
             });
     };
 
-    $scope.setCurrentStage = function(stage){
+    $scope.setCurrentStage = function(stage, openDataEntry){
         if (!stage) {
             return;
         }
@@ -1149,6 +1149,10 @@ trackerCapture.controller('DataEntryController',
         }
         
         $scope.showAttributeCategoryOptions = false;
+
+        if( openDataEntry ){
+            $scope.getDataEntryForm();
+        }
     };
 
     $scope.showDataEntry = function (event, suppressToggling, resetStage) {
