@@ -1086,7 +1086,7 @@ trackerCapture.controller('DataEntryController',
             });
     };
 
-    $scope.setCurrentStage = function(stage){
+    $scope.setCurrentStage = function(stage, openDataEntry){
         $scope.currentStage = stage;
         $scope.currentEvent = null;
         $scope.eventGridColumns = EventUtils.getGridColumns($scope.currentStage, $scope.prStDes);
@@ -1095,6 +1095,10 @@ trackerCapture.controller('DataEntryController',
         }
         
         $scope.showAttributeCategoryOptions = false;
+
+        if( openDataEntry ){
+            $scope.getDataEntryForm();
+        } 
     };
 
     $scope.showDataEntry = function (event, suppressToggling, resetStage) {
