@@ -10,7 +10,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     var store = new dhis2.storage.Store({
         name: "dhis2tc",
         adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],        
-        objectStores: ['programs', 'trackedEntities', 'attributes', 'relationshipTypes', 'optionSets', 'programValidations', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements']
+        objectStores: ['programs', 'trackedEntities', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements']
     });
     return{
         currentStore: store
@@ -414,44 +414,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return def.promise;
         }
     };
-})
-
-/* Factory to fetch programValidations */
-.factory('ProgramValidationFactory', function($q, $rootScope, TCStorageService) {  
-    
-    return {        
-        get: function(uid){
-            
-            var def = $q.defer();
-            
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.get('programValidations', uid).done(function(pv){                    
-                    $rootScope.$apply(function(){
-                        def.resolve(pv);
-                    });
-                });
-            });                        
-            return def.promise;
-        },
-        getByProgram: function(program){
-            var def = $q.defer();
-            var programValidations = [];
-            
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll('programValidations').done(function(pvs){   
-                    angular.forEach(pvs, function(pv){
-                        if(pv.program.id === program){                            
-                            programValidations.push(pv);                               
-                        }                        
-                    });
-                    $rootScope.$apply(function(){
-                        def.resolve(programValidations);
-                    });
-                });                
-            });            
-            return def.promise;
-        }
-    };        
 })
 
 /* service to deal with TEI registration and update */
@@ -1356,7 +1318,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     };  
 })
 
-/* factory to fetch and process programValidations */
+/* factory to fetch and process metadata */
 .factory('MetaDataFactory', function($q, $rootScope, TCStorageService) {  
     
     return {        
@@ -1552,20 +1514,19 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     });
 
                     var programIndicators = {rules:programRules, variables:variables};
-                    
-                    MetaDataFactory.getByProgram('programValidations',programUid).then(function(programValidations){                    
-                        MetaDataFactory.getByProgram('programRuleVariables',programUid).then(function(programVariables){                    
-                            MetaDataFactory.getByProgram('programRules',programUid).then(function(prs){
-                                var programRules = [];
-                                angular.forEach(prs, function(rule){
-                                    rule.actions = [];
-                                    rule.programStageId = rule.programStage && rule.programStage.id ? rule.programStage.id : null;
-                                    programRules.push(rule);
-                                });                                
-                                def.resolve({constants: constants, programIndicators: programIndicators, programValidations: programValidations, programVariables: programVariables, programRules: programRules});
-                            });
+
+                    MetaDataFactory.getByProgram('programRuleVariables',programUid).then(function(programVariables){                    
+                        MetaDataFactory.getByProgram('programRules',programUid).then(function(prs){
+                            var programRules = [];
+                            angular.forEach(prs, function(rule){
+                                rule.actions = [];
+                                rule.programStageId = rule.programStage && rule.programStage.id ? rule.programStage.id : null;
+                                programRules.push(rule);
+                            });                                
+                            def.resolve({constants: constants, programIndicators: programIndicators, programVariables: programVariables, programRules: programRules});
                         });
                     });
+                    
                 }); 
             });                        
             return def.promise;
