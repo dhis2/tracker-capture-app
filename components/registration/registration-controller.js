@@ -113,7 +113,6 @@ trackerCapture.controller('RegistrationController',
         $scope.allProgramRules = {
             constants: [],
             programIndicators: {},
-            programValidations: [],
             programVariables: [],
             programRules: []
         };
