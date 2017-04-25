@@ -228,7 +228,7 @@ trackerCapture.controller('EventCreationController',
                 newEvent.eventDate = DateUtils.formatFromUserToApi($scope.dhis2Event.eventDate);
             }
             else{
-                newEvent.eventDate = DateUtils.formatFromUserToApi($scope.dhis2Event.dueDate);
+                newEvent.dueDate = DateUtils.formatFromUserToApi($scope.dhis2Event.dueDate);
             }
         }
 
