@@ -27,6 +27,7 @@ trackerCapture.controller('DataEntryController',
                 CustomFormService,
                 PeriodService,
                 OptionSetService,
+                AttributesFactory,
                 TrackerRulesFactory,
                 EventCreationService) {
     
@@ -78,6 +79,18 @@ trackerCapture.controller('DataEntryController',
     $scope.visibleWidgetsInMainMenu = {enrollment: true, dataentry: true, close_file: true};    
     $rootScope.$broadcast('DataEntryMainMenuVisibilitySet', {visible: $scope.useMainMenu, visibleItems: $scope.visibleWidgetsInMainMenu});
     
+    $scope.attributesById = CurrentSelection.getAttributesById();
+
+    if(!$scope.attributesById){
+        $scope.attributesById = [];
+        AttributesFactory.getAll().then(function(atts){
+            angular.forEach(atts, function(att){
+                $scope.attributesById[att.id] = att;
+            });
+            
+            CurrentSelection.setAttributesById($scope.attributesById);
+        });
+    }
 
     var modalCompleteIncompleteActions = { complete: 'complete', completeAndExit: 'completeandexit', completeEnrollment: 'completeenrollment', edit: 'edit'};
 
@@ -606,11 +619,11 @@ trackerCapture.controller('DataEntryController',
         //If the events is displayed in a table, it is necessary to run the rules for all visible events.        
         if ($scope.currentStage && $scope.currentStage.displayEventsInTable && angular.isUndefined($scope.currentStage.rulesExecuted)) {
             angular.forEach($scope.currentStageEvents, function (event) {
-                TrackerRulesExecutionService.executeRules($scope.allProgramRules, event, evs, $scope.prStDes, $scope.selectedTei, $scope.selectedEnrollment, $scope.optionSets, flag);
+                TrackerRulesExecutionService.executeRules($scope.allProgramRules, event, evs, $scope.prStDes, $scope.attributesById, $scope.selectedTei, $scope.selectedEnrollment, $scope.optionSets, flag);
                 $scope.currentStage.rulesExecuted = true;
             });
         } else {
-            TrackerRulesExecutionService.executeRules($scope.allProgramRules, $scope.currentEvent, evs, $scope.prStDes, $scope.selectedTei, $scope.selectedEnrollment, $scope.optionSets, flag);
+            TrackerRulesExecutionService.executeRules($scope.allProgramRules, $scope.currentEvent, evs, $scope.prStDes, $scope.attributesById, $scope.selectedTei, $scope.selectedEnrollment, $scope.optionSets, flag);
         }
     };
 
