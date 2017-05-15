@@ -315,9 +315,9 @@ trackerCapture.controller('RegistrationController',
         }
         RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function (registrationResponse) {
             var reg = registrationResponse.response ? registrationResponse.response : {};
-            if (reg.reference && reg.status === 'SUCCESS') {
-                $scope.tei.trackedEntityInstance = reg.reference;
-
+            if (reg.status === 'SUCCESS') {
+                $scope.tei.trackedEntityInstance = reg.importSummaries[0].reference;
+                
                 if ($scope.registrationMode === 'PROFILE') {
                     reloadProfileWidget();
                     $rootScope.$broadcast('teiupdated', {});
@@ -342,10 +342,9 @@ trackerCapture.controller('RegistrationController',
                         EnrollmentService.enroll(enrollment).then(function (enrollmentResponse) {
                             $scope.model.savingRegistration = false;
                             if(enrollmentResponse) {
-                                var en = enrollmentResponse.response && enrollmentResponse.response.importSummaries &&
-                                enrollmentResponse.response.importSummaries[0] ? enrollmentResponse.response.importSummaries[0] : {};
-                                if (en.reference && en.status === 'SUCCESS') {
-                                    enrollment.enrollment = en.reference;
+                                var en = enrollmentResponse.response;
+                                if (en.status === 'SUCCESS') {
+                                    enrollment.enrollment = en.importSummaries[0].reference;
                                     $scope.selectedEnrollment = enrollment;
                                     var avilableEvent = $scope.currentEvent && $scope.currentEvent.event ? $scope.currentEvent : null;
                                     var dhis2Events = EventUtils.autoGenerateEvents($scope.tei.trackedEntityInstance, $scope.selectedProgram, $scope.selectedOrgUnit, enrollment, avilableEvent);
