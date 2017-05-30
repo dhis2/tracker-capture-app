@@ -2,7 +2,7 @@
 <div class="row" ng-if="displayCustomForm !== 'TABLE' && displayCustomForm !== 'COMPARE'">
         
     <div ng-class="{true: 'col-sm-12', false: 'col-sm-6'} [currentStage.hideDueDate || currentStage.periodType !== undefined]">
-        {{currentEvent.executionDateLabel ? currentEvent.executionDateLabel : 'report_date' | translate}}
+        {{currentStage.executionDateLabel ? currentStage.executionDateLabel : 'report_date' | translate}}
         <span class="required">*</span>
         <input type="text"
                placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
@@ -27,7 +27,7 @@
     </div>
     <div ng-if="!currentStage.hideDueDate && !registrationAndDataEntry && !currentStage.periodType"  class="col-md-6">
         <span ng-if="currentEvent.eventDate || currentEvent.status === 'SKIPPED' || currentEvent.dueDate || registrationMode === 'REGISTRATION'">
-            {{currentEvent.dueDateLabel ? currentEvent.dueDateLabel : 'due_date' | translate}}
+            {{currentStage.dueDateLabel ? currentStage.dueDateLabel : 'due_date' | translate}}
         </span>
         <span ng-if="!currentEvent.eventDate && currentEvent.status !== 'SKIPPED' && !selectedEntity.inactive && selectedEnrollment.status === 'ACTIVE' && registrationMode !== 'REGISTRATION'">
             <a href ng-click="enableRescheduling()" title="{{ schedulingEnabled ? 'disable_rescheduling' : 'enable_rescheduling' | translate}}"><span class="text-primary bold">{{'reschedule_duedate'| translate}}</span></a>
