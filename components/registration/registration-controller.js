@@ -98,6 +98,7 @@ trackerCapture.controller('RegistrationController',
     $scope.selectedEnrollment = {
         enrollmentDate: $scope.today,
         incidentDate: $scope.today,
+        orgUnit: $scope.selectedOrgUnit.id,
         orgUnitName: $scope.selectedOrgUnit ? $scope.selectedOrgUnit.displayName : ""
     };
 
@@ -255,6 +256,7 @@ trackerCapture.controller('RegistrationController',
         $scope.selectedEnrollment = {
             enrollmentDate: $scope.today,
             incidentDate: $scope.today,
+            orgUnit: $scope.selectedOrgUnit.id,
             orgUnitName: $scope.selectedOrgUnit.displayName
         };
         $scope.outerForm.submitted = false;
