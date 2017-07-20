@@ -664,8 +664,8 @@ trackerCapture.controller('TEIAddController',
         
         RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function(registrationResponse){
             var reg = registrationResponse.response ? registrationResponse.response : {};
-            if(reg.reference && reg.status === 'SUCCESS'){                
-                $scope.tei.trackedEntityInstance = $scope.tei.id = reg.reference; 
+            if (reg.importSummaries[0].reference && reg.status === 'SUCCESS'){                
+                $scope.tei.trackedEntityInstance = $scope.tei.id = reg.importSummaries[0].reference; 
                 
                 //registration is successful and check for enrollment
                 if($scope.selectedProgramForRelative){    
