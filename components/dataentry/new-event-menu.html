@@ -24,7 +24,9 @@
                                     {{'schedule'|translate}}
                                 </a>
                             </span>
-                            <span ng-if="useReferral && showReferral && !stage.hideDueDate">
+                            <!-- TODO: Edit so that referral shows-->
+                            <!-- <span ng-if="useReferral && showReferral && !stage.hideDueDate"> -->
+                            <span>
                                 |
                                 <a href title="{{'make_referral'| translate}}" ng-click="showCreateEvent(stage, eventCreationActions.referral)" style="vertical-align: middle">
                                     {{'referral'|translate}}
@@ -59,8 +61,10 @@
                         <span><i class="fa fa-calendar vertical-center"></i></span>                
                     </span>
                 </a>                
-            </div>            
-            <div ng-if="useReferral && showReferral">
+            </div>
+            <!-- TODO: Edit so that referral shows-->
+            <!--  <div ng-if="useReferral && showReferral"> -->           
+            <div>
                 <a href class="disable-link-effects" ng-click="useMainMenu ? showCreateEventIfStageNeedsEvent(selectedMainMenuStage, eventCreationActions.referral, false, true) : showCreateEvent(null, eventCreationActions.referral)" title="{{'make_referral'| translate}}">
                     <span class="stage-tasks-badge" ng-class="useMainMenu ? {'stage-tasks-badge-disabled': !stageNeedsEventOfType(selectedMainMenuStage, eventCreationActions.referral)} : ''">                                     
                         <span><i class="fa fa-share vertical-center"></i></span>                

@@ -8,6 +8,7 @@ trackerCapture.controller('EventCreationController',
                 $timeout,
                 $translate,
                 $filter,
+                $http,
                 removeFuturePeriodFilter,
                 DateUtils,
                 DHIS2EventFactory,
@@ -28,7 +29,9 @@ trackerCapture.controller('EventCreationController',
                 events,
                 suggestedStage,
                 selectedCategories,
-                PeriodService) {
+                PeriodService,
+                ModalService,
+                $rootScope) {
     $scope.selectedEnrollment = enrollment;                
     $scope.stages = stages;
     $scope.allStages = allStages;
@@ -258,7 +261,7 @@ trackerCapture.controller('EventCreationController',
     $scope.setSelectedSearchingOrgUnit = function(orgUnit){
         $scope.selectedSearchingOrgUnit = orgUnit;
         dummyEvent.orgUnit = orgUnit.id;
-        dummyEvent.orgUnitName = orgUnit.name;
+        dummyEvent.orgUnitName = orgUnit.displayName;
     };
     
     
@@ -266,8 +269,7 @@ trackerCapture.controller('EventCreationController',
         $scope.orgUnitsLoading = true;
         $timeout(function(){
             OrgUnitFactory.get(orgUnit.id).then(function(data){
-                if(data && data.organisationUnits && data.organisationUnits.length >0){
-                    orgUnit = data.organisationUnits[0];
+                    orgUnit = data;
                     var url = generateFieldsUrl();
                     OrgUnitFactory.getOrgUnits(orgUnit.id,url).then(function(data){
                         if(data && data.organisationUnits && data.organisationUnits.length >0){
@@ -298,12 +300,28 @@ trackerCapture.controller('EventCreationController',
                         }
                         $scope.orgUnitsLoading = false;
                     });
-                }
-
-                
             });
             
         },350);
+    }
+
+    function getOrgUnit(uid){  
+        var orgUnitPromise;      
+        if( orgUnit !== uid ){
+            orgUnitPromise = $http.get( '../api/organisationUnits.json?filter=id:eq:' + uid + '&fields=id,name,displayName,level,children[id,name,displayName,level,children[id,name,displayName,level]]&paging=false' ).then(function(response){
+                orgUnit = response.data.id;
+                return response.data;
+            });
+        }
+        return orgUnitPromise;
+    }
+
+    function getOrgUnits(uid, fieldUrl){
+        var url = '../api/organisationUnits.json?filter=id:eq:'+uid+'&'+fieldUrl+'&paging=false';
+        var orgUnitTreePromise = $http.get(url).then(function(response){
+            return response.data; 
+        });               
+        return orgUnitTreePromise;
     }
     
     function generateFieldsUrl(){
@@ -326,8 +344,8 @@ trackerCapture.controller('EventCreationController',
     $scope.expandCollapse = function(orgUnit) {
         orgUnit.show = !orgUnit.show;
         if(!orgUnit.childrenLoaded){
-            OrgUnitFactory.get(orgUnit.id).then(function(data){
-                orgUnit.children = data.organisationUnits[0].children;
+            OrgUnitFactory.getChildren(orgUnit.id).then(function(data){
+                orgUnit.children = data.children;
                 orgUnit.childrenLoaded = true;
                 
             });
@@ -360,5 +378,20 @@ trackerCapture.controller('EventCreationController',
         $scope.hasFuturePeriod = prds.hasFuturePeriod;
         
         $scope.periods = PeriodService.managePeriods($scope.periods, $scope.isNewEvent);
+    };
+
+    $scope.onetimeReferral = function(){
+        $scope.save();
+    };
+    
+    $scope.movePermanently = function(){
+        var modalOptions = {
+            headerText: 'move_permanently',
+            bodyText: 'are_you_sure_you_want_to_move_permanently'
+        };             
+        ModalService.showModal({},modalOptions).then(function(){
+            $rootScope.$broadcast('changeOrgUnit', {orgUnit: dummyEvent.orgUnit});
+            $scope.save();
+        });
     };
 });

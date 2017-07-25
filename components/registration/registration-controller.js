@@ -311,19 +311,30 @@ trackerCapture.controller('RegistrationController',
         }
     };
 
+    $scope.$on('changeOrgUnit', function (event, args) {
+        $scope.tei.orgUnit = args.orgUnit;
+        $scope.registerEntity("newOrgUnit");
+    });
+
     var performRegistration = function (destination) {
         if (destination === "DASHBOARD" || destination === "SELF") {
            $scope.model.savingRegistration = true;
         }
-        RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function (registrationResponse) {
-            var reg = registrationResponse.response ? registrationResponse.response : {};
+        RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function (regResponse) {
+            var reg = regResponse.response.responseType ==='ImportSummaries' ? regResponse.response.importSummaries[0] : regResponse.response.responseType === 'ImportSummary' ? regResponse.response : {};
             if (reg.status === 'SUCCESS') {
-                $scope.tei.trackedEntityInstance = reg.importSummaries[0].reference;
+                $scope.tei.trackedEntityInstance = reg.reference;
                 
                 if ($scope.registrationMode === 'PROFILE') {
                     reloadProfileWidget();
                     $rootScope.$broadcast('teiupdated', {});
                     $scope.model.savingRegistration = false;
+                    if(destination==='newOrgUnit'){
+                        $scope.selectedEnrollment.orgUnit = $scope.tei.orgUnit;
+                        EnrollmentService.update($scope.selectedEnrollment);
+                        selection.load();
+                        $location.path('/').search({program: $scope.selectedProgram.id});                 
+                    }
                 }
                 else {
                     if ($scope.selectedProgram) {
@@ -375,7 +386,7 @@ trackerCapture.controller('RegistrationController',
             else {//update/registration has failed
                 var headerText = $scope.tei && $scope.tei.trackedEntityInstance ? $translate.instant('update_error') :
                                  $translate.instant('registration_error');
-                var bodyText = registrationResponse.message;
+                var bodyText = regResponse.message;
                 NotificationService.showNotifcationDialog(headerText, bodyText);
                 $scope.model.savingRegistration = false;
                 return;

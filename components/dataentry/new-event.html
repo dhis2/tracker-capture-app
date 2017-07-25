@@ -142,17 +142,17 @@
                        />
                 </div>
                 <br/>
-                <div class="input-group">
-                    <label>
-                        <input type="checkbox" ng-model="referralMovePermanent" id="referralMovePermanent" /> <strong>Move permanent</strong>
-                    </label>
-                </div>
                 <span ng-if="model.dueDateInvalid" class="error">{{'required'| translate}}</span>
             </div>
         </div>
     </form>  
 </div>
-<div class="modal-footer page">        
+<div class="modal-footer page" ng-if="!isReferralEvent">        
     <button class="btn btn-primary" data-ng-click="save()">{{'save'| translate}}</button>
+    <button class="btn btn-default" data-ng-click="cancel()">{{'cancel'| translate}}</button>
+</div>
+<div class="modal-footer page" ng-if="isReferralEvent">        
+    <button class="btn btn-primary" data-ng-click="onetimeReferral()">{{'onetime_referral'| translate}}</button>
+    <button class="btn btn-primary" data-ng-click="movePermanently()">{{'move_permanently'| translate}}</button>
     <button class="btn btn-default" data-ng-click="cancel()">{{'cancel'| translate}}</button>
 </div>
