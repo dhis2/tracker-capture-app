@@ -329,7 +329,7 @@ trackerCapture.controller('RegistrationController',
                     reloadProfileWidget();
                     $rootScope.$broadcast('teiupdated', {});
                     $scope.model.savingRegistration = false;
-                    if(destination==='newOrgUnit'){
+                    if(destination === 'newOrgUnit'){
                         $scope.selectedEnrollment.orgUnit = $scope.tei.orgUnit;
                         EnrollmentService.update($scope.selectedEnrollment);
                         selection.load();

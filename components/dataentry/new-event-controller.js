@@ -8,7 +8,6 @@ trackerCapture.controller('EventCreationController',
                 $timeout,
                 $translate,
                 $filter,
-                $http,
                 removeFuturePeriodFilter,
                 DateUtils,
                 DHIS2EventFactory,
@@ -32,7 +31,7 @@ trackerCapture.controller('EventCreationController',
                 PeriodService,
                 ModalService,
                 $rootScope) {
-    $scope.selectedEnrollment = enrollment;                
+    $scope.selectedEnrollment = enrollment;      
     $scope.stages = stages;
     $scope.allStages = allStages;
     $scope.events = events;
@@ -303,25 +302,6 @@ trackerCapture.controller('EventCreationController',
             });
             
         },350);
-    }
-
-    function getOrgUnit(uid){  
-        var orgUnitPromise;      
-        if( orgUnit !== uid ){
-            orgUnitPromise = $http.get( '../api/organisationUnits.json?filter=id:eq:' + uid + '&fields=id,name,displayName,level,children[id,name,displayName,level,children[id,name,displayName,level]]&paging=false' ).then(function(response){
-                orgUnit = response.data.id;
-                return response.data;
-            });
-        }
-        return orgUnitPromise;
-    }
-
-    function getOrgUnits(uid, fieldUrl){
-        var url = '../api/organisationUnits.json?filter=id:eq:'+uid+'&'+fieldUrl+'&paging=false';
-        var orgUnitTreePromise = $http.get(url).then(function(response){
-            return response.data; 
-        });               
-        return orgUnitTreePromise;
     }
     
     function generateFieldsUrl(){
