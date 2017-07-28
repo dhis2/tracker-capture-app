@@ -305,8 +305,8 @@ trackerCapture.controller('EventCreationController',
     }
     
     function generateFieldsUrl(){
-        var fieldUrl = "fields=id,displayName,organisationUnitGroups[shortName]";
-        var parentStartDefault = ",parent[id,displayName,children[id,displayName,organisationUnitGroups[shortName],children[id,displayName,organisationUnitGroups[shortName]]]";
+        var fieldUrl = "fields=id,displayName,organisationUnitGroups[shortName],programs[id]";
+        var parentStartDefault = ",parent[id,displayName,programs[id],children[id,displayName,programs[id],organisationUnitGroups[shortName],children[id,displayName,programs[id],organisationUnitGroups[shortName]]]";
         var parentEndDefault = "]";
         if(orgUnit.level && orgUnit.level > 1){
             var parentStart = parentStartDefault;
@@ -324,11 +324,18 @@ trackerCapture.controller('EventCreationController',
     $scope.expandCollapse = function(orgUnit) {
         orgUnit.show = !orgUnit.show;
         if(!orgUnit.childrenLoaded){
-            OrgUnitFactory.getChildren(orgUnit.id).then(function(data){
+
+            OrgUnitFactory.getOrgUnits(orgUnit.id, "fields=id,path,programs[id],children[id,displayName,programs[id],level,children[id]]&paging=false").then(function(data){
+
+                orgUnit.children = data.organisationUnits[0].children;
+                orgUnit.childrenLoaded = true;
+            });
+
+            /*OrgUnitFactory.getChildren(orgUnit.id).then(function(data){
                 orgUnit.children = data.children;
                 orgUnit.childrenLoaded = true;
                 
-            });
+            });*/
         }
     };
     //end referral logic
@@ -374,4 +381,23 @@ trackerCapture.controller('EventCreationController',
             $scope.save();
         });
     };
+
+    //Function for checking if a OrgUnit in the OrgUnit tree has the selected program, in that case a referral can be made.
+    $scope.hasSelectedProgram = function(orgUnit) {
+        if(orgUnit.hasSelectedProgram){
+            return true;
+        }else if(angular.isDefined(orgUnit.hasSelectedProgram)){
+        	return false;
+        }
+        if(orgUnit.programs) {
+            for(var i = 0; i < orgUnit.programs.length; i++) {
+                if (orgUnit.programs[i].id === $scope.selectedProgram.id) {
+                    orgUnit.hasSelectedProgram = true;
+                    return true;
+                }
+            }
+        }
+        orgUnit.hasSelectedProgram = false;
+        return false;
+     }
 });
