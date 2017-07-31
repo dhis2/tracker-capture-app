@@ -300,7 +300,16 @@ function($rootScope,
 
             $scope.setEnrollmentStatus();
             if ($scope.savedTeis) {
-                restoreSavedTeis();
+                
+                if(savedAdvancedSeachOptions.refresh){
+                    if (savedAdvancedSeachOptions.searchText) {
+                        $scope.model.searchText = savedAdvancedSeachOptions.searchText;
+                        $scope.selectedSearchMode = savedAdvancedSeachOptions.searchMode;
+                    }
+                    $scope.search($scope.selectedSearchMode);
+                }else{
+                    restoreSavedTeis();
+                }
             } else {
                 if ($scope.doSearch && $scope.selectedProgram && ($scope.selectedProgram.displayFrontPageList)) {
                     $scope.search($scope.searchMode);

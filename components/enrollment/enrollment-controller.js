@@ -260,6 +260,9 @@ trackerCapture.controller('EnrollmentController',
             ModalService.showModal({}, modalOptions).then(function (result) {                
                 EnrollmentService.delete( $scope.selectedEnrollment.enrollment ).then(function (data) {
                     $scope.selectedEnrollment = null;
+                    var advancedSearchOptions = CurrentSelection.getAdvancedSearchOptions();
+                    advancedSearchOptions.refresh = true;
+                    CurrentSelection.setAdvancedSearchOptions(advancedSearchOptions);
                     $scope.broadCastSelections('mainDashboard');
                 });
             });
