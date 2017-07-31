@@ -300,14 +300,13 @@ function($rootScope,
 
             $scope.setEnrollmentStatus();
             if ($scope.savedTeis) {
-                
                 if(savedAdvancedSeachOptions.refresh){
                     if (savedAdvancedSeachOptions.searchText) {
                         $scope.model.searchText = savedAdvancedSeachOptions.searchText;
                         $scope.selectedSearchMode = savedAdvancedSeachOptions.searchMode;
                     }
                     $scope.search($scope.selectedSearchMode);
-                }else{
+                } else {
                     restoreSavedTeis();
                 }
             } else {
