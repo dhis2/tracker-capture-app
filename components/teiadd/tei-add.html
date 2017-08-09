@@ -122,6 +122,6 @@
     </div>
 </div>
 <div class="modal-footer">        
-    <button class="btn btn-primary trim" data-ng-click="addRelationship()" ng-disabled='!teiForRelationship'>{{addingRelationship ? 'save' : 'select' | translate}}</button>
+    <button class="btn btn-primary trim" data-ng-click="addRelationship()" ng-show='teiForRelationship'>{{addingRelationship ? 'save' : 'select' | translate}}</button>
     <button class="btn btn-default" data-ng-click="close()">{{'close'| translate}}</button>    
 </div> 
