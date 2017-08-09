@@ -14,6 +14,7 @@ trackerCapture.controller('EventCreationController',
                 OrgUnitFactory,
                 NotificationService,
                 EventCreationService,
+                RegistrationService,
                 eventsByStage,
                 stage,
                 stages,
@@ -30,6 +31,7 @@ trackerCapture.controller('EventCreationController',
                 selectedCategories,
                 PeriodService,
                 ModalService,
+                CurrentSelection,
                 $rootScope) {
     $scope.selectedEnrollment = enrollment;      
     $scope.stages = stages;
@@ -378,7 +380,22 @@ trackerCapture.controller('EventCreationController',
         };             
         ModalService.showModal({},modalOptions).then(function(){
             $rootScope.$broadcast('changeOrgUnit', {orgUnit: dummyEvent.orgUnit});
-            $scope.save();
+           
+            $scope.attributesById = CurrentSelection.getAttributesById();
+            $scope.optionSets = CurrentSelection.getOptionSets();
+            $scope.tei = CurrentSelection.get().tei;
+
+            $scope.tei.orgUnit = dummyEvent.orgUnit;
+
+            RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function (regResponse) {
+                //Ensures that when you go back to "TEI Search" screen that a new search is executed.
+                //Is necessary for updating the registring OrgUnit, because otherwise the system uses old cached data.
+                var advancedSearchOptions = CurrentSelection.getAdvancedSearchOptions();
+                advancedSearchOptions.refresh = true;
+                CurrentSelection.setAdvancedSearchOptions(advancedSearchOptions);
+                
+                $scope.save();
+            });
         });
     };
 
