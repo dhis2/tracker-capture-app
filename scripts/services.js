@@ -675,6 +675,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             
             return promise;
         },
+        getRelationships: function(uid) {
+            var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' + uid + '.json?fields=relationships').then(function(response){
+                var tei = response.data;
+                return tei.relationships;
+            });
+            return promise;
+        },
         delete: function(entityUid){
             var promise = $http.delete(DHIS2URL + '/trackedEntityInstances/' + entityUid).then(function(response){
                 return response.data;               
