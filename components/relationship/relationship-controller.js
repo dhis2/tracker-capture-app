@@ -43,7 +43,11 @@ trackerCapture.controller('RelationshipController',
             angular.forEach(rels, function(rel){
                 $scope.relationships[rel.id] = rel;
             });
-            setRelationships();
+
+            TEIService.getRelationships($scope.selectedTei.trackedEntityInstance).then(function(relationships){
+                $scope.selectedTei.relationships = relationships;
+                setRelationships();
+            });
         });
         $scope.selectedOrgUnit = $scope.selections.orgUnit;
     });
@@ -173,7 +177,6 @@ trackerCapture.controller('RelationshipController',
         if(tei && tei.relative && tei.relative.processed){
             attributes = tei.relative.attributes;
         }
-        
         return attributes;
     };
 });
