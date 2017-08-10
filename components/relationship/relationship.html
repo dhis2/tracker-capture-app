@@ -22,7 +22,8 @@
             <div ng-show="selectedTei && !selectedTei.relationships || selectedTei.relationships.length < 1" class="alert alert-warning">{{noRelationshipLabel}}</div> 
             <div ng-show="!selectedTei" class="alert alert-danger">{{'relationship_not_possible'| translate}}</div> 
 
-            <div ng-if="relatedTeis.length > 0">            
+            <div ng-if="relatedTeis.length > 0" ng-repeat="program in relationshipPrograms">
+                <h3>{{program.program}}</h3>       
                 <table class="table table-striped dhis2-table-hover table-bordered">
                     <tr>
                         <th>

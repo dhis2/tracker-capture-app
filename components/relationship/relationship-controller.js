@@ -25,6 +25,8 @@ trackerCapture.controller('RelationshipController',
         $scope.optionSets = $scope.selections.optionSets;
         $scope.selectedTei = angular.copy($scope.selections.tei);        
         $scope.attributesById = CurrentSelection.getAttributesById();
+
+        $scope.relationshipPrograms = [];
         
         $scope.attributes = [];
         for(var key in $scope.attributesById){
@@ -147,6 +149,7 @@ trackerCapture.controller('RelationshipController',
     var setRelationships = function(){
         $scope.relatedTeis = [];
         angular.forEach($scope.selectedTei.relationships, function(rel){
+            var test = rel.relative.enrollments;
             var teiId = rel.trackedEntityInstanceA;
             var relName = $scope.relationships[rel.relationship].aIsToB;
             if($scope.selectedTei.trackedEntityInstance === rel.trackedEntityInstanceA){
@@ -158,6 +161,7 @@ trackerCapture.controller('RelationshipController',
         });
         
         var selections = CurrentSelection.get();
+        $scope.relationshipPrograms = selections.enrollments;
         CurrentSelection.set({tei: $scope.selectedTei, te: $scope.selectedTei.trackedEntity, prs: selections.prs, pr: $scope.selectedProgram, prNames: selections.prNames, prStNames: selections.prStNames, enrollments: selections.enrollments, selectedEnrollment: $scope.selectedEnrollment, optionSets: selections.optionSets, orgUnit:selections.orgUnit});       
     };
     
