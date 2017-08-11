@@ -11,6 +11,8 @@ trackerCapture.controller('RelationshipController',
                 CurrentSelection,
                 RelationshipFactory,
                 OrgUnitFactory,
+                ProgramFactory,
+                EnrollmentService,
                 ModalService,
                 CommonUtils) {
     $rootScope.showAddRelationshipDiv = false;
@@ -38,7 +40,11 @@ trackerCapture.controller('RelationshipController',
         $scope.trackedEntity = $scope.selections.te;
         $scope.selectedEnrollment = $scope.selections.selectedEnrollment;
         $scope.selectedProgram = $scope.selections.pr;
-        $scope.programs = $scope.selections.pr;
+        $scope.programs = $scope.selections.prs;
+        $scope.programsById = {};
+        angular.forEach($scope.programs, function(program){
+            $scope.programsById[program.id] = program;
+        });
         
         RelationshipFactory.getAll().then(function(rels){
             $scope.relationshipTypes = rels;    
@@ -111,7 +117,7 @@ trackerCapture.controller('RelationshipController',
             
             var index = -1;
             for(var i=0; i<$scope.selectedTei.relationships.length; i++){
-                if($scope.selectedTei.relationships[i].relationship === rel.relId){
+                if($scope.selectedTei.relationships[i].trackedEntityInstanceB === rel.trackedEntityInstance){
                     index = i;
                     break;
                 }
@@ -148,21 +154,36 @@ trackerCapture.controller('RelationshipController',
     
     var setRelationships = function(){
         $scope.relatedTeis = [];
+        $scope.relationshipPrograms = [];        
         angular.forEach($scope.selectedTei.relationships, function(rel){
-            var test = rel.relative.enrollments;
             var teiId = rel.trackedEntityInstanceA;
             var relName = $scope.relationships[rel.relationship].aIsToB;
+            var teiPrograms = [];
             if($scope.selectedTei.trackedEntityInstance === rel.trackedEntityInstanceA){
                 teiId = rel.trackedEntityInstanceB;
                 relName = $scope.relationships[rel.relationship].bIsToA;
             }
-            var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(rel)};            
-            $scope.relatedTeis.push(relative);
+            
+            EnrollmentService.getByEntity(rel.trackedEntityInstanceB).then(function(response){
+                angular.forEach(response.enrollments, function(en){
+                    var existing = $scope.relationshipPrograms.filter(function(program){
+                        return program.id === en.program;
+                    });
+                    if (existing.length === 0) {
+                        $scope.relationshipPrograms.push($scope.programsById[en.program]);
+                    }
+                    teiPrograms.push(en.program);
+                });
+                var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(rel), programs: teiPrograms};            
+                $scope.relatedTeis.push(relative);
+            });
         });
-        
+
+        console.log($scope.relationshipPrograms);
+        console.log($scope.relatedTeis);
+
         var selections = CurrentSelection.get();
-        $scope.relationshipPrograms = selections.enrollments;
-        CurrentSelection.set({tei: $scope.selectedTei, te: $scope.selectedTei.trackedEntity, prs: selections.prs, pr: $scope.selectedProgram, prNames: selections.prNames, prStNames: selections.prStNames, enrollments: selections.enrollments, selectedEnrollment: $scope.selectedEnrollment, optionSets: selections.optionSets, orgUnit:selections.orgUnit});       
+        CurrentSelection.set({tei: $scope.selectedTei, te: $scope.selectedTei.trackedEntity, prs: selections.prs, pr: $scope.selectedProgram, prNames: selections.prNames, prStNames: selections.prStNames, enrollments: selections.enrollments, selectedEnrollment: $scope.selectedEnrollment, optionSets: selections.optionSets, orgUnit:selections.orgUnit});
     };
     
     var getRelativeAttributes = function(tei){

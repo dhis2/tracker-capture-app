@@ -23,7 +23,7 @@
             <div ng-show="!selectedTei" class="alert alert-danger">{{'relationship_not_possible'| translate}}</div> 
 
             <div ng-if="relatedTeis.length > 0" ng-repeat="program in relationshipPrograms">
-                <h3>{{program.program}}</h3>       
+                <h3>{{program.displayName}}</h3>       
                 <table class="table table-striped dhis2-table-hover table-bordered">
                     <tr>
                         <th>
@@ -34,7 +34,7 @@
                         </th>
                         <th></th>
                     </tr>
-                    <tr ng-repeat="rel in relatedTeis">
+                    <tr ng-repeat="rel in relatedTeis" ng-if="rel.programs.indexOf(program.id) !== -1">
                         <td title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relId)">{{rel.relName}}</td> 
                         <td title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relId)" ng-repeat="att in attributes" ng-if="att.displayInListNoProgram">
                             {{rel.attributes[att.id]}}
