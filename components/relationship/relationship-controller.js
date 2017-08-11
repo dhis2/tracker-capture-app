@@ -154,10 +154,12 @@ trackerCapture.controller('RelationshipController',
     
     var setRelationships = function(){
         $scope.relatedTeis = [];
-        $scope.relationshipPrograms = [];        
+        $scope.relationshipPrograms = [];
+        //Loop through all relationships.      
         angular.forEach($scope.selectedTei.relationships, function(rel){
             var teiId = rel.trackedEntityInstanceA;
             var relName = $scope.relationships[rel.relationship].aIsToB;
+            //A temp array that contains all the programs a tei is enrolled in.
             var teiPrograms = [];
             if($scope.selectedTei.trackedEntityInstance === rel.trackedEntityInstanceA){
                 teiId = rel.trackedEntityInstanceB;
@@ -165,20 +167,25 @@ trackerCapture.controller('RelationshipController',
             }
             
             EnrollmentService.getByEntity(rel.trackedEntityInstanceB).then(function(response){
+                //Loop through all enrollments for a related tei.
                 angular.forEach(response.enrollments, function(en){
+                    //Here an array with all programs for all teis constructed.
                     var existing = $scope.relationshipPrograms.filter(function(program){
                         return program.id === en.program;
                     });
+                    //Check that the program is not already in the array.
                     if (existing.length === 0) {
                         $scope.relationshipPrograms.push($scope.programsById[en.program]);
                     }
                     teiPrograms.push(en.program);
                 });
+
                 var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(rel), programs: teiPrograms};            
                 $scope.relatedTeis.push(relative);
             });
         });
 
+        //Debug prints, can be removed later.
         console.log($scope.relationshipPrograms);
         console.log($scope.relatedTeis);
 

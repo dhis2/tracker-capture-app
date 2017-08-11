@@ -34,6 +34,7 @@
                         </th>
                         <th></th>
                     </tr>
+                    <!-- Checks if the rel is enrolled in the program, if he is he is displayed -->
                     <tr ng-repeat="rel in relatedTeis" ng-if="rel.programs.indexOf(program.id) !== -1">
                         <td title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relId)">{{rel.relName}}</td> 
                         <td title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relId)" ng-repeat="att in attributes" ng-if="att.displayInListNoProgram">
