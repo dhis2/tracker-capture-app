@@ -175,7 +175,8 @@ trackerCapture.controller('RelationshipController',
                     });
                     //Check that the program is not already in the array.
                     if (existing.length === 0) {
-                        $scope.relationshipPrograms.push($scope.programsById[en.program]);
+                        var program = {displayName: $scope.programsById[en.program].displayName, displayShortName: $scope.programsById[en.program].displayShortName, id: $scope.programsById[en.program].id, programAttributes: getProgramAttributes($scope.programsById[en.program].programTrackedEntityAttributes)}
+                        $scope.relationshipPrograms.push(program);
                     }
                     teiPrograms.push(en.program);
                 });
@@ -185,7 +186,7 @@ trackerCapture.controller('RelationshipController',
             });
         });
 
-        //Debug prints, can be removed later.
+        //Debug prints, can be removed.
         console.log($scope.relationshipPrograms);
         console.log($scope.relatedTeis);
 
@@ -210,5 +211,16 @@ trackerCapture.controller('RelationshipController',
             attributes = tei.relative.attributes;
         }
         return attributes;
+    };
+
+    //Function for getting all attributeIDs that a specific program has.
+    var getProgramAttributes = function(attributeArray) {
+        var programAttributes = [];
+
+        angular.forEach(attributeArray, function(attribute){
+            programAttributes.push(attribute.trackedEntityAttribute.id);
+        });
+
+        return programAttributes;
     };
 });
