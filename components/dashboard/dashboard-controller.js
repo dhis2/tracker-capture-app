@@ -176,7 +176,7 @@ trackerCapture.controller('DashboardController',
 
                                             //get programs valid for the selected ou and tei
                                             angular.forEach(programs, function (program) {
-                                                if (program.trackedEntity.id === $scope.selectedTei.trackedEntity) {
+                                                if (program.trackedEntity && program.trackedEntity.id === $scope.selectedTei.trackedEntity) {
                                                     $scope.programs.push(program);
                                                     $scope.programNames[program.id] = {
                                                         id: program.id,

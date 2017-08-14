@@ -313,7 +313,6 @@ trackerCapture.controller('RegistrationController',
 
     $scope.$on('changeOrgUnit', function (event, args) {
         $scope.tei.orgUnit = args.orgUnit;
-        $scope.registerEntity("newOrgUnit");
     });
 
     var performRegistration = function (destination) {
