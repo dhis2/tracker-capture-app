@@ -116,7 +116,9 @@
                         <span ng-init="initTest(orgUnit)">
                             <span class="org-unit-tree-button" ng-click="expandCollapse(orgUnit)" ng-show="orgUnit.show && orgUnit.children.length > 0"><i class="fa fa-minus-square-o"></i></span>
                             <span class="org-unit-tree-button" ng-click="expandCollapse(orgUnit)" ng-show="(!orgUnit.show && orgUnit.children.length > 0) || (!orgUnit.show && orgUnit.hasChildren)"><i class="fa fa-plus-square-o"></i></span>
-                            <span class="org-unit-tree-button" ng-click="setSelectedSearchingOrgUnit(orgUnit)" ng-class="{'selected-org-unit' : orgUnit.id === selectedSearchingOrgUnit.id}">{{orgUnit.displayName}}</span>
+                            <!-- Makes OrgUnits with the selected program selectable, while OrgUnits which do not have the selected program gets grayed out. -->
+                            <span class="org-unit-tree-button" ng-show="hasSelectedProgram(orgUnit)" ng-click="setSelectedSearchingOrgUnit(orgUnit)" ng-class="{'selected-org-unit' : orgUnit.id === selectedSearchingOrgUnit.id}">{{orgUnit.displayName}}</span>
+                            <span class="org-unit-tree-button" ng-hide="hasSelectedProgram(orgUnit)" style="color: LightGray">{{orgUnit.displayName}}</span>                            
                             <ul class="tree" id="tree" ng-show="orgUnit.show">
                                 <li ng-repeat="orgUnit in orgUnit.children | orderBy:'displayName'" ng-include="'orgUnitTree.html'"></li>
                             </ul>
