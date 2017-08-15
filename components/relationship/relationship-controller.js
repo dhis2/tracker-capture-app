@@ -139,17 +139,8 @@ trackerCapture.controller('RelationshipController',
         });        
     };
     
-    $scope.showDashboard = function(teiId, relId){
-        
-        var dashboardProgram = null;
-        
-        if($scope.selectedProgram && $scope.selectedProgram.relationshipType){
-            if($scope.selectedProgram.relationshipType.id === relId && $scope.selectedProgram.relatedProgram ){
-                dashboardProgram = $scope.selectedProgram.relatedProgram.id;
-            }
-        }        
-    
-        $location.path('/dashboard').search({tei: teiId, program: dashboardProgram, ou: $scope.selectedOrgUnit.id}); 
+    $scope.showDashboard = function(teiId, program){    
+        $location.path('/dashboard').search({tei: teiId, program: program, ou: $scope.selectedOrgUnit.id});
     };
     
     var setRelationships = function(){
