@@ -29,7 +29,7 @@
 
             <!-- enrollment and incidence dates begin -->
             <div ng-if="selectedProgramForRelative && !customForm.hasProgramDate">
-                <div ng-include="'components/registration/enrollment-dates-form.html'"></div>
+                <div ng-include="'components/registration/relationship-enrollment-dates-form.html'"></div>
             </div>
             <!-- enrollment and incidence dates end -->
 
@@ -40,7 +40,7 @@
 
         <!-- default registration form begins -->
         <div class="vertical-spacing" ng-if="!customFormExists">            
-            <div ng-if="selectedProgramForRelative" ng-include="'components/registration/enrollment-dates-form.html'"></div>
+            <div ng-if="selectedProgramForRelative" ng-include="'components/registration/relationship-enrollment-dates-form.html'"></div>
             <div ng-include="'components/registration/default-registration-form.html'"></div>
         </div>
         <!-- default registration form ends -->
