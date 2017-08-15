@@ -11,9 +11,14 @@
         </td>
     </tr>
     <tr>
-        <td>
+        <td ng-if="!selectedProgramForRelative">
             {{selectedProgram.enrollmentDateLabel}}
         </td>
+
+        <td ng-if="selectedProgramForRelative">
+            {{selectedProgramForRelative.enrollmentDateLabel}}
+        </td>
+
         <td class="absorbing-column">
             <input type="text"
                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
@@ -29,26 +34,27 @@
             <input type="text" class="form-control not-for-screen"/>
             <span ng-show="outerForm.submitted && outerForm.enrollmentDate.$invalid" class="error">{{'required'| translate}}</span>
         </td>
-    </tr>     
-    <tr ng-if="selectedProgram.displayIncidentDate">
-        <td>
-            {{selectedProgram.incidentDateLabel}}
-        </td>
-        <td class="absorbing-column">
-            <input type="text"
-                   placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
-                   name="incidentDate"
-                   class="form-control hideInPrint" 
-                   d2-date 
-                   max-date="selectedProgram.selectIncidentDatesInFuture ? '' : 0"
-                   min-date=""
-                   ng-model="selectedEnrollment.incidentDate"
-                   ng-disabled="selectedOrgUnit.closedStatus"
-                   ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
-            <input type="text" class="form-control not-for-screen"/>
-        </td>
     </tr>
-    <tr ng-if="selectedProgram.captureCoordinates">
+    <div ng-if="!selectedProgramForRelative">
+        <tr ng-if="selectedProgram.displayIncidentDate">
+            <td>
+                {{selectedProgram.incidentDateLabel}}
+            </td>
+            <td class="absorbing-column">
+                <input type="text"
+                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                    name="incidentDate"
+                    class="form-control hideInPrint" 
+                    d2-date 
+                    max-date="selectedProgram.selectIncidentDatesInFuture ? '' : 0"
+                    min-date=""
+                    ng-model="selectedEnrollment.incidentDate"
+                    ng-disabled="selectedOrgUnit.closedStatus"
+                    ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
+                <input type="text" class="form-control not-for-screen"/>
+            </td>
+        </tr>
+        <tr ng-if="selectedProgram.captureCoordinates">
             <td>
                 {{'coordinate'| translate}}
             </td>
@@ -56,4 +62,33 @@
                 <d2-map d2-object="selectedEnrollment" d2-coordinate-format="'COORDINATE'" d2-disabled="selectedOrgUnit.closedStatus"></d2-map>
             </td>                                            
         </tr>
+    </div>
+    <div ng-if="selectedProgramForRelative">
+        <tr ng-if="selectedProgramForRelative.displayIncidentDate">
+            <td>
+                {{selectedProgramForRelative.incidentDateLabel}}
+            </td>
+            <td class="absorbing-column">
+                <input type="text"
+                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                    name="incidentDate"
+                    class="form-control hideInPrint" 
+                    d2-date 
+                    max-date="selectedProgramForRelative.selectIncidentDatesInFuture ? '' : 0"
+                    min-date=""
+                    ng-model="selectedEnrollment.incidentDate"
+                    ng-disabled="selectedOrgUnit.closedStatus"
+                    ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
+                <input type="text" class="form-control not-for-screen"/>
+            </td>
+        </tr>
+        <tr ng-if="selectedProgramForRelative.captureCoordinates">
+            <td>
+                {{'coordinate'| translate}}
+            </td>
+            <td>         
+                <d2-map d2-object="selectedEnrollment" d2-coordinate-format="'COORDINATE'" d2-disabled="selectedOrgUnit.closedStatus"></d2-map>
+            </td>                                            
+        </tr>
+    </div>
 </table>
