@@ -50,6 +50,7 @@
                     </span>                    
                 </span>
 
+                <!-- attribute.allowFutureDate does not exist, that is why you can't select a date in the future -->
                 <span ng-if="!attribute.optionSetValue" ng-switch="attribute.valueType">
                     <span ng-switch-when="DATE">
                         <input type="text"
