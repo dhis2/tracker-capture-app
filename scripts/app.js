@@ -17,6 +17,7 @@ import '../scripts/leftbar-menu-controller.js';
 import '../scripts/report-types-controller.js';
 import '../scripts/display-mode-controller.js';
 import '../scripts/sticky.min.js';
+import '../scripts/ng-csv.js';
 import '../components/dashboard/dashboard-controller.js';
 import '../components/dashboard/dashboard-widgets-controller.js';
 import '../components/registration/registration-controller.js';
