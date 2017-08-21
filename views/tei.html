@@ -36,7 +36,7 @@
             </thead>
             <tbody id="list">
                 <tr ng-if="!addingTeiAssociate"
-                    ng-repeat="trackedEntity in trackedEntityList.rows.own" 
+                    ng-repeat="trackedEntity in trackedEntityList.rows.own | orderBy:d2Sort:reverse" 
                     ng-click="mainTei.trackedEntityInstance ? assignRelationship(trackedEntity) : showDashboard(trackedEntity)"
                     ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
                     title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
@@ -57,7 +57,7 @@
                     </td>
                 </tr>
                 <tr ng-if="!addingTeiAssociate"
-                    ng-repeat="trackedEntity in trackedEntityList.rows.other" 
+                    ng-repeat="trackedEntity in trackedEntityList.rows.other | orderBy:d2Sort:reverse" 
                     ng-click="mainTei.trackedEntityInstance ? assignRelationship(trackedEntity) : showDashboard(trackedEntity)"
                     ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
                     title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
