@@ -9,6 +9,7 @@ trackerCapture.controller('ProfileController',
     $scope.editingDisabled = true;
     $scope.enrollmentEditing = false;
     $scope.widget = 'PROFILE';
+    $scope.isInDashboard = true;
     
     //listen for the selected entity
     var selections = {};
