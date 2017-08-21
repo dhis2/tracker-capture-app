@@ -3,6 +3,7 @@ export default angular.module('trackerCapture', [
     'ngRoute',
     'ngCookies',
     'ngSanitize',
+    'ngCsv',
     'ngMessages',
     'trackerCaptureServices',
     'trackerCaptureFilters',
