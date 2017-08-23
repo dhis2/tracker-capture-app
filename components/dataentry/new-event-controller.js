@@ -33,6 +33,7 @@ trackerCapture.controller('EventCreationController',
                 ModalService,
                 CurrentSelection,
                 $rootScope) {
+    $scope.selectedOrgUnit = orgUnit;
     $scope.selectedEnrollment = enrollment;      
     $scope.stages = stages;
     $scope.allStages = allStages;

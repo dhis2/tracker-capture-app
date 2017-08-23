@@ -25,13 +25,22 @@
                     {{category.displayName}}
                 </td>
                 <td>
-                    <select class="form-control"
+                    <ui-select ng-model="category.selectedOption"                                        
+                        theme="select2"  
+                        on-select="getCategoryOptions()"
+                        style="width:100%;">
+                        <ui-select-match allow-clear="true" class="form-control-ui-select" placeholder="{{category.categoryOptions && category.categoryOptions.length > 0 ? 'select_or_search' : 'empty'| translate}}">{{$select.selected.displayName|| $select.selected}}</ui-select-match>
+                        <ui-select-choices  repeat="option in category.categoryOptions | categoryOptionFilter:selectedOrgUnit | filter: $select.search | limitTo:maxOptionSize">
+                            <span ng-bind-html="option.displayName | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                    <!--<select class="form-control"
                             name="option"
                             ng-model="category.selectedOption"
                             ng-options="option as option.displayName for option in category.categoryOptions"
                             ng-change="getCategoryOptions()">
                         <option value="" ng-selected="selectDefault.selected">{{'please_select' | translate}}</option>
-                    </select>
+                    </select>-->
                 </td>
             </tr>
             
