@@ -542,4 +542,15 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             }
         ]
     }
+})
+
+.directive('optionListInfo', function () {
+    return {
+        restrict: 'E',
+        scope: {
+            optionSet: '@',
+            maxOptionSize: '@'            
+        },
+        templateUrl: 'views/option-list-with-info.html'
+    };
 });
