@@ -579,6 +579,10 @@ trackerCapture.controller('DataEntryController',
     $scope.isCompulsory = function(dataElement) {
         return $scope.currentStage.programStageDataElementsCollection[dataElement.id].compulsory;
     };
+
+    $scope.allowDateInFuture = function(dataElement) {
+        return $scope.currentStage.programStageDataElementsCollection[dataElement.id].allowFutureDate;
+    };
     
     //check if field is hidden
     $scope.isHidden = function (id, event) {
@@ -3227,5 +3231,5 @@ trackerCapture.controller('DataEntryController',
         for(var key in $scope.eventTableOptions){
             $scope.eventTableOptionsArr[$scope.eventTableOptions[key].sort] = $scope.eventTableOptions[key];
         }
-    }   
+    }
 });
