@@ -2,19 +2,16 @@
     <div ng-if="prStDes[de.id].dataElement.optionSetValue">
         <div class="hideInPrint">
             <div ng-if="!prStDes[de.id].renderOptionsAsRadio || optionSets[prStDes[de.id].dataElement.optionSet.id].options.length >= 7">
-                <ui-select  ng-model="currentEvent[de.id]"
-                            theme="select2"
-                            ng-required={{prStDes[de.id].compulsory}}
-                            ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
-                            name="foo"
-                            on-select="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                            style="width: 100%">
-                    <ui-select-match allow-clear="true" ng-class="getInputNotifcationClass(de.id, true)"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
-                    <ui-select-choices repeat="option.displayName as option in optionSets[prStDes[de.id].dataElement.optionSet.id].options | filter: $select.search | limitTo: (maxOptionSize + 1)" ui-disable-choice="$index >= maxOptionSize">
-                      <option ng-if="$index < maxOptionSize" ng-bind-html="option.displayName | highlight: $select.search"></option>
-                      <option align="center" ng-if="$index >= maxOptionSize" style="color:gray;" disable="true">{{optionSets[prStDes[de.id].dataElement.optionSet.id].options.length - maxOptionSize}} {{'more_options_available' | translate}}</option>
-                    </ui-select-choices>
-                </ui-select>
+                <more-options-list  ng-model="currentEvent[de.id]"
+                                    ng-required={{prStDes[de.id].compulsory}}
+                                    ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
+                                    on-select="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                                    ui-select-match-ng-class="getInputNotifcationClass(de.id, true)"
+                                    max-option-size="maxOptionSize"
+                                    ui-select-choices-repeat="option.displayName as option in optionSets[prStDes[de.id].dataElement.optionSet.id].options | filter: $select.search | limitTo: (maxOptionSize + 1)"
+                                    all-options="optionSets[prStDes[de.id].dataElement.optionSet.id].options"
+                                    option-ng-bind-html="option.displayName | highlight: $select.search">
+                </more-options-list>
             </div>
             <div ng-if="prStDes[de.id].renderOptionsAsRadio && optionSets[prStDes[de.id].dataElement.optionSet.id].options.length < 7">
                 <d2-radio id="de.id" 
