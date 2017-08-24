@@ -12,7 +12,7 @@
                     <ui-select-match allow-clear="true" ng-class="getInputNotifcationClass(de.id, true)"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                     <ui-select-choices repeat="option.displayName as option in optionSets[prStDes[de.id].dataElement.optionSet.id].options | filter: $select.search | limitTo: (maxOptionSize + 1)" ui-disable-choice="$index >= maxOptionSize">
                       <option ng-if="$index < maxOptionSize" ng-bind-html="option.displayName | highlight: $select.search"></option>
-                      <option align="center" ng-if="$index >= maxOptionSize" style="color:gray;" disable="true">{{optionSets[prStDes[de.id].dataElement.optionSet.id].options.length - maxOptionSize}} {{'more_options_available' | translate}}</option>
+                      <option align="center" ng-if="$index >= maxOptionSize" style="color:gray;" disable="true">{{optionSets[prStDes[de.id].dataElement.optionSet.id].options.length - maxOptionSize}} {{moreOptionsText}}</option>
                     </ui-select-choices>
                 </ui-select>
             </div>
