@@ -568,7 +568,7 @@ trackerCapture.controller('RegistrationController',
         });
     };
 
-    $scope.cancelRegistrationWarning = function (cancelFunction) {
+    $scope.cancelRegistrationWarning = function (cancelFunction, inDashboard) {
         var result = RegistrationService.processForm($scope.tei, $scope.selectedTei, $scope.teiOriginal, $scope.attributesById);
         var prStDe;
         if (!result.formChanged) {
@@ -587,7 +587,8 @@ trackerCapture.controller('RegistrationController',
                 closeButtonText: 'no',
                 actionButtonText: 'yes',
                 headerText: 'cancel',
-                bodyText: 'are_you_sure_to_cancel_registration'
+                //Depending on if you are editing in dashboard or registering a new TEI you get a different cancel message.
+                bodyText: inDashboard ? 'are_you_sure_to_cancel_editing' : 'are_you_sure_to_cancel_registration'
             };
 
             ModalService.showModal({}, modalOptions).then(function () {

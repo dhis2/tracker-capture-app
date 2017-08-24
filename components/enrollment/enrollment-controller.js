@@ -111,7 +111,19 @@ trackerCapture.controller('EnrollmentController',
         };
 
         $scope.showNewEnrollment = function () {
+            if($scope.selectedProgram.onlyEnrollOnce && $scope.hasEnrollmentHistory) {
+                var modalOptions = {
+                    headerText: 'warning',
+                    bodyText: 'can_not_add_new_enrollment'
+                };
+    
+                ModalService.showModal({}, modalOptions);
+
+                return;
+            }
+            
             $scope.showEnrollmentDiv = !$scope.showEnrollmentDiv;
+
             if(!$scope.showEnrollmentDiv) {
                 return;
             }

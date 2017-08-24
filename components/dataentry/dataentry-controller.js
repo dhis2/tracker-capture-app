@@ -579,6 +579,10 @@ trackerCapture.controller('DataEntryController',
     $scope.isCompulsory = function(dataElement) {
         return $scope.currentStage.programStageDataElementsCollection[dataElement.id].compulsory;
     };
+
+    $scope.allowDateInFuture = function(dataElement) {
+        return $scope.currentStage.programStageDataElementsCollection[dataElement.id].allowFutureDate;
+    };
     
     //check if field is hidden
     $scope.isHidden = function (id, event) {
