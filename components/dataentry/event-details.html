@@ -17,7 +17,8 @@
                ng-change="verifyExpiryDate('currentEvent.eventDate')"
                ng-disabled="selectedOrgUnit.closedStatus || currentEvent.status === 'SKIPPED' || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || currentStage.periodType"
                ng-required="true"
-               blur-or-change="saveEventDate()"/>
+               blur-or-change="saveEventDate()"
+               ng-focus="setDateOnFocus(currentEvent.eventDate, selectedEnrollment.enrollmentDate)"/>
         <input type="text"
                class="form-control not-for-screen"
                ng-class="{'input-success': eventDateSaved}"

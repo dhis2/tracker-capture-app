@@ -698,4 +698,10 @@ trackerCapture.controller('RegistrationController',
             dateSetter($scope, null);
         }
     };
+
+    $scope.setDateOnFocus = function(currentValue, date) {
+        if(!currentValue) {
+            $scope.currentEvent.eventDate = date;
+        }
+    };
 });
