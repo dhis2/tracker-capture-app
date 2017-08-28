@@ -155,7 +155,7 @@ trackerCapture.controller('EventCreationController',
             }
             
             if(angular.isUndefined(suggestedStage)){
-                suggestedStage = availableStagesOrdered[availableStagesOrdered.length - 1];
+                suggestedStage = availableStagesOrdered[0];
             }
         }
         
