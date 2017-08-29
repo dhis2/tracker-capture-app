@@ -134,7 +134,7 @@ trackerCapture.controller('EventCreationController',
             for(var j = 0; j < availableStagesOrdered.length; j++){
                 var availableStage = availableStagesOrdered[j];
                 
-                if( !availableStage || !availableStage.id || lastStageForEvents || lastStageForEvents.id ){
+                if( !availableStage || !availableStage.id ){
                     break;
                 }
                 
@@ -155,7 +155,7 @@ trackerCapture.controller('EventCreationController',
             }
             
             if(angular.isUndefined(suggestedStage)){
-                suggestedStage = availableStagesOrdered[availableStagesOrdered.length - 1];
+                suggestedStage = availableStagesOrdered[0];
             }
         }
         
