@@ -14,7 +14,7 @@
                min-date="model.minDate?model.minDate : ''"
                name="eventDate"
                ng-model="currentEvent.eventDate"
-               ng-change="verifyExpiryDate('currentEvent.eventDate')"
+               ng-change="verifyExpiryDate(currentEvent.eventDate)"
                ng-disabled="selectedOrgUnit.closedStatus || currentEvent.status === 'SKIPPED' || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || currentStage.periodType"
                ng-required="true"
                blur-or-change="saveEventDate()"/>
