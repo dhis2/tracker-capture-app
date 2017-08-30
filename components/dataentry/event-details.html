@@ -12,6 +12,7 @@
                d2-date
                max-date="model.maxDate?model.maxDate : '0'"
                min-date="model.minDate?model.minDate : ''"
+               picker-class="hide-clear"
                name="eventDate"
                ng-model="currentEvent.eventDate"
                ng-change="verifyExpiryDate(currentEvent.eventDate)"
