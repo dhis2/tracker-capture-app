@@ -2300,3 +2300,7 @@ button.list-group-item-danger.active:focus {
 .loading-audit-data {
     margin-left: 43%;
 }
+
+.hide-clear .ui-datepicker-cmd-clear {
+    display: none;
+}

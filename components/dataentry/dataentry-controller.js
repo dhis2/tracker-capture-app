@@ -65,6 +65,7 @@ trackerCapture.controller('DataEntryController',
     $scope.dashBoardWidgetFirstRun = true;
     $scope.showSelf = true;
     $scope.orgUnitNames = {};
+    $scope.originalDate = '';
     
     var eventLockEnabled = false;
     var eventLockHours = 8; //Number of hours before event is locked after completing.
@@ -151,9 +152,24 @@ trackerCapture.controller('DataEntryController',
         var dateGetter = $parse(eventDateStr);
         var dateSetter = dateGetter.assign;
         var date = dateGetter($scope);
+
+        var modalOptions = {
+            headerText: 'warning',
+            bodyText: 'no_blank_date'
+        };
+        
         if(!date) {
+            if(!$scope.originalDate) {
+                $scope.currentEvent.eventDate = $scope.currentEventOriginal.eventDate;
+            } else {
+                $scope.currentEvent.eventDate = $scope.originalDate;
+            }
+            ModalService.showModal({}, modalOptions);
             return;
+        } else {
+            $scope.originalDate = eventDateStr;
         }
+
         if($scope.selectedProgram.expiryPeriodType && $scope.selectedProgram.expiryDays) {
             if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
                 dateSetter($scope, null);
@@ -1556,7 +1572,7 @@ trackerCapture.controller('DataEntryController',
         }
     };
 
-    $scope.saveEventDate = function (reOrder) {        
+    $scope.saveEventDate = function (reOrder) {       
         $scope.saveEventDateForEvent($scope.currentEvent, reOrder);        
     };
 
