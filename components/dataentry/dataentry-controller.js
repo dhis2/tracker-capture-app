@@ -65,6 +65,7 @@ trackerCapture.controller('DataEntryController',
     $scope.dashBoardWidgetFirstRun = true;
     $scope.showSelf = true;
     $scope.orgUnitNames = {};
+    $scope.testDate = new Date(2016, 8, 24, 0, 48, 30, 0);
     
     var eventLockEnabled = false;
     var eventLockHours = 8; //Number of hours before event is locked after completing.
@@ -1394,6 +1395,16 @@ trackerCapture.controller('DataEntryController',
         $scope.executeRules();
     };
 
+    $scope.dateTimeInit = function(id) {
+        $scope.dateTime = { date: null, time: null};        
+        if(!$scope.currentEvent[id]) {
+            return;
+        }
+        var values = $scope.currentEvent[id].split('T');
+        $scope.dateTime.date = values[0];
+        $scope.dateTime.time = values[1];
+    };
+
     $scope.saveDatavalue = function (prStDe, field) {
         $scope.saveDataValueForEvent(prStDe, field, $scope.currentEvent, false);
     };
@@ -1426,6 +1437,46 @@ trackerCapture.controller('DataEntryController',
 
         
         return def.promise;
+    };
+
+    $scope.saveDateTime = function(id, date, prStDe, field) {
+        var splitDateTime = $scope.currentEvent[id].split("T");
+
+        if(date) {
+            $scope.currentEvent[id] = $scope.dateTime.date + "T" + splitDateTime[1];
+        } else {
+            $scope.currentEvent[id] = splitDateTime[0] + "T" + $scope.dateTime.time;
+        }
+
+        //Regex expression to check that the correct format is followed. Migh lead to bug if format is changed in system settings.
+        if($scope.currentEvent[id].match(/^(\d\d\d\d-\d\d-\d\dT\d\d:\d\d)$/)) {
+            $scope.saveDatavalue(prStDe, field);
+        } else {
+            var modalOptions = {
+                headerText: 'warning',
+                bodyText: 'both_date_and_time'
+            };
+            
+            ModalService.showModal({},modalOptions);
+            return;
+        }
+       
+    };
+    
+    $scope.saveTime = function(id, prStDe, field) {
+        //Regex expression to check that the correct format is followed. Migh lead to bug if format is changed in system settings.
+        if($scope.currentEvent[id].match(/^(\d\d:\d\d)$/)) {
+            $scope.saveDatavalue(prStDe, field);
+        } else {
+            var modalOptions = {
+                headerText: 'warning',
+                bodyText: 'wrong_time_format'
+            };
+            
+            ModalService.showModal({},modalOptions);
+            return;
+        }
+       
     };
     
     $scope.saveDataValueForEvent = function (prStDe, field, eventToSave, backgroundUpdate) {
