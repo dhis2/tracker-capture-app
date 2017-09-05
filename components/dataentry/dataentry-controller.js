@@ -1504,6 +1504,7 @@ trackerCapture.controller('DataEntryController',
             $scope.currentEvent[id] = splitDateTime[0] + "T" + $scope.dateTime.time;
         }
 
+        //Use calendarSetting to change the regex expresion to what the system settings are set to.
         var calendarSetting = CalendarService.getSetting();
 
         //Regex expression to check that the correct format is followed. Might lead to bug if format is changed in system settings.
