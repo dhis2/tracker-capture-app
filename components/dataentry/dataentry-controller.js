@@ -29,6 +29,7 @@ trackerCapture.controller('DataEntryController',
                 OptionSetService,
                 AttributesFactory,
                 TrackerRulesFactory,
+                CalendarService,
                 EventCreationService) {
     
     //Unique instance id for the controller:
@@ -1395,6 +1396,58 @@ trackerCapture.controller('DataEntryController',
         $scope.executeRules();
     };
 
+    $scope.autoTimeFormat = function(id, datetime) {
+        var time = $scope.currentEvent[id];
+        if(datetime) {
+            time = $scope.dateTime.time;
+        }
+
+        //Stops user from typing time longer the four digits (HH:MM).
+        if(time.length > 5) {
+            if(datetime) {
+                $scope.dateTime.time = $scope.dateTime.time.substr(0, 5);
+                return;
+            } else {
+                $scope.currentEvent[id] = $scope.currentEvent[id].substr(0, 5);
+                return;
+            }
+        }
+        
+        //Check for hours not higher than 23, otherwise set to 00.
+        if(time.length > 1) {
+            var temp = time.substr(0, 2);
+            temp = parseInt(temp);
+            if(temp >= 24) {
+                time = '00' + time.substr(2);
+            }
+        }
+
+        //Check for minutes not higher than 59, otherwise set to 00.
+        if(time.length > 4) {
+            var temp = time.substr(3);
+            temp = parseInt(temp);
+            if(temp >= 60) {
+                time = time.substr(0, 2) + '00';
+            }
+        }
+
+        time = time.replace(/[\W\s\._\-]+/g, '');
+
+        var split = 2;
+        var chunk = [];
+
+        for (var i = 0; i < time.length; i += split) {;
+            chunk.push(time.substr(i, split));
+        }
+        time = chunk.join(":");
+
+        if(datetime) {
+            $scope.dateTime.time = time;
+        } else {
+            $scope.currentEvent[id] = time;
+        }
+    };
+
     $scope.dateTimeInit = function(id) {
         $scope.dateTime = { date: null, time: null};        
         if(!$scope.currentEvent[id]) {
@@ -1440,7 +1493,10 @@ trackerCapture.controller('DataEntryController',
     };
 
     $scope.saveDateTime = function(id, date, prStDe, field) {
-        var splitDateTime = $scope.currentEvent[id].split("T");
+        var splitDateTime = '';
+        if($scope.currentEvent[id]) {
+            splitDateTime = $scope.currentEvent[id].split("T");
+        }
 
         if(date) {
             $scope.currentEvent[id] = $scope.dateTime.date + "T" + splitDateTime[1];
@@ -1448,8 +1504,13 @@ trackerCapture.controller('DataEntryController',
             $scope.currentEvent[id] = splitDateTime[0] + "T" + $scope.dateTime.time;
         }
 
-        //Regex expression to check that the correct format is followed. Migh lead to bug if format is changed in system settings.
+        var calendarSetting = CalendarService.getSetting();
+
+        //Regex expression to check that the correct format is followed. Might lead to bug if format is changed in system settings.
         if($scope.currentEvent[id].match(/^(\d\d\d\d-\d\d-\d\dT\d\d:\d\d)$/)) {
+            $scope.saveDatavalue(prStDe, field);
+        } else if(!$scope.dateTime.date && !$scope.dateTime.time) {
+            $scope.currentEvent[id] = null;
             $scope.saveDatavalue(prStDe, field);
         } else {
             var modalOptions = {
@@ -1465,7 +1526,7 @@ trackerCapture.controller('DataEntryController',
     
     $scope.saveTime = function(id, prStDe, field) {
         //Regex expression to check that the correct format is followed. Migh lead to bug if format is changed in system settings.
-        if($scope.currentEvent[id].match(/^(\d\d:\d\d)$/)) {
+        if(!$scope.currentEvent[id] || $scope.currentEvent[id].match(/^(\d\d:\d\d)$/)) {
             $scope.saveDatavalue(prStDe, field);
         } else {
             var modalOptions = {

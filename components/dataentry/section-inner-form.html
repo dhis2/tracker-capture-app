@@ -198,11 +198,12 @@
         <div ng-switch-when="TIME">
             <div class="hideInPrint">
                 <input type="text"
-                       placeholder="HH:MM"
+                       placeholder="{{'hours_and_minutes' | translate}}"
                        class="form-control"
                        ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
                        ng-model="currentEvent[de.id]"
                        ng-required={{isCompulsory(de)}}
+                       ng-change="autoTimeFormat(de.id, false)"
                        ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
                        ng-blur="saveTime(de.id, prStDes[de.id], innerForm.foo)"
                        name="foo"/>
@@ -213,33 +214,33 @@
             </div>
         </div>
         <div ng-switch-when="DATETIME">
-            <div class="hideInPrint" ng-init="dateTimeInit(de.id)">
-                <label style="margin-bottom: 0px">Date:</label>
-                <input type="text"
-                       style="margin-top: 0px"
-                       placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
-                       d2-date
-                       d2-date-validator
-                       max-date="prStDes[de.id].allowFutureDate ? '' : 0"
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="dateTime.date"
-                       ng-required={{isCompulsory(de)}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
-                       blur-or-change="saveDateTime(de.id, true, prStDes[de.id], innerForm.foo)"
-                       name="foo"/>
-                
-                <label style="margin-bottom: 0px">Time:</label>
-                <input type="text"
-                       style="margin-top: 0px"
-                       placeholder="HH:MM"
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="dateTime.time"
-                       ng-required={{isCompulsory(de)}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
-                       ng-blur="saveDateTime(de.id, false, prStDes[de.id], innerForm.foo)"
-                       name="foo"/>
+            <div class="hideInPrint row" ng-init="dateTimeInit(de.id)">
+                <div class="col-sm-7" style="padding-right: 0px">  
+                    <input type="text"
+                        placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                        d2-date
+                        d2-date-validator
+                        max-date="prStDes[de.id].allowFutureDate ? '' : 0"
+                        class="form-control"
+                        ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                        ng-model="dateTime.date"
+                        ng-required={{isCompulsory(de)}}
+                        ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
+                        blur-or-change="saveDateTime(de.id, true, prStDes[de.id], innerForm.foo)"
+                        name="foo"/>
+                </div>
+                <div class="col-sm-5" style="padding-left: 0px">
+                    <input type="text"
+                        placeholder="{{'hours_and_minutes' | translate}}"
+                        class="form-control"
+                        ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                        ng-model="dateTime.time"
+                        ng-change="autoTimeFormat(de.id, true)"
+                        ng-required={{isCompulsory(de)}}
+                        ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
+                        ng-blur="saveDateTime(de.id, false, prStDes[de.id], innerForm.foo)"
+                        name="foo"/>
+                </div>
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" value={{currentEvent[de.id]}}>
