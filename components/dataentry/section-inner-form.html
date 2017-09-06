@@ -2,30 +2,17 @@
     <div ng-if="prStDes[de.id].dataElement.optionSetValue">
         <div class="hideInPrint">
             <div ng-if="!prStDes[de.id].renderOptionsAsRadio || optionSets[prStDes[de.id].dataElement.optionSet.id].options.length >= 7">
-                <!-- Old solution
-                <ui-select  ng-model="currentEvent[de.id]"
-                            theme="select2"
-                            ng-required="prStDes[de.id].compulsory"
-                            ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
-                            name="foo"
-                            on-select="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                            style="width: 100%">
-                    <ui-select-match allow-clear="true" ng-class="getInputNotifcationClass(de.id, true)"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
-                    <ui-select-choices repeat="option.displayName as option in optionSets[prStDes[de.id].dataElement.optionSet.id].options | filter: $select.search | limitTo: (maxOptionSize + 1)" ui-disable-choice="$index >= maxOptionSize">
-                        <option ng-if="$index < maxOptionSize" ng-bind-html="option.displayName | highlight: $select.search"></option>
-                        <option align="center" ng-if="$index >= maxOptionSize" style="color:gray;" disable="true">{{optionSets[prStDes[de.id].dataElement.optionSet.id].options.length - maxOptionSize}} {{'more_options_available' | translate}}</option>
-                    </ui-select-choices>
-                </ui-select>
-                END OF: Old solution -->
-
-                <!-- Find solutions for: mop-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
-                     Also need to fix on-select, becuse it does NOT save data when an option is selected. Probably needs to be fixed in the directive.-->
-                <more-options-list  mop-required="prStDes[de.id].compulsory"
-                                    mop-model="currentEvent[de.id]"
-                                    mop-on-select="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                                    mop-ng-class="getInputNotifcationClass(de.id, true)"
+                <more-options-list  mop-model="currentEvent"
+                                    mop-model-id="de.id"
+                                    mop-required="prStDes[de.id].compulsory"
+                                    mop-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false"
+                                    mop-save-methode="saveDatavalue"
+                                    mop-save-methode-parameter1="prStDes[de.id]"
+                                    mop-save-methode-parameter2="innerForm.foo"
                                     mop-max-option-size="maxOptionSize"
-                                    mop-all-options="optionSets[prStDes[de.id].dataElement.optionSet.id].options">
+                                    mop-all-options="optionSets[prStDes[de.id].dataElement.optionSet.id].options"
+                                    mop-use-notification="true"
+                                    mop-element="currentElement">
                 </more-options-list>
             </div>
 
