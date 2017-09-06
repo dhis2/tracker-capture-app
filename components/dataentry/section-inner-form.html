@@ -210,8 +210,17 @@
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" value={{currentEvent[de.id]}}>
-                <h5>{{currentEvent[de.id]}}</h5>
             </div>
+            <d2-time time-model="currentEvent"
+                     time-model-id="de.id"
+                     time-required="isCompulsory(de)"
+                     time-save-methode="saveDatavalue"
+                     time-save-methode-parameter1="prStDes[de.id]"
+                     time-save-methode-parameter2="innerForm.foo"
+                     time-use-notification="true"
+                     time-element="currentElement"
+                     time-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false">
+            </d2-time>
         </div>
         <div ng-switch-when="DATETIME">
             <div class="hideInPrint row" ng-init="dateTimeInit(de.id)">
@@ -245,6 +254,18 @@
             <div class="not-for-screen">
                 <input type="text" class="form-control" value={{currentEvent[de.id]}}>
             </div>
+            <d2-date-time datetime-model="currentEvent"
+                          datetime-model-id="de.id"
+                          datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                          datetime-max-date="prStDes[de.id].allowFutureDate ? '' : 0"
+                          datetime-required="isCompulsory(de)"
+                          datetime-save-methode="saveDatavalue"
+                          datetime-save-methode-parameter1="prStDes[de.id]"
+                          datetime-save-methode-parameter2="innerForm.foo"
+                          datetime-use-notification="true"
+                          datetime-element="currentElement"
+                          datetime-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false">
+            </d2-date-time>
         </div>
         <div ng-switch-when="TRUE_ONLY">
             <div class="hideInPrint">
