@@ -439,7 +439,7 @@ function filterMissingTrackedEntityAttributes( programs, trackedEntityAttributes
 
 function getTrackedEntityAttributes( programs, trackedEntityAttributes)
 {
-    return dhis2.tracker.getBatches( trackedEntityAttributeIds, batchSize, {programs: programs, trackedEntityAttributes: trackedEntityAttributes}, 'attributes', 'trackedEntityAttributes', DHIS2URL + '/trackedEntityAttributes.json', 'paging=false&fields=id,generated,displayName,code,description,valueType,optionSetValue,confidential,inherit,sortOrderInVisitSchedule,sortOrderInListNoProgram,displayOnVisitSchedule,displayInListNoProgram,unique,programScope,orgunitScope,confidential,optionSet[id,version],trackedEntity[id,displayName]', 'idb', dhis2.tc.store );
+    return dhis2.tracker.getBatches( trackedEntityAttributeIds, batchSize, {programs: programs, trackedEntityAttributes: trackedEntityAttributes}, 'attributes', 'trackedEntityAttributes', DHIS2URL + '/trackedEntityAttributes.json', 'paging=false&fields=:all,optionSet[id,version],trackedEntity[id,displayName]', 'idb', dhis2.tc.store );
 }
 
 function getOptionSetsForAttributes( data )
