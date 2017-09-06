@@ -29,7 +29,8 @@ trackerCapture.controller('DataEntryController',
                 OptionSetService,
                 AttributesFactory,
                 TrackerRulesFactory,
-                EventCreationService) {
+                EventCreationService,
+                AuthorityService) {
     
     //Unique instance id for the controller:
     $scope.instanceId = Math.floor(Math.random() * 1000000000);
@@ -81,6 +82,8 @@ trackerCapture.controller('DataEntryController',
     $rootScope.$broadcast('DataEntryMainMenuVisibilitySet', {visible: $scope.useMainMenu, visibleItems: $scope.visibleWidgetsInMainMenu});
     
     $scope.attributesById = CurrentSelection.getAttributesById();
+
+    $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
 
     if(!$scope.attributesById){
         $scope.attributesById = [];
@@ -199,17 +202,8 @@ trackerCapture.controller('DataEntryController',
     $scope.useReferral = false;
     $scope.showReferral = false;
     //Check if user is allowed to make referrals
-    if($scope.useReferral){
-        var roles = SessionStorageService.get('USER_PROFILE');
-        if( roles && roles.userCredentials && roles.userCredentials.userRoles){
-            var userRoles = roles.userCredentials.userRoles;
-            for(var i=0; i<userRoles.length; i++){
-                if(userRoles[i].authorities.indexOf('ALL') !== -1 || userRoles[i].authorities.indexOf('F_TRACKED_ENTITY_INSTANCE_SEARCH_IN_ALL_ORGUNITS') !== -1 ){
-                  $scope.showReferral = true;
-                  i=userRoles.length;
-                }
-            } 
-        }
+    if($scope.useReferral){        
+        $scope.showReferral = $scope.userAuthority.canSearchTeiAcrossAll;        
     }
     
     $scope.$watch("model.eventSearchText", function(newValue, oldValue){        
