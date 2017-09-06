@@ -2038,7 +2038,11 @@ trackerCapture.controller('DataEntryController',
                 selection.load();
                 $location.path('/').search({program: $scope.selectedProgramId}); 
             }else{
-                if ($scope.currentEvent.status === 'COMPLETED') {//activiate event                    
+                if ($scope.currentEvent.status === 'COMPLETED') {//activiate event
+                    if( !$scope.userAuthority.canUnCompleteEvent ){
+                        NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("not_authorized_to_uncomplete_event"));
+                        return;
+                    }
                     $scope.currentEvent.status = 'ACTIVE';
                 }
                 else {//complete event                    
