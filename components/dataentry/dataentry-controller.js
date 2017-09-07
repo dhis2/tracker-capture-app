@@ -2389,7 +2389,7 @@ trackerCapture.controller('DataEntryController',
         if(angular.isDefined(event) && angular.isObject(event) && angular.isDefined($scope.topLineEvents)){
             
             var index = -1;
-            for(i = 0; i < $scope.topLineEvents.length; i++){
+            for(var i = 0; i < $scope.topLineEvents.length; i++){
                 if(event.event === $scope.topLineEvents[i].event){
                     index = i;
                     break;
