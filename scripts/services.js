@@ -1019,7 +1019,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         generateAttributeFilters: function(attributes){
             angular.forEach(attributes, function(attribute){
-                if(attribute.valueType === 'NUMBER' || attribute.valueType === 'DATE'){
+                if(attribute.valueType === 'NUMBER' || attribute.valueType === 'DATE' || attribute.valueType === 'DATETIME'){
                     attribute.operator = OperatorFactory.defaultOperators[0];
                 }
             });            
@@ -1447,31 +1447,36 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
         var query = {url: null, hasValue: false};
         
-        angular.forEach(attributes, function(attribute){           
+        angular.forEach(attributes, function(attribute){
 
-            if(attribute.valueType === 'DATE' || attribute.valueType === 'NUMBER'){
+            if(attribute.valueType === 'DATE' || attribute.valueType === 'NUMBER' || attribute.valueType === 'DATETIME'){
                 var q = '';
                 
                 if(attribute.operator === OperatorFactory.defaultOperators[0]){
                     if(attribute.exactValue && attribute.exactValue !== ''){
                         query.hasValue = true;
-                        if(attribute.valueType === 'DATE'){
+                        if(attribute.valueType === 'DATE' || attribute.valueType === 'DATETIME'){
                             attribute.exactValue = DateUtils.formatFromUserToApi(attribute.exactValue);
                         }
-                        q += 'EQ:' + attribute.exactValue + ':';
+
+                        if(attribute.valueType === 'DATETIME') {
+                            q += 'LIKE:' + attribute.exactValue + ':';
+                        } else {
+                            q += 'EQ:' + attribute.exactValue + ':';
+                        }
                     }
                 }                
                 if(attribute.operator === OperatorFactory.defaultOperators[1]){
                     if(attribute.startValue && attribute.startValue !== ''){
                         query.hasValue = true;
-                        if(attribute.valueType === 'DATE'){
+                        if(attribute.valueType === 'DATE' || attribute.valueType === 'DATETIME'){
                             attribute.startValue = DateUtils.formatFromUserToApi(attribute.startValue);
                         }
                         q += 'GT:' + attribute.startValue + ':';
                     }
                     if(attribute.endValue && attribute.endValue !== ''){
                         query.hasValue = true;
-                        if(attribute.valueType === 'DATE'){
+                        if(attribute.valueType === 'DATE' || attribute.valueType === 'DATETIME'){
                             attribute.endValue = DateUtils.formatFromUserToApi(attribute.endValue);
                         }
                         q += 'LT:' + attribute.endValue + ':';
