@@ -34,12 +34,12 @@
                     </div>            
                     <div ng-class="getCompareModeColSize(compareModeColDefs.currentEvent)">   
                         <span ng-if="selectedEnrollment.status === 'ACTIVE' && !currentEvent.editingNotAllowed">                    
-                            {{'current' | translate}}
+                            {{'current' | translate}} ({{currentStage.displayName}} {{currentStageEventNumber()}})
                         </span>  
                         <span ng-if="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed">                    
-                            {{currentStage.displayName}} {{currentStageEventNumber()}}
+                            {{'current' | translate}} ({{currentStage.displayName}} {{currentStageEventNumber()}})
                         </span>                        
-                    </div>
+                    </div> 
                     <div ng-if="allowProvidedElsewhereExists[currentStage.id]" ng-class="getCompareModeColSize(compareModeColDefs.providedElsewhere)" ng-bind="providedElsewhereLabel" style="text-align: center">                        
                     </div>
                 </div>
