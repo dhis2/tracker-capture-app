@@ -132,6 +132,9 @@
                                 </div>                            
                             </div> 
                         </div>
+                        <div ng-switch-when="TIME">
+                            <input type="text" placeholder="TIME NOT SEARCHABLE" class="form-control-select2"  ng-disabled="true"/>
+                        </div>
                         <div ng-switch-when="BOOLEAN">
                             <select ui-select2 multiple ng-model="attribute.value" data-placeholder="{{'please_select'| translate}}" style="width:100%;">
                                 <option ng-repeat="option in boolOperators" value="{{option}}">{{option}}</option>

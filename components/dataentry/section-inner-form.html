@@ -215,9 +215,10 @@
                           datetime-required="isCompulsory(de)"
                           datetime-save-methode="saveDatavalue"
                           datetime-save-methode-parameter1="prStDes[de.id]"
-                          datetime-save-methode-parameter2="innerForm.foo"
+                          datetime-field="innerForm"
                           datetime-use-notification="true"
                           datetime-element="currentElement"
+                          datetime-disable-popup="true"
                           datetime-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false">
             </d2-date-time>
         </div>
