@@ -2,18 +2,18 @@
     <div ng-if="prStDes[de.id].dataElement.optionSetValue">
         <div class="hideInPrint">
             <div ng-if="!prStDes[de.id].renderOptionsAsRadio || optionSets[prStDes[de.id].dataElement.optionSet.id].options.length >= 7">
-                <more-options-list  mop-model="currentEvent"
-                                    mop-model-id="de.id"
-                                    mop-required="prStDes[de.id].compulsory"
-                                    mop-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false"
-                                    mop-save-methode="saveDatavalue"
-                                    mop-save-methode-parameter1="prStDes[de.id]"
-                                    mop-save-methode-parameter2="innerForm.foo"
-                                    mop-max-option-size="maxOptionSize"
-                                    mop-all-options="optionSets[prStDes[de.id].dataElement.optionSet.id].options"
-                                    mop-use-notification="true"
-                                    mop-element="currentElement">
-                </more-options-list>
+                <d2-option-list  d2-model="currentEvent"
+                                 d2-model-id="de.id"
+                                 d2-required="prStDes[de.id].compulsory"
+                                 d2-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false"
+                                 d2-save-methode="saveDatavalue"
+                                 d2-save-methode-parameter1="prStDes[de.id]"
+                                 d2-save-methode-parameter2="innerForm.foo"
+                                 d2-max-option-size="maxOptionSize"
+                                 d2-all-options="optionSets[prStDes[de.id].dataElement.optionSet.id].options"
+                                 d2-use-notification="true"
+                                 d2-element="currentElement">
+                </d2-option-list>
             </div>
 
             <div ng-if="prStDes[de.id].renderOptionsAsRadio && optionSets[prStDes[de.id].dataElement.optionSet.id].options.length < 7">
