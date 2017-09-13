@@ -29,7 +29,6 @@ trackerCapture.controller('DataEntryController',
                 OptionSetService,
                 AttributesFactory,
                 TrackerRulesFactory,
-                CalendarService,
                 EventCreationService) {
     
     //Unique instance id for the controller:
@@ -66,7 +65,6 @@ trackerCapture.controller('DataEntryController',
     $scope.dashBoardWidgetFirstRun = true;
     $scope.showSelf = true;
     $scope.orgUnitNames = {};
-    $scope.testDate = new Date(2016, 8, 24, 0, 48, 30, 0);
     
     var eventLockEnabled = false;
     var eventLockHours = 8; //Number of hours before event is locked after completing.
