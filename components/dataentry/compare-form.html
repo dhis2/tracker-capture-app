@@ -6,7 +6,7 @@
                 <!-- headers -->
                 <div class="row compare-form-row compare-form-header">
                     <div ng-class="getCompareModeColSize(compareModeColDefs.header)" ng-bind="dataElementLabel">                
-                    </div>            
+                    </div>
                     <div ng-class="getCompareModeColSize(compareModeColDefs.otherEvents)" ng-if="otherStageEvents.length > 0">
                         <div class="compare-form-navigation-column-back compare-form-navigation-column">
                             <span class="small-badge compare-form-other-events-badge-left cursor-pointer hideInPrint" 
@@ -159,12 +159,27 @@
 
                 <div class="row row-alternate compare-form-row" ng-repeat="prStDe in currentStage.programStageDataElements" ng-if="currentEvent.eventDate && !isHidden(prStDe.dataElement.id, currentEvent)">
                     <div ng-class="getCompareModeColSize(compareModeColDefs.header)" class="compare-form-extra-padding">
-                        <d2-info display-name="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
-                                 data-content='[{"name":"{{"description" | translate}}", "data":"{{prStDe.dataElement.description}}"},
-                                                {"name":"{{"url" | translate}}", "data":"{{prStDe.dataElement.url}}"}]'
-                                 data-title="Details">
-                        </d2-info>
+                        <span d2-pop-over
+                              class="popover-label hideInPrint small-horizontal-spacing"
+                              details="{{'details'| translate}}"
+                              content="prStDe.dataElement"
+                              template="dataelement-details.html"
+                              trigger="click"
+                              placement="right">
+                            <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDe.dataElement.displayFormName}}</a>
+                        </span>
+
+                        <span class="not-for-screen">
+                            {{prStDe.dataElement.displayFormName}}
+                        </span>
+
+                        
                         <span ng-if="prStDe.compulsory" class="required">*</span>
+                        <span class="hideInPrint">                    
+                            <span ng-if="otherValuesLists[prStDe.dataElement.id]" ng-repeat="altValue in otherValuesLists[prStDe.dataElement.id] track by $index">
+                                <span class="label label-default">{{altValue | translate}}</span>
+                            </span>
+                        </span>
                     </div>
 
                     <div ng-class="getCompareModeColSize(compareModeColDefs.otherEvents)" ng-if="otherStageEvents.length > 0" class="compare-form-extra-padding">                

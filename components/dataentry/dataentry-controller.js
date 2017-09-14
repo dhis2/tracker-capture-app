@@ -1358,6 +1358,7 @@ trackerCapture.controller('DataEntryController',
         });
         
         $scope.setDisplayTypeForStage($scope.currentStage);
+        $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.COMPAREALLDATAENTRYFORM;
         $scope.customDataEntryForm = CustomFormService.getForProgramStage($scope.currentStage, $scope.prStDes);        
         if ($scope.customDataEntryForm) {
             $scope.displayCustomForm = "CUSTOM";
@@ -2462,11 +2463,8 @@ trackerCapture.controller('DataEntryController',
                 }
                 break;
             case $scope.compareModeColDefs.otherEvent: 
-                if(otherEventsCnt > 4){
+                if(otherEventsCnt > 3){
                     return '';
-                }
-                else if(otherEventsCnt === 4){
-                    return 'col-xs-3';
                 }
                 else if(otherEventsCnt === 3){
                     return 'col-xs-4';
@@ -2482,11 +2480,11 @@ trackerCapture.controller('DataEntryController',
                 }                
                 break;
             case $scope.compareModeColDefs.currentEvent:
-                if(otherEventsCnt > 4){
-                    return 'col-xs-2';
+                if(otherEventsCnt > 3){
+                    return 'col-xs-3';
                 }
-                else if(otherEventsCnt === 4){
-                    return 'col-xs-2';
+                else if(otherEventsCnt === 3){
+                    return 'col-xs-3';
                 }
                 else if(otherEventsCnt >= 2){
                     if($scope.allowProvidedElsewhereExists[$scope.currentStage.id]){
@@ -2498,7 +2496,7 @@ trackerCapture.controller('DataEntryController',
                     if($scope.allowProvidedElsewhereExists[$scope.currentStage.id]){
                         return 'col-xs-3';
                     }
-                    return 'col-xs-4';
+                    return 'col-xs-5';
                 }
                 else{
                     if($scope.allowProvidedElsewhereExists[$scope.currentStage.id]){
@@ -2507,18 +2505,13 @@ trackerCapture.controller('DataEntryController',
                     return 'col-xs-7';
                 }
                 break;
+            //Wrapper that contains all other events
             case $scope.compareModeColDefs.otherEvents:
-                if(otherEventsCnt > 4){
-                    return 'col-xs-8';
-                }
-                else if(otherEventsCnt === 4){
-                    return 'col-xs-8';
-                }
-                else if(otherEventsCnt >= 2){
+                if(otherEventsCnt >= 2){
                     return 'col-xs-6';
                 }
                 else if(otherEventsCnt === 1){
-                    return 'col-xs-4';
+                    return 'col-xs-3';
                 }
                 else {
                     return '';
@@ -2530,7 +2523,7 @@ trackerCapture.controller('DataEntryController',
         }
     };
     
-    $scope.maxCompareItemsInCompareView = 4;
+    $scope.maxCompareItemsInCompareView = 3;
     $scope.setOtherStageEvents = function(){
         
         $scope.otherStageEvents = [];
@@ -2636,10 +2629,16 @@ trackerCapture.controller('DataEntryController',
     
     $scope.buttonType = {back: 1, forward: 2};
     $scope.showOtherEventsNavigationButtonInCompareForm = function(type){        
-        if(type === $scope.buttonType.back){
-            if($scope.otherStageEventIndexes.length > 0){
+        if(type === $scope.buttonType.back) {
+            if($scope.otherStageEventIndexes.length > 0) {
                 var indexContainer = $scope.otherStageEventIndexes[0];
-                if(indexContainer.position > 0 && indexContainer.relative < 0){
+                if(indexContainer.position > 0 && indexContainer.relative < 0) {
+                    return true;
+                } else if($scope.compareMode === $scope.compareDataEntryFormModes.ALL && indexContainer.position > 0 && indexContainer.relative > 0) {
+                    var temp = indexContainer.position - 1;
+                    if(temp === $scope.indexOfCurrentEvent && temp === 0) {
+                        return false;
+                    }
                     return true;
                 }
             }
