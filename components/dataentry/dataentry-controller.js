@@ -1358,6 +1358,7 @@ trackerCapture.controller('DataEntryController',
         });
         
         $scope.setDisplayTypeForStage($scope.currentStage);
+        //Change this to use flag to determin wich mode to use.
         $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.COMPAREALLDATAENTRYFORM;
         $scope.customDataEntryForm = CustomFormService.getForProgramStage($scope.currentStage, $scope.prStDes);        
         if ($scope.customDataEntryForm) {

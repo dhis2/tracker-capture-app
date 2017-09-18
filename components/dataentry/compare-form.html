@@ -157,7 +157,7 @@
                 <!------------------>
                 <!-- main section --> 
 
-                <div class="row row-alternate compare-form-row" ng-repeat="prStDe in currentStage.programStageDataElements" ng-if="currentEvent.eventDate && !isHidden(prStDe.dataElement.id, currentEvent)">
+                <div class="row row-alternate compare-form-row" ng-repeat="prStDe in currentStage.programStageDataElements" ng-if="currentEvent.eventDate && !isHidden(prStDe.dataElement.id, currentEvent) && currentStage.programStageSections.length === 0 || !currentStage.programStageSections">
                     <div ng-class="getCompareModeColSize(compareModeColDefs.header)" class="compare-form-extra-padding">
                         <span d2-pop-over
                               class="popover-label hideInPrint small-horizontal-spacing"
@@ -188,17 +188,17 @@
                             <div ng-repeat="otherEvent in otherStageEvents" ng-class="getCompareModeColSize(compareModeColDefs.otherEvent)" class="other-events-alignment">
                                 <div ng-switch="prStDe.dataElement.valueType" title="{{getValueTitleCompareForm(otherEvent)}}">
                                     <div ng-switch-when="BOOLEAN">
-                                        <dhis2-radio-button
+                                        <d2-radio-button
                                             dh-required="prStDe.compulsory"                                     
                                             dh-disabled="true" 
                                             dh-value="otherEvent[prStDe.dataElement.id]" 
                                             dh-name="{{otherEvent.event}}{{prStDe.dataElement.id}}"
                                             dh-click="saveDataValueForRadio(prStDe, otherEvent, value)">                                                    
-                                        </dhis2-radio-button>
+                                        </d2-radio-button>
                                     </div>
                                     <div ng-switch-when="TRUE_ONLY">
                                         <input type="checkbox"     
-                                               class="form-control"
+                                               class="form-control-checkbox"
                                                ng-model="otherEvent[prStDe.dataElement.id]"                                                               
                                                ng-required={{prStDe.compulsory}}                                        
                                                ng-disabled="true" 
@@ -242,7 +242,7 @@
                                 </div>
                                 <div ng-switch-when="TRUE_ONLY">
                                     <input type="checkbox"     
-                                           class="form-control"
+                                           class="form-control-checkbox"
                                            ng-model="currentEvent[prStDe.dataElement.id]"                                                               
                                            ng-required={{prStDe.compulsory}}                                        
                                            ng-disabled="true" 
@@ -285,45 +285,70 @@
                 <div ng-if='currentStage.programStageSections && currentStage.programStageSections.length > 0 && currentEvent.eventDate'>
                     <accordion close-others='false'>
                         <accordion-group heading="{{section.displayName}}" is-open="section.open" ng-repeat='section in currentStage.programStageSections' ng-init="sectionNr = $index + 1" ng-if="!hiddenSections[currentEvent.event][section.id]">
-
-                            <div class="vertical-spacing" ng-if="!section.programStageDataElements || section.programStageDataElements.length === 0">
+                            <div class="vertical-spacing" ng-if="!section.dataElements || section.dataElements.length === 0">
                                 <div class="alert alert-warning">{{'section'| translate}} {{section.displayName}} {{'has_no_dataelements'| translate}}</div>
                             </div>
 
-                            <div ng-if="section.programStageDataElements && section.programStageDataElements.length > 0">
+                            <div ng-if="section.dataElements && section.dataElements.length > 0">
                                 
                                 <div class="row compare-form-row compare-form-header">
                                     <div ng-class="getCompareModeColSize(compareModeColDefs.header)" ng-bind="dataElementLabel">                
                                     </div>
                                     <div ng-class="getCompareModeColSize(compareModeColDefs.otherEvents)" ng-if="otherStageEvents.length > 0">
-                                        <div>                    
-                                            <div ng-class="getCompareModeColSize(compareModeColDefs.otherEvent)" ng-repeat="otherEvent in otherStageEvents" class="other-events-alignment">
-                                                {{currentStage.displayName}} {{otherStageEventIndexes[$index].position + 1}}
-                                            </div>                    
-                                       </div>
-                                    </div>
+                                        <div class="compare-form-navigation-column-back compare-form-navigation-column">
+                                            <span class="small-badge compare-form-other-events-badge-left cursor-pointer hideInPrint" 
+                                                title="{{'show_previous' | translate}}"
+                                                ng-show="showOtherEventsNavigationButtonInCompareForm(buttonType.back)" 
+                                                ng-click="navigateOtherStageEvents(-1)">
+                                                <i class="fa fa-chevron-left"></i>
+                                            </span>
+                                            &nbsp;
+                                        </div>
+                                        <div class="compare-form-other-events-column">                    
+                                                <div ng-class="getCompareModeColSize(compareModeColDefs.otherEvent)" ng-repeat="otherEvent in otherStageEvents" class="other-events-alignment">
+                                                    {{currentStage.displayName}} {{otherStageEventIndexes[$index].position + 1}}
+                                                </div>                    
+                                        </div>                                
+                                        <div class="compare-form-navigation-column-forward compare-form-navigation-column">
+                                            <span class="small-badge compare-form-other-events-badge-right cursor-pointer hideInPrint" 
+                                                title="{{'show_next' | translate}}"
+                                                ng-show="showOtherEventsNavigationButtonInCompareForm(buttonType.forward)" 
+                                                ng-click="navigateOtherStageEvents(1)">
+                                            <i class="fa fa-chevron-right"></i>
+                                            </span>
+                                            &nbsp;
+                                        </div>
+                                    </div>            
                                     <div ng-class="getCompareModeColSize(compareModeColDefs.currentEvent)">   
                                         <span ng-if="selectedEnrollment.status === 'ACTIVE' && !currentEvent.editingNotAllowed">                    
-                                            {{'current' | translate}}
+                                            {{'current' | translate}} ({{currentStage.displayName}} {{currentStageEventNumber()}})
                                         </span>  
                                         <span ng-if="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed">                    
-                                            {{currentStage.displayName}} {{currentStageEventNumber()}}
+                                            {{'current' | translate}} ({{currentStage.displayName}} {{currentStageEventNumber()}})
                                         </span>                        
-                                    </div>
+                                    </div> 
                                     <div ng-if="allowProvidedElsewhereExists[currentStage.id]" ng-class="getCompareModeColSize(compareModeColDefs.providedElsewhere)" ng-bind="providedElsewhereLabel" style="text-align: center">                        
                                     </div>
                                 </div>
-                                
-                                <div class="row row-alternate compare-form-row" ng-repeat="de in section.programStageDataElements"
+
+                                <div class="row row-alternate compare-form-row" ng-repeat="de in section.dataElements"
                                      ng-if="!isHidden(de.dataElement.id, currentEvent)">
                                     <div ng-class="getCompareModeColSize(compareModeColDefs.header)" class="compare-form-extra-padding">
-                                        <d2-info display-name="{{prStDes[de.dataElement.id].dataElement.formName ? prStDes[de.dataElement.id].dataElement.formName :
-                                                                 prStDes[de.dataElement.id].dataElement.displayName}}"
-                                                 data-content='[{"name":"{{"description" | translate}}", "data":"{{prStDes[de.dataElement.id].dataElement.description}}"},
-                                                                {"name":"{{"url" | translate}}", "data":"{{prStDes[de.dataElement.id].dataElement.url}}"}]'
-                                                 data-title="Details">
-                                        </d2-info>
-                                        <span ng-if="prStDes[de.dataElement.id].compulsory" class="required">*</span>
+                                        <span d2-pop-over
+                                              class="popover-label hideInPrint small-horizontal-spacing"
+                                              details="{{'details'| translate}}"
+                                              content="prStDes[de.id].dataElement"
+                                              template="dataelement-details.html"
+                                              trigger="click"
+                                              placement="right">
+                                          <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDes[de.id].dataElement.formName ? prStDes[de.id].dataElement.formName :
+                                                prStDes[de.id].dataElement.displayName}}</a>
+                                        </span>
+                                      <span class="not-for-screen">
+                                            {{prStDes[de.id].dataElement.formName ? prStDes[de.id].dataElement.formName : prStDes[de.id].dataElement.displayName}}
+                                      </span>
+                                      
+                                      <span ng-if="isCompulsory(de)" class="required">*</span>
                                     </div>
 
                                     <!--other Events in section -->
@@ -333,34 +358,34 @@
                                         </div>
                                         <div class="compare-form-other-events-column">                    
                                             <div ng-repeat="otherEvent in otherStageEvents" ng-class="getCompareModeColSize(compareModeColDefs.otherEvent)" class="other-events-alignment">                
-                                                <div ng-switch="prStDes[de.dataElement.id].dataElement.valueType">
+                                                <div ng-switch="prStDes[de.id].dataElement.valueType">
                                                     <div ng-switch-when="BOOLEAN">
-                                                        <dhis2-radio-button
-                                                            dh-required="prStDes[de.dataElement.id].compulsory"                                     
+                                                        <d2-radio-button
+                                                            dh-required="isCompulsory(de)"                                     
                                                             dh-disabled="true" 
-                                                            dh-value="otherEvent[prStDes[de.dataElement.id].dataElement.id]" 
+                                                            dh-value="otherEvent[prStDes[de.id].dataElement.id]" 
                                                             dh-name="{{otherEvent.event}}{{prStDe.dataElement.id}}"
-                                                            dh-click="saveDataValueForRadio(prStDes[de.dataElement.id], otherEvent, value)">                                                    
-                                                        </dhis2-radio-button>
+                                                            dh-click="saveDataValueForRadio(prStDes[de.id], otherEvent, value)">                                                    
+                                                        </d2-radio-button>
                                                     </div>
                                                     <div ng-switch-when="TRUE_ONLY">
                                                         <input type="checkbox"     
-                                                               class="form-control"
-                                                               ng-model="otherEvent[prStDes[de.dataElement.id].dataElement.id]"                                                               
-                                                               ng-required={{prStDes[de.dataElement.id].compulsory}}                                        
+                                                               class="form-control-checkbox"
+                                                               ng-model="otherEvent[prStDes[de.id].dataElement.id]"                                                               
+                                                               ng-required={{prStDes[de.id].compulsory}}                                        
                                                                ng-disabled="true" 
                                                                name="foo"/>
                                                     </div>
                                                     <div ng-switch-when="MULTI_SELECT_GROUP">
                                                         <ul>
-                                                            <li ng-repeat='event in otherEvent[de.dataElement.id].selections'>
+                                                            <li ng-repeat='event in otherEvent[de.id].selections'>
                                                                 {{event.formName ? event.formName : event.name}}
                                                             </li>
                                                         </ul>
                                                     </div>
                                                     <div ng-switch-default>
                                                         <span>
-                                                            {{otherEvent[de.dataElement.id]}}
+                                                            {{otherEvent[de.id]}}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -378,17 +403,17 @@
                                              style="float: left">                                                 
                                         </div>
                                         <div style="float:right" class="hideInPrint compare-form-extra-padding mouse-pointer">
-                                            <d2-audit dataelement-id="{{de.dataElement.id}}" dataelement-name="{{prStDes[de.dataElement.id].dataElement.displayName}}" current-event="{{currentEvent.event}}"></d2-audit>
+                                            <d2-audit dataelement-id="{{de.dataElement.id}}" dataelement-name="{{prStDes[de.id].dataElement.displayName}}" current-event="{{currentEvent.event}}"></d2-audit>
                                         </div>
                                     </div>
                                     
                                     <div ng-if="allowProvidedElsewhereExists[currentStage.id]" ng-class="getCompareModeColSize(compareModeColDefs.providedElsewhere)" style="text-align: center">                        
-                                        <div ng-show=" [de.dataElement.id].allowProvidedElsewhere">
+                                        <div ng-show=" [de.id].allowProvidedElsewhere">
                                             <input type="checkbox"
                                                    class=""
-                                                   ng-model="currentEvent.providedElsewhere[prStDes[de.dataElement.id].dataElement.id]"
+                                                   ng-model="currentEvent.providedElsewhere[prStDes[de.id].dataElement.id]"
                                                    ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
-                                                   ng-change="saveDatavalueLocation(prStDes[de.dataElement.id])"/>
+                                                   ng-change="saveDatavalueLocation(prStDes[de.id])"/>
                                         </div>
                                     </div>                                    
                                 </div>
