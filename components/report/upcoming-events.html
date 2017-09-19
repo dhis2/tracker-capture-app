@@ -237,6 +237,23 @@
                                                     <a href ng-click='removeEndFilterText(gridColumn.id)'><span class='black'><i class="fa fa-trash-o"></i></span></a>                                                        
                                                 </span> 
                                             </span>
+                                            <span ng-switch-when="DATETIME">
+                                                <d2-date-time datetime-model="filterText"
+                                                              datetime-model-id="gridColumn.id"
+                                                              datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                                                              datetime-save-methode="searchInGrid"
+                                                              datetime-save-methode-parameter1="gridColumn"
+                                                              datetime-disable-popup="true">
+                                                </d2-date-time>
+                                            </span>
+                                            <span ng-switch-when="TIME">
+                                                <d2-time time-model="filterText"
+                                                         time-model-id="gridColumn.id"
+                                                         time-save-methode="searchInGrid"
+                                                         time-save-methode-parameter1="gridColumn"
+                                                         time-disable-popup="true">
+                                                </d2-time>
+                                            </span>
                                             <span ng-switch-default>
                                                 <input type="text" style="width: 90%;" ng-model="filterText[gridColumn.id]" ng-blur="searchInGrid(gridColumn)">
                                             </span> 

@@ -69,6 +69,30 @@
                                blur-or-change="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
+                    <span ng-switch-when="DATETIME">
+                        <d2-date-time datetime-model="selectedTei"
+                                      datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                                      datetime-model-id="attribute.id"
+                                      datetime-max-date="attribute.allowFutureDate ? '' : 0"
+                                      datetime-required="attribute.mandatory"
+                                      datetime-save-methode="teiValueUpdated"
+                                      datetime-save-methode-parameter1="selectedTei"
+                                      datetime-save-methode-parameter2="attribute.id"
+                                      datetime-use-notification="false"
+                                      datetime-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute) ? true : false">
+                        </d2-date-time>
+                    </span>
+                    <span ng-switch-when="TIME">
+                        <d2-time time-model="selectedTei"
+                                      time-model-id="attribute.id"
+                                      time-required="attribute.mandatory"
+                                      time-save-methode="teiValueUpdated"
+                                      time-save-methode-parameter1="selectedTei"
+                                      time-save-methode-parameter2="attribute.id"
+                                      time-use-notification="false"
+                                      time-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute) ? true : false">
+                        </d2-time>
+                    </span>
                     <span ng-switch-when="TRUE_ONLY">
                         <input type="checkbox" 
                                name="foo" 
@@ -209,6 +233,21 @@
                         <input type="email"
                                name="foo" 
                                class="form-control"
+                               ng-model="selectedTei[attribute.id]"
+                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                               d2-attribute-validator 
+                               attribute-data={{attribute}}
+                               selected-program-id={{selectedProgram.id}}  
+                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
+                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                               ng-required="attribute.mandatory"/>
+                    </span>
+                    <span ng-switch-when="URL">
+                        <input type="url"
+                               name="foo" 
+                               class="form-control"
+                               ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
                                ng-model="selectedTei[attribute.id]"
                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
                                d2-attribute-validator 

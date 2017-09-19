@@ -2,19 +2,20 @@
     <div ng-if="prStDes[de.id].dataElement.optionSetValue">
         <div class="hideInPrint">
             <div ng-if="!prStDes[de.id].renderOptionsAsRadio || optionSets[prStDes[de.id].dataElement.optionSet.id].options.length >= 7">
-                <ui-select  ng-model="currentEvent[de.id]"
-                            theme="select2"
-                            ng-required={{prStDes[de.id].compulsory}}
-                            ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
-                            name="foo"
-                            on-select="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                            style="width: 100%">
-                    <ui-select-match allow-clear="true" ng-class="getInputNotifcationClass(de.id, true)"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
-                    <ui-select-choices  repeat="option.displayName as option in optionSets[prStDes[de.id].dataElement.optionSet.id].options | filter: $select.search | limitTo:maxOptionSize">
-                      <span ng-bind-html="option.displayName | highlight: $select.search"></span>
-                    </ui-select-choices>
-                </ui-select>
+                <d2-option-list  d2-model="currentEvent"
+                                 d2-model-id="de.id"
+                                 d2-required="prStDes[de.id].compulsory"
+                                 d2-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false"
+                                 d2-save-methode="saveDatavalue"
+                                 d2-save-methode-parameter1="prStDes[de.id]"
+                                 d2-save-methode-parameter2="innerForm.foo"
+                                 d2-max-option-size="maxOptionSize"
+                                 d2-all-options="optionSets[prStDes[de.id].dataElement.optionSet.id].options"
+                                 d2-use-notification="true"
+                                 d2-element="currentElement">
+                </d2-option-list>
             </div>
+
             <div ng-if="prStDes[de.id].renderOptionsAsRadio && optionSets[prStDes[de.id].dataElement.optionSet.id].options.length < 7">
                 <d2-radio id="de.id" 
                     d2-name="foo" 
@@ -182,7 +183,7 @@
                        placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                        d2-date
                        d2-date-validator
-                       max-date="prStDes[de.id].allowFutureDate ? '' : 0"
+                       max-date="{{allowDateInFuture(de)}} ? '' : 0"
                        class="form-control"
                        ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
                        ng-model="currentEvent[de.id]"
@@ -194,6 +195,33 @@
             <div class="not-for-screen">
                 <input type="text" class="form-control" value={{currentEvent[de.id]}}>
             </div>
+        </div>
+        <div ng-switch-when="TIME">
+            <d2-time time-model="currentEvent"
+                     time-model-id="de.id"
+                     time-required="isCompulsory(de)"
+                     time-save-methode="saveDatavalue"
+                     time-save-methode-parameter1="prStDes[de.id]"
+                     time-save-methode-parameter2="innerForm.foo"
+                     time-use-notification="true"
+                     time-element="currentElement"
+                     time-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false">
+            </d2-time>
+        </div>
+        <div ng-switch-when="DATETIME">
+            <d2-date-time datetime-model="currentEvent"
+                          datetime-model-id="de.id"
+                          datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                          datetime-max-date="prStDes[de.id].allowFutureDate ? '' : 0"
+                          datetime-required="isCompulsory(de)"
+                          datetime-save-methode="saveDatavalue"
+                          datetime-save-methode-parameter1="prStDes[de.id]"
+                          datetime-field="innerForm"
+                          datetime-use-notification="true"
+                          datetime-element="currentElement"
+                          datetime-disable-popup="true"
+                          datetime-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false">
+            </d2-date-time>
         </div>
         <div ng-switch-when="TRUE_ONLY">
             <div class="hideInPrint">
@@ -313,6 +341,20 @@
                    ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
                    ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
                    ng-required="isCompulsory(de)"/>
+        </div>
+        <div ng-switch-when="URL">
+            <div class="hideInPrint">
+                <input type="url"
+                       placeholder="{{'url_format' | translate}}"
+                       class="form-control"
+                       ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
+                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                       ng-model="currentEvent[de.id]"
+                       ng-required={{isCompulsory(de)}}
+                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
+                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                       name="foo"/>
+            </div>
         </div>
         <div ng-switch-default>
             <div class="alert alert-danger form-control">

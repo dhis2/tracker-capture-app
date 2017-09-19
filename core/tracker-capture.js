@@ -318,7 +318,7 @@ function getBatchPrograms( programs, batch )
     $.ajax( {
         url: DHIS2URL + '/programs.json',
         type: 'GET',
-        data: 'fields=*,dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],trackedEntity[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName]]],organisationUnits[id,displayName],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique]]&paging=false&filter=id:in:' + ids
+        data: 'fields=*,dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],trackedEntity[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],organisationUnits[id,displayName],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique]]&paging=false&filter=id:in:' + ids
     }).done( function( response ){
 
         if(response.programs){
@@ -333,6 +333,20 @@ function getBatchPrograms( programs, batch )
                 
                 if( program.programStages ){
                     program.programStages = _.sortBy( program.programStages, 'sortOrder' );
+                }
+
+                if( program.categoryCombo && program.categoryCombo.categories ){
+                    _.each( _.values( program.categoryCombo.categories ), function ( ca ) {                            
+                        if( ca.categoryOptions ){
+                            _.each( _.values( ca.categoryOptions ), function ( co ) {
+                                var mappedOrganisationUnits = [];
+                                if( co.organisationUnits && co.organisationUnits.length > 0 ){                                        
+                                    mappedOrganisationUnits = $.map(co.organisationUnits, function(ou){return ou.id;});
+                                }                                
+                                co.organisationUnits = mappedOrganisationUnits;
+                            });
+                        }
+                    });
                 }
 
                 dhis2.tc.store.set( 'programs', program );
@@ -425,7 +439,7 @@ function filterMissingTrackedEntityAttributes( programs, trackedEntityAttributes
 
 function getTrackedEntityAttributes( programs, trackedEntityAttributes)
 {
-    return dhis2.tracker.getBatches( trackedEntityAttributeIds, batchSize, {programs: programs, trackedEntityAttributes: trackedEntityAttributes}, 'attributes', 'trackedEntityAttributes', DHIS2URL + '/trackedEntityAttributes.json', 'paging=false&fields=id,generated,displayName,code,description,valueType,optionSetValue,confidential,inherit,sortOrderInVisitSchedule,sortOrderInListNoProgram,displayOnVisitSchedule,displayInListNoProgram,unique,programScope,orgunitScope,confidential,optionSet[id,version],trackedEntity[id,displayName]', 'idb', dhis2.tc.store );
+    return dhis2.tracker.getBatches( trackedEntityAttributeIds, batchSize, {programs: programs, trackedEntityAttributes: trackedEntityAttributes}, 'attributes', 'trackedEntityAttributes', DHIS2URL + '/trackedEntityAttributes.json', 'paging=false&fields=:all,optionSet[id,version],trackedEntity[id,displayName]', 'idb', dhis2.tc.store );
 }
 
 function getOptionSetsForAttributes( data )
