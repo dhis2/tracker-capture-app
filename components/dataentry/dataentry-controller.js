@@ -77,7 +77,8 @@ trackerCapture.controller('DataEntryController',
     
     //hideTopLineEventsForFormTypes is only used with main menu
     $scope.hideTopLineEventsForFormTypes = {TABLE: true, COMPARE: true};
-    
+    $scope.timelineDataEntryModes = { DATAENTRYFORM: 1, COMPAREPREVIOUSDATAENTRYFORM: 2,COMPAREALLDATAENTRYFORM: 3, TABLEDATAENTRYFORM: 4};
+    $scope.compareDataEntryFormModes = { PREVIOUS: 1, ALL: 2};
     $scope.visibleWidgetsInMainMenu = {enrollment: true, dataentry: true, close_file: true};    
     $rootScope.$broadcast('DataEntryMainMenuVisibilitySet', {visible: $scope.useMainMenu, visibleItems: $scope.visibleWidgetsInMainMenu});
     
@@ -233,6 +234,15 @@ trackerCapture.controller('DataEntryController',
         $scope.printEmptyForm = false;
     };
 
+    $scope.toggleCompForm = function() {
+        if($scope.currentStage.timelineDataEntryMode !== $scope.timelineDataEntryModes.COMPAREALLDATAENTRYFORM) {
+            $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.COMPAREALLDATAENTRYFORM;
+        } else {
+            $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.DATAENTRYFORM;
+        }
+        $scope.getDataEntryForm();
+    };
+
     var processRuleEffect = function(event, callerId){
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
@@ -240,6 +250,7 @@ trackerCapture.controller('DataEntryController',
             //The data entry widget does not have an event selected. 
             //Therefore applying rule effects from registration instead.
             affectedEvent = 'registration';
+            return;
         }
         else if(event === 'registration' || event === 'dataEntryInit') {
            //The data entry widget is associated with an event, 
@@ -1370,24 +1381,35 @@ trackerCapture.controller('DataEntryController',
         });
         
         $scope.setDisplayTypeForStage($scope.currentStage);
-        
         $scope.customDataEntryForm = CustomFormService.getForProgramStage($scope.currentStage, $scope.prStDes);        
-        
         if ($scope.customDataEntryForm) {
             $scope.displayCustomForm = "CUSTOM";
-        }
-        else if ($scope.currentStage.displayEventsInTable) {
-            if($scope.reSortStageEvents === true){
-                sortStageEvents($scope.currentStage);            
-                if($scope.eventsByStage.hasOwnProperty($scope.currentStage.id)){
-                    $scope.currentStageEvents = $scope.eventsByStage[$scope.currentStage.id];
-                }            
+        }else{
+            switch($scope.currentStage.timelineDataEntryMode){
+                case $scope.timelineDataEntryModes.COMPAREPREVIOUSDATAENTRYFORM:
+                    $scope.compareMode = $scope.compareDataEntryFormModes.PREVIOUS;
+                    $scope.displayCustomForm = "COMPARE";
+                    $scope.readyCompareDisplayForm();
+                    break;
+                case $scope.timelineDataEntryModes.COMPAREALLDATAENTRYFORM:
+                    $scope.compareMode = $scope.compareDataEntryFormModes.ALL;
+                    $scope.displayCustomForm = "COMPARE";
+                    $scope.readyCompareDisplayForm();
+                    break;
+                case $scope.timelineDataEntryModes.TABLEDATAENTRYFORM:
+                    if($scope.reSortStageEvents === true){
+                        sortStageEvents($scope.currentStage);            
+                        if($scope.eventsByStage.hasOwnProperty($scope.currentStage.id)){
+                            $scope.currentStageEvents = $scope.eventsByStage[$scope.currentStage.id];
+                        }            
+                    }
+                    $scope.displayCustomForm = "TABLE";
+                    break;
+                
+                default:
+                    $scope.displayCustomForm = "DEFAULT";
+                    break;
             }
-            $scope.displayCustomForm = "TABLE";
-            
-        }
-        else {
-            $scope.displayCustomForm = "DEFAULT";
         }
 
         $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
@@ -2433,8 +2455,11 @@ trackerCapture.controller('DataEntryController',
         NotificationService.showNotifcationWithOptions({}, dialogOptions);
     };
     
+    var getColSize = function(colSize){
+        return 'col-xs-'+Math.floor(colSize);
+    }
     //for compare-mode
-    $scope.compareModeColDefs = {header: 1, otherEvent: 2, currentEvent: 3, otherEvents: 4, providedElsewhere: 5};
+    $scope.compareModeColDefs = {header: 1, otherEvent: 2, currentEvent: 3, otherEvents: 4, providedElsewhere: 5, nextEvent: 6, nextEvents: 7};
     $scope.getCompareModeColSize = function(colId){                
         
         var otherEventsCnt = $scope.otherStageEvents.length;                
@@ -2464,11 +2489,8 @@ trackerCapture.controller('DataEntryController',
                 }
                 break;
             case $scope.compareModeColDefs.otherEvent: 
-                if(otherEventsCnt > 4){
+                if(otherEventsCnt > 3){
                     return '';
-                }
-                else if(otherEventsCnt === 4){
-                    return 'col-xs-3';
                 }
                 else if(otherEventsCnt === 3){
                     return 'col-xs-4';
@@ -2484,11 +2506,11 @@ trackerCapture.controller('DataEntryController',
                 }                
                 break;
             case $scope.compareModeColDefs.currentEvent:
-                if(otherEventsCnt > 4){
-                    return 'col-xs-2';
+                if(otherEventsCnt > 3){
+                    return 'col-xs-3';
                 }
-                else if(otherEventsCnt === 4){
-                    return 'col-xs-2';
+                else if(otherEventsCnt === 3){
+                    return 'col-xs-3';
                 }
                 else if(otherEventsCnt >= 2){
                     if($scope.allowProvidedElsewhereExists[$scope.currentStage.id]){
@@ -2500,7 +2522,7 @@ trackerCapture.controller('DataEntryController',
                     if($scope.allowProvidedElsewhereExists[$scope.currentStage.id]){
                         return 'col-xs-3';
                     }
-                    return 'col-xs-4';
+                    return 'col-xs-5';
                 }
                 else{
                     if($scope.allowProvidedElsewhereExists[$scope.currentStage.id]){
@@ -2509,18 +2531,13 @@ trackerCapture.controller('DataEntryController',
                     return 'col-xs-7';
                 }
                 break;
+            //Wrapper that contains all other events
             case $scope.compareModeColDefs.otherEvents:
-                if(otherEventsCnt > 4){
-                    return 'col-xs-8';
-                }
-                else if(otherEventsCnt === 4){
-                    return 'col-xs-8';
-                }
-                else if(otherEventsCnt >= 2){
+                if(otherEventsCnt >= 2){
                     return 'col-xs-6';
                 }
                 else if(otherEventsCnt === 1){
-                    return 'col-xs-4';
+                    return 'col-xs-3';
                 }
                 else {
                     return '';
@@ -2532,12 +2549,15 @@ trackerCapture.controller('DataEntryController',
         }
     };
     
-    $scope.maxCompareItemsInCompareView = 4;
+    $scope.maxCompareItemsInCompareView = 3;
     $scope.setOtherStageEvents = function(){
         
-        $scope.otherStageEventIndexes = [];
         $scope.otherStageEvents = [];
+        $scope.otherStageEventIndexes = [];
         $scope.stageEventsExcludedSkipped = [];
+
+        $scope.nextStageEvents = [];
+        $scope.nextStageEventIndexes = [];
         
         if(angular.isUndefined($scope.currentStageEvents) || $scope.currentStageEvents.length <= 1){
             return;
@@ -2551,17 +2571,17 @@ trackerCapture.controller('DataEntryController',
             });
             
             
-            var indexOfCurrent = -1;
-            for(i = 0; i < $scope.stageEventsExcludedSkipped.length; i++){
+            $scope.indexOfCurrentEvent = -1;
+            for(var i = 0; i < $scope.stageEventsExcludedSkipped.length; i++){
                 var stageEvent = $scope.stageEventsExcludedSkipped[i];
                 if(stageEvent.event === $scope.currentEvent.event){
-                    indexOfCurrent = i;
+                    $scope.indexOfCurrentEvent = i;
                     break;
                 }                    
-            }            
+            }
 
-            for(j = 0; j < $scope.maxCompareItemsInCompareView; j++){
-                var position = indexOfCurrent - 1 - j;
+            for(var j = 0; j < $scope.maxCompareItemsInCompareView; j++){
+                var position = $scope.indexOfCurrentEvent - 1 - j;
                 if(position < 0){
                     break;
                 }
@@ -2569,10 +2589,26 @@ trackerCapture.controller('DataEntryController',
                 var relative = - j - 1;
                 $scope.otherStageEventIndexes.unshift({relative: relative, position: position});
             }
+            if($scope.compareMode === $scope.compareDataEntryFormModes.ALL){
+                var subsequentEventsCount = $scope.maxCompareItemsInCompareView - $scope.otherStageEventIndexes.length;
+                if(subsequentEventsCount > 0){
+                    for(var k = 0; k < subsequentEventsCount; k++){
+                        var position = $scope.indexOfCurrentEvent + 1 + k;
+                        if(position === $scope.stageEventsExcludedSkipped.length){
+                            break;
+                        }
+                        
+                        var relative = k + 1;
+                        $scope.otherStageEventIndexes.push({relative: relative, position: position});
+                    }
+                }
+            }
 
-            angular.forEach($scope.otherStageEventIndexes, function(indexContainer){
+
+
+            angular.forEach($scope.otherStageEventIndexes, function(indexContainer,i,j){
                 $scope.otherStageEvents.push($scope.stageEventsExcludedSkipped[indexContainer.position]);
-            });                        
+            });               
         }
     };
     
@@ -2584,7 +2620,7 @@ trackerCapture.controller('DataEntryController',
                 change = -1;
                 if(indexContainer.relative - 1 === 0){
                     change = -2;
-                }                
+                }               
             }
             else{
                 change = 1;
@@ -2603,8 +2639,7 @@ trackerCapture.controller('DataEntryController',
         });
     };
     
-    $scope.readyCompareDisplayForm = function(){    
-        
+    $scope.readyCompareDisplayForm = function(){
         $scope.setOtherStageEvents();
 
         if($scope.displayCustomForm !== "COMPARE"){
@@ -2620,10 +2655,16 @@ trackerCapture.controller('DataEntryController',
     
     $scope.buttonType = {back: 1, forward: 2};
     $scope.showOtherEventsNavigationButtonInCompareForm = function(type){        
-        if(type === $scope.buttonType.back){
-            if($scope.otherStageEventIndexes.length > 0){
-                var firstEventPosition = $scope.otherStageEventIndexes[0].position;
-                if(firstEventPosition > 0){
+        if(type === $scope.buttonType.back) {
+            if($scope.otherStageEventIndexes.length > 0) {
+                var indexContainer = $scope.otherStageEventIndexes[0];
+                if(indexContainer.position > 0 && indexContainer.relative < 0) {
+                    return true;
+                } else if($scope.compareMode === $scope.compareDataEntryFormModes.ALL && indexContainer.position > 0 && indexContainer.relative > 0) {
+                    var temp = indexContainer.position - 1;
+                    if(temp === $scope.indexOfCurrentEvent && temp === 0) {
+                        return false;
+                    }
                     return true;
                 }
             }
@@ -2631,9 +2672,13 @@ trackerCapture.controller('DataEntryController',
         }
         else{
             if($scope.otherStageEventIndexes.length > 0){
-                var lastEventRelativePosition = $scope.otherStageEventIndexes[$scope.otherStageEventIndexes.length - 1].relative;
-                if(lastEventRelativePosition < -1){
+                var lastEvent = $scope.otherStageEventIndexes[$scope.otherStageEventIndexes.length - 1];
+                if(lastEvent.relative < -1){
                     return true;
+                }else if($scope.compareMode === $scope.compareDataEntryFormModes.ALL){
+                    var totalEvents = $scope.stageEventsExcludedSkipped.length;
+                    var hasNextEvents = ((totalEvents - 1) - $scope.indexOfCurrentEvent) > 0 && lastEvent.position < (totalEvents -1);
+                    if(hasNextEvents) return true;
                 }
             }
             return false;
