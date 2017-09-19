@@ -324,6 +324,20 @@
                                            ng-blur="saveDatavalue(prStDe, $eval('eventRowForm' + eventRow.event + '.' + eventRow.event + prStDe.dataElement.id))"
                                            ng-required="{{prStDe.compulsory}}"/>
                                 </div>
+                                <div ng-switch-when="URL">
+                                    <div class="hideInPrint">
+                                        <input type="url"
+                                               placeholder="{{'url_format' | translate}}"
+                                               ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
+                                               class="form-control"
+                                               ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                                               ng-model="currentEvent[de.id]"
+                                               ng-required={{isCompulsory(de)}}
+                                               ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
+                                               ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                                               name="foo"/>
+                                    </div>
+                                </div>
                                 <div ng-switch-default>
                                     <div class="alert alert-danger form-control">
                                         {{'unsupported_value_type' | translate}}:  {{prStDe.dataElement.valueType}}
