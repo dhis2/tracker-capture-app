@@ -186,7 +186,7 @@ function($rootScope,
                     });
                 }
 
-            //Labels
+                //Labels
                 $scope.trackerCaptureLabel = $translate.instant('tracker_capture');
                 $scope.orgUnitLabel = $translate.instant('org_unit');
                 $scope.listAllLabel = $translate.instant('list_all');
@@ -355,8 +355,8 @@ function($rootScope,
     //sortGrid
     $scope.sortGrid = function(gridHeader){
         if ($scope.sortColumn && $scope.sortColumn.id === gridHeader.id){
-            $scope.reverse = !$scope.reverse;            
-        }        
+            $scope.reverse = !$scope.reverse;
+        }
         $scope.sortColumn = {id: gridHeader.id, direction: $scope.reverse ? 'desc' : 'asc'};
         CurrentSelection.setSortColumn( $scope.sortColumn);
         CurrentSelection.setColumnReverse( $scope.reverse);
@@ -375,10 +375,8 @@ function($rootScope,
     $scope.search = function(mode,goToPage){
         //resetParams(goToPage);
         var grid;
-        if (!$scope.gridColumns) {
-            grid = TEIGridService.generateGridColumns($scope.attributes, $scope.selectedOuMode.name, true);
-            $scope.gridColumns = grid.columns;
-        }
+        grid = TEIGridService.generateGridColumns($scope.gridColumns , $scope.attributes, $scope.selectedOuMode.name, true);
+        $scope.gridColumns = grid.columns;
 
         $scope.selectedSearchMode = mode;
         $scope.savedTeis = null;
@@ -487,7 +485,7 @@ function($rootScope,
         });
     };
 
-    $scope.fetchTeis = function(){        
+    $scope.fetchTeis = function(){
         if( $scope.queryUrl === null || $scope.queryUrl === "" ){
             $scope.queryUrl = "";
         }
@@ -510,7 +508,7 @@ function($rootScope,
                 $scope.queryUrl,
                 $scope.programUrl,
                 $scope.attributeUrl.url,
-                $scope.pager,                
+                $scope.pager,
                 true).then(function(data){
                 if (data && data.metaData && data.metaData.pager) {
                     $scope.pager = data.metaData.pager;
@@ -602,14 +600,43 @@ function($rootScope,
 
         modalInstance.result.then(function () {
         }, function () {});
-    };    
+    };
 
     $scope.showHideColumns = function(){
         $scope.gridColumnsInUserStore = $scope.gridColumnsInUserStore ? $scope.gridColumnsInUserStore : {};
         if($scope.selectedProgram) {
-            $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = angular.copy( $scope.gridColumns );
-        }
+            var programCols = $scope.gridColumnsInUserStore[$scope.selectedProgram.id];
 
+            if ( programCols )
+            {
+                var userStoreCols = angular.copy( programCols );
+
+                for ( var i = 0; i <  Object.keys( $scope.gridColumns ).length; i ++ )
+                {
+                    var existed = false;
+
+                    for ( var j = 0; j < Object.keys( programCols ).length; j++ )
+                    {
+                        if ( $scope.gridColumns[i].id == programCols[j].id )
+                        {
+                            existed = true;
+                            break;
+                        }
+                    }
+
+                    if ( !existed )
+                    {
+                        userStoreCols.push( $scope.gridColumns[i] );
+                    }
+                }
+
+                $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = angular.copy( programCols );
+            }
+            else
+            {
+                $scope.gridColumnsInUserStore[$scope.selectedProgram.id] = angular.copy( $scope.gridColumns );
+            }
+        }
 
         var modalInstance = $modal.open({
             templateUrl: 'views/column-modal.html',
@@ -679,8 +706,8 @@ function($rootScope,
         });
         $scope.selectedSearchingOrgUnit = $scope.orgUnits[0] ? $scope.orgUnits[0] : null;
     });
-    
-    
+
+
     //expand/collapse of search orgunit tree
     $scope.expandCollapse = function(orgUnit) {
         if( orgUnit.hasChildren ){
