@@ -224,6 +224,15 @@ trackerCapture.controller('DataEntryController',
         $scope.printEmptyForm = false;
     };
 
+    $scope.toggleCompForm = function() {
+        if($scope.currentStage.timelineDataEntryMode !== $scope.timelineDataEntryModes.COMPAREALLDATAENTRYFORM) {
+            $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.COMPAREALLDATAENTRYFORM;
+        } else {
+            $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.DATAENTRYFORM;
+        }
+        $scope.getDataEntryForm();
+    };
+
     var processRuleEffect = function(event, callerId){
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
@@ -1358,8 +1367,6 @@ trackerCapture.controller('DataEntryController',
         });
         
         $scope.setDisplayTypeForStage($scope.currentStage);
-        //Change this to use flag to determin wich mode to use.
-        $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.COMPAREALLDATAENTRYFORM;
         $scope.customDataEntryForm = CustomFormService.getForProgramStage($scope.currentStage, $scope.prStDes);        
         if ($scope.customDataEntryForm) {
             $scope.displayCustomForm = "CUSTOM";
