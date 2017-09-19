@@ -227,6 +227,32 @@
                 <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
+        <div ng-switch-when="TIME">
+            <d2-time time-model="currentEvent"
+                        time-model-id="prStDe.dataElement.id"
+                        time-required={{prStDe.compulsory}}
+                        time-save-methode="saveDatavalue"
+                        time-save-methode-parameter1="prStDe"
+                        time-save-methode-parameter2="innerForm.foo"
+                        time-use-notification="true"
+                        time-element="currentElement"
+                        time-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false">
+            </d2-time>
+        </div>
+        <div ng-switch-when="DATETIME">
+            <d2-date-time datetime-model="currentEvent"
+                            datetime-model-id="prStDe.dataElement.id"
+                            datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                            datetime-max-date="prStDes[de.id].allowFutureDate ? '' : 0"
+                            datetime-required={{prStDe.compulsory}}
+                            datetime-save-methode="saveDatavalue"
+                            datetime-save-methode-parameter1="prStDe"
+                            datetime-save-methode-parameter2="innerForm.foo"
+                            datetime-use-notification="true"
+                            datetime-element="currentElement"
+                            datetime-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false">
+            </d2-date-time>
+        </div>
         <div ng-switch-when="TRUE_ONLY">
             <div class="hideInPrint">
                 <input type="checkbox"

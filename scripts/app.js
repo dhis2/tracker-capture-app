@@ -50,7 +50,7 @@ L.Icon.Default.imagePath = '../dhis-web-commons/leaflet/images';
 /* App Module */
 angular.module('trackerCapture')
 
-.value('DHIS2URL', '../api/26')
+.value('DHIS2URL', '../api/28')
 
 .value('DHIS2COORDINATESIZE', 6)
 

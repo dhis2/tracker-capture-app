@@ -9,7 +9,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 .factory('TCStorageService', function(){
     var store = new dhis2.storage.Store({
         name: "dhis2tc",
-        adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],        
+        adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],
         objectStores: ['programs', 'trackedEntities', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements']
     });
     return{
@@ -19,9 +19,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 /* Service to fetch/store dasboard widgets */
 .service('DashboardLayoutService', function($http, DHIS2URL, NotificationService, $translate) {
-    
+
     var ButtonIds = { Complete: "Complete", Incomplete: "Incomplete", Validate: "Validate", Delete: "Delete", Skip: "Skip", Unskip: "Unskip", Note: "Note" };
-      
+
     var w = {};
     w.enrollmentWidget = {title: 'enrollment', view: "components/enrollment/enrollment.html", show: true, expand: true, parent: 'biggerWidget', order: 0};
     w.indicatorWidget = {title: 'indicators', view: "components/rulebound/rulebound.html", show: true, expand: true, parent: 'biggerWidget', order: 1};
@@ -30,16 +30,16 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     w.reportWidget = {title: 'report', view: "components/report/tei-report.html", show: true, expand: true, parent: 'biggerWidget', order: 4};
     w.selectedWidget = {title: 'current_selections', view: "components/selected/selected.html", show: false, expand: true, parent: 'smallerWidget', order: 0};
     w.feedbackWidget = {title: 'feedback', view: "components/rulebound/rulebound.html", show: true, expand: true, parent: 'smallerWidget', order: 1};
-    w.profileWidget = {title: 'profile', view: "components/profile/profile.html", show: true, expand: true, parent: 'smallerWidget', order: 2};    
+    w.profileWidget = {title: 'profile', view: "components/profile/profile.html", show: true, expand: true, parent: 'smallerWidget', order: 2};
     w.relationshipWidget = {title: 'relationships', view: "components/relationship/relationship.html", show: true, expand: true, parent: 'smallerWidget', order: 3};
     w.notesWidget = {title: 'notes', view: "components/notes/notes.html", show: true, expand: true, parent: 'smallerWidget', order: 4};
     w.messagingWidget = {title: 'messaging', view: "components/messaging/messaging.html", show: false, expand: true, parent: 'smallerWidget', order: 5};
     var defaultLayout = new Object();
-    
+
     defaultLayout['DEFAULT'] = {widgets: w, program: 'DEFAULT'};
-    
+
     var getDefaultLayout = function(customLayout){
-        var dashboardLayout = {customLayout: customLayout, defaultLayout: defaultLayout};        
+        var dashboardLayout = {customLayout: customLayout, defaultLayout: defaultLayout};
         var promise = $http.get(  DHIS2URL + '/systemSettings/keyTrackerDashboardDefaultLayout' ).then(function(response){
             angular.extend(dashboardLayout.defaultLayout, response.data);
             return dashboardLayout;
@@ -49,9 +49,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }
             return dashboardLayout;
         });
-        return promise;        
+        return promise;
     };
-    
+
     return {
         saveLayout: function(dashboardLayout, saveAsDefault){
             var url = saveAsDefault ? DHIS2URL + '/systemSettings/keyTrackerDashboardDefaultLayout' : DHIS2URL + '/userSettings/keyTrackerDashboardLayout';
@@ -73,7 +73,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
                 return null;
             });
-            return promise;            
+            return promise;
         },
         get: function(){
             var promise = $http.get(  DHIS2URL + '/userSettings/keyTrackerDashboardLayout' ).then(function(response){
@@ -104,56 +104,56 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 /* current selections */
 .service('PeriodService', function(DateUtils, CalendarService, $filter){
 
-    var calendarSetting = CalendarService.getSetting();    
-    
+    var calendarSetting = CalendarService.getSetting();
+
     var splitDate = function(dateValue){
         if(!dateValue){
             return;
         }
-        var calendarSetting = CalendarService.getSetting();            
+        var calendarSetting = CalendarService.getSetting();
 
         return {year: moment(dateValue, calendarSetting.momentFormat).year(), month: moment(dateValue, calendarSetting.momentFormat).month(), week: moment(dateValue, calendarSetting.momentFormat).week(), day: moment(dateValue, calendarSetting.momentFormat).day()};
     };
-    
+
     function processPeriodsForEvent(periods,event){
         var index = -1;
         var occupied = null;
         for(var i=0; i<periods.length && index === -1; i++){
             if(moment(periods[i].endDate).isSame(event.sortingDate) ||
-                    moment(periods[i].startDate).isSame(event.sortingDate) ||
-                    moment(periods[i].endDate).isAfter(event.sortingDate) && moment(event.sortingDate).isAfter(periods[i].endDate)){
+                moment(periods[i].startDate).isSame(event.sortingDate) ||
+                moment(periods[i].endDate).isAfter(event.sortingDate) && moment(event.sortingDate).isAfter(periods[i].endDate)){
                 index = i;
                 occupied = angular.copy(periods[i]);
             }
         }
-        
+
         if(index !== -1){
             periods.splice(index,1);
         }
-        
+
         return {available: periods, occupied: occupied};
     };
-    
+
     this.getPeriods = function(events, stage, enrollment, _periodOffset){
-     
+
         if(!stage || !enrollment){
             return;
         }
-        
+
         var referenceDate = enrollment.incidentDate ? enrollment.incidentDate : enrollment.enrollmentDate;
         var offset = stage.minDaysFromStart;
-        
+
         if(stage.generatedByEnrollmentDate){
             referenceDate = enrollment.enrollmentDate;
-        }        
-               
+        }
+
         var occupiedPeriods = [];
         var availablePeriods = [];
         var hasFuturePeriod = false;
         if(!stage.periodType){
             angular.forEach(events, function(event){
                 occupiedPeriods.push({event: event.event, name: event.sortingDate, stage: stage.id});
-            });            
+            });
         }
         else{
 
@@ -161,23 +161,23 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var periodOffset = _periodOffset && dhis2.validation.isNumber( _periodOffset ) ? _periodOffset : splitDate(startDate).year - splitDate(DateUtils.getToday()).year;
             var eventDateOffSet = moment(referenceDate, calendarSetting.momentFormat).add('d', offset)._d;
             eventDateOffSet = $filter('date')(eventDateOffSet, calendarSetting.keyDateFormat);
-            
+
             //generate availablePeriods
             var pt = new PeriodType();
             var d2Periods = pt.get(stage.periodType).generatePeriods({offset: periodOffset, filterFuturePeriods: false, reversePeriods: false});
-            
+
             angular.forEach(d2Periods, function(p){
                 p.endDate = DateUtils.formatFromApiToUser(p.endDate);
                 p.startDate = DateUtils.formatFromApiToUser(p.startDate);
-                
+
                 if(moment(p.endDate, calendarSetting.momentFormat).isAfter(moment(eventDateOffSet,calendarSetting.momentFormat))){
                     availablePeriods.push( p );
                 }
-                
-                if( !hasFuturePeriod && moment(p.endDate, calendarSetting.momentFormat).isAfter(DateUtils.getToday())){                    
+
+                if( !hasFuturePeriod && moment(p.endDate, calendarSetting.momentFormat).isAfter(DateUtils.getToday())){
                     hasFuturePeriod = true;
                 }
-            });                
+            });
 
             //get occupied periods
             angular.forEach(events, function(event){
@@ -188,51 +188,51 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             });
         }
-        
+
         return {occupiedPeriods: occupiedPeriods, availablePeriods: availablePeriods, periodOffset: periodOffset, hasFuturePeriod: hasFuturePeriod};
     };
-    
+
     this.managePeriods = function( periods, isNewEvent ){
-        
+
         //remove future periods
-        if( isNewEvent ){                        
-            periods = $filter('removeFuturePeriod')(periods, {endDate: DateUtils.getToday()});            
+        if( isNewEvent ){
+            periods = $filter('removeFuturePeriod')(periods, {endDate: DateUtils.getToday()});
         }
-        
+
         return periods;
     };
 })
 
 /* Factory to fetch optionSets */
-.factory('OptionSetService', function($q, $rootScope, TCStorageService) { 
+.factory('OptionSetService', function($q, $rootScope, TCStorageService) {
     return {
         getAll: function(){
-            
+
             var def = $q.defer();
-            
+
             TCStorageService.currentStore.open().done(function(){
                 TCStorageService.currentStore.getAll('optionSets').done(function(optionSets){
                     $rootScope.$apply(function(){
                         def.resolve(optionSets);
-                    });                    
+                    });
                 });
-            });            
-            
-            return def.promise;            
+            });
+
+            return def.promise;
         },
         get: function(uid){
-            
+
             var def = $q.defer();
-            
+
             TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.get('optionSets', uid).done(function(optionSet){                    
+                TCStorageService.currentStore.get('optionSets', uid).done(function(optionSet){
                     $rootScope.$apply(function(){
                         def.resolve(optionSet);
                     });
                 });
-            });                        
-            return def.promise;            
-        },        
+            });
+            return def.promise;
+        },
         getCode: function(options, key){
             if(options){
                 for(var i=0; i<options.length; i++){
@@ -240,62 +240,62 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         return options[i].code;
                     }
                 }
-            }            
+            }
             return key;
-        },        
+        },
         getName: function(options, key){
             if(options){
-                for(var i=0; i<options.length; i++){                    
+                for(var i=0; i<options.length; i++){
                     if( key === options[i].code){
                         return options[i].displayName;
                     }
                 }
-            }            
+            }
             return key;
         }
     };
 })
 
 /* Factory to fetch relationships */
-.factory('RelationshipFactory', function($q, $rootScope, TCStorageService) { 
+.factory('RelationshipFactory', function($q, $rootScope, TCStorageService) {
     return {
         getAll: function(){
-            
+
             var def = $q.defer();
-            
+
             TCStorageService.currentStore.open().done(function(){
                 TCStorageService.currentStore.getAll('relationshipTypes').done(function(relationshipTypes){
                     $rootScope.$apply(function(){
                         def.resolve(relationshipTypes);
-                    });                    
+                    });
                 });
-            });            
-            
-            return def.promise;            
+            });
+
+            return def.promise;
         },
         get: function(uid){
-            
+
             var def = $q.defer();
-            
+
             TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.get('relationshipTypes', uid).done(function(relationshipType){                    
+                TCStorageService.currentStore.get('relationshipTypes', uid).done(function(relationshipType){
                     $rootScope.$apply(function(){
                         def.resolve(relationshipType);
                     });
                 });
-            });                        
-            return def.promise;            
+            });
+            return def.promise;
         }
     };
 })
 
 /* Factory to fetch programs */
-.factory('ProgramFactory', function($q, $rootScope, $location, SessionStorageService, TCStorageService, orderByFilter, OrgUnitFactory, CommonUtils) { 
+.factory('ProgramFactory', function($q, $rootScope, $location, SessionStorageService, TCStorageService, orderByFilter, OrgUnitFactory, CommonUtils) {
 
-    return {        
-        
+    return {
+
         getAll: function(){
-            
+
             var roles = SessionStorageService.get('USER_PROFILE');
             var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
             var def = $q.defer();
@@ -315,37 +315,37 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         });
                     });
                 });
-			});
-            
-            return def.promise;            
+            });
+
+            return def.promise;
         },
         getAllForUser: function(selectedProgram){
             var roles = SessionStorageService.get('USER_PROFILE');
             var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
             var def = $q.defer();
-            
+
             TCStorageService.currentStore.open().done(function(){
                 TCStorageService.currentStore.getAll('programs').done(function(prs){
                     var programs = [];
-                    angular.forEach(prs, function(pr){                            
+                    angular.forEach(prs, function(pr){
                         if(CommonUtils.userHasValidRole(pr, 'programs', userRoles)){
                             programs.push(pr);
                         }
                     });
-                    
+
                     programs = orderByFilter(programs, '-displayName').reverse();
-                    
+
                     if(programs.length === 0){
                         selectedProgram = null;
                     }
                     else if(programs.length === 1){
                         selectedProgram = programs[0];
-                    } 
+                    }
                     else{
                         if(selectedProgram){
                             var continueLoop = true;
                             for(var i=0; i<programs.length && continueLoop; i++){
-                                if(programs[i].id === selectedProgram.id){                                
+                                if(programs[i].id === selectedProgram.id){
                                     selectedProgram = programs[i];
                                     continueLoop = false;
                                 }
@@ -355,59 +355,59 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             }
                         }
                     }
-                        
+
                     if(!selectedProgram || angular.isUndefined(selectedProgram) && programs.legth > 0){
                         selectedProgram = programs[0];
                     }
-                    
+
                     $rootScope.$apply(function(){
                         def.resolve({programs: programs, selectedProgram: selectedProgram});
-                    });                      
+                    });
                 });
             });
-            
+
             return def.promise;
         },
         get: function(uid){
-            
+
             var def = $q.defer();
-            
+
             TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.get('programs', uid).done(function(pr){                    
+                TCStorageService.currentStore.get('programs', uid).done(function(pr){
                     $rootScope.$apply(function(){
                         def.resolve(pr);
                     });
                 });
-            });                        
-            return def.promise;            
+            });
+            return def.promise;
         },
         getProgramsByOu: function(ou, selectedProgram){
             var roles = SessionStorageService.get('USER_PROFILE');
             var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
             var def = $q.defer();
-            
+
             TCStorageService.currentStore.open().done(function(){
                 TCStorageService.currentStore.getAll('programs').done(function(prs){
                     var programs = [];
-                    angular.forEach(prs, function(pr){                            
+                    angular.forEach(prs, function(pr){
                         if(pr.organisationUnits.hasOwnProperty( ou.id ) && CommonUtils.userHasValidRole(pr, 'programs', userRoles)){
                             programs.push(pr);
                         }
                     });
-                    
+
                     programs = orderByFilter(programs, '-displayName').reverse();
-                    
+
                     if(programs.length === 0){
                         selectedProgram = null;
                     }
                     else if(programs.length === 1){
                         selectedProgram = programs[0];
-                    } 
+                    }
                     else{
                         if(selectedProgram){
                             var continueLoop = true;
                             for(var i=0; i<programs.length && continueLoop; i++){
-                                if(programs[i].id === selectedProgram.id){                                
+                                if(programs[i].id === selectedProgram.id){
                                     selectedProgram = programs[i];
                                     continueLoop = false;
                                 }
@@ -417,17 +417,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             }
                         }
                     }
-                                        
+
                     if(!selectedProgram || angular.isUndefined(selectedProgram) && programs.legth > 0){
                         selectedProgram = programs[0];
                     }
-                    
+
                     $rootScope.$apply(function(){
                         def.resolve({programs: programs, selectedProgram: selectedProgram});
-                    });                      
+                    });
                 });
             });
-            
+
             return def.promise;
         }
     };
@@ -441,21 +441,21 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 var def = $q.defer();
                 if(tei.trackedEntityInstance){
                     TEIService.update(tei, optionSets, attributesById).then(function(response){
-                        def.resolve(response); 
+                        def.resolve(response);
                     });
                 }
                 else{
                     TEIService.register(tei, optionSets, attributesById).then(function(response){
-                        def.resolve(response); 
+                        def.resolve(response);
                     });
                 }
                 return def.promise;
-            }            
+            }
         },
         processForm: function(existingTei, formTei, originalTei, attributesById){
-            var tei = angular.copy(existingTei);            
+            var tei = angular.copy(existingTei);
             tei.attributes = [];
-            var formEmpty = true;            
+            var formEmpty = true;
             for(var k in attributesById){
                 if(originalTei && formTei[k] !== originalTei[k] && !formTei[k] && !originalTei[k]){
                     formChanged = true;
@@ -463,14 +463,14 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 if( formTei[k] ){
                     var att = attributesById[k];
                     tei.attributes.push({attribute: att.id, value: formTei[k], displayName: att.displayName, valueType: att.valueType});
-                    formEmpty = false;              
+                    formEmpty = false;
                 }
                 delete tei[k];
             }
             formTei.attributes = tei.attributes;
-            
+
             var formChanged = false;
-            for(var k in attributesById){                
+            for(var k in attributesById){
                 if(originalTei && formTei[k] !== originalTei[k]){
                     if(!formEmpty){
                         formChanged = true;
@@ -479,7 +479,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     if(formEmpty && (formTei[k] || originalTei[k]) ){
                         formChanged = true;
                         break;
-                    }                    
+                    }
                 }
             }
             if (originalTei) {
@@ -496,19 +496,19 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 /* Service to deal with enrollment */
 .service('EnrollmentService', function($http, DHIS2URL, DateUtils, NotificationService, $translate) {
-    
+
     var convertFromApiToUser = function(enrollment){
         if(enrollment.enrollments){
             angular.forEach(enrollment.enrollments, function(enrollment){
                 enrollment.incidentDate = DateUtils.formatFromApiToUser(enrollment.incidentDate);
-                enrollment.enrollmentDate = DateUtils.formatFromApiToUser(enrollment.enrollmentDate);                
+                enrollment.enrollmentDate = DateUtils.formatFromApiToUser(enrollment.enrollmentDate);
             });
         }
         else{
             enrollment.incidentDate = DateUtils.formatFromApiToUser(enrollment.incidentDate);
             enrollment.enrollmentDate = DateUtils.formatFromApiToUser(enrollment.enrollmentDate);
         }
-        
+
         return enrollment;
     };
     var convertFromUserToApi = function(enrollment){
@@ -518,7 +518,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         return enrollment;
     };
     var errorHeader = $translate.instant("error");
-    return {        
+    return {
         get: function( enrollmentUid ){
             var promise = $http.get(  DHIS2URL + '/enrollments/' + enrollmentUid ).then(function(response){
                 return convertFromApiToUser(response.data);
@@ -589,20 +589,20 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         delete: function( enrollmentUid ){
             var promise = $http.delete(DHIS2URL + '/enrollments/' + enrollmentUid).then(function(response){
-                return response.data;               
+                return response.data;
             }, function (response) {
                 if (response && response.data && response.data.status === 'ERROR') {
                     var errorBody = $translate.instant('failed_to_delete_enrollment');
                     NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 }
-                
+
                 return response.data;
             });
-            return promise;           
+            return promise;
         },
         updateForNote: function( enrollment ){
             var promise = $http.post(DHIS2URL + '/enrollments/' + enrollment.enrollment + '/note', enrollment).then(function(response){
-                return response.data;         
+                return response.data;
             }, function(response){
                 var errorBody = $translate.instant('failed_to_update_enrollment');
                 NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
@@ -610,36 +610,36 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         }
-    };   
+    };
 })
 
 /* Service for getting tracked entity */
 .factory('TEService', function(TCStorageService, $q, $rootScope) {
 
-    return {        
-        getAll: function(){            
+    return {
+        getAll: function(){
             var def = $q.defer();
-            
+
             TCStorageService.currentStore.open().done(function(){
                 TCStorageService.currentStore.getAll('trackedEntities').done(function(entities){
                     $rootScope.$apply(function(){
                         def.resolve(entities);
-                    });                    
+                    });
                 });
-            });            
+            });
             return def.promise;
         },
-        get: function(uid){            
+        get: function(uid){
             var def = $q.defer();
-            
+
             TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.get('trackedEntities', uid).done(function(te){                    
+                TCStorageService.currentStore.get('trackedEntities', uid).done(function(te){
                     $rootScope.$apply(function(){
                         def.resolve(te);
                     });
                 });
-            });                        
-            return def.promise;            
+            });
+            return def.promise;
         }
     };
 })
@@ -653,7 +653,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 var tei = response.data;
                 angular.forEach(tei.attributes, function(att){
                     if(attributesById[att.attribute]){
-                        att.displayName = attributesById[att.attribute].displayName;                        
+                        att.displayName = attributesById[att.attribute].displayName;
                         att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');
                     }
                 });
@@ -672,7 +672,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     NotificationService.showNotifcationDialog( headerText,  bodyText);
                 }
             });
-            
+
             return promise;
         },
         getRelationships: function(uid) {
@@ -684,17 +684,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         delete: function(entityUid){
             var promise = $http.delete(DHIS2URL + '/trackedEntityInstances/' + entityUid).then(function(response){
-                return response.data;               
+                return response.data;
             }, function (response) {
                 var errorBody;
                 if (response && response.data && response.data.status === 'ERROR') {
                     errorBody = $translate.instant('delete_error_audit');
                     NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 }
-                
+
                 return response.data;
             });
-            return promise;           
+            return promise;
         },
         search: function(ouId, ouMode, queryUrl, programUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
             var url;
@@ -707,7 +707,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }else {
                 url = DHIS2URL + '/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
             }
-            
+
             if(queryUrl){
                 url = url + '&'+ queryUrl;
             }
@@ -727,7 +727,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             else{
                 url = url + '&paging=false';
             }
-            
+
             $http.get( url ).then(function(response){
                 var xmlData, rows, headers, index, itemName, value, jsonData;
                 var trackedEntityInstance, attributesById;
@@ -814,15 +814,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     NotificationService.showNotifcationDialog( $translate.instant('error'),  $translate.instant('access_denied'));
                 }
                 deferred.resolve(null);
-            });            
+            });
             return deferred.promise;
-        },                
+        },
         update: function(tei, optionSets, attributesById){
             var formattedTei = angular.copy(tei);
             angular.forEach(formattedTei.attributes, function(att){
                 att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API');
             });
-            var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + formattedTei.trackedEntityInstance , formattedTei ).then(function(response){                    
+            var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + formattedTei.trackedEntityInstance , formattedTei ).then(function(response){
                 return response.data;
             }, function(response){
                 NotificationService.showNotifcationDialog($translate.instant('update_error'), $translate.instant('failed_to_update_tei'), response);
@@ -833,12 +833,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         register: function(tei, optionSets, attributesById){
             var formattedTei = angular.copy(tei);
             var attributes = [];
-            angular.forEach(formattedTei.attributes, function(att){ 
+            angular.forEach(formattedTei.attributes, function(att){
                 attributes.push({attribute: att.attribute, value: CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API')});
             });
-            
+
             formattedTei.attributes = attributes;
-            var promise = $http.post( DHIS2URL + '/trackedEntityInstances' , formattedTei ).then(function(response){                    
+            var promise = $http.post( DHIS2URL + '/trackedEntityInstances' , formattedTei ).then(function(response){
                 return response.data;
             }, function(response) {
                 //Necessary now that import errors gives a 409 response from the server.
@@ -846,34 +846,34 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 var errorBody = $translate.instant('failed_to_register_tei');
                 NotificationService.showNotifcationDialog($translate.instant('register_error'), errorBody, response);
                 return null;
-            });                    
-            return promise;            
+            });
+            return promise;
         },
         processAttributes: function(selectedTei, selectedProgram, selectedEnrollment){
-            var def = $q.defer();            
+            var def = $q.defer();
             if(selectedTei.attributes){
                 if(selectedProgram && selectedEnrollment){
                     //show attribute for selected program and enrollment
                     AttributesFactory.getByProgram(selectedProgram).then(function(atts){
                         selectedTei.attributes = AttributesFactory.showRequiredAttributes(atts,selectedTei.attributes, true);
                         def.resolve(selectedTei);
-                    }); 
+                    });
                 }
                 if(selectedProgram && !selectedEnrollment){
-                    //show attributes for selected program            
-                    AttributesFactory.getByProgram(selectedProgram).then(function(atts){    
+                    //show attributes for selected program
+                    AttributesFactory.getByProgram(selectedProgram).then(function(atts){
                         selectedTei.attributes = AttributesFactory.showRequiredAttributes(atts,selectedTei.attributes, false);
-                        def.resolve(selectedTei);
-                    }); 
-                }
-                if(!selectedProgram && !selectedEnrollment){
-                    //show attributes in no program            
-                    AttributesFactory.getWithoutProgram().then(function(atts){                
-                        selectedTei.attributes = AttributesFactory.showRequiredAttributes(atts,selectedTei.attributes, false);     
                         def.resolve(selectedTei);
                     });
                 }
-            }       
+                if(!selectedProgram && !selectedEnrollment){
+                    //show attributes in no program
+                    AttributesFactory.getWithoutProgram().then(function(atts){
+                        selectedTei.attributes = AttributesFactory.showRequiredAttributes(atts,selectedTei.attributes, false);
+                        def.resolve(selectedTei);
+                    });
+                }
+            }
             return def.promise;
         },
         getGeneratedAttributeValue: function(attribute) {
@@ -894,26 +894,26 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Factory for getting tracked entity attributes */
-.factory('AttributesFactory', function($q, $rootScope, TCStorageService, orderByFilter, DateUtils, OptionSetService, OperatorFactory) {      
+.factory('AttributesFactory', function($q, $rootScope, TCStorageService, orderByFilter, DateUtils, OptionSetService, OperatorFactory) {
 
     return {
         getAll: function(){
-            
+
             var def = $q.defer();
-            
+
             TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll('attributes').done(function(attributes){                    
+                TCStorageService.currentStore.getAll('attributes').done(function(attributes){
                     $rootScope.$apply(function(){
                         def.resolve(attributes);
                     });
                 });
-            });            
-            return def.promise;            
-        }, 
+            });
+            return def.promise;
+        },
         getByProgram: function(program){
             var def = $q.defer();
-            this.getAll().then(function(atts){                
-                
+            this.getAll().then(function(atts){
+
                 if(program && program.id){
                     var attributes = [];
                     var programAttributes = [];
@@ -934,25 +934,25 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             programAttributes.push(att);
                         }
                     });
-                    
+
                     def.resolve(programAttributes);
-                }                
+                }
                 else{
                     var attributes = [];
                     angular.forEach(atts, function(attribute){
                         if (attribute.displayInListNoProgram) {
                             attributes.push(attribute);
                         }
-                    });     
-                    
+                    });
+
                     attributes = orderByFilter(attributes, '-sortOrderInListNoProgram').reverse();
                     def.resolve(attributes);
-                }                
+                }
             });
-            return def.promise;    
+            return def.promise;
         },
-        getWithoutProgram: function(){   
-            
+        getWithoutProgram: function(){
+
             var def = $q.defer();
             this.getAll().then(function(atts){
                 var attributes = [];
@@ -960,18 +960,18 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     if (attribute.displayInListNoProgram) {
                         attributes.push(attribute);
                     }
-                });     
-                def.resolve(attributes);             
-            });     
+                });
+                def.resolve(attributes);
+            });
             return def.promise;
-        },        
+        },
         getMissingAttributesForEnrollment: function(tei, program){
             var def = $q.defer();
             this.getByProgram(program).then(function(atts){
                 var programAttributes = atts;
                 var existingAttributes = tei.attributes;
                 var missingAttributes = [];
-                
+
                 for(var i=0; i<programAttributes.length; i++){
                     var exists = false;
                     for(var j=0; j<existingAttributes.length && !exists; j++){
@@ -984,11 +984,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     }
                 }
                 def.resolve(missingAttributes);
-            });            
-            return def.promise();            
+            });
+            return def.promise();
         },
-        showRequiredAttributes: function(requiredAttributes, teiAttributes, fromEnrollment){        
-            
+        showRequiredAttributes: function(requiredAttributes, teiAttributes, fromEnrollment){
+
             //first reset teiAttributes
             for(var j=0; j<teiAttributes.length; j++){
                 teiAttributes[j].show = false;
@@ -998,7 +998,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             for(var i=0; i<requiredAttributes.length; i++){
                 var processed = false;
                 for(var j=0; j<teiAttributes.length && !processed; j++){
-                    if(requiredAttributes[i].id === teiAttributes[j].attribute){                    
+                    if(requiredAttributes[i].id === teiAttributes[j].attribute){
                         processed = true;
                         teiAttributes[j].show = true;
                         teiAttributes[j].order = i;
@@ -1010,7 +1010,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
                 if(!processed && fromEnrollment){//attribute was empty, so a chance to put some value
                     teiAttributes.push({show: true, order: i, allowFutureDate: requiredAttributes[i].allowFutureDate ? requiredAttributes[i].allowFutureDate : false, mandatory: requiredAttributes[i].mandatory ? requiredAttributes[i].mandatory : false, attribute: requiredAttributes[i].id, displayName: requiredAttributes[i].displayName, type: requiredAttributes[i].valueType, value: ''});
-                }                   
+                }
             }
 
             teiAttributes = orderByFilter(teiAttributes, '-order');
@@ -1019,10 +1019,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         generateAttributeFilters: function(attributes){
             angular.forEach(attributes, function(attribute){
-                if(attribute.valueType === 'NUMBER' || attribute.valueType === 'DATE'){
+                if(attribute.valueType === 'NUMBER' || attribute.valueType === 'DATE' || attribute.valueType === 'DATETIME'){
                     attribute.operator = OperatorFactory.defaultOperators[0];
                 }
-            });            
+            });
             return attributes;
         }
     };
@@ -1033,9 +1033,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
     var skipPaging = "&skipPaging=true";
     var errorHeader = $translate.instant("error");
-    return {     
-        
-        getEventsByStatus: function(entity, orgUnit, program, programStatus){   
+    return {
+
+        getEventsByStatus: function(entity, orgUnit, program, programStatus){
             var promise = $http.get( DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + '&orgUnit=' + orgUnit + '&program=' + program + '&programStatus=' + programStatus  + skipPaging).then(function(response){
                 return response.data.events;
             }, function (response) {
@@ -1046,17 +1046,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
             return promise;
         },
-        getEventsByProgram: function(entity, program, attributeCategory){            
-            var url = DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging;            
-            
+        getEventsByProgram: function(entity, program, attributeCategory){
+            var url = DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging;
+
             if(program){
                 url = url + '&program=' + program;
             }
-            
+
             if( attributeCategory && !attributeCategory.default){
                 url = url + '&attributeCc=' + attributeCategory.cc + '&attributeCos=' + attributeCategory.cp;
             }
-            
+
             var promise = $http.get( url ).then(function(response){
                 return response.data.events;
             }, function (response) {
@@ -1067,18 +1067,18 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getEventsByProgramStage: function(entity, programStage){
-          var url = DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging; 
-          if(programStage){
-              url += '&programStage='+programStage;
-          }
-          var promise = $http.get(url).then(function(response){
-             return response.data.events;
-          }, function (response) {
-              var errorBody = $translate.instant('failed_to_fetch_events');
-              NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
-              return null;
-          });
-          return promise;
+            var url = DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging;
+            if(programStage){
+                url += '&programStage='+programStage;
+            }
+            var promise = $http.get(url).then(function(response){
+                return response.data.events;
+            }, function (response) {
+                var errorBody = $translate.instant('failed_to_fetch_events');
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
+                return null;
+            });
+            return promise;
         },
         getByOrgUnitAndProgram: function(orgUnit, ouMode, program, startDate, endDate){
             var url;
@@ -1098,8 +1098,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        get: function(eventUid){            
-            var promise = $http.get(DHIS2URL + '/events/' + eventUid + '.json').then(function(response){               
+        get: function(eventUid){
+            var promise = $http.get(DHIS2URL + '/events/' + eventUid + '.json').then(function(response){
                 return response.data;
             }, function (response) {
                 if (response && response.data && response.data.status === 'ERROR') {
@@ -1108,10 +1108,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             });
             return promise;
-        },        
-        create: function(dhis2Event){    
+        },
+        create: function(dhis2Event){
             var promise = $http.post(DHIS2URL + '/events.json', dhis2Event).then(function(response){
-                return response.data;           
+                return response.data;
             }, function (response) {
                 if (response && response.data && (response.data.status === 'ERROR' || response.data.status === 'WARNING')) {
                     var errorBody = $translate.instant('event_creation_error');
@@ -1119,29 +1119,29 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     return null;
                 }
             });
-            return promise;            
+            return promise;
         },
         delete: function(dhis2Event){
             var promise = $http.delete(DHIS2URL + '/events/' + dhis2Event.event).then(function(response){
-                return response.data;               
+                return response.data;
             }, function (response) {
                 if (response && response.data && response.data.status === 'ERROR') {
                     var errorBody = $translate.instant('delete_error_audit');
                     NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 }
             });
-            return promise;           
+            return promise;
         },
-        update: function(dhis2Event){   
+        update: function(dhis2Event){
             var promise = $http.put(DHIS2URL + '/events/' + dhis2Event.event, dhis2Event).then(function(response){
-                return response.data;         
+                return response.data;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_update_event');
                 NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
             });
             return promise;
-        },        
-        updateForSingleValue: function(singleValue){   
+        },
+        updateForSingleValue: function(singleValue){
             var promise = $http.put(DHIS2URL + '/events/' + singleValue.event + '/' + singleValue.dataValues[0].dataElement, singleValue ).then(function(response){
                 return response.data;
             }, function (response) {
@@ -1151,9 +1151,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        updateForNote: function(dhis2Event){   
+        updateForNote: function(dhis2Event){
             var promise = $http.post(DHIS2URL + '/events/' + dhis2Event.event + '/note', dhis2Event).then(function(response){
-                return response.data;         
+                return response.data;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_update_event');
                 NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
@@ -1163,7 +1163,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         updateForEventDate: function(dhis2Event){
             var promise = $http.put(DHIS2URL + '/events/' + dhis2Event.event + '/eventDate', dhis2Event).then(function(response){
-                return response.data;         
+                return response.data;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_update_event');
                 NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
@@ -1171,7 +1171,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         }
-    };    
+    };
 })
 
 /* factory for handling event reports */
@@ -1180,152 +1180,152 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     return {
 
         getEventReport: function(orgUnit, ouMode, program, startDate, endDate, programStatus, eventStatus, pager){
-            
+
             var url = DHIS2URL + '/events/eventRows.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program;
-            
+
             if( programStatus ){
                 url = url + '&programStatus=' + programStatus;
             }
-            
+
             if( eventStatus ){
                 url = url + '&eventStatus=' + eventStatus;
             }
-            
+
             if(startDate && endDate){
                 url = url + '&startDate=' + startDate + '&endDate=' + endDate ;
             }
-            
+
             if( pager ){
                 var pgSize = pager ? pager.pageSize : 50;
                 var pg = pager ? pager.page : 1;
                 pgSize = pgSize > 1 ? pgSize  : 1;
                 pg = pg > 1 ? pg : 1;
                 url = url + '&pageSize=' + pgSize + '&page=' + pg + '&totalPages=true';
-            } 
-            
+            }
+
             var promise = $http.get( url ).then(function(response){
                 return response.data;
             }, function(response){
                 var errorBody = $translate.instant('failed_to_update_event');
                 NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 return null;
-            });            
+            });
             return promise;
         }
-    };    
+    };
 })
 
 .factory('OperatorFactory', function($translate){
-    
+
     var defaultOperators = [$translate.instant('IS'), $translate.instant('RANGE') ];
     var boolOperators = [$translate.instant('yes'), $translate.instant('no')];
     return{
         defaultOperators: defaultOperators,
         boolOperators: boolOperators
-    };  
+    };
 })
 
 /* factory to fetch and process metadata */
-.factory('MetaDataFactory', function($q, $rootScope, TCStorageService) {  
-    
-    return {        
+.factory('MetaDataFactory', function($q, $rootScope, TCStorageService) {
+
+    return {
         get: function(store, uid){
-            
+
             var def = $q.defer();
-            
+
             TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.get(store, uid).done(function(pv){                    
+                TCStorageService.currentStore.get(store, uid).done(function(pv){
                     $rootScope.$apply(function(){
                         def.resolve(pv);
                     });
                 });
-            });                        
+            });
             return def.promise;
         },
         getByProgram: function(store, program){
             var def = $q.defer();
             var obj = [];
-            
+
             TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll(store, program).done(function(pvs){   
+                TCStorageService.currentStore.getAll(store, program).done(function(pvs){
                     angular.forEach(pvs, function(pv){
-                        if(pv.program.id === program){                            
-                            obj.push(pv);                               
-                        }                        
+                        if(pv.program.id === program){
+                            obj.push(pv);
+                        }
                     });
                     $rootScope.$apply(function(){
                         def.resolve(obj);
                     });
-                });                
-            });            
+                });
+            });
             return def.promise;
         },
         getAll: function(store){
-            var def = $q.defer();            
+            var def = $q.defer();
             TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll(store).done(function(pvs){                       
+                TCStorageService.currentStore.getAll(store).done(function(pvs){
                     $rootScope.$apply(function(){
                         def.resolve(pvs);
                     });
-                });                
-            });            
+                });
+            });
             return def.promise;
         }
-    };        
+    };
 })
 
 /* Returns a function for getting rules for a specific program */
 .factory('TrackerRulesFactory', function($q,MetaDataFactory,$filter){
-    var staticReplacements = 
-                        [{regExp:new RegExp("([^\w\d])(and)([^\w\d])","gi"), replacement:"$1&&$3"},
-                        {regExp:new RegExp("([^\w\d])(or)([^\w\d])","gi"), replacement:"$1||$3"},
-                        {regExp:new RegExp("V{execution_date}","g"), replacement:"V{event_date}"}];
-                    
+    var staticReplacements =
+        [{regExp:new RegExp("([^\w\d])(and)([^\w\d])","gi"), replacement:"$1&&$3"},
+            {regExp:new RegExp("([^\w\d])(or)([^\w\d])","gi"), replacement:"$1||$3"},
+            {regExp:new RegExp("V{execution_date}","g"), replacement:"V{event_date}"}];
+
     var performStaticReplacements = function(expression) {
         angular.forEach(staticReplacements, function(staticReplacement) {
             expression = expression.replace(staticReplacement.regExp, staticReplacement.replacement);
         });
-        
+
         return expression;
     };
-    
-    return{                
-        getRules : function(programUid){            
-            var def = $q.defer();            
+
+    return{
+        getRules : function(programUid){
+            var def = $q.defer();
             MetaDataFactory.getAll('constants').then(function(constants) {
-                MetaDataFactory.getByProgram('programIndicators',programUid).then(function(pis){                    
+                MetaDataFactory.getByProgram('programIndicators',programUid).then(function(pis){
                     var variables = [];
                     var programRules = [];
                     angular.forEach(pis, function(pi){
                         if(pi.displayInForm){
                             var newAction = {
-                                    id:pi.id,
-                                    content:pi.displayDescription ? pi.displayDescription : pi.displayName,
-                                    data:pi.expression,
-                                    programRuleActionType:'DISPLAYKEYVALUEPAIR',
-                                    location:'indicators'
-                                };
+                                id:pi.id,
+                                content:pi.displayDescription ? pi.displayDescription : pi.displayName,
+                                data:pi.expression,
+                                programRuleActionType:'DISPLAYKEYVALUEPAIR',
+                                location:'indicators'
+                            };
                             var newRule = {
-                                    name:pi.displayName,
-                                    id: pi.id,
-                                    shortname:pi.shortname,
-                                    code:pi.code,
-                                    program:pi.program,
-                                    description:pi.description,
-                                    condition:pi.filter ? pi.filter : 'true',
-                                    programRuleActions: [newAction]
-                                };
+                                name:pi.displayName,
+                                id: pi.id,
+                                shortname:pi.shortname,
+                                code:pi.code,
+                                program:pi.program,
+                                description:pi.description,
+                                condition:pi.filter ? pi.filter : 'true',
+                                programRuleActions: [newAction]
+                            };
 
                             programRules.push(newRule);
 
                             var variablesInCondition = newRule.condition.match(/[A#]{\w+.?\w*}/g);
                             var variablesInData = newAction.data.match(/[A#]{\w+.?\w*}/g);
-                            var valueCountPresent = newRule.condition.indexOf("V{value_count}") >= 0 
-                                                            || newAction.data.indexOf("V{value_count}") >= 0;
+                            var valueCountPresent = newRule.condition.indexOf("V{value_count}") >= 0
+                                || newAction.data.indexOf("V{value_count}") >= 0;
                             var positiveValueCountPresent = newRule.condition.indexOf("V{zero_pos_value_count}") >= 0
-                                                            || newAction.data.indexOf("V{zero_pos_value_count}") >= 0;
+                                || newAction.data.indexOf("V{zero_pos_value_count}") >= 0;
                             var variableObjectsCurrentExpression = [];
-                            
+
                             var pushDirectAddressedVariable = function(variableWithCurls) {
                                 var variableName = $filter('trimvariablequalifiers')(variableWithCurls);
                                 var variableNameParts = variableName.split('.');
@@ -1355,37 +1355,37 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                     };
                                 }
                                 variables.push(newVariableObject);
-                                
+
                                 return newVariableObject;
-                                
+
                             };
-                            
+
                             angular.forEach(variablesInCondition, function(variableInCondition) {
                                 var pushed = pushDirectAddressedVariable(variableInCondition);
                             });
 
                             angular.forEach(variablesInData, function(variableInData) {
                                 var pushed = pushDirectAddressedVariable(variableInData);
-                                
+
                                 //We only count the number of values in the data part of the rule
                                 //(Called expression in program indicators)
                                 variableObjectsCurrentExpression.push(pushed);
                             });
-                            
+
                             //Change expression or data part of the rule to match the program rules execution model
-                            
+
                             if(valueCountPresent) {
                                 var valueCountText;
                                 angular.forEach(variableObjectsCurrentExpression, function(variableCurrentRule) {
-                                   if(valueCountText) {
-                                       //This is not the first value in the value count part of the expression. 
-                                       valueCountText +=  ' + d2:count(\'' + variableCurrentRule.displayName + '\')';
-                                   }
-                                   else
-                                   {
-                                       //This is the first part value in the value count expression:
-                                       valueCountText = '(d2:count(\'' + variableCurrentRule.displayName + '\')';
-                                   }
+                                    if(valueCountText) {
+                                        //This is not the first value in the value count part of the expression.
+                                        valueCountText +=  ' + d2:count(\'' + variableCurrentRule.displayName + '\')';
+                                    }
+                                    else
+                                    {
+                                        //This is the first part value in the value count expression:
+                                        valueCountText = '(d2:count(\'' + variableCurrentRule.displayName + '\')';
+                                    }
                                 });
                                 //To finish the value count expression we need to close the paranthesis:
                                 valueCountText += ')';
@@ -1397,15 +1397,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             if(positiveValueCountPresent) {
                                 var zeroPosValueCountText;
                                 angular.forEach(variableObjectsCurrentExpression, function(variableCurrentRule) {
-                                   if(zeroPosValueCountText) {
-                                       //This is not the first value in the value count part of the expression. 
-                                       zeroPosValueCountText +=  '+ d2:countifzeropos(\'' + variableCurrentRule.displayName + '\')';
-                                   }
-                                   else
-                                   {
-                                       //This is the first part value in the value count expression:
-                                       zeroPosValueCountText = '(d2:countifzeropos(\'' + variableCurrentRule.displayName + '\')';
-                                   }
+                                    if(zeroPosValueCountText) {
+                                        //This is not the first value in the value count part of the expression.
+                                        zeroPosValueCountText +=  '+ d2:countifzeropos(\'' + variableCurrentRule.displayName + '\')';
+                                    }
+                                    else
+                                    {
+                                        //This is the first part value in the value count expression:
+                                        zeroPosValueCountText = '(d2:countifzeropos(\'' + variableCurrentRule.displayName + '\')';
+                                    }
                                 });
                                 //To finish the value count expression we need to close the paranthesis:
                                 zeroPosValueCountText += ')';
@@ -1414,7 +1414,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                 newRule.condition = newRule.condition.replace(new RegExp("V{zero_pos_value_count}", 'g'),zeroPosValueCountText);
                                 newAction.data = newAction.data.replace(new RegExp("V{zero_pos_value_count}", 'g'),zeroPosValueCountText);
                             }
-                            
+
                             newAction.data = performStaticReplacements(newAction.data);
                             newRule.condition = performStaticReplacements(newRule.condition);
                         }
@@ -1422,61 +1422,66 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
                     var programIndicators = {rules:programRules, variables:variables};
 
-                    MetaDataFactory.getByProgram('programRuleVariables',programUid).then(function(programVariables){                    
+                    MetaDataFactory.getByProgram('programRuleVariables',programUid).then(function(programVariables){
                         MetaDataFactory.getByProgram('programRules',programUid).then(function(prs){
                             var programRules = [];
                             angular.forEach(prs, function(rule){
                                 rule.actions = [];
                                 rule.programStageId = rule.programStage && rule.programStage.id ? rule.programStage.id : null;
                                 programRules.push(rule);
-                            });                                
+                            });
                             def.resolve({constants: constants, programIndicators: programIndicators, programVariables: programVariables, programRules: programRules});
                         });
                     });
-                    
-                }); 
-            });                        
+
+                });
+            });
             return def.promise;
         }
-    };  
+    };
 })
 
-.service('EntityQueryFactory', function(OperatorFactory, DateUtils){  
-    
+.service('EntityQueryFactory', function(OperatorFactory, DateUtils){
+
     this.getAttributesQuery = function(attributes, enrollment){
 
         var query = {url: null, hasValue: false};
         
-        angular.forEach(attributes, function(attribute){           
+        angular.forEach(attributes, function(attribute){
 
-            if(attribute.valueType === 'DATE' || attribute.valueType === 'NUMBER'){
+            if(attribute.valueType === 'DATE' || attribute.valueType === 'NUMBER' || attribute.valueType === 'DATETIME'){
                 var q = '';
-                
+
                 if(attribute.operator === OperatorFactory.defaultOperators[0]){
                     if(attribute.exactValue && attribute.exactValue !== ''){
                         query.hasValue = true;
-                        if(attribute.valueType === 'DATE'){
+                        if(attribute.valueType === 'DATE' || attribute.valueType === 'DATETIME'){
                             attribute.exactValue = DateUtils.formatFromUserToApi(attribute.exactValue);
                         }
-                        q += 'EQ:' + attribute.exactValue + ':';
+
+                        if(attribute.valueType === 'DATETIME') {
+                            q += 'LIKE:' + attribute.exactValue + ':';
+                        } else {
+                            q += 'EQ:' + attribute.exactValue + ':';
+                        }
                     }
-                }                
+                }
                 if(attribute.operator === OperatorFactory.defaultOperators[1]){
                     if(attribute.startValue && attribute.startValue !== ''){
                         query.hasValue = true;
-                        if(attribute.valueType === 'DATE'){
+                        if(attribute.valueType === 'DATE' || attribute.valueType === 'DATETIME'){
                             attribute.startValue = DateUtils.formatFromUserToApi(attribute.startValue);
                         }
                         q += 'GT:' + attribute.startValue + ':';
                     }
                     if(attribute.endValue && attribute.endValue !== ''){
                         query.hasValue = true;
-                        if(attribute.valueType === 'DATE'){
+                        if(attribute.valueType === 'DATE' || attribute.valueType === 'DATETIME'){
                             attribute.endValue = DateUtils.formatFromUserToApi(attribute.endValue);
                         }
                         q += 'LT:' + attribute.endValue + ':';
                     }
-                }                
+                }
                 if(query.url){
                     if(q){
                         q = q.substr(0,q.length-1);
@@ -1491,12 +1496,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             }
             else{
-                if(attribute.value && attribute.value !== ''){                    
-                    query.hasValue = true;                
+                if(attribute.value && attribute.value !== ''){
+                    query.hasValue = true;
 
                     if(angular.isArray(attribute.value)){
                         var q = '';
-                        angular.forEach(attribute.value, function(val){                        
+                        angular.forEach(attribute.value, function(val){
                             q += val + ';';
                         });
 
@@ -1511,9 +1516,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             if(q){
                                 query.url = 'filter=' + attribute.id + ':IN:' + q;
                             }
-                        }                    
+                        }
                     }
-                    else{                        
+                    else{
                         if(query.url){
                             query.url = query.url + '&filter=' + attribute.id + ':LIKE:' + attribute.value;
                         }
@@ -1522,12 +1527,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         }
                     }
                 }
-            }            
+            }
         });
-        
+
         if(enrollment){
             var q = '';
-            if(enrollment.programEnrollmentStartDate && enrollment.programEnrollmentStartDate !== ''){                
+            if(enrollment.programEnrollmentStartDate && enrollment.programEnrollmentStartDate !== ''){
                 query.hasValue = true;
                 q += '&programEnrollmentStartDate=' + DateUtils.formatFromUserToApi(enrollment.programEnrollmentStartDate);
             }
@@ -1535,7 +1540,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 query.hasValue = true;
                 q += '&programEnrollmentEndDate=' + DateUtils.formatFromUserToApi(enrollment.programEnrollmentEndDate);
             }
-            if(enrollment.programIncidentStartDate && enrollment.programIncidentStartDate !== ''){                
+            if(enrollment.programIncidentStartDate && enrollment.programIncidentStartDate !== ''){
                 query.hasValue = true;
                 q += '&programIncidentStartDate=' + DateUtils.formatFromUserToApi(enrollment.programIncidentStartDate);
             }
@@ -1550,31 +1555,31 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 else{
                     query.url = q;
                 }
-            }            
+            }
         }
         return query;
-        
-    };   
-    
+
+    };
+
     this.resetAttributesQuery = function(attributes, enrollment){
-        
+
         angular.forEach(attributes, function(attribute){
             attribute.exactValue = '';
             attribute.startValue = '';
             attribute.endValue = '';
-            attribute.value = '';           
+            attribute.value = '';
         });
-        
+
         if(enrollment){
             enrollment.programStartDate = '';
-            enrollment.programEndDate = '';          
-        }        
-        return attributes;        
-    }; 
+            enrollment.programEndDate = '';
+        }
+        return attributes;
+    };
 })
 
 .service('TEIGridService', function(OptionSetService, CommonUtils, CurrentSelection, DateUtils, $location, $translate, $filter){
-    
+
     return {
         format: function(selectedOrgUnitId, grid, map, optionSets, invalidTeis, isFollowUp){
             var ouId = ($location.search()).ou;
@@ -1602,7 +1607,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var entityList = {own: [], other: []};
 
             var attributesById = CurrentSelection.getAttributesById();
-            
+
             angular.forEach(grid.rows, function (row) {
                 if (invalidTeis.indexOf(row[0]) === -1) {
                     var entity = {};
@@ -1629,7 +1634,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                 optionSets[attributesById[grid.headers[i].name].optionSet.id]) {
                                 val = OptionSetService.getName(optionSets[attributesById[grid.headers[i].name].optionSet.id].options, val);
                             }
-                            if (attributesById[grid.headers[i].name] && attributesById[grid.headers[i].name].valueType ) {                                
+                            if (attributesById[grid.headers[i].name] && attributesById[grid.headers[i].name].valueType ) {
                                 switch ( attributesById[grid.headers[i].name].valueType ){
                                     case "ORGANISATION_UNIT":
                                         CommonUtils.checkAndSetOrgUnitName( val );
@@ -1639,7 +1644,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                         break;
                                 }
                             }
-                            
+
                             entity[grid.headers[i].name] = val;
                         }
                     }
@@ -1663,46 +1668,81 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var len = entityList.own.length + entityList.other.length;
             return {headers: attributes, rows: entityList, pager: grid.metaData.pager, length: len};
         },
-        generateGridColumns: function(attributes, ouMode, nonConfidential){
-            
+        generateGridColumns: function(existedColumns, attributes, ouMode, nonConfidential){
             if( ouMode === null ){
                 ouMode = 'SELECTED';
             }
             var filterTypes = {}, filterText = {};
             var columns = [];
-            
+
             var returnAttributes = [];
-            if(nonConfidential) {
-                //Filter out attributes that is confidential, so they will not be part of any grid:
-                returnAttributes = angular.copy($filter('nonConfidential')(attributes));
+i
+            if ( attributes )
+            {
+                if( nonConfidential ) {
+                    //Filter out attributes that is confidential, so they will not be part of any grid:
+                    returnAttributes = angular.copy($filter('nonConfidential')(attributes));
+                }
+                else
+                {
+                    returnAttributes = angular.copy( attributes );
+                }
+            }
+
+            if ( !existedColumns ) {
+                //also add extra columns which are not part of attributes (orgunit for example)
+                columns.push({id: 'orgUnitName', displayName: $translate.instant('registering_unit'), valueType: 'TEXT', displayInListNoProgram: false, attribute: false});
+                columns.push({id: 'created', displayName: $translate.instant('registration_date'), valueType: 'DATE', displayInListNoProgram: false, attribute: false});
+                columns.push({id: 'inactive', displayName: $translate.instant('inactive'), valueType: 'BOOLEAN', displayInListNoProgram: false, attribute: false});
+                columns = columns.concat(returnAttributes ? returnAttributes : []);
+                //generate grid column for the selected program/attributes
+                angular.forEach(columns, function(column)
+                {
+                    column.attribute = angular.isUndefined(column.attribute) ? true : false;
+                    column.show = false;
+
+                    if( (column.id === 'orgUnitName' && ouMode !== 'SELECTED') || column.displayInListNoProgram || column.displayInList )
+                    {
+                        column.show = true
+                    }
+                    column.showFilter = false;
+                    filterTypes[column.id] = column.valueType;
+                    if(column.valueType === 'DATE' || column.valueType === 'NUMBER' )
+                    {
+                        filterText[column.id]= {};
+                    }
+
+                });
             }
             else
             {
-                returnAttributes = angular.copy(attributes);
-            }
-       
-            //also add extra columns which are not part of attributes (orgunit for example)
-            columns.push({id: 'orgUnitName', displayName: $translate.instant('registering_unit'), valueType: 'TEXT', displayInListNoProgram: false, attribute: false});
-            columns.push({id: 'created', displayName: $translate.instant('registration_date'), valueType: 'DATE', displayInListNoProgram: false, attribute: false});
-            columns.push({id: 'inactive', displayName: $translate.instant('inactive'), valueType: 'BOOLEAN', displayInListNoProgram: false, attribute: false});
-            columns = columns.concat(returnAttributes ? returnAttributes : []);
-            
-            //generate grid column for the selected program/attributes
-            angular.forEach(columns, function(column){                
-                column.attribute = angular.isUndefined(column.attribute) ? true : false;
-                column.show = false;
+                for ( var i = 0; i <  Object.keys( returnAttributes ).length; i ++ )
+                {
+                    var existed = false;
+                    var col = returnAttributes[i];
+                    for ( var j = 0; j < Object.keys( existedColumns ).length; j++ )
+                    {
+                        if ( col.id == existedColumns[j].id )
+                        {
+                            columns.push(existedColumns[j]);
+                            existed = true;
+                            break;
+                        }
+                    }
 
-                if( (column.id === 'orgUnitName' && ouMode !== 'SELECTED') ||
-                    column.displayInListNoProgram || 
-                    column.displayInList){
-                    column.show = true;
-                }                
-                column.showFilter = false;                
-                filterTypes[column.id] = column.valueType;
-                if(column.valueType === 'DATE' || column.valueType === 'NUMBER' ){
-                    filterText[column.id]= {};
+                    if ( !existed )
+                    {
+                        col.attribute = angular.isUndefined(col.attribute) ? true : false;
+                        col.show = false;
+                        col.showFilter = false;
+                        filterTypes[col.id] = col.valueType;
+                        if(col.valueType === 'DATE' || col.valueType === 'NUMBER' ){
+                            filterText[col.id]= {};
+                        }
+                        columns.push(col);
+                    }
                 }
-            });
+            }
             return {columns: columns, filterTypes: filterTypes, filterText: filterText};
         },
         getData: function(rows, columns){
@@ -1712,28 +1752,28 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 angular.forEach(columns, function(col){
                     if(col.show){
                         d[col.displayName] = row[col.id];
-                    }                
+                    }
                 });
-                data.push(d);            
+                data.push(d);
             });
             return data;
         },
         getHeader: function(columns){
-            var header = []; 
+            var header = [];
             angular.forEach(columns, function(col){
                 if(col.show){
                     header.push($translate.instant(col.displayName));
                 }
-            });        
+            });
             return header;
         }
     };
 })
 
 .service('EventUtils', function(DateUtils, CommonUtils, PeriodService, CalendarService, CurrentSelection, $translate, $filter, $rootScope, orderByFilter){
-    
-    var getEventDueDate = function(eventsByStage, programStage, enrollment){       
-        
+
+    var getEventDueDate = function(eventsByStage, programStage, enrollment){
+
         var referenceDate = enrollment.incidentDate ? enrollment.incidentDate : enrollment.enrollmentDate,
             offset = programStage.minDaysFromStart,
             calendarSetting = CalendarService.getSetting(),
@@ -1744,7 +1784,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         }
 
         if(programStage.repeatable){
-            var evs = [];                
+            var evs = [];
             angular.forEach(eventsByStage, function(ev){
                 if(ev.eventDate){
                     evs.push(ev);
@@ -1752,24 +1792,24 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
 
             if(evs.length > 0){
-                evs = orderByFilter(evs, '-eventDate');                
+                evs = orderByFilter(evs, '-eventDate');
                 if(programStage.periodType){
-                    
+
                 }
                 else{
                     referenceDate = evs[0].eventDate;
                     offset = programStage.standardInterval;
                 }
-            }                
+            }
         }
         dueDate = moment(referenceDate, calendarSetting.momentFormat).add('d', offset)._d;
-        dueDate = $filter('date')(dueDate, calendarSetting.keyDateFormat);        
+        dueDate = $filter('date')(dueDate, calendarSetting.keyDateFormat);
         return dueDate;
     };
-    
-    var getEventDuePeriod = function(eventsByStage, programStage, enrollment){ 
-        
-        var evs = [];                
+
+    var getEventDuePeriod = function(eventsByStage, programStage, enrollment){
+
+        var evs = [];
         angular.forEach(eventsByStage, function(ev){
             if(ev.eventDate){
                 evs.push(ev);
@@ -1779,35 +1819,35 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         if(evs.length > 0){
             evs = orderByFilter(evs, '-eventDate');
         }
-        
+
         return PeriodService.getPeriods(evs,programStage, enrollment);
     };
-    
+
     var reconstructEvent = function(dhis2Event, programStage, optionSets){
-        var e = {dataValues: [], 
-                event: dhis2Event.event, 
-                program: dhis2Event.program, 
-                programStage: dhis2Event.programStage, 
-                orgUnit: dhis2Event.orgUnit, 
-                trackedEntityInstance: dhis2Event.trackedEntityInstance,
-                status: dhis2Event.status,
-                dueDate: DateUtils.formatFromUserToApi(dhis2Event.dueDate)
-            };
+        var e = {dataValues: [],
+            event: dhis2Event.event,
+            program: dhis2Event.program,
+            programStage: dhis2Event.programStage,
+            orgUnit: dhis2Event.orgUnit,
+            trackedEntityInstance: dhis2Event.trackedEntityInstance,
+            status: dhis2Event.status,
+            dueDate: DateUtils.formatFromUserToApi(dhis2Event.dueDate)
+        };
 
         angular.forEach(programStage.programStageDataElements, function(prStDe){
-            if(dhis2Event[prStDe.dataElement.id]){                    
-                var value = CommonUtils.formatDataValue(dhis2Event.event, dhis2Event[prStDe.dataElement.id], prStDe.dataElement, optionSets, 'API');                    
+            if(dhis2Event[prStDe.dataElement.id]){
+                var value = CommonUtils.formatDataValue(dhis2Event.event, dhis2Event[prStDe.dataElement.id], prStDe.dataElement, optionSets, 'API');
                 var val = {value: value, dataElement: prStDe.dataElement.id};
                 if(dhis2Event.providedElsewhere[prStDe.dataElement.id]){
                     val.providedElsewhere = dhis2Event.providedElsewhere[prStDe.dataElement.id];
                 }
                 e.dataValues.push(val);
-            }                                
+            }
         });
 
         if(programStage.captureCoordinates){
             e.coordinate = {latitude: dhis2Event.coordinate.latitude ? dhis2Event.coordinate.latitude : 0,
-                            longitude: dhis2Event.coordinate.longitude ? dhis2Event.coordinate.longitude : 0};
+                longitude: dhis2Event.coordinate.longitude ? dhis2Event.coordinate.longitude : 0};
         }
 
         if(dhis2Event.eventDate){
@@ -1816,21 +1856,21 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
         return e;
     };
-    
+
     return {
         createDummyEvent: function(eventsPerStage, tei, program, programStage, orgUnit, enrollment){
             var today = DateUtils.getToday();
-            var dummyEvent = {trackedEntityInstance: tei.trackedEntityInstance, 
-                              programStage: programStage.id, 
-                              program: program.id,
-                              orgUnit: orgUnit.id,
-                              orgUnitName: orgUnit.displayName ? orgUnit.displayName : orgUnit.n ? orgUnit.n : null,
-                              name: programStage.displayName,
-                              executionDateLabel: programStage.executionDateLabel ? programStage.executionDateLabel : $translate.instant('report_date'),
-                              enrollmentStatus: 'ACTIVE',
-                              enrollment: enrollment.enrollment,
-                              status: 'SCHEDULED'};
-                          
+            var dummyEvent = {trackedEntityInstance: tei.trackedEntityInstance,
+                programStage: programStage.id,
+                program: program.id,
+                orgUnit: orgUnit.id,
+                orgUnitName: orgUnit.displayName ? orgUnit.displayName : orgUnit.n ? orgUnit.n : null,
+                name: programStage.displayName,
+                executionDateLabel: programStage.executionDateLabel ? programStage.executionDateLabel : $translate.instant('report_date'),
+                enrollmentStatus: 'ACTIVE',
+                enrollment: enrollment.enrollment,
+                status: 'SCHEDULED'};
+
             if(programStage.periodType){
                 var prds = getEventDuePeriod(eventsPerStage, programStage, enrollment);
                 var periods = prds && prds.availablePeriods && prds.availablePeriods.length ? prds.availablePeriods : [];
@@ -1846,45 +1886,45 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             else{
                 dummyEvent.dueDate = getEventDueDate(eventsPerStage, programStage, enrollment);
             }
-            
+
             dummyEvent.sortingDate = dummyEvent.dueDate;
-            
-            
+
+
             if(programStage.captureCoordinates){
                 dummyEvent.coordinate = {};
             }
-            
+
             dummyEvent.statusColor = 'alert-warning';//'stage-on-time';
             if(moment(today).isAfter(dummyEvent.dueDate)){
                 dummyEvent.statusColor = 'alert-danger';//'stage-overdue';
             }
-            return dummyEvent;        
+            return dummyEvent;
         },
-        getEventStatusColor: function(dhis2Event){    
+        getEventStatusColor: function(dhis2Event){
             var eventDate = DateUtils.getToday();
             var calendarSetting = CalendarService.getSetting();
-            
+
             if(dhis2Event.eventDate){
                 eventDate = dhis2Event.eventDate;
             }
-    
+
             if(dhis2Event.status === 'COMPLETED'){
                 return 'custom-tracker-complete';//'stage-completed';
             }
             else if(dhis2Event.status === 'SKIPPED'){
                 return 'alert-default'; //'stage-skipped';
             }
-            else{                
+            else{
                 if(dhis2Event.eventDate){
                     return 'alert-warning'; //'stage-executed';
                 }
                 else{
                     if(moment(eventDate, calendarSetting.momentFormat).isAfter(dhis2Event.dueDate)){
                         return 'alert-danger';//'stage-overdue';
-                    }                
+                    }
                     return 'alert-success';//'stage-on-time';
-                }               
-            }            
+                }
+            }
         },
         autoGenerateEvents: function(teiId, program, orgUnit, enrollment, availableEvent){
             var dhis2Events = {events: []};
@@ -1899,15 +1939,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         ev = reconstructEvent(ev, stage, CurrentSelection.getOptionSets());
                         dhis2Events.events.push(ev);
                     }
-                    
+
                     if(stage.autoGenerateEvent && (!availableEvent || availableEvent && availableEvent.programStage && availableEvent.programStage !== stage.id)){
                         var newEvent = {
-                                trackedEntityInstance: teiId,
-                                program: program.id,
-                                programStage: stage.id,
-                                orgUnit: orgUnit.id,
-                                enrollment: enrollment.enrollment
-                            };
+                            trackedEntityInstance: teiId,
+                            program: program.id,
+                            programStage: stage.id,
+                            orgUnit: orgUnit.id,
+                            enrollment: enrollment.enrollment
+                        };
                         if(stage.periodType){
                             var periods = getEventDuePeriod(null, stage, enrollment);
                             newEvent.dueDate = DateUtils.formatFromUserToApi(periods[0].endDate);
@@ -1916,7 +1956,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         else{
                             newEvent.dueDate = DateUtils.formatFromUserToApi(getEventDueDate(null,stage, enrollment));
                         }
-                        
+
                         if(stage.openAfterEnrollment){
                             if(stage.reportDateToUse === 'incidentDate'){
                                 newEvent.eventDate = DateUtils.formatFromUserToApi(enrollment.incidentDate);
@@ -1927,48 +1967,48 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         }
 
                         newEvent.status = newEvent.eventDate ? 'ACTIVE' : 'SCHEDULE';
-                        
+
                         dhis2Events.events.push(newEvent);
                     }
                 });
             }
-            
-           return dhis2Events;
+
+            return dhis2Events;
         },
-        reconstruct: function(dhis2Event, programStage, optionSets){            
-            return reconstructEvent(dhis2Event, programStage, optionSets);            
+        reconstruct: function(dhis2Event, programStage, optionSets){
+            return reconstructEvent(dhis2Event, programStage, optionSets);
         },
         processEvent: function(event, stage, optionSets, prStDes){
             event.providedElsewhere = {};
             angular.forEach(event.dataValues, function(dataValue){
-                
+
                 var prStDe = prStDes[dataValue.dataElement];
 
-                if( prStDe ){                
+                if( prStDe ){
                     var val = dataValue.value;
                     if(prStDe.dataElement){
-                        val = CommonUtils.formatDataValue(event.event, val, prStDe.dataElement, optionSets, 'USER');                        
-                    }    
+                        val = CommonUtils.formatDataValue(event.event, val, prStDe.dataElement, optionSets, 'USER');
+                    }
                     event[dataValue.dataElement] = val;
                     if(dataValue.providedElsewhere){
                         event.providedElsewhere[dataValue.dataElement] = dataValue.providedElsewhere;
                     }
-                    
-                    switch( prStDe.dataElement.valueType ){                        
+
+                    switch( prStDe.dataElement.valueType ){
                         case "ORGANISATION_UNIT":
                             CommonUtils.checkAndSetOrgUnitName( val );
                             break;
                     }
                 }
 
-            });        
+            });
 
             if(stage.captureCoordinates){
                 event.coordinate = {latitude: event.coordinate.latitude ? event.coordinate.latitude : '',
-                                         longitude: event.coordinate.longitude ? event.coordinate.longitude : ''};
-            }        
+                    longitude: event.coordinate.longitude ? event.coordinate.longitude : ''};
+            }
 
-            event.allowProvidedElsewhereExists = false;        
+            event.allowProvidedElsewhereExists = false;
             for(var i=0; i<stage.programStageDataElements.length; i++){
                 if(stage.programStageDataElements[i].allowProvidedElsewhere){
                     event.allowProvidedElsewhereExists = true;
@@ -1980,11 +2020,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         getGridColumns: function(stage, prStDes){
             var partial = [], allColumns = [];
             partial.push({id: 'sortingDate', valueType: 'DATE', name: stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date')});
-            partial.push({id: 'orgUnitName', valueType: 'TEXT', name: $translate.instant('org_unit')});            
+            partial.push({id: 'orgUnitName', valueType: 'TEXT', name: $translate.instant('org_unit')});
             allColumns.push({id: 'sortingDate', valueType: 'DATE', name: stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date')});
             allColumns.push({id: 'orgUnitName', valueType: 'TEXT', name: $translate.instant('org_unit')});
-            
-            var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});            
+
+            var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});
             if( displayInReports.length > 0 ){
                 angular.forEach(displayInReports, function(c){
                     if ( prStDes[c.dataElement.id] && prStDes[c.dataElement.id].dataElement) {
@@ -1995,73 +2035,73 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             for(var i=0; i<stage.programStageDataElements.length; i++){
                 if( i < $rootScope.maxGridColumnSize && displayInReports.length === 0){
                     partial.push({id: stage.programStageDataElements[i].dataElement.id, valueType: stage.programStageDataElements[i].dataElement.valueType, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
-                }                        
+                }
                 allColumns.push({id: stage.programStageDataElements[i].dataElement.id, valueType: stage.programStageDataElements[i].dataElement.valueType, name: prStDes[stage.programStageDataElements[i].dataElement.id].dataElement.displayFormName});
-            }            
+            }
             return {partial: partial, all: allColumns};
         },
         getEditingStatus: function(dhis2Event, stage, orgUnit, tei, enrollment){
             return (dhis2Event.orgUnit !== orgUnit.id && DateUtils.isValid(dhis2Event.eventDate)) || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || tei.inactive || enrollment.status !== 'ACTIVE';
         }
-    };    
+    };
 })
 
 .service('EventCreationService', function($modal){
-            
-        this.showModal = function(eventsByStage, stage, availableStages,programStages,selectedEntity,selectedProgram,selectedOrgUnit,selectedEnrollment, autoCreate, eventCreationAction,allEventsSorted, suggestedStage, selectedCategories){
-            var modalInstance = $modal.open({
-                templateUrl: 'components/dataentry/new-event.html',
-                controller: 'EventCreationController',
-                resolve: {                    
-                    eventsByStage: function () {
-                        return eventsByStage;
-                    },
-                    stage: function () {
-                        return stage;
-                    },                
-                    stages: function(){
-                        return availableStages;
-                    },
-                    allStages: function(){
-                        return programStages;
-                    },
-                    tei: function(){
-                        return selectedEntity;
-                    },
-                    program: function(){
-                        return selectedProgram;
-                    },
-                    orgUnit: function(){
-                        return selectedOrgUnit;
-                    },
-                    enrollment: function(){
-                        return selectedEnrollment;
-                    },
-                    autoCreate: function () {
-                        return autoCreate;
-                    },
-                    eventCreationAction: function(){
-                        return eventCreationAction;
-                    },
-                    events: function(){
-                        return allEventsSorted;
-                    },
-                    suggestedStage: function(){
-                        return suggestedStage;
-                    },
-                	selectedCategories: function () {
-                    	return selectedCategories;
-	                }
+
+    this.showModal = function(eventsByStage, stage, availableStages,programStages,selectedEntity,selectedProgram,selectedOrgUnit,selectedEnrollment, autoCreate, eventCreationAction,allEventsSorted, suggestedStage, selectedCategories){
+        var modalInstance = $modal.open({
+            templateUrl: 'components/dataentry/new-event.html',
+            controller: 'EventCreationController',
+            resolve: {
+                eventsByStage: function () {
+                    return eventsByStage;
+                },
+                stage: function () {
+                    return stage;
+                },
+                stages: function(){
+                    return availableStages;
+                },
+                allStages: function(){
+                    return programStages;
+                },
+                tei: function(){
+                    return selectedEntity;
+                },
+                program: function(){
+                    return selectedProgram;
+                },
+                orgUnit: function(){
+                    return selectedOrgUnit;
+                },
+                enrollment: function(){
+                    return selectedEnrollment;
+                },
+                autoCreate: function () {
+                    return autoCreate;
+                },
+                eventCreationAction: function(){
+                    return eventCreationAction;
+                },
+                events: function(){
+                    return allEventsSorted;
+                },
+                suggestedStage: function(){
+                    return suggestedStage;
+                },
+                selectedCategories: function () {
+                    return selectedCategories;
                 }
-            }).result;
-            return modalInstance;
-        };
-        this.eventCreationActions = { add: 'ADD',  schedule: 'SCHEDULE', referral: 'REFERRAL'};
+            }
+        }).result;
+        return modalInstance;
+    };
+    this.eventCreationActions = { add: 'ADD',  schedule: 'SCHEDULE', referral: 'REFERRAL'};
 })
 
 .service('MessagingService', function($http, $translate,  NotificationService, DHIS2URL){
     return {
-        sendMessage: function(message){            
+        sendMessage: function(message){
             var promise = $http.post( DHIS2URL + '/messages' , message).then(function(response){
                 var headerText, bodyText;
                 if (response && response.data && response.data.summaries) {
@@ -2088,9 +2128,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 NotificationService.showNotifcationDialog(headerText, bodyText);
                 return null;
             });
-            return promise;            
+            return promise;
         }
     };
 });
-
-

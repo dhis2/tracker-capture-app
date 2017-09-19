@@ -53,6 +53,13 @@
                                     ng-disabled="selectedEntity.inactive || selectedEnrollment.status !== 'ACTIVE' || selectedOrgUnit.closedStatus || currentStage.hideDueDate || currentStage.periodType">
                                 <i class="fa fa-calendar"></i>
                             </button>
+                            <button type="button" 
+                                    title="{{'make_referral'| translate}}"
+                                    class="btn btn-warning long-vertical-spacing" 
+                                    ng-click="useMainMenu ? showCreateEventIfStageNeedsEvent(selectedMainMenuStage, eventCreationActions.referral, false, true) : showCreateEvent(null, eventCreationActions.referral)"
+                                    ng-disabled="selectedEntity.inactive || selectedEnrollment.status !== 'ACTIVE' || selectedOrgUnit.closedStatus || currentStage.hideDueDate || currentStage.periodType">
+                                <i class="fa fa-share"></i>
+                            </button>
                         </div>                            
                     </div>                        
                 </div>

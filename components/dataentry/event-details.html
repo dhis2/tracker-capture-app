@@ -12,12 +12,14 @@
                d2-date
                max-date="model.maxDate?model.maxDate : '0'"
                min-date="model.minDate?model.minDate : ''"
+               picker-class="hide-clear"
                name="eventDate"
                ng-model="currentEvent.eventDate"
-               ng-change="verifyExpiryDate('currentEvent.eventDate')"
+               ng-change="verifyExpiryDate(currentEvent.eventDate)"
                ng-disabled="selectedOrgUnit.closedStatus || currentEvent.status === 'SKIPPED' || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || currentStage.periodType"
                ng-required="true"
-               blur-or-change="saveEventDate()"/>
+               blur-or-change="saveEventDate()"
+               ng-focus="setDateOnFocus(currentEvent.eventDate, selectedEnrollment.enrollmentDate)"/>
         <input type="text"
                class="form-control not-for-screen"
                ng-class="{'input-success': eventDateSaved}"
