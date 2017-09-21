@@ -1668,7 +1668,49 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var len = entityList.own.length + entityList.other.length;
             return {headers: attributes, rows: entityList, pager: grid.metaData.pager, length: len};
         },
-        generateGridColumns: function(existedColumns, attributes, ouMode, nonConfidential){
+        generateGridColumns: function(attributes, ouMode, nonConfidential){
+
+            if( ouMode === null ){
+                ouMode = 'SELECTED';
+            }
+            var filterTypes = {}, filterText = {};
+            var columns = [];
+
+            var returnAttributes = [];
+            if(nonConfidential) {
+                //Filter out attributes that is confidential, so they will not be part of any grid:
+                returnAttributes = angular.copy($filter('nonConfidential')(attributes));
+            }
+            else
+            {
+                returnAttributes = angular.copy(attributes);
+            }
+
+            //also add extra columns which are not part of attributes (orgunit for example)
+            columns.push({id: 'orgUnitName', displayName: $translate.instant('registering_unit'), valueType: 'TEXT', displayInListNoProgram: false, attribute: false});
+            columns.push({id: 'created', displayName: $translate.instant('registration_date'), valueType: 'DATE', displayInListNoProgram: false, attribute: false});
+            columns.push({id: 'inactive', displayName: $translate.instant('inactive'), valueType: 'BOOLEAN', displayInListNoProgram: false, attribute: false});
+            columns = columns.concat(returnAttributes ? returnAttributes : []);
+
+            //generate grid column for the selected program/attributes
+            angular.forEach(columns, function(column){
+                column.attribute = angular.isUndefined(column.attribute) ? true : false;
+                column.show = false;
+
+                if( (column.id === 'orgUnitName' && ouMode !== 'SELECTED') ||
+                    column.displayInListNoProgram ||
+                    column.displayInList){
+                    column.show = true;
+                }
+                column.showFilter = false;
+                filterTypes[column.id] = column.valueType;
+                if(column.valueType === 'DATE' || column.valueType === 'NUMBER' ){
+                    filterText[column.id]= {};
+                }
+            });
+            return {columns: columns, filterTypes: filterTypes, filterText: filterText};
+        },
+        generateGridColumnsForSearch: function(existedColumns, attributes, ouMode, nonConfidential){
             if( ouMode === null ){
                 ouMode = 'SELECTED';
             }

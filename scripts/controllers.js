@@ -375,7 +375,7 @@ function($rootScope,
     $scope.search = function(mode,goToPage){
         //resetParams(goToPage);
         var grid;
-        grid = TEIGridService.generateGridColumns($scope.gridColumns , $scope.attributes, $scope.selectedOuMode.name, true);
+        grid = TEIGridService.generateGridColumnsForSearch($scope.gridColumns , $scope.attributes, $scope.selectedOuMode.name, true);
         $scope.gridColumns = grid.columns;
 
         $scope.selectedSearchMode = mode;
