@@ -247,6 +247,8 @@
                         <input type="url"
                                name="foo" 
                                class="form-control"
+                               d2-url-validator
+                               placeholder="{{'url_format' | translate}}"
                                ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
                                ng-model="selectedTei[attribute.id]"
                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
@@ -373,6 +375,8 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close" tabindex="-1"><span aria-hidden="true">&times;</span></button>
                         {{errorMessages[attribute.id]}}
                     </div>
+                    <!-- URL error message is temporarily placed here. Should be placed with the other error messages in the core. -->
+                    <span ng-message="urlValidator">{{'url_error' | translate}}</span>
                 </div>
             </ng-form>            
         </td>
