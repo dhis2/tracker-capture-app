@@ -2686,7 +2686,7 @@ trackerCapture.controller('DataEntryController',
     };
     
     $scope.currentStageEventNumber = function(){
-        for(i = 0; i < $scope.stageEventsExcludedSkipped.length; i++){
+        for(var i = 0; i < $scope.stageEventsExcludedSkipped.length; i++){
             if($scope.currentEvent.event === $scope.stageEventsExcludedSkipped[i].event){
                 return i+1;
             }
