@@ -345,6 +345,7 @@
         <div ng-switch-when="URL">
             <div class="hideInPrint">
                 <input type="url"
+                       d2-url-validator
                        placeholder="{{'url_format' | translate}}"
                        class="form-control"
                        ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
@@ -362,6 +363,8 @@
             </div>
         </div>
         <div ng-messages="innerForm.foo.$error" ng-if="interacted(innerForm.foo, outerDataEntryForm)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
+            <!-- URL error message is temporarily placed here. Should be placed with the other error messages in the core. -->
+            <span ng-message="urlValidator">{{'url_error' | translate}}</span>
         </div>
         <div class="alert alert-warning alert-dismissible" role="alert" ng-if="warningMessages[currentEvent.event][de.id]">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
