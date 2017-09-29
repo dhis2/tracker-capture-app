@@ -318,14 +318,15 @@
         <div ng-switch-when="URL">
             <div class="hideInPrint">
                 <input type="url"
+                       d2-url-validator
                        placeholder="{{'url_format' | translate}}"
                        ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
                        class="form-control"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="currentEvent[de.id]"
+                       ng-class="getInputNotifcationClass(prStDe.dataElement.id, currentEvent)"
+                       ng-model="currentEvent[prStDe.dataElement.id]"
                        ng-required={{isCompulsory(de)}}
                        ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
-                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                       ng-blur="saveDatavalue(prStDes, innerForm.foo)"
                        name="foo"/>
             </div>
         </div>
@@ -337,6 +338,8 @@
     </div>
 
     <div ng-messages="innerForm.foo.$error" ng-if="interacted(innerForm.foo, outerDataEntryForm)" class="error-text" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
+        <!-- URL error message is temporarily placed here. Should be placed with the other error messages in the core. -->
+        <span ng-message="urlValidator">{{'url_error' | translate}}</span>
     </div>
     <div class="alert alert-warning alert-dismissible" role="alert" ng-if="warningMessages[currentEvent.event][prStDe.dataElement.id]">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
