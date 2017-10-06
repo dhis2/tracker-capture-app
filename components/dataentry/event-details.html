@@ -41,8 +41,7 @@
                d2-date-validator
                d2-date
                name="dueDate"
-               max-date="model.maxDate?model.maxDate : ''"
-               min-date="model.minDate?model.minDate : ''"
+               min-date="model.minDate?model.maxDate : ''"
                ng-model="currentEvent.dueDate"
                ng-change="verifyExpiryDate('currentEvent.dueDate')"
                blur-or-change="saveDueDate()"
