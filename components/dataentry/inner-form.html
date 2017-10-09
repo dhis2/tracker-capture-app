@@ -232,25 +232,28 @@
                      time-model-id="prStDe.dataElement.id"
                      time-required="prStDe.compulsory"
                      time-save-methode="saveDatavalue"
-                     time-save-methode-parameter1="prStDes[de.id]"
+                     time-save-methode-parameter1="prStDes[prStDe.dataElement.id]"
                      time-save-methode-parameter2="innerForm.foo"
                      time-element="currentElement"
-                     time-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false">
+                     time-use-notification="true"
+                     time-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id] ? true : false">
             </d2-time>
         </div>
         <div ng-switch-when="DATETIME">
             <d2-date-time datetime-model="currentEvent"
                           datetime-model-id="prStDe.dataElement.id"
                           datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
-                          datetime-max-date="prStDes[de.id].allowFutureDate ? '' : 0"
+                          datetime-max-date="prStDes[prStDe.dataElement.id].allowFutureDate ? '' : 0"
                           datetime-required="prStDe.compulsory"
                           datetime-save-methode="saveDatavalue"
-                          datetime-save-methode-parameter1="prStDes[de.id]"
+                          datetime-save-methode-parameter1="prStDes[prStDe.dataElement.id]"
                           datetime-field="innerForm"
                           datetime-element="currentElement"
                           datetime-disable-popup="true"
-                          datetime-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false">
-            </d2-date-time>
+                          datetime-use-notification="true"
+                          datetime-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id] ? true : false"
+                          datetime-outerform="outerDataEntryForm">
+            </d2-date-time>            
         </div>
         <div ng-switch-when="TRUE_ONLY">
             <div class="hideInPrint">
@@ -350,7 +353,7 @@
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id, currentEvent)"
                        ng-model="currentEvent[prStDe.dataElement.id]"
                        ng-required={{isCompulsory(de)}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
+                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
                        ng-blur="saveDatavalue(prStDes, innerForm.foo)"
                        name="foo"/>
             </div>
@@ -361,11 +364,11 @@
             </div>
         </div>
     </div>
-
     <div ng-messages="innerForm.foo.$error" ng-if="interacted(innerForm.foo, outerDataEntryForm)" class="error-text" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
         <!-- URL error message is temporarily placed here. Should be placed with the other error messages in the core. -->
         <span ng-message="urlValidator">{{'url_error' | translate}}</span>
-    </div>
+        <span ng-message="timeValidator">{{'time_error' | translate}}</span>
+    </div>  
     <div class="alert alert-warning alert-dismissible" role="alert" ng-if="warningMessages[currentEvent.event][prStDe.dataElement.id]">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         {{warningMessages[currentEvent.event][prStDe.dataElement.id]}}
