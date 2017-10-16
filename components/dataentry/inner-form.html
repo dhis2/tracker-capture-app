@@ -352,9 +352,9 @@
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id, currentEvent)"
                        ng-model="currentEvent[prStDe.dataElement.id]"
-                       ng-required={{isCompulsory(de)}}
+                       ng-required={{prStDe.compulsory}}
                        ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
-                       ng-blur="saveDatavalue(prStDes, innerForm.foo)"
+                       ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                        name="foo"/>
             </div>
         </div>
