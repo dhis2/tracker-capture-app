@@ -598,6 +598,7 @@ trackerCapture.controller('DataEntryController',
     };
     
     $scope.isCompulsory = function(dataElement) {
+        var x = $scope.currentStage.programStageDataElementsCollection[dataElement.id].compulsory;
         return $scope.currentStage.programStageDataElementsCollection[dataElement.id].compulsory;
     };
 
