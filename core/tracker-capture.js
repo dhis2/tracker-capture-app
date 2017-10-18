@@ -132,6 +132,7 @@ function downloadMetaData()
 
     promise = promise.then( dhis2.tc.store.open );
     promise = promise.then( getSystemSetting );
+    promise = promise.then( getUserSetting );
     promise = promise.then( getUserProfile );
     promise = promise.then( getConstants );
     promise = promise.then( getOrgUnitLevels );
@@ -146,7 +147,7 @@ function downloadMetaData()
     promise = promise.then( getOptionSetsForAttributes );
     promise = promise.then( getOptionSetsForDataElements );
     promise = promise.then( getOptionSets );   
-    promise.done(function() {        
+    promise.done(function() {
         //Enable ou selection after meta-data has downloaded
         $( "#orgUnitTree" ).removeClass( "disable-clicks" );
         dhis2.tc.metaDataCached = true;
@@ -168,6 +169,16 @@ function getSystemSetting()
     return dhis2.tracker.getTrackerObject(null, 'SYSTEM_SETTING', DHIS2URL + '/systemSettings', 'key=keyGoogleMapsApiKey&key=keyMapzenSearchApiKey&key=keyCalendar&key=keyDateFormat', 'localStorage', dhis2.tc.store);
 }
 
+function getUserSetting()
+{   
+    var SessionStorageService = angular.element('body').injector().get('SessionStorageService');    
+    if( SessionStorageService.get('USER_SETTING') ){
+       return; 
+    }
+    
+    return dhis2.tracker.getTrackerObject(null, 'USER_SETTING', DHIS2URL + '/userSettings.json', 'key=keyDbLocale&key=keyUiLocale&key=keyCurrentStyle&key=keyStyle', 'sessionStorage', dhis2.tc.store);
+}
+
 function getUserProfile()
 {
     var SessionStorageService = angular.element('body').injector().get('SessionStorageService');    
@@ -175,7 +186,7 @@ function getUserProfile()
        return; 
     }
     
-    return dhis2.tracker.getTrackerObject(null, 'USER_PROFILE', DHIS2URL + '/me.json', 'fields=id,displayName,userCredentials[username,userRoles[id,programs,authorities]],organisationUnits[id,displayName,level,code,path,children[id,displayName,level,children[id]]],dataViewOrganisationUnits[id,displayName,level,path,code,children[id,displayName,level,children[id]]],teiSearchOrganisationUnits[id,displayName,level,path,code,children[id,displayName,level,children[id]]]', 'sessionStorage', dhis2.ec.store);
+    return dhis2.tracker.getTrackerObject(null, 'USER_PROFILE', DHIS2URL + '/me.json', 'fields=id,displayName,userCredentials[username,userRoles[id,programs,authorities]],organisationUnits[id,displayName,level,code,path,children[id,displayName,level,children[id]]],dataViewOrganisationUnits[id,displayName,level,path,code,children[id,displayName,level,children[id]]],teiSearchOrganisationUnits[id,displayName,level,path,code,children[id,displayName,level,children[id]]]', 'sessionStorage', dhis2.tc.store);
 }
 
 function getConstants()
@@ -219,7 +230,8 @@ function getTrackedEntities()
 }
 
 function getMetaPrograms()
-{    
+{   
+    console.log('in programs..'); 
     return dhis2.tracker.getTrackerObjects('programs', 'programs', DHIS2URL + '/programs.json', 'filter=programType:eq:WITH_REGISTRATION&paging=false&fields=id,version,programTrackedEntityAttributes[trackedEntityAttribute[id,optionSet[id,version]]],programStages[id,programStageDataElements[dataElement[id,optionSet[id,version]]]]', 'temp', dhis2.tc.store);
 }
 
