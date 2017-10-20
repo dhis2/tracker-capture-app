@@ -227,6 +227,34 @@
                 <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
+        <div ng-switch-when="TIME">
+            <d2-time time-model="currentEvent"
+                     time-model-id="prStDe.dataElement.id"
+                     time-required="prStDe.compulsory"
+                     time-save-methode="saveDatavalue"
+                     time-save-methode-parameter1="prStDes[prStDe.dataElement.id]"
+                     time-save-methode-parameter2="innerForm.foo"
+                     time-element="currentElement"
+                     time-use-notification="true"
+                     time-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id] ? true : false">
+            </d2-time>
+        </div>
+        <div ng-switch-when="DATETIME">
+            <d2-date-time datetime-model="currentEvent"
+                          datetime-model-id="prStDe.dataElement.id"
+                          datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                          datetime-max-date="prStDes[prStDe.dataElement.id].allowFutureDate ? '' : 0"
+                          datetime-required="prStDe.compulsory"
+                          datetime-save-methode="saveDatavalue"
+                          datetime-save-methode-parameter1="prStDes[prStDe.dataElement.id]"
+                          datetime-field="innerForm"
+                          datetime-element="currentElement"
+                          datetime-disable-popup="true"
+                          datetime-use-notification="true"
+                          datetime-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id] ? true : false"
+                          datetime-outerform="outerDataEntryForm">
+            </d2-date-time>            
+        </div>
         <div ng-switch-when="TRUE_ONLY">
             <div class="hideInPrint">
                 <input type="checkbox"
@@ -315,15 +343,32 @@
                    ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                    ng-required={{prStDe.compulsory}}/>
         </span>
+        <div ng-switch-when="URL">
+            <div class="hideInPrint">
+                <input type="url"
+                       d2-url-validator
+                       placeholder="{{'url_format' | translate}}"
+                       ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
+                       class="form-control"
+                       ng-class="getInputNotifcationClass(prStDe.dataElement.id, currentEvent)"
+                       ng-model="currentEvent[prStDe.dataElement.id]"
+                       ng-required={{prStDe.compulsory}}
+                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-blur="saveDatavalue(prStDe, innerForm.foo)"
+                       name="foo"/>
+            </div>
+        </div>
         <div ng-switch-default>
             <div class="alert alert-danger form-control">
                 {{'unsupported_value_type' | translate}}:  {{prStDe.dataElement.valueType}}
             </div>
         </div>
     </div>
-
     <div ng-messages="innerForm.foo.$error" ng-if="interacted(innerForm.foo, outerDataEntryForm)" class="error-text" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
-    </div>
+        <!-- URL error message is temporarily placed here. Should be placed with the other error messages in the core. -->
+        <span ng-message="urlValidator">{{'url_error' | translate}}</span>
+        <span ng-message="timeValidator">{{'time_error' | translate}}</span>
+    </div>  
     <div class="alert alert-warning alert-dismissible" role="alert" ng-if="warningMessages[currentEvent.event][prStDe.dataElement.id]">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         {{warningMessages[currentEvent.event][prStDe.dataElement.id]}}

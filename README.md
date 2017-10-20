@@ -5,10 +5,7 @@ DHIS2 Tracker Capture App
 
 ### Set up the development environment
 
-> Note: The setup has been tested with yarn. You can install yarn through npm by running `npm install -g yarn`. For more info on yarn check out https://yarnpkg.com/.
-
-
-```
+> **Note:** The setup has been tested with yarn. You can install yarn through npm by running `npm install -g yarn`. For more info > on yarn check out https://yarnpkg.com/.
 
 ### Running the devevelopment server
 
@@ -32,7 +29,6 @@ Run the build script to build the app
 ```
 npm run build
 ```
+> **Note:** If you have problems running the app try running the dhis2-core server with TomCat.
 
-**Note:** If you have problems running the app try running the dhis2-core server with TomCat.
-
-https://travis-ci.org/dhis2/tracker-capture-app.svg?branch=master
+![](https://travis-ci.org/dhis2/tracker-capture-app.svg?branch=master)

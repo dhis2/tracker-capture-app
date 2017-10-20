@@ -97,7 +97,7 @@ module.exports = {
                 { path: '/api/**', target: dhisConfig.baseUrl, bypass:bypass },
                 { path: '/dhis-web-commons-ajax-json/**', target: dhisConfig.baseUrl, bypass:bypass },
                 { path: '/dhis-web-commons-stream/**', target: dhisConfig.baseUrl, bypass:bypass },
-                { path: '/dhis-web-commons/**', target: dhisConfig.baseUrl, bypass:bypass, proxyTimeout: 1000 * 60 * 5 },
+                { path: '/dhis-web-commons/***', target: dhisConfig.baseUrl, bypass:bypass, proxyTimeout: 1000 * 60 * 5 },
                 { path: '/dhis-web-core-resource/**', target: dhisConfig.baseUrl, bypass:bypass },
                 { path: '/icons/**', target: dhisConfig.baseUrl, bypass:bypass },
                 { path: '/images/**', target: dhisConfig.baseUrl, bypass:bypass },

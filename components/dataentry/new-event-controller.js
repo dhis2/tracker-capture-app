@@ -14,6 +14,7 @@ trackerCapture.controller('EventCreationController',
                 OrgUnitFactory,
                 NotificationService,
                 EventCreationService,
+                RegistrationService,
                 eventsByStage,
                 stage,
                 stages,
@@ -30,7 +31,9 @@ trackerCapture.controller('EventCreationController',
                 selectedCategories,
                 PeriodService,
                 ModalService,
+                CurrentSelection,
                 $rootScope) {
+    $scope.selectedOrgUnit = orgUnit;
     $scope.selectedEnrollment = enrollment;      
     $scope.stages = stages;
     $scope.allStages = allStages;
@@ -132,7 +135,7 @@ trackerCapture.controller('EventCreationController',
             for(var j = 0; j < availableStagesOrdered.length; j++){
                 var availableStage = availableStagesOrdered[j];
                 
-                if( !availableStage || !availableStage.id || lastStageForEvents || lastStageForEvents.id ){
+                if( !availableStage || !availableStage.id ){
                     break;
                 }
                 
@@ -153,7 +156,7 @@ trackerCapture.controller('EventCreationController',
             }
             
             if(angular.isUndefined(suggestedStage)){
-                suggestedStage = availableStagesOrdered[availableStagesOrdered.length - 1];
+                suggestedStage = availableStagesOrdered[0];
             }
         }
         
@@ -305,8 +308,8 @@ trackerCapture.controller('EventCreationController',
     }
     
     function generateFieldsUrl(){
-        var fieldUrl = "fields=id,displayName,organisationUnitGroups[shortName]";
-        var parentStartDefault = ",parent[id,displayName,children[id,displayName,organisationUnitGroups[shortName],children[id,displayName,organisationUnitGroups[shortName]]]";
+        var fieldUrl = "fields=id,displayName,organisationUnitGroups[shortName],programs[id]";
+        var parentStartDefault = ",parent[id,displayName,programs[id],children[id,displayName,programs[id],organisationUnitGroups[shortName],children[id,displayName,programs[id],organisationUnitGroups[shortName]]]";
         var parentEndDefault = "]";
         if(orgUnit.level && orgUnit.level > 1){
             var parentStart = parentStartDefault;
@@ -324,11 +327,17 @@ trackerCapture.controller('EventCreationController',
     $scope.expandCollapse = function(orgUnit) {
         orgUnit.show = !orgUnit.show;
         if(!orgUnit.childrenLoaded){
-            OrgUnitFactory.getChildren(orgUnit.id).then(function(data){
+            OrgUnitFactory.getOrgUnits(orgUnit.id, "fields=id,path,programs[id],children[id,displayName,programs[id],level,children[id]]&paging=false").then(function(data){
+
+                orgUnit.children = data.organisationUnits[0].children;
+                orgUnit.childrenLoaded = true;
+            });
+
+            /*OrgUnitFactory.getChildren(orgUnit.id).then(function(data){
                 orgUnit.children = data.children;
                 orgUnit.childrenLoaded = true;
                 
-            });
+            });*/
         }
     };
     //end referral logic
@@ -371,7 +380,42 @@ trackerCapture.controller('EventCreationController',
         };             
         ModalService.showModal({},modalOptions).then(function(){
             $rootScope.$broadcast('changeOrgUnit', {orgUnit: dummyEvent.orgUnit});
-            $scope.save();
+           
+            $scope.attributesById = CurrentSelection.getAttributesById();
+            $scope.optionSets = CurrentSelection.getOptionSets();
+            $scope.tei = CurrentSelection.get().tei;
+
+            $scope.tei.orgUnit = dummyEvent.orgUnit;
+
+            RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function (regResponse) {
+                //Ensures that when you go back to "TEI Search" screen that a new search is executed.
+                //Is necessary for updating the registring OrgUnit, because otherwise the system uses old cached data.
+                var advancedSearchOptions = CurrentSelection.getAdvancedSearchOptions() !== null ? 
+                    CurrentSelection.getAdvancedSearchOptions() : {};
+                advancedSearchOptions.refresh = true;
+                CurrentSelection.setAdvancedSearchOptions(advancedSearchOptions);
+                
+                $scope.save();
+            });
         });
     };
+
+    //Function for checking if a OrgUnit in the OrgUnit tree has the selected program, in that case a referral can be made.
+    $scope.hasSelectedProgram = function(orgUnit) {
+        if(orgUnit.hasSelectedProgram){
+            return true;
+        }else if(angular.isDefined(orgUnit.hasSelectedProgram)){
+        	return false;
+        }
+        if(orgUnit.programs) {
+            for(var i = 0; i < orgUnit.programs.length; i++) {
+                if (orgUnit.programs[i].id === $scope.selectedProgram.id) {
+                    orgUnit.hasSelectedProgram = true;
+                    return true;
+                }
+            }
+        }
+        orgUnit.hasSelectedProgram = false;
+        return false;
+     };
 });

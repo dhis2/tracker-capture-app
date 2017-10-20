@@ -11,8 +11,11 @@
         </td>
     </tr>
     <tr>
-        <td>
+        <td ng-if="!selectedProgramForRelative">
             {{selectedProgram.enrollmentDateLabel}}
+        </td>
+        <td ng-if="selectedProgramForRelative">
+            {{selectedProgramForRelative.enrollmentDateLabel}}
         </td>
         <td class="absorbing-column">
             <input type="text"
@@ -29,31 +32,57 @@
             <input type="text" class="form-control not-for-screen"/>
             <span ng-show="outerForm.submitted && outerForm.enrollmentDate.$invalid" class="error">{{'required'| translate}}</span>
         </td>
-    </tr>     
-    <tr ng-if="selectedProgram.displayIncidentDate">
+    </tr>
+    <tr ng-if="selectedProgram.displayIncidentDate && !selectedProgramForRelative">
         <td>
             {{selectedProgram.incidentDateLabel}}
         </td>
         <td class="absorbing-column">
             <input type="text"
-                   placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
-                   name="incidentDate"
-                   class="form-control hideInPrint" 
-                   d2-date 
-                   max-date="selectedProgram.selectIncidentDatesInFuture ? '' : 0"
-                   min-date=""
-                   ng-model="selectedEnrollment.incidentDate"
-                   ng-disabled="selectedOrgUnit.closedStatus"
-                   ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
+                placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                name="incidentDate"
+                class="form-control hideInPrint" 
+                d2-date 
+                max-date="selectedProgram.selectIncidentDatesInFuture ? '' : 0"
+                min-date=""
+                ng-model="selectedEnrollment.incidentDate"
+                ng-disabled="selectedOrgUnit.closedStatus"
+                ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
             <input type="text" class="form-control not-for-screen"/>
         </td>
     </tr>
-    <tr ng-if="selectedProgram.captureCoordinates">
-            <td>
-                {{'coordinate'| translate}}
-            </td>
-            <td>         
-                <d2-map d2-object="selectedEnrollment" d2-coordinate-format="'COORDINATE'" d2-disabled="selectedOrgUnit.closedStatus"></d2-map>
-            </td>                                            
-        </tr>
+    <tr ng-if="selectedProgram.captureCoordinates && !selectedProgramForRelative">
+        <td>
+            {{'coordinate'| translate}}
+        </td>
+        <td>         
+            <d2-map d2-object="selectedEnrollment" d2-coordinate-format="'COORDINATE'" d2-disabled="selectedOrgUnit.closedStatus"></d2-map>
+        </td>                                            
+    </tr>
+    <tr ng-if="selectedProgramForRelative.displayIncidentDate && selectedProgramForRelative">
+        <td>
+            {{selectedProgramForRelative.incidentDateLabel}}
+        </td>
+        <td class="absorbing-column">
+            <input type="text"
+                placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                name="incidentDate"
+                class="form-control hideInPrint" 
+                d2-date 
+                max-date="selectedProgramForRelative.selectIncidentDatesInFuture ? '' : 0"
+                min-date=""
+                ng-model="selectedEnrollment.incidentDate"
+                ng-disabled="selectedOrgUnit.closedStatus"
+                ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
+            <input type="text" class="form-control not-for-screen"/>
+        </td>
+    </tr>
+    <tr ng-if="selectedProgramForRelative.captureCoordinates && selectedProgramForRelative">
+        <td>
+            {{'coordinate'| translate}}
+        </td>
+        <td>         
+            <d2-map d2-object="selectedEnrollment" d2-coordinate-format="'COORDINATE'" d2-disabled="selectedOrgUnit.closedStatus"></d2-map>
+        </td>                                            
+    </tr>
 </table>

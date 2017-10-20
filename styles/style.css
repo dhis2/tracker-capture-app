@@ -292,6 +292,7 @@ input.option {
     display: inline-block;
     float: left;
     padding-top: 40px;
+    padding-bottom: 50px;
 }
 
 .stage-completed {
@@ -2298,4 +2299,8 @@ button.list-group-item-danger.active:focus {
 
 .loading-audit-data {
     margin-left: 43%;
+}
+
+.hide-clear .ui-datepicker-cmd-clear {
+    display: none;
 }

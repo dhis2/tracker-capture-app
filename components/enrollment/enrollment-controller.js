@@ -111,7 +111,19 @@ trackerCapture.controller('EnrollmentController',
         };
 
         $scope.showNewEnrollment = function () {
+            if($scope.selectedProgram.onlyEnrollOnce && $scope.hasEnrollmentHistory) {
+                var modalOptions = {
+                    headerText: 'warning',
+                    bodyText: 'can_not_add_new_enrollment'
+                };
+    
+                ModalService.showModal({}, modalOptions);
+
+                return;
+            }
+            
             $scope.showEnrollmentDiv = !$scope.showEnrollmentDiv;
+
             if(!$scope.showEnrollmentDiv) {
                 return;
             }
@@ -260,6 +272,9 @@ trackerCapture.controller('EnrollmentController',
             ModalService.showModal({}, modalOptions).then(function (result) {                
                 EnrollmentService.delete( $scope.selectedEnrollment.enrollment ).then(function (data) {
                     $scope.selectedEnrollment = null;
+                    var advancedSearchOptions = CurrentSelection.getAdvancedSearchOptions();
+                    advancedSearchOptions.refresh = true;
+                    CurrentSelection.setAdvancedSearchOptions(advancedSearchOptions);
                     $scope.broadCastSelections('mainDashboard');
                 });
             });

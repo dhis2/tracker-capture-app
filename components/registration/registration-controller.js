@@ -313,7 +313,6 @@ trackerCapture.controller('RegistrationController',
 
     $scope.$on('changeOrgUnit', function (event, args) {
         $scope.tei.orgUnit = args.orgUnit;
-        $scope.registerEntity("newOrgUnit");
     });
 
     var performRegistration = function (destination) {
@@ -569,7 +568,7 @@ trackerCapture.controller('RegistrationController',
         });
     };
 
-    $scope.cancelRegistrationWarning = function (cancelFunction) {
+    $scope.cancelRegistrationWarning = function (cancelFunction, inDashboard) {
         var result = RegistrationService.processForm($scope.tei, $scope.selectedTei, $scope.teiOriginal, $scope.attributesById);
         var prStDe;
         if (!result.formChanged) {
@@ -588,7 +587,8 @@ trackerCapture.controller('RegistrationController',
                 closeButtonText: 'no',
                 actionButtonText: 'yes',
                 headerText: 'cancel',
-                bodyText: 'are_you_sure_to_cancel_registration'
+                //Depending on if you are editing in dashboard or registering a new TEI you get a different cancel message.
+                bodyText: inDashboard ? 'are_you_sure_to_cancel_editing' : 'are_you_sure_to_cancel_registration'
             };
 
             ModalService.showModal({}, modalOptions).then(function () {
@@ -697,6 +697,12 @@ trackerCapture.controller('RegistrationController',
         }
         if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
             dateSetter($scope, null);
+        }
+    };
+
+    $scope.setDateOnFocus = function(currentValue, date) {
+        if(!currentValue) {
+            $scope.currentEvent.eventDate = date;
         }
     };
 });

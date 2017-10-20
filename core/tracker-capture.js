@@ -10,7 +10,7 @@ var i18n_offline_notification = 'You are offline';
 var i18n_online_notification = 'You are online';
 var i18n_ajax_login_failed = 'Login failed, check your username and password and try again';
 
-var DHIS2URL = '../api/26';
+var DHIS2URL = '../api/28';
 var optionSetIds = [];
 var trackedEntityAttributeIds = [];
 var batchSize = 50;
@@ -132,6 +132,7 @@ function downloadMetaData()
 
     promise = promise.then( dhis2.tc.store.open );
     promise = promise.then( getSystemSetting );
+    promise = promise.then( getUserSetting );
     promise = promise.then( getUserProfile );
     promise = promise.then( getConstants );
     promise = promise.then( getOrgUnitLevels );
@@ -146,7 +147,7 @@ function downloadMetaData()
     promise = promise.then( getOptionSetsForAttributes );
     promise = promise.then( getOptionSetsForDataElements );
     promise = promise.then( getOptionSets );   
-    promise.done(function() {        
+    promise.done(function() {
         //Enable ou selection after meta-data has downloaded
         $( "#orgUnitTree" ).removeClass( "disable-clicks" );
         dhis2.tc.metaDataCached = true;
@@ -168,6 +169,16 @@ function getSystemSetting()
     return dhis2.tracker.getTrackerObject(null, 'SYSTEM_SETTING', DHIS2URL + '/systemSettings', 'key=keyGoogleMapsApiKey&key=keyMapzenSearchApiKey&key=keyCalendar&key=keyDateFormat', 'localStorage', dhis2.tc.store);
 }
 
+function getUserSetting()
+{   
+    var SessionStorageService = angular.element('body').injector().get('SessionStorageService');    
+    if( SessionStorageService.get('USER_SETTING') ){
+       return; 
+    }
+    
+    return dhis2.tracker.getTrackerObject(null, 'USER_SETTING', DHIS2URL + '/userSettings.json', 'key=keyDbLocale&key=keyUiLocale&key=keyCurrentStyle&key=keyStyle', 'sessionStorage', dhis2.tc.store);
+}
+
 function getUserProfile()
 {
     var SessionStorageService = angular.element('body').injector().get('SessionStorageService');    
@@ -175,7 +186,7 @@ function getUserProfile()
        return; 
     }
     
-    return dhis2.tracker.getTrackerObject(null, 'USER_PROFILE', DHIS2URL + '/me.json', 'fields=id,displayName,userCredentials[username,userRoles[id,programs,authorities]],organisationUnits[id,displayName,level,code,path,children[id,displayName,level,children[id]]],dataViewOrganisationUnits[id,displayName,level,path,code,children[id,displayName,level,children[id]]],teiSearchOrganisationUnits[id,displayName,level,path,code,children[id,displayName,level,children[id]]]', 'sessionStorage', dhis2.ec.store);
+    return dhis2.tracker.getTrackerObject(null, 'USER_PROFILE', DHIS2URL + '/me.json', 'fields=id,displayName,userCredentials[username,userRoles[id,programs,authorities]],organisationUnits[id,displayName,level,code,path,children[id,displayName,level,children[id]]],dataViewOrganisationUnits[id,displayName,level,path,code,children[id,displayName,level,children[id]]],teiSearchOrganisationUnits[id,displayName,level,path,code,children[id,displayName,level,children[id]]]', 'sessionStorage', dhis2.tc.store);
 }
 
 function getConstants()
@@ -219,7 +230,8 @@ function getTrackedEntities()
 }
 
 function getMetaPrograms()
-{    
+{   
+    console.log('in programs..'); 
     return dhis2.tracker.getTrackerObjects('programs', 'programs', DHIS2URL + '/programs.json', 'filter=programType:eq:WITH_REGISTRATION&paging=false&fields=id,version,programTrackedEntityAttributes[trackedEntityAttribute[id,optionSet[id,version]]],programStages[id,programStageDataElements[dataElement[id,optionSet[id,version]]]]', 'temp', dhis2.tc.store);
 }
 
@@ -318,7 +330,7 @@ function getBatchPrograms( programs, batch )
     $.ajax( {
         url: DHIS2URL + '/programs.json',
         type: 'GET',
-        data: 'fields=*,dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],trackedEntity[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName]]],organisationUnits[id,displayName],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique]]&paging=false&filter=id:in:' + ids
+        data: 'fields=*,dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],trackedEntity[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],organisationUnits[id,displayName],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,description,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique]]&paging=false&filter=id:in:' + ids
     }).done( function( response ){
 
         if(response.programs){
@@ -333,6 +345,20 @@ function getBatchPrograms( programs, batch )
                 
                 if( program.programStages ){
                     program.programStages = _.sortBy( program.programStages, 'sortOrder' );
+                }
+
+                if( program.categoryCombo && program.categoryCombo.categories ){
+                    _.each( _.values( program.categoryCombo.categories ), function ( ca ) {                            
+                        if( ca.categoryOptions ){
+                            _.each( _.values( ca.categoryOptions ), function ( co ) {
+                                var mappedOrganisationUnits = [];
+                                if( co.organisationUnits && co.organisationUnits.length > 0 ){                                        
+                                    mappedOrganisationUnits = $.map(co.organisationUnits, function(ou){return ou.id;});
+                                }                                
+                                co.organisationUnits = mappedOrganisationUnits;
+                            });
+                        }
+                    });
                 }
 
                 dhis2.tc.store.set( 'programs', program );
@@ -425,7 +451,7 @@ function filterMissingTrackedEntityAttributes( programs, trackedEntityAttributes
 
 function getTrackedEntityAttributes( programs, trackedEntityAttributes)
 {
-    return dhis2.tracker.getBatches( trackedEntityAttributeIds, batchSize, {programs: programs, trackedEntityAttributes: trackedEntityAttributes}, 'attributes', 'trackedEntityAttributes', DHIS2URL + '/trackedEntityAttributes.json', 'paging=false&fields=id,generated,displayName,code,description,valueType,optionSetValue,confidential,inherit,sortOrderInVisitSchedule,sortOrderInListNoProgram,displayOnVisitSchedule,displayInListNoProgram,unique,programScope,orgunitScope,confidential,optionSet[id,version],trackedEntity[id,displayName]', 'idb', dhis2.tc.store );
+    return dhis2.tracker.getBatches( trackedEntityAttributeIds, batchSize, {programs: programs, trackedEntityAttributes: trackedEntityAttributes}, 'attributes', 'trackedEntityAttributes', DHIS2URL + '/trackedEntityAttributes.json', 'paging=false&fields=:all,optionSet[id,version],trackedEntity[id,displayName]', 'idb', dhis2.tc.store );
 }
 
 function getOptionSetsForAttributes( data )
