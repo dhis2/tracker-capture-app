@@ -37,7 +37,7 @@ trackerCapture.controller('DataEntryController',
     $scope.printForm = false;
     $scope.printEmptyForm = false;
     $scope.eventPageSize = 4;
-    $scope.maxOptionSize = 30;
+    $scope.maxOptionSize = 100;
     $scope.eventPagingStart = 0;
     $scope.eventPagingEnd = $scope.eventPageSize;
     $scope.showAttributeCategoryOptions = false;
