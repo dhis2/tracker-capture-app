@@ -34,7 +34,7 @@ function($rootScope,
         showFilter: false,
         show: false
     };
-    $scope.maxOptionSize = 30;
+    $scope.maxOptionSize = 100;
     $scope.eventsTodayFilters = [{name: $translate.instant('events_today_all'), value: 'all'},{name: $translate.instant('events_today_completeoractive'),value: 'completedOrActive', status:['COMPLETED', 'ACTIVE']},{name: $translate.instant('events_today_skipped') , value: 'skipped', status:['SKIPPED']},{name: $translate.instant('events_today_scheduled'), value: 'scheduled', status:['SCHEDULE']}];
     $scope.selectedEventsTodayFilter = $scope.eventsTodayFilters[0];
     $scope.availablePrograms = {};

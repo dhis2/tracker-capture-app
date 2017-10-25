@@ -12,7 +12,7 @@ trackerCapture.controller('ProgramStatisticsController',
     $scope.ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];         
     $scope.selectedOuMode = $scope.ouModes[0];
     $scope.report = {};
-    $scope.maxOptionSize = 30;
+    $scope.maxOptionSize = 100;
     $scope.model = {};
     
     $scope.displayMode = {};
