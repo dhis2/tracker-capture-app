@@ -102,5 +102,5 @@ angular.module('trackerCapture')
     });
 
     $rootScope.maxGridColumnSize = 1;
-    $rootScope.maxOptionSize = 30;
+    $rootScope.maxOptionSize = 100;
 });
