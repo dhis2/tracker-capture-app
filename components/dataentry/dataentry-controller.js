@@ -227,14 +227,8 @@ trackerCapture.controller('DataEntryController',
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
         if (!affectedEvent || !affectedEvent.event) {
-<<<<<<< HEAD
-            //The data entry widget does not have an event selected. 
-            //Therefore applying rule effects from registration instead.
-            affectedEvent = 'registration';
-=======
             //The data entry widget does not have an event selected.
             return;
->>>>>>> 568541d... Stricter application of rule effects
         }
         else if(event === 'registration' || event === 'dataEntryInit') {
            //The data entry widget is associated with an event, 
