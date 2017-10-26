@@ -85,7 +85,7 @@ module.exports = {
             ]),
         }),
     ],
-    devtool: ['sourcemap'],
+    devtool: 'sourcemap',
     devServer: {
         contentBase: '.',
         progress: true,
