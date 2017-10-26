@@ -42,6 +42,12 @@ function($rootScope,
     $scope.orgUnitNames = {};
     $scope.reverse = false;
 
+    $scope.programWorkingLists = {
+        'WSGAb5XwJ3Y': [
+            { name: 'Upcomming', description: 'Upcomming events', period: { operator: '+-', days: 10 }, programStages: null, statuses: ["scheduled, overdue"] }
+        ]
+    }
+
     //Selection
     $scope.ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];
     $scope.selectedOuMode = $scope.ouModes[2];
@@ -742,6 +748,11 @@ function($rootScope,
             }
 
         }
+    };
+
+    $scope.setWorkingList = function(name){
+        var g = 1;
+        console.log(name);
     };
 
     //load programs for the selected orgunit (from tree)
