@@ -775,19 +775,58 @@ function($rootScope,
 
     }
 
-    var fetchWorkingList = function(eventDateFrom, eventDateTo, statuses){
-        var promises = [];
 
-        if(!statuses){
-            promises.push(EventReportService.getEventReport($scope.selectedOrgUnit.id, $scope.selectedOuMode.name, $scope.selectedProgram.id, eventDateFrom, eventDateTo, 'ACTIVE', null, $scope.pager));
+    var teiListTypes = { EVENT: "EVENT", ENROLLMENT: "ENROLLMENT"};
+
+    $scope.teiListConfigs = [
+        {
+            name: "Has scheduled events today",
+            description: "",
+            icon: "",
+            type: teiListTypes.EVENT,
+            eventStatuses: ["SCHEDULE"],
+            period: { from: 1, to:  2}
+        },
+        {
+            name: "Has active enrollment"
+            description: "",
+            icon: "",
+            type: teiListTypes.ENROLLMENT,
+            enrollmentStatuses: ["ACTIVE"]
+        }
+    ];
+
+    $scope.testMethod = function(){
+        var dates = getTeiListByEventsDates({ from:  -1, to: 2});
+    }
+
+    var getTeiListByEventsDates = function(period){
+        var dates = {from: DateUtils.getToday(), to: DateUtils.getToday()};
+        if(period){
+            if(period.from){
+                dates.from = DateUtils.getDateAfterOffsetDays(period.from);
+            }
+            if(period.to){
+                dates.to = DateUtils.getDateAfterOffsetDays(period.to);
+            }
+        }
+        return dates;
+    }
+
+    var getTeiListByEvents = function(teiListConfig){
+        var promises = [];
+        
+        var dates = getTeiListByEventsDates(teiListConfig.period);
+        if(!teiListConfig.eventStatuses){
+            promises.push(EventReportService.getEventReport($scope.selectedOrgUnit.id, $scope.selectedOuMode.name, $scope.selectedProgram.id, dates.from, dates.to, 'ACTIVE', null, $scope.pager));
         }else{
-            angular.forEach(eventsTodayFilter.status, function(status){
-                promises.push(EventReportService.getEventReport($scope.selectedOrgUnit.id,$scope.selectedOuMode.name, $scope.selectedProgram.id,today,today,'ACTIVE',status,$scope.pager));
+            angular.forEach(teiListConfig.eventStatuses, function(status){
+                promises.push(EventReportService.getEventReport($scope.selectedOrgUnit.id,$scope.selectedOuMode.name, $scope.selectedProgram.id,dates.from,dates.to,'ACTIVE',status,$scope.pager));
             });
         }
 
-        $q.all(promises).then(function(data){
-            $scope.trackedEntityList = { rows: {own:[]}};
+        return $q.all(promises).then(function(data){
+            var trackedEntityList = { rows: {own:[]}};
             var ids = [];
             angular.forEach(data, function(result){
                 if(result && result.eventRows){
@@ -805,15 +844,91 @@ function($rootScope,
                             angular.forEach(eventRow.attributes, function(attr){
                                 row[attr.attribute] = attr.value;
                             });
-                            $scope.trackedEntityList.rows.own.push(row);
+                            trackedEntityList.rows.own.push(row);
                             ids.push(eventRow.trackedEntityInstance);
 
                         }
                     });
                 }
             });
-            $scope.trackedEntityList.length = $scope.trackedEntityList.rows.own.length;
+            trackedEntityList.length = trackedEntityList.rows.own.length;
+            return trackedEntityList;
+        });
+    }
+
+    var setPager = function(pager){
+        $scope.pager = pager;
+        $scope.pager.toolBarDisplay = 5;
+
+        Paginator.setPage($scope.pager.page);
+        Paginator.setPageCount($scope.pager.pageCount);
+        Paginator.setPageSize($scope.pager.pageSize);
+        Paginator.setItemCount($scope.pager.total);
+    }
+
+    var setCurrentSelectionAdvancedSearch = function(){
+        
+        CurrentSelection.setAdvancedSearchOptions({
+            searchingOrgUnit: angular.copy($scope.searchingOrgUnit),
+            searchMode: $scope.selectedSearchMode,
+            gridColumns: angular.copy($scope.gridColumns),
+            attributes: angular.copy($scope.attributes),
+            selectedOuMode: angular.copy($scope.selectedOuMode),
+            programEnrollmentStartDate: $scope.enrollment.programEnrollmentStartDate,
+            programEnrollmentEndDate: $scope.enrollment.programEnrollmentEndDate,
+            programIncidentStartDate: $scope.enrollment.programIncidentStartDate,
+            programIncidentEndDate: $scope.enrollment.programIncidentEndDate,
+            searchText: $scope.model.searchText,
+            sortColumn: angular.copy($scope.sortColumn),
+            pager: angular.copy($scope.pager),
+            showSearchDiv: $scope.showSearchDiv,
+            teiFetched: $scope.teiFetched,
+            doSearch: $scope.doSearch,
+            frontPageListEnabled: $scope.frontPageListEnabled,
+            showTrackedEntityDiv: $scope.showTrackedEntityDiv,
+            reverse: $scope.reverse
+        });
+        CurrentSelection.setTrackedEntities($scope.trackedEntityList);
+        $scope.fileNames = CurrentSelection.getFileNames();
+        $scope.orgUnitNames = CurrentSelection.getOrgUnitNames();
+    }
+
+    var getTeiByEnrollment = function(teiListConfig){
+        var queryUrl = "";
+        var order = '';
+        if( $scope.sortColumn && $scope.sortColumn.id !== undefined ){
+            order = '&order=' + $scope.sortColumn.id + ':';
+            order = order.concat($scope.reverse ? 'desc' : 'asc');
+        }
+        queryUrl = queryUrl.concat( order );
+        return TEIService.search($scope.searchingOrgUnit.id, $scope.selectedOuMode.name, queryUrl, $scope.programUrl, $scope.attributeUrl.url, $scope.pager, true).then(function(data){
+            if (data && data.metaData && data.metaData.pager) {
+                setPager(data.metaData.pager);
+            }
+
+            var trackedEntityList = TEIGridService.format($scope.selectedOrgUnit.id, data, false, $scope.optionSets, null);
+            setCurrentSelectionAdvancedSearch();
+            return trackedEntityList;
+        });
+    }
+
+    var clearTeiList = function(){
+        $scope.trackedEntityList = [];
+        $scope.teiFetched = false;
+    }
+
+    $scope.setTeiList = function(teiListConfig){
+        clearTeiList();
+        var promise;
+        if(teiListConfig.type == teiListTypes.EVENT){
+            promise = getTeiListByEvents(teiListConfig);
+        }else if(teiListConfig.type == teiListTypes.EVENT){
+            promise = getTeiByEnrollment(teiListConfig);
+        }
+
+        promise.then(function(trackedEntityList){
             $scope.teiFetched = true;
+            $scope.trackedEntityList = trackedEntityList;
         });
     }
 
