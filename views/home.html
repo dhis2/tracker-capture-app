@@ -135,7 +135,7 @@
         <div class="row col-sm-12 long-vertical-spacing">
             <span ng-if='!showRegistrationDiv'>
                 <span class="btn-group" ng-if="selectedProgram">
-                    <label ng-if="selectedProgram.displayFrontPageList" class="btn btn-default" ng-repeat="list in programWorkingLists[selectedProgram.id]" btn-radio="'list.name'" ng-click='setWorkingList(list.name)'><i class="fa fa-calendar-o mouse-pointer"></i></label>
+                    <label ng-if="selectedProgram.displayFrontPageList" class="btn btn-default" ng-repeat="list in programWorkingLists[selectedProgram.id]" btn-radio="'list.name'" ng-click='setPredefinedWorkingList(list)'><i class="fa fa-calendar-o mouse-pointer"></i></label>
                     <label ng-if="selectedProgram.displayFrontPageList" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'TODAY'" title="{{todayLabel}}" ng-click='filterByEnrollmentStatus("TODAY")'><i class='fa fa-calendar-o mouse-pointer'></i></label>
                     <label ng-if="selectedProgram.displayFrontPageList || frontPageListEnabled" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'ALL'" title="{{allEnrollmentsLabel}}" ng-click='filterByEnrollmentStatus("ALL")'><i class="fa fa-list mouse-pointer"></i></label>
                     <label ng-if="selectedProgram.displayFrontPageList || frontPageListEnabled" class="btn btn-default" ng-model="enrollmentStatus" btn-radio="'ACTIVE'" title="{{activeEnrollmentsLabel}}" ng-click='filterByEnrollmentStatus("ACTIVE")'><i class="fa fa-circle-o mouse-pointer"></i></label>

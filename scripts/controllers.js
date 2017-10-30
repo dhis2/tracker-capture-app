@@ -750,10 +750,72 @@ function($rootScope,
         }
     };
 
-    $scope.setWorkingList = function(name){
-        var g = 1;
-        console.log(name);
+    $scope.setPredefinedWorkingList = function(workingList){
+        clearTeiList();
+
+        var eventDateTo;
+        var eventDateFrom;
+        if(workingList.period){
+            if(workingList.period.from){
+                var operator  = workingList
+            }
+        }
+
+        fetchWorkingList(selectedProgramWorkingLists)
+
+
+
     };
+
+    var getWorkingListDate = function(operator, days){
+        var date = DateUtils.getToday();
+    }
+
+    var clearTeiList = function(){
+
+    }
+
+    var fetchWorkingList = function(eventDateFrom, eventDateTo, statuses){
+        var promises = [];
+
+        if(!statuses){
+            promises.push(EventReportService.getEventReport($scope.selectedOrgUnit.id, $scope.selectedOuMode.name, $scope.selectedProgram.id, eventDateFrom, eventDateTo, 'ACTIVE', null, $scope.pager));
+        }else{
+            angular.forEach(eventsTodayFilter.status, function(status){
+                promises.push(EventReportService.getEventReport($scope.selectedOrgUnit.id,$scope.selectedOuMode.name, $scope.selectedProgram.id,today,today,'ACTIVE',status,$scope.pager));
+            });
+        }
+
+        $q.all(promises).then(function(data){
+            $scope.trackedEntityList = { rows: {own:[]}};
+            var ids = [];
+            angular.forEach(data, function(result){
+                if(result && result.eventRows){
+                    angular.forEach(result.eventRows, function(eventRow){
+                        if(ids.indexOf(eventRow.trackedEntityInstance) === -1){
+
+                            var row = {
+                                id: eventRow.trackedEntityInstance,
+                                created: DateUtils.formatFromApiToUser(eventRow.trackedEntityInstanceCreated),
+                                orgUnit: eventRow.trackedEntityInstanceOrgUnit,
+                                orgUnitName: eventRow.trackedEntityInstanceOrgUnitName,
+                                inactive: eventRow.trackedEntityInstanceInactive
+                            };
+
+                            angular.forEach(eventRow.attributes, function(attr){
+                                row[attr.attribute] = attr.value;
+                            });
+                            $scope.trackedEntityList.rows.own.push(row);
+                            ids.push(eventRow.trackedEntityInstance);
+
+                        }
+                    });
+                }
+            });
+            $scope.trackedEntityList.length = $scope.trackedEntityList.rows.own.length;
+            $scope.teiFetched = true;
+        });
+    }
 
     //load programs for the selected orgunit (from tree)
     $scope.setSelectedSearchingOrgUnit = function(orgUnit){
