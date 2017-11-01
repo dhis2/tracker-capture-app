@@ -1,0 +1,10 @@
+<div ng-controller="ProfileController">
+        <div class="dashboard-info-box">
+            <ul class="list-inline-fullwidth">
+                <li ng-repeat="attr in allAttributes | filter: topBarFilter | orderBy: topBarOrder">
+                    <span>{{attr.displayName}}: {{selectedTei[attr.id]}}</span>
+                </li>
+
+            </ul>
+        </div>
+    </div>
