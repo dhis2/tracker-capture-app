@@ -43,26 +43,6 @@ trackerCapture.controller('TopBarController',
                 $scope.indicatorsFieldSelection = indicatorsFieldSelection;
                 $scope.attributesFieldSelection = attributesFieldSelection;
 
-                $scope.onSetOrder = function(topBarField){
-                    var fields = $scope.topBarSettings.selectedFields;
-                    for(var key in fields){
-                        if(fields[key] !== topBarField && fields[key].order == topBarField.order){
-                            fields[key].order++;
-                            $scope.onSetOrder(fields[key]);
-                        }
-                    }
-                }
-
-                $scope.getHighestOrder = function(){
-                    var fields = $scope.topBarSettings.selectedFields;
-                    var highestOrder = 0;
-                    for(var k in fields){
-                        if(fields[k].order && fields[k].order > highestOrder){
-                            highestOrder = fields[k].order;
-                        }
-                    }
-                    return highestOrder;
-                }
                 $scope.onShowUnshowField = function(key, topBarField){
                     if(!topBarField.show){
                         delete $scope.topBarSettings.selectedFields[key];

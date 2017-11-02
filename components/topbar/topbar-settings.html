@@ -19,7 +19,7 @@
                 <tr ng-repeat="(key, value) in attributesFieldSelection">
                     <td>{{value}}</td>
                     <td><input type="checkbox" ng-model="topBarSettings.selectedFields[key].show" ng-change="onShowUnshowField(key, topBarSettings.selectedFields[key])"></td>
-                    <td><span ng-show="topBarSettings.selectedFields[key].show"><input type="number" ng-model="topBarSettings.selectedFields[key].order" min="0" ng-change="onSetOrder(topBarSettings.selectedFields[key])"/></span></td>
+                    <td><span ng-show="topBarSettings.selectedFields[key].show"><input type="number" ng-model="topBarSettings.selectedFields[key].order" min="0" /></span></td>
                 </tr>
                 <tr>
                     <th>Feedback</th>
@@ -29,7 +29,7 @@
                 <tr ng-repeat="(key, value) in feedbackFieldSelection">
                     <td>{{value}}</td>
                     <td><input type="checkbox" ng-model="topBarSettings.selectedFields[key].show" ng-change="onShowUnshowField(key, topBarSettings.selectedFields[key])"></td>
-                    <td><span ng-show="topBarSettings.selectedFields[key].show"><input type="number" ng-model="topBarSettings.selectedFields[key].order" min="0" ng-change="onSetOrder(topBarSettings.selectedFields[key])"/></span></td>
+                    <td><span ng-show="topBarSettings.selectedFields[key].show"><input type="number" ng-model="topBarSettings.selectedFields[key].order" min="0"/></span></td>
                 </tr>
                 <tr>
                     <th>Indicator</th>
@@ -39,7 +39,7 @@
                 <tr ng-repeat="(key, value) in indicatorsFieldSelection">
                     <td>{{value}}</td>
                     <td><input type="checkbox" ng-model="topBarSettings.selectedFields[key].show" ng-change="onShowUnshowField(key, topBarSettings.selectedFields[key])"></td>
-                    <td><span ng-show="topBarSettings.selectedFields[key].show"><input type="number" ng-model="topBarSettings.selectedFields[key].order" min="0" ng-change="onSetOrder(topBarSettings.selectedFields[key])"/></span></td>
+                    <td><span ng-show="topBarSettings.selectedFields[key].show"><input type="number" ng-model="topBarSettings.selectedFields[key].order" min="0"/></span></td>
                 </tr>
             </table>
 
