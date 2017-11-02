@@ -199,7 +199,7 @@
         <div ng-switch-when="TIME">
             <d2-time time-model="currentEvent"
                      time-model-id="de.id"
-                     time-required="isCompulsory(de)"
+                     time-required="prStDes[de.id].compulsory"
                      time-save-methode="saveDatavalue"
                      time-save-methode-parameter1="prStDes[de.id]"
                      time-save-methode-parameter2="innerForm.foo"
@@ -213,7 +213,7 @@
                           datetime-model-id="de.id"
                           datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                           datetime-max-date="prStDes[de.id].allowFutureDate ? '' : 0"
-                          datetime-required="isCompulsory(de)"
+                          datetime-required="prStDes[de.id].compulsory"
                           datetime-save-methode="saveDatavalue"
                           datetime-save-methode-parameter1="prStDes[de.id]"
                           datetime-field="innerForm"
