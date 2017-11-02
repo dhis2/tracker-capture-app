@@ -1,6 +1,13 @@
 <script type="text/ng-template" id="program-selector">
-    <div class="text-center">
-        <select style="margin-top:0px;" ng-model="selectedProgram"
+    <div>
+        <button ng-disabled="!previousTeiExists" type="button"
+        class="btn btn-default small-horizontal-spacing" ng-click="fetchTei('PREV')"
+        title="{{'previous'| translate}}" style="margin-bottom:3px"><i class="fa fa-caret-left"></i></button>
+
+        <button ng-disabled="!nextTeiExists" type="button" class="btn btn-default small-horizontal-spacing"
+                ng-click="fetchTei('NEXT')" title="{{'next'| translate}}" style="margin-bottom:3px"><i class="fa fa-caret-right"></i>
+        </button>
+        <select style="margin-top:0px;margin-bottom:3px;" ng-model="selectedProgram"
                 class="form-control-program"
                 ng-options="program as program.displayName for program in programs | orderBy: 'displayName'"
                 ng-disabled="programs.length < 1"
@@ -59,7 +66,7 @@
             </div>
         </div>
         <div class="row">
-            <div ng-if="topBarConfig.settings && topBarConfig.settings.active" ng-include="'program-selector'"></div>
+            <div ng-if="topBarConfig.settings && topBarConfig.settings.active" ng-include="'program-selector'" style="margin-left:12px;"></div>
         </div>
         <div class="row">
             <!-- dashboard bigger widgets begin -->
