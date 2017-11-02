@@ -65,9 +65,11 @@
             </div>
         </div>
         <div class="row">
-            <div ng-if="topBarConfig.settings && topBarConfig.settings.active" ng-include="'program-selector'" style="margin-left:12px;"></div>
+            
         </div>
         <div class="row">
+            <div height-change-target ng-if="useTopBar" class="vertical-spacing"></div>
+            <div ng-if="topBarConfig.settings && topBarConfig.settings.active" ng-include="'program-selector'" style="margin-left:12px;"></div>
             <!-- dashboard bigger widgets begin -->
             <div ng-class="widgetSize.bigger">
 
