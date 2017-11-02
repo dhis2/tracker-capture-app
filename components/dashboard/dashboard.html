@@ -22,7 +22,7 @@
 
     <!-- dashboard widgets begin -->
     <div class="col-sm-12" ng-if="metaDataCached">
-        <div class="row dashboard-top-bar-sticky">
+        <div class="row" ng-class="{'dashboard-top-bar-sticky' : topBarConfig.settings && topBarConfig.settings.active}" height-change-source>
             <div style="display:flex;margin-left:15px;" class="vertical-spacing">
                 <div><button type="button" class="btn btn-default remove-focus-effects dashboard-info-btn-left-back" ng-click="back()">
                         {{getBackButtonText()}}
@@ -68,7 +68,7 @@
             
         </div>
         <div class="row">
-            <div height-change-target ng-if="useTopBar" class="vertical-spacing"></div>
+            <div height-change-target class="vertical-spacing" ng-show="topBarConfig.settings && topBarConfig.settings.active" style="margin-bottom:0px;"></div>
             <div ng-if="topBarConfig.settings && topBarConfig.settings.active" ng-include="'program-selector'" style="margin-left:12px;"></div>
             <!-- dashboard bigger widgets begin -->
             <div ng-class="widgetSize.bigger">
