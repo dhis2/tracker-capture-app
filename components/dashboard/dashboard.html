@@ -22,8 +22,9 @@
                         {{getBackButtonText()}}
                     </button>
                 </div>
-                <div ng-include="getTopBarView()" ng-if="topBarWidget" style="flex: 1 100%;" ng-init="topBarLoader = true"></div>
-                <div ng-include="'program-selector'" ng-if="!topBarWidget" style="flex: 1 100%;"></div>
+                
+                <div ng-include="'program-selector'" ng-if="!topBarConfig.settings || !topBarConfig.settings.active" style="flex: 1 100%;"></div>
+                <div ng-include="'components/topbar/topbar.html'" ng-style="{'flex' : (topBarConfig.settings && topBarConfig.settings.active) ? '1 100%' : '0'}"></div>
                 <div ng-class="topbarRightSizeClass" style="width:150px">
                     <button type="button"
                             title="{{model.stickyDisabled ? stickLabel : unstickLabel}}"
@@ -51,14 +52,14 @@
                         <ul class="dropdown-menu pull-right" role="menu">
                             <li><a href ng-click="showHideWidgets()">{{showHideWidgetsLabel}}</a></li>
                             <li ng-if="userAuthority.canAdministerDashboard"><a href ng-click="saveDashboarLayoutAsDefault()">{{'save_layout_as_default' | translate}}</a></li>
-                            <li ng-if="topBarWidget && topBarWidget.getTopBarFields" ng-click="openTopBarSettings()">Top bar settings</li>
+                            <li><a href ng-click="openTopBarSettings()">Top bar settings</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div ng-if="topBarWidget" ng-include="'program-selector'"></div>
+            <div ng-if="topBarConfig.settings && topBarConfig.settings.active" ng-include="'program-selector'"></div>
         </div>
         <div class="row">
             <!-- dashboard bigger widgets begin -->
@@ -80,40 +81,6 @@
 
         <!-- dashboard smaller widgets begin -->
         <div ng-class="[!model.stickyDisabled ? 'widgets-sticky' : '', widgetSize.smaller]">
-            <!-- dashboard setting begins -->
-            <div class="row add-default-right-padding vertical-spacing" ng-if="!useTopBar">
-                <div class="pull-right">
-                    <button type="button"
-                            title="{{model.stickyDisabled ? stickLabel : unstickLabel}}"
-                            ng-show="(dashboardWidgets | filter: {parent: 'smallerWidget', show: true}).length > 0"
-                            class="btn btn-default"
-                            ng-class="{true: 'stick', false: 'unstick'} [!model.stickyDisabled]"
-                            ng-click="model.stickyDisabled = !model.stickyDisabled">
-                        <i class="fa fa-thumb-tack"></i>
-                    </button>
-                    
-                    <div class="btn-group trim">
-                        <button type="button" title="{{'manage' | translate}} {{trackedEntity.displayName}}" ng-disabled="selectedOrgUnit.closedStatus" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-exclamation-circle"></i>
-                        </button>
-                        <ul class="dropdown-menu pull-right" role="menu">                            
-                            <li><a href ng-click="activiateTEI()">{{selectedTei.inactive ? 'activate' : 'deactivate' | translate}} {{trackedEntity.displayName}}</a></li>
-                            <li><a href ng-click="deleteTEI()">{{'delete' | translate}} {{trackedEntity.displayName}}</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="btn-group trim">
-                        <button type="button" title="{{settingsLabel}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-cog"></i>
-                        </button>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li><a href ng-click="showHideWidgets()">{{showHideWidgetsLabel}}</a></li>
-                            <li ng-if="userAuthority.canAdministerDashboard"><a href ng-click="saveDashboarLayoutAsDefault()">{{'save_layout_as_default' | translate}}</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- dashboard setting ends -->
 
             <div id="smallerWidget" class="row connectedSortable empty-dashboard-container" d2-sortable
                  bigger-widgets={{dashboardWidgets | filter: {parent:

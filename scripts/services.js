@@ -2173,4 +2173,80 @@ i
             return promise;
         }
     };
+})
+
+.factory('RuleBoundFactory', function()
+{
+    var initData = function(){
+        return {
+            textInEffect: false,
+            keyDataInEffect: false,
+            displayTextEffects: {},
+            displayKeyDataEffects: {}
+        }
+    }
+
+    return {
+        getDisplayEffects: function(ruleBoundData, event, ruleeffects, location){
+            if(!ruleBoundData) ruleBoundData = initData();
+
+            ruleBoundData.textInEffect = false;
+            ruleBoundData.keyDataInEffect = false;
+
+            if(event === 'registration') return;
+    
+            //In case the 
+            if(ruleBoundData.lastEventUpdated !== event) {
+                ruleBoundData.displayTextEffects = {};
+                ruleBoundData.displayKeyDataEffects = {};
+                ruleBoundData.lastEventUpdated = event;
+            }
+            
+            if(ruleeffects && ruleeffects[event]){
+                angular.forEach(ruleeffects[event], function(effect) {
+                    var g= 1;
+                    var u = g+1;
+                    if(effect.location === location){
+                        //This effect is affecting the local widget
+                        
+                        //Round data to two decimals if it is a number:
+                        if(dhis2.validation.isNumber(effect.data)){
+                            effect.data = Math.round(effect.data*100)/100;
+                        }
+                        
+                        if(effect.action === "DISPLAYTEXT") {
+                            //this action is display text. Make sure the displaytext is
+                            //added to the local list of displayed texts
+                            if(!angular.isObject(ruleBoundData.displayTextEffects[effect.id])){
+                                ruleBoundData.displayTextEffects[effect.id] = effect;
+                            }
+                            if(effect.ineffect)
+                            {
+                                ruleBoundData.textInEffect = true;
+                            }
+                        }
+                        else if(effect.action === "DISPLAYKEYVALUEPAIR") {                    
+                            //this action is display text. Make sure the displaytext is
+                            //added to the local list of displayed texts
+                            if(!angular.isObject(ruleBoundData.displayTextEffects[effect.id])){
+                                ruleBoundData.displayKeyDataEffects[effect.id] = effect;
+                            }
+                            if(effect.ineffect)
+                            {
+                                ruleBoundData.keyDataInEffect = true;
+                            }
+                        }
+                        else if(effect.action === "ASSIGN") {
+                            //the dataentry control saves the variable and or dataelement
+                        }
+                        else {
+                            $log.warn("action: '" + effect.action + "' not supported by rulebound-controller.js");
+                        }
+                    }
+                });
+            }
+
+            return ruleBoundData;
+        }
+    }
 });

@@ -31,7 +31,7 @@ trackerCapture.controller('DashboardController',
     
     //selections
     var orgUnitUrl = ($location.search()).ou;
-
+    $scope.topBarConfig = {};
     $scope.displayEnrollment = false;
     $scope.dataEntryMainMenuItemSelected = false;    
     $scope.metaDataCached = false;
@@ -72,7 +72,6 @@ trackerCapture.controller('DashboardController',
             $scope.selectedOrgUnit = orgUnit;
             $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
             $scope.sortedTeiIds = CurrentSelection.getSortedTeiIds();
-            $scope.useTopBar = true;
             $scope.showSettingsButton = true;
             $scope.topbarClass = $scope.showSettingsButton ? "dashboard-info-box-sm" : "dashboard-info-box-lg";
             $scope.topbarRightSizeClass = $scope.showSettingsButton ? "dashboard-info-btn-right-two-buttons" : "dashboard-info-btn-right-one-button";
@@ -269,6 +268,12 @@ trackerCapture.controller('DashboardController',
                 $rootScope.defaultDashboardWidgetsByTitle[w.title] = w;
             });
 
+            if(selectedLayout.topBarSettings){
+                $scope.topBarConfig.settings = selectedLayout.topBarSettings;
+            }else{
+                selectedLayout.topBarSettings = $scope.topBarConfig.settings;
+            }
+
             $scope.hasBigger = false;
             angular.forEach(orderByFilter($filter('filter')($scope.dashboardWidgets, {parent: "biggerWidget"}), 'order'), function (w) {
                 if (w.show) {
@@ -284,27 +289,12 @@ trackerCapture.controller('DashboardController',
                 }
                 $scope.dashboardWidgetsOrder.smallerWidgets.push(w.title);
             });
-            var topBarWidgetResult = $.grep($scope.dashboardWidgets, function(widget) { return widget.useAsTopBar;});
-            if(topBarWidgetResult.length > 0){
-                $rootScope.topBarWidget = topBarWidgetResult[0];
-            }
 
             setWidgetsSize();
             $scope.broadCastSelections();
             setInactiveMessage();
         });
     };
-
-    $scope.getTopBarView = function () {
-        if($rootScope.topBarWidget){
-            if($rootScope.topBarWidget.topBarView) return $rootScope.topBarWidget.topBarView;
-            if($rootScope.defaultDashboardWidgetsByTitle && $rootScope.defaultDashboardWidgetsByTitle[$rootScope.topBarWidget.title]){
-                var defaultTopBarView = $rootScope.defaultDashboardWidgetsByTitle[$rootScope.topBarWidget.title].topBarView;
-                if(defaultTopBarView) return defaultTopBarView;
-            }
-        }
-        return '';
-    }
 
     $rootScope.getWidget = function(widgetTitle){
         var result = $.grep($rootScope.dashboardWidgets, function(widget)
@@ -371,7 +361,7 @@ trackerCapture.controller('DashboardController',
             widgets.push(w);
         });
 
-        return {widgets: widgets, program: $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT'};
+        return {widgets: widgets, topBarSettings: $scope.topBarConfig.settings, program: $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT'};
     }
 
     function saveDashboardLayout() {
@@ -608,46 +598,15 @@ trackerCapture.controller('DashboardController',
         var widgetLoaderScope = scope.$parent.$parent;
         if(widgetLoaderScope.biggerWidget) return widgetLoaderScope.biggerWidget;
         if(widgetLoaderScope.smallerWidget) return widgetLoaderScope.smallerWidget;
-        if(widgetLoaderScope.topBarLoader) return $rootScope.topBarWidget;
         return null;
     }
 
-    $scope.openTopBarSettings = function () {
-        var modalInstance = $modal.open({
-            templateUrl: "components/dashboard/dashboard-topbar-settings.html",
-            controller: function($rootScope, $scope, $modalInstance)
-            {
-                $scope.fields = $rootScope.topBarWidget.getTopBarFields();
-                $scope.onFieldChange = function(field)
-                {
-                    saveDashboardLayout();
-                }
-                $scope.close = function () {
-                    $modalInstance.close();
-                };          
-            }
-        });
+    $scope.openTopBarSettings = function(){
+        $scope.topBarConfig.openSettings().then(function(topBarSettings){
+            $scope.topBarConfig.settings = topBarSettings;
 
-        modalInstance.result.then(function () {
+            saveDashboardLayout();
         });
-    };
-
-    $rootScope.setUseAsTopBar = function(widget){
-        var currentTopBars = $.grep($rootScope.dashboardWidgets, function(e){ return e.useAsTopBar; });
-        if(currentTopBars.length > 0){
-            angular.forEach(currentTopBars, function (topBar){ 
-                if(topBar.title !== widget.title){ 
-                    topBar.useAsTopBar = false;
-                }
-            });
-        }
-        if(!widget.useAsTopBar){
-            $rootScope.topBarWidget = null;
-        }else{
-            $rootScope.topBarWidget = widget;
-        }
-        var g = $templateCache;
-        saveDashboardLayout();
     }
 
     $scope.fetchTei = function (mode) {
