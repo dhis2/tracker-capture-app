@@ -22,7 +22,7 @@
                     d2-value-saved="currentElement.saved && currentElement.id === de.id"
                     d2-object="currentEvent" 
                     d2-options="optionSets[prStDes[de.id].dataElement.optionSet.id].options"
-                    d2-required="isCompulsory(de)"
+                    d2-required="prStDes[de.id].compulsory"
                     d2-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
                     d2-function="saveDataValueForRadio(prStDes[de.id], currentEvent, value)">
                 </d2-radio>                
@@ -139,7 +139,7 @@
             <d2-age id="{{de.id}}"
                     d2-age-saved="currentElement.saved && currentElement.id === prStDe.dataElement.id"
                     d2-object="currentEvent"
-                    d2-required="isCompulsory(de)"
+                    d2-required="prStDes[de.id].compulsory"
                     d2-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
                     d2-function="saveDatavalue(prStDes[de.id], innerForm.foo)">
             </d2-age>
@@ -162,7 +162,7 @@
         <div ng-switch-when="BOOLEAN">
             <div class="hideInPrint form-control">
                 <d2-radio-button
-                    dh-required="isCompulsory(de)"
+                    dh-required="prStDes[de.id].compulsory"
                     dh-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] === true"
                     dh-value="currentEvent[de.id]"
                     dh-name="foo"
@@ -310,7 +310,7 @@
                     d2-lat-saved="currentElement.saved && currentElement.id === de.id"
                     d2-lng-saved="currentElement.saved && currentElement.id === de.id"
                     d2-object="currentEvent" 
-                    d2-required="isCompulsory(de)"
+                    d2-required="prStDes[de.id].compulsory"
                     d2-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
                     d2-function="saveDatavalue(arg1)" 
                     d2-coordinate-format="'TEXT'"
@@ -323,7 +323,7 @@
                     selected-org-unit-id="{{selectedOrgUnit.id}}"
                     id="{{de.id}}"
                     d2-value="currentEvent[de.id]"
-                    d2-required="isCompulsory(de)"
+                    d2-required="prStDes[de.id].compulsory"
                     d2-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
                     d2-object="currentEvent"
                     d2-function="saveDatavalue(prStDes[de.id], innerForm.foo)"
@@ -341,7 +341,7 @@
                    selected-tei-id={{selectedTei.trackedEntityInstance}}
                    ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
                    ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                   ng-required="isCompulsory(de)"/>
+                   ng-required="prStDes[de.id].compulsory"/>
         </div>
         <div ng-switch-when="URL">
             <div class="hideInPrint">
