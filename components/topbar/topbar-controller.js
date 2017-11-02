@@ -125,7 +125,7 @@ trackerCapture.controller('TopBarController',
         if(ruleBoundData.textInEffect){
             for(var key in ruleBoundData.displayTextEffects){
                 if(ruleBoundData.displayTextEffects.hasOwnProperty(key) && ruleBoundData.displayTextEffects[key].ineffect){
-                    values[key] = { id: key, name: ruleBoundData.displayTextEffects[key].content};
+                    values[key] = { id: key, name: ruleBoundData.displayTextEffects[key].content, value: ruleBoundData.displayTextEffects[key].data};
                 }
             }
         }

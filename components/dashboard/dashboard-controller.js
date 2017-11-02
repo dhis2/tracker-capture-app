@@ -233,6 +233,7 @@ trackerCapture.controller('DashboardController',
     
     //dashboard items
     var getDashboardLayout = function () {
+        $scope.topBarConfig.settings = {};
         $rootScope.defaultDashboardWidgetsByTitle = {};
         $rootScope.dashboardWidgets = [];
         $scope.widgetsChanged = [];

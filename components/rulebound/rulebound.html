@@ -23,7 +23,7 @@
                     <tr ng-repeat="(key,item) in data.displayTextEffects" ng-if="item.ineffect">
                         <td>
                             <div>
-                                {{item.content | trimquotes}}{{item.data | trimquotes}}
+                                {{item.content | trimquotes}}<span ng-if="item.data">: {{item.data | trimquotes}}</span> 
                             </div>
                         </td>
                     </tr>
