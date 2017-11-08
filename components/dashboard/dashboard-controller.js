@@ -554,8 +554,20 @@ trackerCapture.controller('DashboardController',
     };
 
     $scope.removeWidget = function (widget) {
-        widget.show = false;
-        saveDashboardLayout();
+        var modalOptions = {
+            closeButtonText: 'no',
+            actionButtonText: 'yes',
+            headerText: 'remove_widget',
+            bodyText: 'remove_widget_info'
+        };
+
+        ModalService.showModal({}, modalOptions).then(function (result) {
+            widget.show = false;
+            saveDashboardLayout();
+
+        }, function () {
+
+        });
     };
 
     $scope.expandCollapse = function (widget) {
