@@ -22,7 +22,7 @@
                    d2-date 
                    ng-model="selectedEnrollment.enrollmentDate"
                    min-date="model.minEnrollmentDate"
-                   max-date="model.maxEnrollmentDate"
+                   max-date="0"
                    ng-change="verifyExpiryDate('selectedEnrollment.enrollmentDate')"
                    ng-disabled="selectedOrgUnit.closedStatus"
                    ng-required="true"/>
