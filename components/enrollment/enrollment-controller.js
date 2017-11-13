@@ -263,7 +263,9 @@ trackerCapture.controller('EnrollmentController',
                     var advancedSearchOptions = CurrentSelection.getAdvancedSearchOptions();
                     advancedSearchOptions.refresh = true;
                     CurrentSelection.setAdvancedSearchOptions(advancedSearchOptions);
-                    $scope.broadCastSelections('mainDashboard');
+
+                    NotificationService.showNotifcationDialog($translate.instant('success'), $translate.instant('enrollment') + ' ' + $translate.instant('deleted'));                
+                    $scope.back();
                 });
             });
         };
