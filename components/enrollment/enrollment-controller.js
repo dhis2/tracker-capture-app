@@ -260,7 +260,12 @@ trackerCapture.controller('EnrollmentController',
             ModalService.showModal({}, modalOptions).then(function (result) {                
                 EnrollmentService.delete( $scope.selectedEnrollment.enrollment ).then(function (data) {
                     $scope.selectedEnrollment = null;
-                    $scope.broadCastSelections('mainDashboard');
+                    var advancedSearchOptions = CurrentSelection.getAdvancedSearchOptions();
+                    advancedSearchOptions.refresh = true;
+                    CurrentSelection.setAdvancedSearchOptions(advancedSearchOptions);
+
+                    NotificationService.showNotifcationDialog($translate.instant('success'), $translate.instant('enrollment') + ' ' + $translate.instant('deleted'));                
+                    $scope.back();
                 });
             });
         };
