@@ -254,7 +254,7 @@ trackerCapture.controller('DashboardController',
             if ($scope.selectedProgram && $scope.selectedProgram.id) {
                 selectedLayout = $scope.dashboardLayouts.customLayout && $scope.dashboardLayouts.customLayout[$scope.selectedProgram.id] ? $scope.dashboardLayouts.customLayout[$scope.selectedProgram.id] : $scope.dashboardLayouts.defaultLayout[$scope.selectedProgram.id];
             }
-            selectedLayout = !selectedLayout ? defaultLayout : selectedLayout;
+            selectedLayout = !selectedLayout || $scope.lockedList[$scope.selectedProgram.id] ? defaultLayout : selectedLayout;
 
             $scope.model.stickyDisabled = selectedLayout.stickRightSide ? !selectedLayout.stickRightSide : true;
 
