@@ -238,7 +238,7 @@ trackerCapture.controller('DashboardController',
         $scope.dashboardStatus = [];
         $scope.dashboardWidgetsOrder = {biggerWidgets: [], smallerWidgets: []};
         $scope.orderChanged = false;
-
+        
         DashboardLayoutService.getLockedList().then(function(r){
             if(!r || r === '') {
                 $scope.lockedList = {};
@@ -248,14 +248,18 @@ trackerCapture.controller('DashboardController',
         });
 
         DashboardLayoutService.get().then(function (response) {
-            $scope.dashboardLayouts = response;            
+            $scope.dashboardLayouts = response;
             var defaultLayout = $scope.dashboardLayouts.defaultLayout['DEFAULT'];
             var selectedLayout = null;
             if ($scope.selectedProgram && $scope.selectedProgram.id) {
                 selectedLayout = $scope.dashboardLayouts.customLayout && $scope.dashboardLayouts.customLayout[$scope.selectedProgram.id] ? $scope.dashboardLayouts.customLayout[$scope.selectedProgram.id] : $scope.dashboardLayouts.defaultLayout[$scope.selectedProgram.id];
             }
-            selectedLayout = !selectedLayout || $scope.lockedList[$scope.selectedProgram.id] ? defaultLayout : selectedLayout;
+            selectedLayout = !selectedLayout ? defaultLayout : selectedLayout;
 
+            if($scope.lockedList[$scope.selectedProgram.id]) {
+                selectedLayout = $scope.dashboardLayouts.defaultLayout[$scope.selectedProgram.id] ? $scope.dashboardLayouts.defaultLayout[$scope.selectedProgram.id] : defaultLayout;
+            }
+            
             $scope.model.stickyDisabled = selectedLayout.stickRightSide ? !selectedLayout.stickRightSide : true;
 
             angular.forEach(selectedLayout.widgets, function (widget) {
