@@ -647,6 +647,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 /* Service for getting tracked entity instances */
 .factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService ) {
     var errorHeader = $translate.instant("error");
+
+    var getFormatUrl = function(){
+        
+    }
     return {
         get: function(entityUid, optionSets, attributesById){
             var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
@@ -696,6 +700,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        getByUrl: function(ouId, url, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
+        
+        },
+
         search: function(ouId, ouMode, queryUrl, programUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
             var url;
             var deferred = $q.defer();
@@ -2173,4 +2181,10 @@ i
             return promise;
         }
     };
+})
+.service('TrackerService', function($http, ){
+    this.trackedEntityList = null;
+    this.setTrackedEntityList = function(trackedEntityList){
+        this.trackedEntityList = trackedEntityList;
+    }
 });

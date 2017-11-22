@@ -7,14 +7,14 @@
             <tr>
                 <td>{{'ou_search_scope'| translate}}</td>
                 <td>                    
-                    <label><input type="radio" ng-model="selectedOuMode.name" name="selected" value="SELECTED"> {{'SELECTED'| translate}}</label><br/>
-                    <label><input type="radio" ng-model="selectedOuMode.name" name="children" value="CHILDREN"> {{'CHILDREN'| translate}}</label><br/>
-                    <label><input type="radio" ng-model="selectedOuMode.name" name="descendants" value="DESCENDANTS"> {{'DESCENDANTS'| translate}}</label><br/>
+                    <label><input type="radio" ng-model="advancedSearchValues.ouMode.name" name="selected" value="SELECTED"> {{'SELECTED'| translate}}</label><br/>
+                    <label><input type="radio" ng-model="advancedSearchValues.ouMode.name" name="children" value="CHILDREN"> {{'CHILDREN'| translate}}</label><br/>
+                    <label><input type="radio" ng-model="advancedSearchValues.ouMode.name" name="descendants" value="DESCENDANTS"> {{'DESCENDANTS'| translate}}</label><br/>
                     <!--<label><input type="radio" ng-model="selectedOuMode.name" name="accessible" value="ACCESSIBLE"> {{'ACCESSIBLE'| translate}}</label>-->
                 </td>
             </tr>
-            <tr ng-if="selectedProgram">
-                <td>{{selectedProgram.enrollmentDateLabel}}</td>
+            <tr ng-if="parent.selectedProgram">
+                <td>{{parent.selectedProgram.enrollmentDateLabel}}</td>
                 <td>
                     <div class="dataelement-filter">
                         <div class="container-1-2">
@@ -23,23 +23,23 @@
                                    class="form-control-select2" 
                                    d2-date 
                                    d2-date-validator
-                                   max-date="enrollment.programEnrollmentEndDate ? enrollment.programEnrollmentEndDate : selectedProgram.selectEnrollmentDatesInFuture ? '' : 0"
-                                   ng-model="enrollment.programEnrollmentStartDate"/>
+                                   max-date="advancedSearchValues.enrollment.programEnrollmentEndDate ? advancedSearchValues.enrollment.programEnrollmentEndDate : parent.selectedProgram.selectEnrollmentDatesInFuture ? '' : 0"
+                                   ng-model="advancedSearchValues.enrollment.programEnrollmentStartDate"/>
                         </div>
                         <div class="container-1-2">
                             <input type="text" 
                                    placeholder="{{'end_date'| translate}}" 
                                    class="form-control-select2" 
                                    d2-date 
-                                   min-date="enrollment.programEnrollmentStartDate ? enrollment.programEnrollmentStartDate : ''"
-                                   max-date="selectedProgram.selectEnrollmentDatesInFuture ? '' : 0"
-                                   ng-model="enrollment.programEnrollmentEndDate"/>                
+                                   min-date="advancedSearchValues.enrollment.programEnrollmentStartDate ? advancedSearchValues.enrollment.programEnrollmentStartDate : ''"
+                                   max-date="parent.selectedProgram.selectEnrollmentDatesInFuture ? '' : 0"
+                                   ng-model="advancedSearchValues.enrollment.programEnrollmentEndDate"/>                
                         </div>             
                     </div>                
                 </td>
             </tr>
-            <tr ng-if="selectedProgram && selectedProgram.displayIncidentDate">
-                <td>{{selectedProgram.incidentDateLabel}}</td>
+            <tr ng-if="parent.selectedProgram && parent.selectedProgram.displayIncidentDate">
+                <td>{{parent.selectedProgram.incidentDateLabel}}</td>
                 <td>
                     <div class="dataelement-filter">
                         <div class="container-1-2">
@@ -48,8 +48,8 @@
                                    class="form-control-select2" 
                                    d2-date 
                                    d2-date-validator
-                                   max-date="enrollment.programIncidentEndDate ? enrollment.programIncidentEndDate : selectedProgram.selectIncidentDatesInFuture ? '' : 0"
-                                   ng-model="enrollment.programIncidentStartDate"/>
+                                   max-date="advancedSearchValues.enrollment.programIncidentEndDate ? advancedSearchValues.enrollment.programIncidentEndDate : parent.selectedProgram.selectIncidentDatesInFuture ? '' : 0"
+                                   ng-model="advancedSearchValues.enrollment.programIncidentStartDate"/>
                         </div>
                         <div class="container-1-2">
                             <input type="text" 
@@ -57,14 +57,14 @@
                                    class="form-control-select2" 
                                    d2-date 
                                    d2-date-validator
-                                   min-date="enrollment.programIncidentStartDate ? enrollment.programIncidentStartDate : ''"
-                                   max-date="selectedProgram.selectIncidentDatesInFuture ? '' : 0"
-                                   ng-model="enrollment.programIncidentEndDate"/>                
+                                   min-date="advancedSearchValues.enrollment.programIncidentStartDate ? advancedSearchValues.enrollment.programIncidentStartDate : ''"
+                                   max-date="parent.selectedProgram.selectIncidentDatesInFuture ? '' : 0"
+                                   ng-model="advancedSearchValues.enrollment.programIncidentEndDate"/>                
                         </div>             
                     </div>                
                 </td>
             </tr>
-            <tr ng-repeat="attribute in attributes | nonConfidential">
+            <tr ng-repeat="attribute in advancedSearchValues.attributes | nonConfidential">
                 <td>
                     {{attribute.displayName}}
                 </td>
@@ -152,7 +152,7 @@
     <div class="horizontal-spacing">
         <button type="button"
                 class="btn btn-primary"
-                ng-click="search(searchMode.attributeBased)">
+                ng-click="search(searchModes.ATTRIBUTEBASED)">
             {{'search'| translate}}
         </button>        
     </div>    

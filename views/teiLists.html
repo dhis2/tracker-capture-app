@@ -1,0 +1,36 @@
+<div class="hideInPrint">
+    <div class="btn-group hideInPrint">
+        <button type="button" ng-repeat="workingList in parent.selectedProgram.workingLists" class="btn btn-default" ng-class="getWorkingListButtonClass(workingList)" ng-click="setWorkingList(workingList)">
+            <span ng-class="workingList.icon"></span>
+        </button>
+    </div>
+
+    <div class="pull-right" ng-if="currentTrackedEntityList.data">
+        <span class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"><span class="fa fa-download"></span></button>
+            <ul class="dropdown-menu">
+                <li><h6 class="dropdown-header">Download as</h6></li>
+                <li class="divider"></li>
+                <li ng-repeat="format in listExportFormats"><a href ng-click="getExportList(format)">{{format}}</a></li>
+            </ul>
+        </span>
+        <button type="button" class="btn btn-default" onclick="javascript:window.print()" title="{{'print' | translate}}"><span class="fa fa-print"></span></button>
+        <button class="btn btn-default"ng-click="showHideListColumns()" title="{{'show_hide_columns'| translate}}"><span class="fa fa-table"></span></button>
+    </div>
+
+    <span ng-if="currentTrackedEntityList.data && pager.total">
+        {{'total'| translate}}:  {{pager.total}}
+    </span>
+    
+    
+    <i ng-if="currentTrackedEntityList.loading" class="fa fa-spinner fa-spin fa-2x"></i>
+</div>
+<!--- Error display for search begins -->
+<div class="row">
+    <div class="vertical-spacing" ng-if="emptySearchAttribute || !model.searchText && emptySearchText">
+        <div class="alert alert-warning">{{'search_input_required'| translate}}</div>
+    </div>
+</div>        
+<!--- Error display for search ends -->    
+
+<div ng-include="'views/teiList.html'"></div>
