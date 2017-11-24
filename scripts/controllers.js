@@ -18,7 +18,8 @@ trackerCapture.controller('SelectionController',function(
     CurrentSelection,
     TEIGridService,
     TEIService,
-    GridColumnService) {
+    GridColumnService,
+    ProgramWorkingListService) {
         var trackedEntityListTypes = { SEARCH: "SEARCH", WORKINGLIST: "WORKINGLIST"};
         var ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];
         var previousProgram = null;
@@ -60,6 +61,7 @@ trackerCapture.controller('SelectionController',function(
                 .then(loadAttributes)
                 .then(loadAttributesByProgram)
                 .then(loadOptionSets)
+                .then(loadWorkingLists)
                 .then(loadCachedData);
             }
         });
@@ -100,6 +102,9 @@ trackerCapture.controller('SelectionController',function(
                     }
                 });
             }
+            if($scope.parent.selectedProgram){
+                $scope.gridColumns = userGridColumns[$scope.parent.selectedProgram.id];
+            }
             return resolvedEmptyPromise();
 
         }
@@ -107,31 +112,13 @@ trackerCapture.controller('SelectionController',function(
             return ProgramFactory.getProgramsByOu($scope.selectedOrgUnit, previousProgram).then(function(response){
                 $scope.programs = response.programs;
                 $scope.parent.selectedProgram = $scope.selectedProgram = response.selectedProgram;
-
-                //for test
-                angular.forEach($scope.programs, function(p){
-                    if(p.id === 'WSGAb5XwJ3Y'){
-                        p.workingLists = [
-                            {
-                                name: "test1",
-                                description: "",
-                                icon: "fa fa-calendar"
-                            },
-                            {
-                                name: "test2",
-                                description: "",
-                                icon: "fa fa-address-book"
-                            },
-                            {
-                                name: "test3",
-                                description: "",
-                                icon: "fa fa-etsy"
-                            },
-                    
-                        ];
-                    }
-                });
-
+            });
+        }
+        
+        var loadWorkingLists = function(){
+            return ProgramWorkingListService.getConfigs($scope.selectedProgram).then(function(programWorkingLists)
+            {
+                $scope.programWorkingLists = programWorkingLists;
             });
         }
 
@@ -186,8 +173,11 @@ trackerCapture.controller('SelectionController',function(
     
 
         $scope.getWorkingListButtonClass = function(workingList){
-            if($scope.currentWorkingList && $scope.currentWorkingList.name == workingList.name){
-                return "active";
+            if($scope.currentTrackedEntityList && $scope.currentTrackedEntityList.type === trackedEntityListTypes.WORKINGLIST){
+                var config = $scope.currentTrackedEntityList.config;
+                if(config.name === workingList.name){
+                    return "active";
+                }
             }
             return "";
         }
@@ -196,8 +186,7 @@ trackerCapture.controller('SelectionController',function(
             setCurrentTrackedEntityList(trackedEntityListTypes.WORKINGLIST, workingList, null);
 
             $scope.currentTrackedEntityList.loading = true;
-            //TEIService.getByUrl(workingList.url).then(setCurrentTrackedEntityListData);
-            TEIService.search()
+            TEIService.search($scope.selectedOrgUnit.id, ouModes[0].name, workingList.url,null, null, $scope.pager, true).then(setCurrentTrackedEntityListData);
         }
 
         var setCurrentTrackedEntityList = function(type, config, data){

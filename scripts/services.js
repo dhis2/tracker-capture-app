@@ -700,9 +700,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        getByUrl: function(ouId, url, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
-        
-        },
 
         search: function(ouId, ouMode, queryUrl, programUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
             var url;
@@ -2182,8 +2179,60 @@ i
         }
     };
 })
-.service('TrackerService', function($http, ){
-    this.trackedEntityList = null;
+.service('ProgramWorkingListService', function($http,$q){
+    var programWorkingListConfigs = {};
+
+    this.getConfigs = function(program){
+        var def = $q.defer();
+        if(program && !programWorkingListConfigs[program.id]){
+
+            //Temporary until working list is implemented
+            var programUrl = "program="+program.id+"&programStatus="
+            def.resolve([
+                {
+                    name: "active_enrollment",
+                    description: "active_enrollment",
+                    icon: "fa fa-circle-o",
+                    url: "program="+program.id+"&programStatus=ACTIVE",
+                    order: 1
+                },
+                {
+                    name: "all_enrollments",
+                    description: "all_enrollment",
+                    icon: "fa fa-list",
+                    url: "program="+program.id+"",
+                    order: 0
+                },
+                {
+                    name: "completed_enrollment",
+                    description: "completed_enrollment",
+                    icon: "fa fa-check",
+                    url: "program="+program.id+"&programStatus=COMPLETED",
+                    order: 2
+                },
+                {
+                    name: "cancelled_enrollment",
+                    description: "cancelled_enrollment",
+                    icon: "fa fa-times",
+                    url: "program="+program.id+"&programStatus=CANCELLED",
+                    order: 3
+                }
+            ]);
+            return def.promise;
+            /*return $http.get(DHIS2URL+'/programWorkingLists?program='+program.id, function(response){
+                var config = programWorkingListConfigs[program.id] = response;
+                return config;
+            });*/
+        }else if(program && programWorkingListConfigs[program.id]){
+            def.resolve(programWorkingListConfigs[program.id]);
+            return def.promise;
+        }else{
+            def.resolve([]);
+            return def.promise;
+        }
+    }
+
+
     this.setTrackedEntityList = function(trackedEntityList){
         this.trackedEntityList = trackedEntityList;
     }

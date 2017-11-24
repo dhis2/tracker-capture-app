@@ -1,6 +1,6 @@
 <div class="hideInPrint">
     <div class="btn-group hideInPrint">
-        <button type="button" ng-repeat="workingList in parent.selectedProgram.workingLists" class="btn btn-default" ng-class="getWorkingListButtonClass(workingList)" ng-click="setWorkingList(workingList)">
+        <button type="button" ng-repeat="workingList in programWorkingLists | orderBy: 'order'" class="btn btn-default" ng-class="getWorkingListButtonClass(workingList)" ng-click="setWorkingList(workingList)" title="{{workingList.description | translate}}">
             <span ng-class="workingList.icon"></span>
         </button>
     </div>
