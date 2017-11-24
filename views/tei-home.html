@@ -4,6 +4,17 @@
             <span ng-class="workingList.icon"></span>
         </button>
     </div>
+    <div class="btn-group">
+        <div class="dropdown">
+            <button type="button" class="btn btn-default dropdown-toggle" ng-click="openCustomWorkingList()" data-toggle="dropdown">Custom working list</button>
+            <ul class="dropdown-menu">
+                <li><a href="#">HTML</a></li>
+                <li><a href="#">CSS</a></li>
+                <li><a href="#">JavaScript</a></li>
+            </ul>
+        </div>
+    </div>
+
 
     <div class="pull-right" ng-if="currentTrackedEntityList.data">
         <span class="dropdown">
@@ -33,4 +44,4 @@
 </div>        
 <!--- Error display for search ends -->    
 
-<div ng-include="'views/teiList.html'"></div>
+<div ng-include="'views/tei-list.html'"></div>
