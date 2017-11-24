@@ -24,13 +24,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
     var w = {};
     w.enrollmentWidget = {title: 'enrollment', view: "components/enrollment/enrollment.html", show: true, expand: true, parent: 'biggerWidget', order: 0};
-    w.indicatorWidget = {title: 'indicators', view: "components/rulebound/rulebound.html", show: true, expand: true, parent: 'biggerWidget', order: 1};
+    w.indicatorWidget = {title: 'indicators', view: "components/rulebound/rulebound.html", show: true, expand: true, parent: 'biggerWidget', order: 1, canBeUsedAsTopBar: true, topBarView: "components/rulebound/rulebound-topbar.html#indicators"};
     w.dataentryWidget = {title: 'dataentry', view: "components/dataentry/dataentry.html", show: true, expand: true, parent: 'biggerWidget', order: 2};
     w.dataentryTabularWidget = {title: 'dataentryTabular', view: "components/dataentry/dataentry-tabular-layout.html", show: false, expand: true, parent: 'biggerWidget', order: 3};
     w.reportWidget = {title: 'report', view: "components/report/tei-report.html", show: true, expand: true, parent: 'biggerWidget', order: 4};
     w.selectedWidget = {title: 'current_selections', view: "components/selected/selected.html", show: false, expand: true, parent: 'smallerWidget', order: 0};
-    w.feedbackWidget = {title: 'feedback', view: "components/rulebound/rulebound.html", show: true, expand: true, parent: 'smallerWidget', order: 1};
-    w.profileWidget = {title: 'profile', view: "components/profile/profile.html", show: true, expand: true, parent: 'smallerWidget', order: 2};
+    w.feedbackWidget = {title: 'feedback', view: "components/rulebound/rulebound.html", show: true, expand: true, parent: 'smallerWidget', order: 1,canBeUsedAsTopBar: true, topBarView: "components/rulebound/rulebound-topbar.html#feedback"};
+    w.profileWidget = {title: 'profile', view: "components/profile/profile.html", show: true, expand: true, parent: 'smallerWidget', order: 2, canBeUsedAsTopBar: true, topBarView: "components/profile/profile-topbar.html"};
     w.relationshipWidget = {title: 'relationships', view: "components/relationship/relationship.html", show: true, expand: true, parent: 'smallerWidget', order: 3};
     w.notesWidget = {title: 'notes', view: "components/notes/notes.html", show: true, expand: true, parent: 'smallerWidget', order: 4};
     w.messagingWidget = {title: 'messaging', view: "components/messaging/messaging.html", show: false, expand: true, parent: 'smallerWidget', order: 5};
@@ -2195,4 +2195,80 @@ i
             return promise;
         }
     };
+})
+
+.factory('RuleBoundFactory', function()
+{
+    var initData = function(){
+        return {
+            textInEffect: false,
+            keyDataInEffect: false,
+            displayTextEffects: {},
+            displayKeyDataEffects: {}
+        }
+    }
+
+    return {
+        getDisplayEffects: function(ruleBoundData, event, ruleeffects, location){
+            if(!ruleBoundData) ruleBoundData = initData();
+
+            ruleBoundData.textInEffect = false;
+            ruleBoundData.keyDataInEffect = false;
+
+            if(event === 'registration') return;
+    
+            //In case the 
+            if(ruleBoundData.lastEventUpdated !== event) {
+                ruleBoundData.displayTextEffects = {};
+                ruleBoundData.displayKeyDataEffects = {};
+                ruleBoundData.lastEventUpdated = event;
+            }
+            
+            if(ruleeffects && ruleeffects[event]){
+                angular.forEach(ruleeffects[event], function(effect) {
+                    var g= 1;
+                    var u = g+1;
+                    if(effect.location === location){
+                        //This effect is affecting the local widget
+                        
+                        //Round data to two decimals if it is a number:
+                        if(dhis2.validation.isNumber(effect.data)){
+                            effect.data = Math.round(effect.data*100)/100;
+                        }
+                        
+                        if(effect.action === "DISPLAYTEXT") {
+                            //this action is display text. Make sure the displaytext is
+                            //added to the local list of displayed texts
+                            if(!angular.isObject(ruleBoundData.displayTextEffects[effect.id])){
+                                ruleBoundData.displayTextEffects[effect.id] = effect;
+                            }
+                            if(effect.ineffect)
+                            {
+                                ruleBoundData.textInEffect = true;
+                            }
+                        }
+                        else if(effect.action === "DISPLAYKEYVALUEPAIR") {                    
+                            //this action is display text. Make sure the displaytext is
+                            //added to the local list of displayed texts
+                            if(!angular.isObject(ruleBoundData.displayTextEffects[effect.id])){
+                                ruleBoundData.displayKeyDataEffects[effect.id] = effect;
+                            }
+                            if(effect.ineffect)
+                            {
+                                ruleBoundData.keyDataInEffect = true;
+                            }
+                        }
+                        else if(effect.action === "ASSIGN") {
+                            //the dataentry control saves the variable and or dataelement
+                        }
+                        else {
+                            $log.warn("action: '" + effect.action + "' not supported by rulebound-controller.js");
+                        }
+                    }
+                });
+            }
+
+            return ruleBoundData;
+        }
+    }
 });

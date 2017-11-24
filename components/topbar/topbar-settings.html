@@ -1,0 +1,64 @@
+<div class="modal-header">
+        <h1>{{'top_bar_settings'| translate}}</h1>
+    </div>
+    
+    <div class="modal-body">
+        <div class="row">
+            <div class="form-group">
+                <label class="col-md-4" for="input_topBarActive">{{'activate_top_bar'| translate}}</label>
+                <input class="col-md-4" type="checkbox" class="form-control" id="input_topBarActive" ng-model="topBarSettings.active">
+            </div>
+        </div>
+        <div class="scroll">
+            <table class="listTable dhis2-table-striped-border">
+                <tr ng-hide="isEmptyObject(attributesFieldSelection)">
+                    <th>{{'attribute'| translate}}</th>
+                    <th>{{'show'| translate}}</th>
+                    <th>{{'sort_order'| translate}}</th>
+                </tr>
+                <tr ng-repeat="(key, value) in attributesFieldSelection">
+                    <td>{{value}}</td>
+                    <td><input type="checkbox" ng-model="topBarSettings.selectedFields[key].show" ng-change="onShowUnshowField(key, topBarSettings.selectedFields[key])"></td>
+                    <td><span ng-show="topBarSettings.selectedFields[key].show"><input type="number" ng-model="topBarSettings.selectedFields[key].order" min="0" /></span></td>
+                </tr>
+                <tr ng-hide="isEmptyObject(feedbackFieldSelection)">
+                    <th>{{'feedback'| translate}}</th>
+                    <th>{{'show'| translate}}</th>
+                    <th>{{'sort_order'| translate}}</th>
+                </tr>
+                <tr ng-repeat="(key, value) in feedbackFieldSelection">
+                    <td>{{value}}</td>
+                    <td><input type="checkbox" ng-model="topBarSettings.selectedFields[key].show" ng-change="onShowUnshowField(key, topBarSettings.selectedFields[key])"></td>
+                    <td><span ng-show="topBarSettings.selectedFields[key].show"><input type="number" ng-model="topBarSettings.selectedFields[key].order" min="0"/></span></td>
+                </tr>
+                <tr ng-hide="isEmptyObject(indicatorsFieldSelection)">
+                    <th>{{'indicators'| translate}}</th>
+                    <th>{{'show'| translate}}</th>
+                    <th>{{'sort_order'| translate}}</th>
+                </tr>
+                <tr ng-repeat="(key, value) in indicatorsFieldSelection">
+                    <td>{{value}}</td>
+                    <td><input type="checkbox" ng-model="topBarSettings.selectedFields[key].show" ng-change="onShowUnshowField(key, topBarSettings.selectedFields[key])"></td>
+                    <td><span ng-show="topBarSettings.selectedFields[key].show"><input type="number" ng-model="topBarSettings.selectedFields[key].order" min="0"/></span></td>
+                </tr>
+            </table>
+        </div>
+        <!--<div class="scroll">
+            <table class="listTable dhis2-table-striped-border">
+                <tr><th>Field name</th><th>Show</th><th>Order</th></tr>
+                <tr ng-repeat="field in fields">
+                    <td>
+                        {{field.name}}
+                    </td>
+
+                    <td><input type="checkbox" ng-model="topBarWidget.topBarFields[field.id].show" ng-change="onFieldChange()"/></td>
+                    <td><span ng-show="topBarWidget.topBarFields[field.id].show"><input class="input" type="number" ng-model="topBarWidget.topBarFields[field.id].order" min="0" ng-change="onFieldChange()"/></span></td>
+                </tr>
+            </table>
+        </div>-->      
+    </div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-ng-click="close()">{{'cancel'| translate}}</button>            
+        <button type="button" class="btn btn-primary" data-ng-click="save()">{{'save'| translate}}</button>
+    </div>
