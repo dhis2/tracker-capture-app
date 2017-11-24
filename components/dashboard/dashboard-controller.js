@@ -238,9 +238,17 @@ trackerCapture.controller('DashboardController',
         $scope.dashboardStatus = [];
         $scope.dashboardWidgetsOrder = {biggerWidgets: [], smallerWidgets: []};
         $scope.orderChanged = false;
+        
+        DashboardLayoutService.getLockedList().then(function(r){
+            if(!r || r === '') {
+                $scope.lockedList = {};
+            } else {
+                $scope.lockedList = r;                
+            }
+        });
 
         DashboardLayoutService.get().then(function (response) {
-            $scope.dashboardLayouts = response;            
+            $scope.dashboardLayouts = response;
             var defaultLayout = $scope.dashboardLayouts.defaultLayout['DEFAULT'];
             var selectedLayout = null;
             if ($scope.selectedProgram && $scope.selectedProgram.id) {
@@ -248,6 +256,10 @@ trackerCapture.controller('DashboardController',
             }
             selectedLayout = !selectedLayout ? defaultLayout : selectedLayout;
 
+            if($scope.lockedList[$scope.selectedProgram.id]) {
+                selectedLayout = $scope.dashboardLayouts.defaultLayout[$scope.selectedProgram.id] ? $scope.dashboardLayouts.defaultLayout[$scope.selectedProgram.id] : defaultLayout;
+            }
+            
             $scope.model.stickyDisabled = selectedLayout.stickRightSide ? !selectedLayout.stickRightSide : true;
 
             angular.forEach(selectedLayout.widgets, function (widget) {
@@ -373,6 +385,17 @@ trackerCapture.controller('DashboardController',
         layout[programId] = getCurrentDashboardLayout();
         delete layout.DEFAULT;
         DashboardLayoutService.saveLayout(layout, true);
+    };
+
+    $scope.toggleLockDashboard = function () {
+        $scope.lockedList[$scope.selectedProgram.id] = !$scope.lockedList[$scope.selectedProgram.id];
+
+        if($scope.selectedProgram && $scope.selectedProgram.id) {
+            DashboardLayoutService.saveLockedList($scope.lockedList);
+        } else {
+            alert("No program selected.");
+        }
+
     };
 
     //persist widget sorting

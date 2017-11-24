@@ -82,6 +82,28 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return getDefaultLayout(null);
             });
             return promise;
+        },
+        getLockedList: function() {
+            var promise = $http.get(  DHIS2URL + '/systemSettings/keyDefaultLayoutLocked' ).then(function(response){
+                return response.data;
+            }, function(){
+                return null;
+            });
+            return promise;
+        },
+        saveLockedList: function(list) {
+            var url = DHIS2URL + '/systemSettings/keyDefaultLayoutLocked';
+            var promise = $http({
+                method: "post",
+                url: url,
+                data: list,
+                headers: {'Content-Type': 'text/plain;charset=utf-8'}
+            }).then(function(response){
+                return response.data;
+            },function(error){
+                return null;
+            });
+            return promise;
         }
     };
 })
