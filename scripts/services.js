@@ -1899,7 +1899,7 @@ i
         };
 
         angular.forEach(programStage.programStageDataElements, function(prStDe){
-            if(dhis2Event[prStDe.dataElement.id]){
+            if(dhis2Event[prStDe.dataElement.id] || dhis2Event[prStDe.dataElement.id] === 0){
                 var value = CommonUtils.formatDataValue(dhis2Event.event, dhis2Event[prStDe.dataElement.id], prStDe.dataElement, optionSets, 'API');
                 var val = {value: value, dataElement: prStDe.dataElement.id};
                 if(dhis2Event.providedElsewhere[prStDe.dataElement.id]){
