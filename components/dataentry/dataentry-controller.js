@@ -284,7 +284,9 @@ trackerCapture.controller('DataEntryController',
                     
                 }
                 else {
-                    $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEFIELD, bot does not have a dataelement defined");
+                    if(!effect.trackedEntityAttribute) {
+                        $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEFIELD, bot does not have a field defined");                        
+                    }
                 }
             } else if (effect.action === "SHOWERROR" 
                     || effect.action === "ERRORONCOMPLETE") {
