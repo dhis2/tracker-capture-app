@@ -74,7 +74,15 @@ trackerCapture.controller('TopBarController',
                         highestOrder = fields[key].order;
                     });
                     $modalInstance.close($scope.topBarSettings);
-                };          
+                };
+
+                $scope.close = function() {
+                    $modalInstance.dismiss('cancel');
+                };
+                
+                $scope.isEmptyObject = function(obj){
+                    return Object.keys(obj).length === 0;
+                }
             }
         }).result;
     }
@@ -119,6 +127,8 @@ trackerCapture.controller('TopBarController',
         }
         $scope.topBarValues = topBarValues;
     }
+
+
 
     var getDisplayTextEffectValues = function(ruleBoundData){
         var values = {};
