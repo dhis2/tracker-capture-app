@@ -59,6 +59,8 @@
                             <li><a href ng-click="showHideWidgets()">{{showHideWidgetsLabel}}</a></li>
                             <li ng-if="userAuthority.canAdministerDashboard"><a href ng-click="saveDashboarLayoutAsDefault()">{{'save_layout_as_default' | translate}}</a></li>
                             <li><a href ng-click="openTopBarSettings()">Top bar settings</a></li>
+                            <li ng-if="userAuthority.canAdministerDashboard && lockedList && !lockedList[selectedProgram.id]"><a href ng-click="toggleLockDashboard()"><i class="fa fa-lock" aria-hidden="true"></i> {{'lock_default_layout' | translate}}</a></li>
+                            <li ng-if="userAuthority.canAdministerDashboard && lockedList && lockedList[selectedProgram.id]"><a href ng-click="toggleLockDashboard()"><i class="fa fa-unlock" aria-hidden="true"></i> {{'unlock_default_layout' | translate}}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -89,7 +91,6 @@
 
         <!-- dashboard smaller widgets begin -->
         <div ng-class="[!model.stickyDisabled ? 'widgets-sticky' : '', widgetSize.smaller]">
-
             <div id="smallerWidget" class="row connectedSortable empty-dashboard-container" d2-sortable
                  bigger-widgets={{dashboardWidgets | filter: {parent:
             'biggerWidget'}}} smaller-widgets={{dashboardWidgets | filter: {parent: 'smallerWidget'}}}>
