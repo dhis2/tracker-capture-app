@@ -352,7 +352,6 @@ trackerCapture.controller('RegistrationController',
                         }
 
                         EnrollmentService.enroll(enrollment).then(function (enrollmentResponse) {
-                            $scope.model.savingRegistration = false;
                             if(enrollmentResponse) {
                                 var en = enrollmentResponse.response;
                                 if (en.status === 'SUCCESS') {
@@ -391,7 +390,6 @@ trackerCapture.controller('RegistrationController',
                 return;
             }
         });
-
     };
 
     function broadcastTeiEnrolled() {
