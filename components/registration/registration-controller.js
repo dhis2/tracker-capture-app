@@ -362,7 +362,6 @@ trackerCapture.controller('RegistrationController',
                                     return;
                                 }
                             }
-                            $scope.model.savingRegistration = false;
                         });
                     }
                     else {
