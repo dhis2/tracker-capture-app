@@ -21,7 +21,7 @@
                 </tr>                        
             </thead>
             <tbody id="list">
-                <tr ng-repeat="trackedEntity in currentTrackedEntityList.data.rows.own | orderBy:d2Sort:reverse" 
+                <tr ng-repeat="trackedEntity in currentTrackedEntityList.data.rows.own" 
                     ng-click="openTei(trackedEntity)"
                     ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
                     title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
@@ -41,7 +41,7 @@
                         </span>
                     </td>
                 </tr>
-                <tr ng-repeat="trackedEntity in currentTrackedEntityList.data.rows.other | orderBy:d2Sort:reverse" 
+                <tr ng-repeat="trackedEntity in currentTrackedEntityList.data.rows.other" 
                     ng-click="openTei(trackedEntity)"
                     ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
                     title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">

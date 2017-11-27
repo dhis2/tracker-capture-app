@@ -6,12 +6,12 @@
     </div>
     <div class="btn-group">
         <div class="dropdown">
-            <button type="button" class="btn btn-default dropdown-toggle" ng-click="openCustomWorkingList()" data-toggle="dropdown">Custom working list</button>
-            <ul class="dropdown-menu">
-                <li><a href="#">HTML</a></li>
-                <li><a href="#">CSS</a></li>
-                <li><a href="#">JavaScript</a></li>
-            </ul>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-class="getWorkingListButtonClass({ name: 'custom'})" >Custom working list<span style="margin-left:12px" class="fa fa-caret-down"></span></button>
+            <div class="dropdown-menu custom-working-list-container">
+                <form name="searchForm">
+                    <div ng-include="'views/custom-workinglist.html'"></div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -37,8 +37,8 @@
     <i ng-if="currentTrackedEntityList.loading" class="fa fa-spinner fa-spin fa-2x"></i>
 </div>
 <!--- Error display for search begins -->
-<div class="row">
-    <div class="vertical-spacing" ng-if="emptySearchAttribute || !model.searchText && emptySearchText">
+<div class="row" ng-if="currentTrackedEntityList && currentTrackedEntityList.type == trackedEntityListTypes.CUSTOM">
+    <div class="vertical-spacing" ng-if="emptyCustomWorkingListValues">
         <div class="alert alert-warning">{{'search_input_required'| translate}}</div>
     </div>
 </div>        

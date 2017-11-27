@@ -75,21 +75,6 @@
             </div>            
             <!-- program selection ends -->
 
-            <!-- simple/advanced search begins -->
-            <div id="searchDropDownParent" class="input-group col-md-4 hideInPrint">
-                <input type="text" ng-if="selectedOrgUnit.id" placeholder="{{'search' | translate}}" ng-model="searchValues.searchText" class="form-control expanded" d2-enter="search(searchModes.FREETEXT)" ng-class="{true: 'invalid - input'} [!search.searchText && emptySearchText]" ng-focus="showHideSearch()" ng-disabled="showRegistrationDiv" d2-set-focus={{doSearch}}>
-                <div class="input-group-btn">
-                    <button class="btn btn-default search-dropdown-button trim" type="button" title="{{'advanced_search' | translate}}" data-toggle="dropdown" ng-disabled="showRegistrationDiv"><i class="fa fa-caret-down"></i></button>
-                    <button class="btn btn-primary trim" type="button" title="{{searchLabel}}" ng-disabled="showRegistrationDiv" ng-click="search(searchModes.FREETEXT)"><i class="fa fa-search"></i></button>
-                    <div id="searchDropDown" class="dropdown-menu dropdown-menu-right">
-                        <form name="searchForm">
-                            <div ng-include="'views/advanced-search.html'"></div>
-                        </form>
-                    </div>
-                </div>                
-            </div>
-            <!-- simple/advanced search ends -->
-
             <!--search/registration buttons begin-->
             <div class="col-md-4 trim hideInPrint">            
                 <button type="button"

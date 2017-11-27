@@ -20,17 +20,16 @@ trackerCapture.controller('SelectionController',function(
     TEIService,
     GridColumnService,
     ProgramWorkingListService) {
-        var trackedEntityListTypes = { SEARCH: "SEARCH", WORKINGLIST: "WORKINGLIST"};
         var ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];
         var previousProgram = null;
         var userGridColumns = null;
         var optionSets = null;
+        var defaultCustomWorkingListValues = { ouMode: ouModes[0], programStatus: ""};
 
-        $scope.searchModes = { LISTALL: 'LIST_ALL', FREETEXT: 'FREE_TEXT', ATTRIBUTEBASED: 'ATTRIBUTE_BASED' };
+        $scope.trackedEntityListTypes = { CUSTOM: "CUSTOM", WORKINGLIST: "WORKINGLIST"};
         $scope.listExportFormats = ["XML","JSON","CSV"];
         $scope.parent = { };
-        $scope.searchValues = {};
-        $scope.advancedSearchValues = {};
+        $scope.customWorkingListValues = defaultCustomWorkingListValues;
 
         //Load orgUnits for user
         OrgUnitFactory.getSearchTreeRoot().then(function(response) {
@@ -69,8 +68,7 @@ trackerCapture.controller('SelectionController',function(
         var reset = function(){
             previousProgram = $scope.parent.selectedProgram;
             $scope.parent.selectedProgram = $scope.selectedProgram = null;
-            $scope.advancedSearchValues = {};
-            $scope.searchValues = {};
+            $scope.customWorkingListValues = defaultCustomWorkingListValues;
             $scope.currentTrackedEntityList = null;
             $scope.gridColumns = null;
         }
@@ -139,7 +137,7 @@ trackerCapture.controller('SelectionController',function(
         var loadAttributesByProgram = function(){
             return AttributesFactory.getByProgram($scope.parent.selectedProgram).then(function(atts){
                 $scope.attributes = AttributesFactory.generateAttributeFilters(atts);
-                $scope.advancedSearchValues.attributes = angular.copy($scope.attributes);
+                $scope.customWorkingListValues.attributes = angular.copy($scope.attributes);
             });
         }
 
@@ -148,12 +146,11 @@ trackerCapture.controller('SelectionController',function(
             if(frontPageData && frontPageData.selectedOrgUnit.id == $scope.selectedOrgUnit.id){
                 $scope.pager = frontPageData.pager;
                 $scope.setProgram(frontPageData.program);
-                $scope.advancedSearchValues = frontPageData.advancedSearchValues;
-                $scope.searchValues = frontPageData.searchValues;
+                $scope.customWorkingListValues = frontPageData.customWorkingListValues;
                 $scope.gridColumns = frontPageData.gridColumns;
                 if(frontPageData.trackedEntityList && frontPageData.trackedEntityList.refresh){
-                    if(frontPageData.trackedEntityList.type == trackedEntityListTypes.SEARCH){
-                        $scope.search(frontPageData.trackedEntityList.config.searchMode);
+                    if(frontPageData.trackedEntityList.type == $scope.trackedEntityListTypes.CUSTOM){
+                        $scope.setCustomWorkingList();
                     }else{
                         $scope.setWorkingList(frontPageData.trackedEntityList.config);
                     }
@@ -173,20 +170,33 @@ trackerCapture.controller('SelectionController',function(
     
 
         $scope.getWorkingListButtonClass = function(workingList){
-            if($scope.currentTrackedEntityList && $scope.currentTrackedEntityList.type === trackedEntityListTypes.WORKINGLIST){
-                var config = $scope.currentTrackedEntityList.config;
-                if(config.name === workingList.name){
-                    return "active";
+            if($scope.currentTrackedEntityList)
+                if($scope.currentTrackedEntityList.type === $scope.trackedEntityListTypes.WORKINGLIST){
+                    var config = $scope.currentTrackedEntityList.config;
+                    if(config.name === workingList.name){
+                        return "active";
+                    }
+                }else{
+                    if(workingList.name === "custom"){
+                        return "active";
+                    }
                 }
-            }
             return "";
         }
 
         $scope.setWorkingList = function(workingList){
-            setCurrentTrackedEntityList(trackedEntityListTypes.WORKINGLIST, workingList, null);
+            setCurrentTrackedEntityList($scope.trackedEntityListTypes.WORKINGLIST, workingList, null);
+            fetchWorkingList();
+        }
 
-            $scope.currentTrackedEntityList.loading = true;
-            TEIService.search($scope.selectedOrgUnit.id, ouModes[0].name, workingList.url,null, null, $scope.pager, true).then(setCurrentTrackedEntityListData);
+        var fetchWorkingList = function(){
+            if($scope.currentTrackedEntityList.type === $scope.trackedEntityListTypes.WORKINGLIST){
+                var config = $scope.currentTrackedEntityList.config;
+                $scope.currentTrackedEntityList.loading = true;
+                var url = getOrderUrl(config.url);
+                TEIService.search($scope.selectedOrgUnit.id, ouModes[0].name, url,null, null, $scope.pager, true).then(setCurrentTrackedEntityListData);
+            }
+
         }
 
         var setCurrentTrackedEntityList = function(type, config, data){
@@ -213,60 +223,67 @@ trackerCapture.controller('SelectionController',function(
     
 
 
-        var fetchTeis = function(){
+        var fetchTeis = function(workingList){
             if($scope.currentTrackedEntityList){
-                if($scope.currentTrackedEntityList.type === trackedEntityListTypes.SEARCH){
-                    $scope.fetchTeisBySearch();
+                if($scope.currentTrackedEntityList.type === $scope.trackedEntityListTypes.CUSTOM){
+                    $scope.fetchCustomWorkingList();
+                }else{
+                    fetchWorkingList();
                 }
             }
         }
 
-        $scope.search = function(searchMode){
-            var searchConfig = {
-                searchMode: searchMode,
-                queryUrl: "", 
+        $scope.setCustomWorkingList = function(){
+            var customConfig = {
+                queryUrl: "",
                 programUrl: "", 
                 attributeUrl: { url: null, hasValue: false }, 
-                ouMode: $scope.advancedSearchValues.ouMode && searchMode === $scope.searchModes.ATTRIBUTEBASED ? $scope.advancedSearchValues.ouMode : ouModes[2],
-                orgUnit: $scope.advancedSearchValues.orgUnit && searchMode === $scope.searchModes.ATTRIBUTEBASED ? $scope.advancedSearchValues.orgUnit : $scope.selectedOrgUnit,
+                ouMode: $scope.customWorkingListValues.ouMode,
+                orgUnit: $scope.selectedOrgUnit,
             };
-            var grid = TEIGridService.generateGridColumnsForSearch(userGridColumns[$scope.parent.selectedProgram.id], $scope.attributes, searchConfig.ouMode, true);
+            var grid = TEIGridService.generateGridColumnsForSearch(userGridColumns[$scope.parent.selectedProgram.id], $scope.attributes, customConfig.ouMode, true);
             $scope.gridColumns = grid.columns;
 
             if($scope.parent.selectedProgram){
-                searchConfig.programUrl = 'program=' + $scope.parent.selectedProgram.id;
-            }
-
-            if(searchMode == $scope.searchModes.FREETEXT){
-                if(!$scope.searchValues.searchText){
-                    $scope.emptySearchText = true;
-                    return;
-                }
-                searchConfig.queryUrl = 'query=LIKE:' + $scope.searchValues.searchText;
-            }else if(searchMode == $scope.searchModes.ATTRIBUTEBASED){
-                searchConfig.attributeUrl = EntityQueryFactory.getAttributesQuery($scope.advancedSearchValues.attributes, $scope.advancedSearchValues.enrollment);
-                if(!searchConfig.attributeUrl.hasValue) {
-                    $scope.emptySearchAttribute = true;
-                    return;
+                customConfig.programUrl = 'program=' + $scope.parent.selectedProgram.id;
+                if($scope.customWorkingListValues.programStatus){
+                    customConfig.programUrl += "&programStatus="+$scope.customWorkingListValues.programStatus;
                 }
             }
+            customConfig.attributeUrl = EntityQueryFactory.getAttributesQuery($scope.customWorkingListValues.attributes, $scope.customWorkingListValues.enrollment);
 
-            setCurrentTrackedEntityList(trackedEntityListTypes.SEARCH, searchConfig, null);
-            $scope.fetchTeisBySearch(searchConfig);
+            setCurrentTrackedEntityList($scope.trackedEntityListTypes.CUSTOM, customConfig, null);
+            $scope.emptyCustomWorkingListValues = false;
+            if(!customConfig.attributeUrl.hasValue) {
+                $scope.emptyCustomWorkingListValues = true;
+                return;
+            }
+            $scope.fetchCustomWorkingList(customConfig);
+        }
+
+        var getOrderUrl = function(urlToExtend){
+            if($scope.currentTrackedEntityList.sortColumn){
+                var sortColumn = $scope.currentTrackedEntityList.sortColumn;
+                if(urlToExtend){
+                    return urlToExtend += "&order="+sortColumn.id+':'+sortColumn.direction;
+                }
+                return "order="+sortColumn.id+":"+sortColumn.direction;
+            }
+
         }
 
 
-        $scope.fetchTeisBySearch = function(){
-            if(!$scope.currentTrackedEntityList.type == trackedEntityListTypes.SEARCH) return;
-            var searchConfig = $scope.currentTrackedEntityList.config;
+        $scope.fetchCustomWorkingList= function(){
+            if(!$scope.currentTrackedEntityList.type == $scope.trackedEntityListTypes.CUSTOM) return;
+            var customConfig = $scope.currentTrackedEntityList.config;
             var sortColumn = $scope.currentTrackedEntityList.sortColumn;
             $scope.currentTrackedEntityList.loading = true;
-            searchConfig.queryAndSortUrl = searchConfig.queryUrl;
+            customConfig.queryAndSortUrl = customConfig.queryUrl;
             if(sortColumn){
                 var order = '&order=' + sortColumn.id + ':' +sortColumn.direction;
-                searchConfig.queryAndSortUrl = searchConfig.queryAndSortUrl.concat(order);
+                customConfig.queryAndSortUrl = customConfig.queryAndSortUrl.concat(order);
             }
-            TEIService.search(searchConfig.orgUnit.id,searchConfig.ouMode.name, searchConfig.queryAndSortUrl, searchConfig.programUrl, searchConfig.attributeUrl, $scope.pager, true)
+            TEIService.search(customConfig.orgUnit.id,customConfig.ouMode.name, customConfig.queryAndSortUrl, customConfig.programUrl, customConfig.attributeUrl.url, $scope.pager, true)
             .then(setCurrentTrackedEntityListData);
         }
 
@@ -380,7 +397,7 @@ trackerCapture.controller('SelectionController',function(
 
         $scope.getExportList = function (format) {
             var deferred = $q.defer();
-            if($scope.currentTrackedEntityList && $scope.currentTrackedEntityList.type === trackedEntityListTypes.SEARCH){
+            if($scope.currentTrackedEntityList){
                 var attrIdList = null;
                 var attrNamesList = [];
                 var attrNamesIdMap = {};
@@ -401,8 +418,14 @@ trackerCapture.controller('SelectionController',function(
                     }
                 });
                 
-                var searchConfig = $scope.currentTrackedEntityList.config;
-                TEIService.search(searchConfig.orgUnit.id,searchConfig.ouMode.name, searchConfig.queryAndSortUrl, searchConfig.programUrl, attrIdList, false, false, format,attrNamesList, attrNamesIdMap, optionSets).then(function(data){
+                var config = $scope.currentTrackedEntityList.config;
+                var promise;
+                if($scope.currentTrackedEntityList.type === $scope.trackedEntityListTypes.CUSTOM){
+                    promise = TEIService.search($scope.selectedOrgUnit.id, config.ouMode.name, config.queryAndSortUrl, config.programUrl, attrIdList, false, false, format, attrNamesList, attrNamesIdMap, optionSets);
+                }else{
+                    promise = TEIService.search($scope.selectedOrgUnit.id, ouModes[0].name, config.url,null, attrIdList, false, false,format, attrNamesList, attrNamesIdMap,optionSets);
+                }
+                promise.then(function(data){
                     if (data && data.metaData && data.metaData.pager) setPager(data.metaData.pager);
     
                     var fileName = "trackedEntityList." + format;// any file name with any extension
@@ -463,8 +486,7 @@ trackerCapture.controller('SelectionController',function(
             var frontPageData = {
                 program: $scope.parent.selectedProgram,
                 trackedEntityList: $scope.currentTrackedEntityList,
-                advancedSearchValues: $scope.advancedSearchValues,
-                searchValues: $scope.searchValues,
+                customWorkingListValues: $scope.customWorkingListValues,
                 gridColumns: $scope.gridColumns,
                 selectedOrgUnit: $scope.selectedOrgUnit,
                 pager: $scope.pager

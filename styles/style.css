@@ -2302,3 +2302,7 @@ button.list-group-item-danger.active:focus {
 .hide-clear .ui-datepicker-cmd-clear {
     display: none;
 }
+.custom-working-list-container{
+    margin: 0;
+    min-width: 300px;
+}
