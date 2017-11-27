@@ -340,7 +340,6 @@ trackerCapture.controller('RegistrationController',
                         }
 
                         EnrollmentService.enroll(enrollment).then(function (enrollmentResponse) {
-                            $scope.model.savingRegistration = false;
                             if(enrollmentResponse) {
                                 var en = enrollmentResponse.response && enrollmentResponse.response.importSummaries &&
                                 enrollmentResponse.response.importSummaries[0] ? enrollmentResponse.response.importSummaries[0] : {};
@@ -363,6 +362,7 @@ trackerCapture.controller('RegistrationController',
                                     return;
                                 }
                             }
+                            $scope.model.savingRegistration = false;
                         });
                     }
                     else {
