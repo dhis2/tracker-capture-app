@@ -39,6 +39,7 @@ import '../components/profile/profile-controller.js';
 import '../components/notes/notes-controller.js';
 import '../components/rulebound/rulebound-controller.js';
 import '../components/messaging/messaging-controller.js';
+import '../components/topbar/topbar-controller.js';
 
 import L from 'leaflet';
 import 'leaflet-geocoder-mapzen';
@@ -102,5 +103,5 @@ angular.module('trackerCapture')
     });
 
     $rootScope.maxGridColumnSize = 1;
-    $rootScope.maxOptionSize = 30;
+    $rootScope.maxOptionSize = 100;
 });

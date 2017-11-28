@@ -12,6 +12,10 @@
                 <td>
                     <input type="checkbox" ng-model="widget.show" ng-change="closeOpenWidget(widget)">
                 </td>
+                <td>
+                    
+                    <span ng-if="defaultDashboardWidgetsByTitle[widget.title].canBeUsedAsTopBar"><input type="checkbox" ng-model="widget.useAsTopBar" ng-change="setUseAsTopBar(widget)"/> Use as top bar</span>
+                </td>
             </tr>
         </table>
     </div>        

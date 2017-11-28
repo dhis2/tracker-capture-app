@@ -37,7 +37,7 @@ trackerCapture.controller('DataEntryController',
     $scope.printForm = false;
     $scope.printEmptyForm = false;
     $scope.eventPageSize = 4;
-    $scope.maxOptionSize = 30;
+    $scope.maxOptionSize = 100;
     $scope.eventPagingStart = 0;
     $scope.eventPagingEnd = $scope.eventPageSize;
     $scope.showAttributeCategoryOptions = false;
@@ -247,9 +247,7 @@ trackerCapture.controller('DataEntryController',
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
         if (!affectedEvent || !affectedEvent.event) {
-            //The data entry widget does not have an event selected. 
-            //Therefore applying rule effects from registration instead.
-            affectedEvent = 'registration';
+            //The data entry widget does not have an event selected.
             return;
         }
         else if(event === 'registration' || event === 'dataEntryInit') {
@@ -258,14 +256,13 @@ trackerCapture.controller('DataEntryController',
            return;
         }
 
-        //In most cases the updated effects apply to the current event. In case the affected event is not the current event, fetch the correct event to affect:
         if (event !== affectedEvent.event) {
-            angular.forEach($scope.allEventsSorted, function (searchedEvent) {
-                if (searchedEvent.event === event) {
-                    affectedEvent = searchedEvent;
-                }
-            });
+            //if the current event is not the same as the affected event, 
+            //the effecs should be disregarded in the current events controller instance.
+            $log.warn("Event " + event + " was not found in the current scope.");
+            return;
         }
+
 
         $scope.assignedFields[event] = [];
         $scope.hiddenSections[event] = [];
@@ -307,7 +304,9 @@ trackerCapture.controller('DataEntryController',
                     
                 }
                 else {
-                    $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEFIELD, bot does not have a dataelement defined");
+                    if(!effect.trackedEntityAttribute) {
+                        $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEFIELD, bot does not have a field defined");                        
+                    }
                 }
             } else if (effect.action === "SHOWERROR" 
                     || effect.action === "ERRORONCOMPLETE") {
@@ -703,6 +702,8 @@ trackerCapture.controller('DataEntryController',
                 if ($scope.selectedOrgUnit.reportDateRange) {
                     if ($scope.selectedOrgUnit.reportDateRange.minDate) {
                         $scope.model.minDate = $scope.selectedOrgUnit.reportDateRange.minDate;
+                        //minDate is in Georgian format, but maxDate is not. This Service converts the date.
+                        $scope.model.minDate = DateUtils.formatFromApiToUserCalendar($scope.model.minDate);
                     }
                     if ($scope.selectedOrgUnit.reportDateRange.maxDate) {
                         $scope.model.maxDate = $scope.selectedOrgUnit.reportDateRange.maxDate;

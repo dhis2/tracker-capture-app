@@ -111,12 +111,12 @@
         <script src="../dhis-web-core-resource/lodash/4.15.0/lodash.min.js"></script>
         <script src="../dhis-web-core-resource/lodash-functional/1.0.1/lodash-functional.js"></script>
         <script src="../dhis-web-core-resource/babel-polyfill/6.20.0/dist/polyfill.min.js"></script>
-        <script src="../dhis-web-core-resource/d2-ui/28.0.2/dist/header-bar.js"></script>
+        <script src="../dhis-web-core-resource/d2-ui/28.0.3/dist/header-bar.js"></script>
         
         <script>
             // Needs to be wrapped in jQuery to be sure the DOM is parsed as the script is not at the bottom.
             jQuery(function () {
-                Dhis2HeaderBar.initHeaderBar(document.querySelector('#header'), undefined, { noLoadingIndicator: true });
+                Dhis2HeaderBar.initHeaderBar(document.querySelector('#header'), '../api', { noLoadingIndicator: true });
             });
         </script>
         

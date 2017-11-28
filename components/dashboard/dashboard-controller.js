@@ -11,6 +11,7 @@ trackerCapture.controller('DashboardController',
             $filter,
             $translate,
             $q,
+            $templateCache,
             TCStorageService,
             orderByFilter,
             SessionStorageService,
@@ -30,7 +31,7 @@ trackerCapture.controller('DashboardController',
     
     //selections
     var orgUnitUrl = ($location.search()).ou;
-    
+    $scope.topBarConfig = {};
     $scope.displayEnrollment = false;
     $scope.dataEntryMainMenuItemSelected = false;    
     $scope.metaDataCached = false;
@@ -71,7 +72,6 @@ trackerCapture.controller('DashboardController',
             $scope.selectedOrgUnit = orgUnit;
             $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
             $scope.sortedTeiIds = CurrentSelection.getSortedTeiIds();
-            $scope.useTopBar = false;
             $scope.showSettingsButton = true;
             $scope.topbarClass = $scope.showSettingsButton ? "dashboard-info-box-sm" : "dashboard-info-box-lg";
             $scope.topbarRightSizeClass = $scope.showSettingsButton ? "dashboard-info-btn-right-two-buttons" : "dashboard-info-btn-right-one-button";
@@ -233,14 +233,24 @@ trackerCapture.controller('DashboardController',
     
     //dashboard items
     var getDashboardLayout = function () {
+        $scope.topBarConfig.settings = {};
+        $rootScope.defaultDashboardWidgetsByTitle = {};
         $rootScope.dashboardWidgets = [];
         $scope.widgetsChanged = [];
         $scope.dashboardStatus = [];
         $scope.dashboardWidgetsOrder = {biggerWidgets: [], smallerWidgets: []};
         $scope.orderChanged = false;
+        
+        DashboardLayoutService.getLockedList().then(function(r){
+            if(!r || r === '') {
+                $scope.lockedList = {};
+            } else {
+                $scope.lockedList = r;                
+            }
+        });
 
         DashboardLayoutService.get().then(function (response) {
-            $scope.dashboardLayouts = response;            
+            $scope.dashboardLayouts = response;
             var defaultLayout = $scope.dashboardLayouts.defaultLayout['DEFAULT'];
             var selectedLayout = null;
             if ($scope.selectedProgram && $scope.selectedProgram.id) {
@@ -248,8 +258,12 @@ trackerCapture.controller('DashboardController',
             }
             selectedLayout = !selectedLayout ? defaultLayout : selectedLayout;
 
+            if($scope.lockedList[$scope.selectedProgram.id]) {
+                selectedLayout = $scope.dashboardLayouts.defaultLayout[$scope.selectedProgram.id] ? $scope.dashboardLayouts.defaultLayout[$scope.selectedProgram.id] : defaultLayout;
+            }
+            
             $scope.model.stickyDisabled = selectedLayout.stickRightSide ? !selectedLayout.stickRightSide : true;
-
+            
             angular.forEach(selectedLayout.widgets, function (widget) {
                 if (widget.title !== "activePrograms") {
                     $rootScope[widget.title + 'Widget'] = widget;
@@ -264,7 +278,14 @@ trackerCapture.controller('DashboardController',
                     $rootScope.dashboardWidgets.push($rootScope[w.title + 'Widget']);
                     $scope.dashboardStatus[w.title] = angular.copy(w);
                 }
+                $rootScope.defaultDashboardWidgetsByTitle[w.title] = w;
             });
+
+            if(selectedLayout.topBarSettings){
+                $scope.topBarConfig.settings = selectedLayout.topBarSettings;
+            }else{
+                selectedLayout.topBarSettings = $scope.topBarConfig.settings;
+            }
 
             $scope.hasBigger = false;
             angular.forEach(orderByFilter($filter('filter')($scope.dashboardWidgets, {parent: "biggerWidget"}), 'order'), function (w) {
@@ -287,6 +308,15 @@ trackerCapture.controller('DashboardController',
             setInactiveMessage();
         });
     };
+
+    $rootScope.getWidget = function(widgetTitle){
+        var result = $.grep($rootScope.dashboardWidgets, function(widget)
+        { 
+            return widget.title === widgetTitle;
+        });
+        if(result.length > 0) return result[0];
+        return null;
+    }
 
     var setWidgetsSize = function () {
 
@@ -344,7 +374,7 @@ trackerCapture.controller('DashboardController',
             widgets.push(w);
         });
 
-        return {widgets: widgets, program: $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT'};
+        return {widgets: widgets, topBarSettings: $scope.topBarConfig.settings, program: $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT'};
     }
 
     function saveDashboardLayout() {
@@ -373,6 +403,17 @@ trackerCapture.controller('DashboardController',
         layout[programId] = getCurrentDashboardLayout();
         delete layout.DEFAULT;
         DashboardLayoutService.saveLayout(layout, true);
+    };
+
+    $scope.toggleLockDashboard = function () {
+        $scope.lockedList[$scope.selectedProgram.id] = !$scope.lockedList[$scope.selectedProgram.id];
+
+        if($scope.selectedProgram && $scope.selectedProgram.id) {
+            DashboardLayoutService.saveLockedList($scope.lockedList);
+        } else {
+            alert("No program selected.");
+        }
+
     };
 
     //persist widget sorting
@@ -554,8 +595,20 @@ trackerCapture.controller('DashboardController',
     };
 
     $scope.removeWidget = function (widget) {
-        widget.show = false;
-        saveDashboardLayout();
+        var modalOptions = {
+            closeButtonText: 'no',
+            actionButtonText: 'yes',
+            headerText: 'remove_widget',
+            bodyText: 'remove_widget_info'
+        };
+
+        ModalService.showModal({}, modalOptions).then(function (result) {
+            widget.show = false;
+            saveDashboardLayout();
+
+        }, function () {
+
+        });
     };
 
     $scope.expandCollapse = function (widget) {
@@ -576,6 +629,21 @@ trackerCapture.controller('DashboardController',
     $rootScope.closeOpenWidget = function () {
         saveDashboardLayout();
     };
+
+    $rootScope.getCurrentWidget = function(scope){
+        var widgetLoaderScope = scope.$parent.$parent;
+        if(widgetLoaderScope.biggerWidget) return widgetLoaderScope.biggerWidget;
+        if(widgetLoaderScope.smallerWidget) return widgetLoaderScope.smallerWidget;
+        return null;
+    }
+
+    $scope.openTopBarSettings = function(){
+        $scope.topBarConfig.openSettings().then(function(topBarSettings){
+            $scope.topBarConfig.settings = topBarSettings;
+
+            saveDashboardLayout();
+        });
+    }
 
     $scope.fetchTei = function (mode) {
         var current = $scope.sortedTeiIds.indexOf($scope.selectedTeiId);
