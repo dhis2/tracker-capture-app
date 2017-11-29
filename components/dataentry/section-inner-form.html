@@ -205,7 +205,8 @@
                      time-save-methode-parameter2="innerForm.foo"
                      time-use-notification="true"
                      time-element="currentElement"
-                     time-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false">
+                     time-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false"
+                     time-format="prStDes[de.id].dataElement.attributeValues[0].value">
             </d2-time>
         </div>
         <div ng-switch-when="DATETIME">
