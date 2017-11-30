@@ -222,7 +222,8 @@
                           datetime-element="currentElement"
                           datetime-disable-popup="true"
                           datetime-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false"
-                          datetime-outerform="outerDataEntryForm">
+                          datetime-outerform="outerDataEntryForm"
+                          time-format="prStDes[de.id].dataElement.attributeValues[0].value">
             </d2-date-time>
         </div>
         <div ng-switch-when="TRUE_ONLY">
