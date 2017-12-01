@@ -429,6 +429,22 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
 
             return def.promise;
+        },
+        extendWithSearchGroups: function(programs, attributesById){
+            angular.forEach(programs, function(program){
+                var searchGroups = [];
+                var group = { attributes: []};
+                if(program.programAttributes){
+                    angular.forEach(program.attributes, function(programAttribute){
+                        var attr = attributesById[programAttribute.attribute];
+                        if(attr.unique){
+                            searchGroups.push({ attributes: [teAttribute]});
+                        }else if(programAttribute.searchable){
+                            group.attributes.push(programAttribute);
+                        }
+                    });
+                }
+            });
         }
     };
 })
@@ -614,7 +630,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service for getting tracked entity */
-.factory('TEService', function(TCStorageService, $q, $rootScope) {
+.factory('TEService', function(TCStorageService, $q, $rootScope, AttributesFactory) {
 
     return {
         getAll: function(){
@@ -640,6 +656,24 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 });
             });
             return def.promise;
+        },
+        extendWithSearchGroups: function(trackedEntities, attributesById){
+            angular.forEach(trackedEntities, function(te){
+                var searchGroups = [];
+                var group = { attributes: []};
+                if(te.attributes){
+                    angular.forEach(te.attributes, function(teAttribute){
+                        var attr = attributesById[teAttribute.attribute];
+                        var searchAttribute = teAttribute;
+                        searchAttribute.attribute = angular.copy(attr);
+                        if(attr.unique){
+                            searchGroups.push({ attributes: [searchAttribute]});
+                        }else if(searchAttribute.searchable){
+                            group.attributes.push(searchAttribute);
+                        }
+                    });
+                }
+            });
         }
     };
 })

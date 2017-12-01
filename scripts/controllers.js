@@ -25,7 +25,8 @@ trackerCapture.controller('SelectionController',function(
         var userGridColumns = null;
         var optionSets = null;
         var defaultCustomWorkingListValues = { ouMode: ouModes[0], programStatus: ""};
-
+        
+        $scope.pager = {};
         $scope.trackedEntityListTypes = { CUSTOM: "CUSTOM", WORKINGLIST: "WORKINGLIST"};
         $scope.listExportFormats = ["XML","JSON","CSV"];
         $scope.parent = { };
@@ -41,16 +42,6 @@ trackerCapture.controller('SelectionController',function(
                 });
             });
         });
-
-        var setPager = function(pager){
-            $scope.pager = pager;
-            $scope.pager.toolBarDisplay = 5;
-    
-            Paginator.setPage($scope.pager.page);
-            Paginator.setPageCount($scope.pager.pageCount);
-            Paginator.setPageSize($scope.pager.pageSize);
-            Paginator.setItemCount($scope.pager.total);
-        }
 
         $scope.$watch('selectedOrgUnit', function() {
             if( angular.isObject($scope.selectedOrgUnit)){
@@ -106,17 +97,12 @@ trackerCapture.controller('SelectionController',function(
             return resolvedEmptyPromise();
 
         }
-        var loadPrograms = function(){
-            return ProgramFactory.getProgramsByOu($scope.selectedOrgUnit, previousProgram).then(function(response){
-                $scope.programs = response.programs;
-                $scope.parent.selectedProgram = $scope.selectedProgram = response.selectedProgram;
-            });
-        }
+
         
         var loadWorkingLists = function(){
             return ProgramWorkingListService.getConfigs($scope.selectedProgram).then(function(programWorkingLists)
             {
-                $scope.programWorkingLists = programWorkingLists;
+                $scope.selectedProgram.workingLists = programWorkingLists;
             });
         }
 
@@ -215,7 +201,7 @@ trackerCapture.controller('SelectionController',function(
         }
 
         var setCurrentTrackedEntityListData = function(serverResponse){
-            if (serverResponse && serverResponse.metaData && serverResponse.metaData.pager) setPager(serverResponse.metaData.pager);
+            if (serverResponse && serverResponse.metaData && serverResponse.metaData.pager) $scope.pager = serverResponse.metaData.pager;
             $scope.currentTrackedEntityList.data = TEIGridService.format($scope.selectedOrgUnit.id, serverResponse, false, optionSets, null);
             $scope.currentTrackedEntityList.loading = false;
             updateCurrentSelection();
@@ -426,7 +412,7 @@ trackerCapture.controller('SelectionController',function(
                     promise = TEIService.search($scope.selectedOrgUnit.id, ouModes[0].name, config.url,null, attrIdList, false, false,format, attrNamesList, attrNamesIdMap,optionSets);
                 }
                 promise.then(function(data){
-                    if (data && data.metaData && data.metaData.pager) setPager(data.metaData.pager);
+                    if (data && data.metaData && data.metaData.pager) $scope.pager = data.metaData.pager);
     
                     var fileName = "trackedEntityList." + format;// any file name with any extension
                     var a = document.createElement('a');
@@ -453,7 +439,9 @@ trackerCapture.controller('SelectionController',function(
         $scope.setProgram = function(selectedProgram){
             reset();
             $scope.parent.selectedProgram = $scope.selectedProgram = selectedProgram;
-            loadAttributes().then(loadAttributesByProgram);
+            loadAttributes()
+            .then(loadAttributesByProgram)
+            .then(loadWorkingLists);
             if($scope.parent.selectedProgram) $scope.gridColumns = userGridColumns[selectedProgram.id];
         }
 

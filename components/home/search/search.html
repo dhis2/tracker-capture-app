@@ -1,0 +1,187 @@
+<div ng-controller="SearchController" class="col-lg-4 col-md-6 col-sm-10">
+    <h2>Search for tracked entity instance</h2>
+    <form class="form-horizontal search-tei-form">
+        <div class="form-group" >
+            <label class="col-xs-4 control-label" for="trackedEntityTypeSelect">{{'entity_type'| translate}}</label>
+            <div class="col-xs-8">
+                <select class="form-control"
+                    name="trackedEntityTypeSelect"
+                    ng-model="trackedEntityTypes.selected"
+                    ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.all | orderBy: 'displayName'"
+                    ng-change="setTrackedEntityType()"
+                    >
+                </select>  
+            </div>
+        </div>
+    </form>
+
+    {{searchGroupsById[trackedEntityTypes.selected.id]}}
+    <form class="form-horizontal search-tei-form"  ng-if="trackedEntityTypes.selected" ng-repeat="searchGroup in searchGroups">
+        <div class="form-group" ng-repeat="searchAttribute in searchGroup.attributes">
+            <label class=" col-xs-4 control-label" for="{{searchAttribute.attribute}}">{{attribute.displayName}}</label>
+            <div class="col-xs-8" ng-switch="searchAttribute.attribute.valueType">
+                <span ng-switch-when="DATE">
+                    <input type="text"
+                            placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control"
+                            d2-date
+                            d2-date-validator
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+                <span ng-switch-when="DATETIME">
+                    <d2-date-time datetime-model="searchGroup"
+                                    datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                                    datetime-model-id="searchAttribute.attribute.id"
+                                    datetime-max-date="searchAttribute.attribute.allowFutureDate ? '' : 0"
+                                    datetime-required="searchAttribute.mandatory">
+                    </d2-date-time>
+                </span>
+                <span ng-switch-when="TIME">
+                    <d2-time time-model="searchGroup"
+                                    time-model-id="searchAttribute.attribute.id"
+                                    time-required="searchAttribute.mandatory">
+                    </d2-time>
+                </span>
+                <span ng-switch-when="TRUE_ONLY">
+                    <input type="checkbox" 
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control-checkbox"
+                            ng-model="searchGroup[searchAttribute.attribute.id]" 
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+                <span ng-switch-when="BOOLEAN" class="form-control">
+                    <span class="hideInPrint">
+                        <d2-radio-button
+                            dh-required="searchAttribute.mandatory"
+                            dh-value="searchGroup[searchAttribute.attribute.id]">
+                        </d2-radio-button>
+                    </span>
+                    <span class="not-for-screen">
+                        <label class="radio-inline"><input type="radio" value="true" ng-model="searchGroup[searchAttribute.attribute.id]">{{'yes' | translate}}</label>
+                        <label class="radio-inline"><input type="radio" value="false" ng-model="searchGroup[searchAttribute.attribute.id]" >{{'no' | translate}}</label>
+                    </span>
+                </span>                    
+                <span ng-switch-when="NUMBER">
+                    <input type="number"
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control"
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            d2-number-validator 
+                            number-type={{searchAttribute.attribute.valueType}}
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+                <span ng-switch-when="PERCENTAGE">
+                    <input type="number"
+                            name="{{searchAttribute.attribute.id}}"
+                            class="form-control"
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            d2-number-validator
+                            number-type={{attribute.valueType}}
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+                <span ng-switch-when="INTEGER_POSITIVE">
+                    <input type="number"
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control"
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            d2-number-validator 
+                            number-type={{attribute.valueType}} 
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+                <span ng-switch-when="INTEGER_NEGATIVE">
+                    <input type="number"
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control"
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            d2-number-validator 
+                            number-type={{attribute.valueType}} 
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+                <span ng-switch-when="INTEGER_ZERO_OR_POSITIVE">
+                    <input type="number"
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control"
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            d2-number-validator 
+                            number-type={{attribute.valueType}}
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+                <span ng-switch-when="INTEGER">
+                    <input type="number"
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control"
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            d2-number-validator 
+                            number-type={{attribute.valueType}} 
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+                <span ng-switch-when="AGE">
+                    <d2-age name="{{searchAttribute.attribute.id}}" 
+                        id="{{searchAttribute.attribute.id}}"                             
+                        d2-object="searchGroup" 
+                        d2-required="searchAttribute.mandatory"
+                        >
+                    </d2-age>
+                </span>
+                <span ng-switch-when="EMAIL">
+                    <input type="email"
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control"
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+                <span ng-switch-when="URL">
+                    <input type="url"
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control"
+                            d2-url-validator
+                            placeholder="{{'url_format' | translate}}"
+                            ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+                <span ng-switch-when="LONG_TEXT">
+                    <textarea row="3"
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control"
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            ng-required="searchAttribute.mandatory">
+                    </textarea>
+                </span>
+                <span ng-switch-when="COORDINATE">
+                    <d2-map id="{{searchAttribute.attribute.id}}"
+                            name="{{searchAttribute.attribute.id}}" 
+                            d2-object="searchGroup" 
+                            d2-coordinate-format="'TEXT'"
+                            d2-value="searchGroup[searchAttribute.attribute.id]"
+                            d2-required="searchAttribute.mandatory"
+                            d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                            >                            
+                    </d2-map>                        
+                </span>
+                <span ng-switch-when="TEXT">
+                    <input type="text"
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control"
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+                <span ng-switch-when="PHONE_NUMBER">
+                    <input type="text"
+                            name="{{searchAttribute.attribute.id}}" 
+                            class="form-control"
+                            ng-model="searchGroup[searchAttribute.attribute.id]"
+                            ng-required="searchAttribute.mandatory"/>
+                </span>
+            </div>
+        </div>
+        <div class="form-group search-tei-form-button">
+            <div class="col-md-12">
+                <button class="btn btn-default pull-right" ng-click="search(searchGroup)"><span class="fa fa-search-plus"></span></button>
+            </div>
+
+        </div>
+    </form>
+</div>

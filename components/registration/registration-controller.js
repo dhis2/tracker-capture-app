@@ -485,9 +485,24 @@ trackerCapture.controller('RegistrationController',
     };
 
     $scope.teiValueUpdated = function (tei, field) {
-        $scope.executeRules();
+        searchForMatchingTeis(tei.field)
+        .then($scope.executeRules);
     };
 
+
+    var searchForMatchingTeis = function(tei, field){
+        var def = $q.defer();
+        if(field.triggersDuplicateSearch)
+        {
+            if(field.unique){
+                // search for field duplicates
+            }else{
+                //search for matching teis
+            }
+        }
+        def.resolve();
+        return def.promise;
+    }
 
     $scope.saveDataValueForRadio = function(field, context, value){
         if(field.dataElement) {
@@ -497,8 +512,10 @@ trackerCapture.controller('RegistrationController',
         else {
             //The saveDataValueForRadio was called from the registration controller. Update the selected TEI:
             context[field.id] = value;
+            searchForMatchingTeis(context, field)
+            .then($scope.executeRules);
+            return;
         }
-
         $scope.executeRules();
     }
 
