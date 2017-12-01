@@ -21,6 +21,10 @@ trackerCapture.controller('UpcomingEventsController',
     $scope.displayMode = {};
     $scope.printMode = false;
     $scope.model = {};
+
+    //Placeholder till there is a settings flag for toggling time formats (12h/24h).
+    $scope.timeFormat = '';
+
     //get optionsets
     $scope.optionSets = CurrentSelection.getOptionSets();
     if(!$scope.optionSets){

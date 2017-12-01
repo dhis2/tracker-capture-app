@@ -46,6 +46,9 @@ trackerCapture.controller('RegistrationController',
     var flag = {debug: true, verbose: false};
     $rootScope.ruleeffects = {};
 
+    //Placeholder till there is a settings flag for toggling time formats (12h/24h).
+    $scope.timeFormat = '';
+
     $scope.attributesById = CurrentSelection.getAttributesById();
 
     if(!$scope.attributesById){

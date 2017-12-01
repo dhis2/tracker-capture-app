@@ -67,6 +67,9 @@ trackerCapture.controller('DataEntryController',
     $scope.showSelf = true;
     $scope.orgUnitNames = {};
     $scope.originalDate = '';
+
+    //Placeholder till there is a settings flag for toggling time formats (12h/24h).
+    $scope.timeFormat = '';    
     
     var eventLockEnabled = false;
     var eventLockHours = 8; //Number of hours before event is locked after completing.

@@ -206,7 +206,7 @@
                      time-use-notification="true"
                      time-element="currentElement"
                      time-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false"
-                     time-format="prStDes[de.id].dataElement.attributeValues[0].value">
+                     time-format="timeFormat">
             </d2-time>
         </div>
         <div ng-switch-when="DATETIME">
@@ -223,7 +223,7 @@
                           datetime-disable-popup="true"
                           datetime-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id] ? true : false"
                           datetime-outerform="outerDataEntryForm"
-                          time-format="prStDes[de.id].dataElement.attributeValues[0].value">
+                          time-format="timeFormat">
             </d2-date-time>
         </div>
         <div ng-switch-when="TRUE_ONLY">

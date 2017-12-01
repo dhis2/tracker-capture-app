@@ -22,6 +22,9 @@ trackerCapture.controller('OverdueEventsController',
     $scope.displayMode = {};
     $scope.printMode = false;
     $scope.model = {};
+
+    //Placeholder till there is a settings flag for toggling time formats (12h/24h).
+    $scope.timeFormat = '';
     
     
     //get optionsets

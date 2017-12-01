@@ -79,7 +79,8 @@
                                       datetime-save-methode-parameter1="selectedTei"
                                       datetime-save-methode-parameter2="attribute.id"
                                       datetime-use-notification="false"
-                                      datetime-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute) ? true : false">
+                                      datetime-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute) ? true : false"
+                                      time-format="timeFormat">
                         </d2-date-time>
                     </span>
                     <span ng-switch-when="TIME">
@@ -90,7 +91,8 @@
                                       time-save-methode-parameter1="selectedTei"
                                       time-save-methode-parameter2="attribute.id"
                                       time-use-notification="false"
-                                      time-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute) ? true : false">
+                                      time-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute) ? true : false"
+                                      time-format="timeFormat">
                         </d2-time>
                     </span>
                     <span ng-switch-when="TRUE_ONLY">

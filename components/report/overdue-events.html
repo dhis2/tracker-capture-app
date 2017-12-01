@@ -196,7 +196,8 @@
                                                               datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                                                               datetime-save-methode="searchInGrid"
                                                               datetime-save-methode-parameter1="gridColumn"
-                                                              datetime-disable-popup="true">
+                                                              datetime-disable-popup="true"
+                                                              time-format="timeFormat">
                                                 </d2-date-time>
                                             </span>
                                             <span ng-switch-when="TIME">
@@ -204,7 +205,8 @@
                                                          time-model-id="gridColumn.id"
                                                          time-save-methode="searchInGrid"
                                                          time-save-methode-parameter1="gridColumn"
-                                                         time-disable-popup="true">
+                                                         time-disable-popup="true"
+                                                         time-format="timeFormat">
                                                 </d2-time>
                                             </span>
                                             <span ng-switch-default>
