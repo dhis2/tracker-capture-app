@@ -151,7 +151,7 @@ function($rootScope,
             if (newOrgUnitSelected) {
                 $scope.savedTeis = null;
             } else {
-                $scope.savedTeis = CurrentSelection.getTrackedEntities();
+                $scope.savedTeis = CurrentSelection.getTrackedEntityTypes();
             }
 
             if(!$scope.attributesById){
@@ -547,7 +547,7 @@ function($rootScope,
                     showTrackedEntityDiv: $scope.showTrackedEntityDiv,
                     reverse: $scope.reverse
                 });
-                CurrentSelection.setTrackedEntities($scope.trackedEntityList);
+                CurrentSelection.setTrackedEntityTypes($scope.trackedEntityList);
                 $scope.fileNames = CurrentSelection.getFileNames();
                 $scope.orgUnitNames = CurrentSelection.getOrgUnitNames();
             });

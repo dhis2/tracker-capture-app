@@ -14,9 +14,9 @@
                     </td>
                     <td>
                         <select class="form-control" 
-                                ng-model="trackedEntities.selected" 
-                                ng-disabled="selectedAttribute && selectedAttribute.trackedEntity"
-                                ng-options="trackedEntity.displayName for trackedEntity in trackedEntities.available | orderBy: 'displayName'">                                
+                                ng-model="trackedEntityTypes.selected" 
+                                ng-disabled="selectedAttribute && selectedAttribute.trackedEntityType"
+                                ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.available | orderBy: 'displayName'">                                
                         </select>                            
                     </td>
                 </tr>                   

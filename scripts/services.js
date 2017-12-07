@@ -10,7 +10,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     var store = new dhis2.storage.Store({
         name: "dhis2tc",
         adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],
-        objectStores: ['programs', 'trackedEntities', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements']
+        objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements']
     });
     return{
         currentStore: store
@@ -643,7 +643,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var def = $q.defer();
 
             TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll('trackedEntities').done(function(entities){
+                TCStorageService.currentStore.getAll('trackedEntityTypes').done(function(entities){
                     $rootScope.$apply(function(){
                         def.resolve(entities);
                     });
@@ -655,7 +655,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var def = $q.defer();
 
             TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.get('trackedEntities', uid).done(function(te){
+                TCStorageService.currentStore.get('trackedEntityTypes', uid).done(function(te){
                     $rootScope.$apply(function(){
                         def.resolve(te);
                     });

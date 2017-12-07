@@ -142,8 +142,8 @@ trackerCapture.controller('DashboardController',
                                 $scope.selectedTei = response;
 
                                 //get the entity type
-                                TEService.get($scope.selectedTei.trackedEntity).then(function (te) {
-                                    $scope.trackedEntity = te;
+                                TEService.get($scope.selectedTei.trackedEntityType).then(function (te) {
+                                    $scope.trackedEntityType = te;
 
                                     //get enrollments for the selected tei
                                     EnrollmentService.getByEntity($scope.selectedTeiId).then(function (response) {
@@ -176,7 +176,7 @@ trackerCapture.controller('DashboardController',
 
                                             //get programs valid for the selected ou and tei
                                             angular.forEach(programs, function (program) {
-                                                if (program.trackedEntity && program.trackedEntity.id === $scope.selectedTei.trackedEntity) {
+                                                if (program.trackedEntityType && program.trackedEntityType.id === $scope.selectedTei.trackedEntityType) {
                                                     $scope.programs.push(program);
                                                     $scope.programNames[program.id] = {
                                                         id: program.id,
@@ -208,7 +208,7 @@ trackerCapture.controller('DashboardController',
                                                 CurrentSelection.setSelectedTeiEvents(events);
                                                 CurrentSelection.set({
                                                     tei: $scope.selectedTei,
-                                                    te: $scope.trackedEntity,
+                                                    te: $scope.trackedEntityType,
                                                     prs: $scope.programs,
                                                     pr: $scope.selectedProgram,
                                                     prNames: $scope.programNames,
@@ -333,7 +333,7 @@ trackerCapture.controller('DashboardController',
 
     var setInactiveMessage = function () {
         if ($scope.selectedTei.inactive) {
-            var teName = $scope.trackedEntity && $scope.trackedEntity.displayName ? $scope.trackedEntity.displayName : $translate.instance('tracked_entity_instance');
+            var teName = $scope.trackedEntityType && $scope.trackedEntityType.displayName ? $scope.trackedEntityType.displayName : $translate.instance('tracked_entity_instance');
             setHeaderDelayMessage(teName + " " + $translate.instant('tei_inactive_only_read'));
         }
     };
@@ -486,7 +486,7 @@ trackerCapture.controller('DashboardController',
             $scope.selectedTei = selections.tei;
         }
 
-        $scope.trackedEntity = selections.te;
+        $scope.trackedEntityType = selections.te;
         $scope.optionSets = selections.optionSets;
         $scope.selectedEnrollment = null;
 
@@ -501,7 +501,7 @@ trackerCapture.controller('DashboardController',
 
         CurrentSelection.set({
             tei: $scope.selectedTei,
-            te: $scope.trackedEntity,
+            te: $scope.trackedEntityType,
             prs: $scope.programs,
             pr: $scope.selectedProgram,
             prNames: $scope.programNames,
@@ -542,13 +542,13 @@ trackerCapture.controller('DashboardController',
             closeButtonText: 'no',
             actionButtonText: 'yes',
             headerText: 'delete',
-            bodyText: $translate.instant('are_you_sure_to_proceed') + ' ' + $translate.instant('will_delete_all_data_associated') + ' ' + $scope.trackedEntity.displayName
+            bodyText: $translate.instant('are_you_sure_to_proceed') + ' ' + $translate.instant('will_delete_all_data_associated') + ' ' + $scope.trackedEntityType.displayName
         };
         
         ModalService.showModal({}, modalOptions).then(function (result) {
             TEIService.delete($scope.selectedTeiId).then(function (response) {
                 if( !response ){
-                    var teis = CurrentSelection.getTrackedEntities();                
+                    var teis = CurrentSelection.getTrackedEntityTypes();                
                     if( teis && teis.rows && teis.rows.own && teis.rows.own.length > 0 ){
                         var index = -1;
                         for( var i=0; i<teis.rows.own.length && index === -1; i++ ){
@@ -559,11 +559,11 @@ trackerCapture.controller('DashboardController',
 
                         if( index !== -1 ){
                             teis.rows.own.splice(index, 1);
-                            CurrentSelection.setTrackedEntities(teis);
+                            CurrentSelection.setTrackedEntityTypes(teis);
                         }
                     }
                     
-                    NotificationService.showNotifcationDialog($translate.instant('success'), $scope.trackedEntity.displayName + ' ' + $translate.instant('deleted'));                
+                    NotificationService.showNotifcationDialog($translate.instant('success'), $scope.trackedEntityType.displayName + ' ' + $translate.instant('deleted'));                
                     $scope.back();
                 }
                 
