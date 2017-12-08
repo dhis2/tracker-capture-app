@@ -549,12 +549,14 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
         templateUrl: 'views/tei-list.html',
         scope: {
             data: "=teiData",
-            pager: "=teiPager",
-            sortColumn: "=teiSortColumn",
-            gridColumns: "=teiGridColumns",
+            pager: "=?teiPager",
+            sortColumn: "=?teiSortColumn",
+            gridColumns: "=?teiGridColumns",
             refetchData: "&teiRefetchData",
             onTeiClicked: "&onTeiClicked"
         },
+
+        
         controller: function($scope, Paginator){
             $scope.$watch("pager", function(){
                 if($scope.pager){
@@ -564,6 +566,21 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                     Paginator.setItemCount($scope.pager.total);
                 }
             });
+
+            $scope.$watch("data", function(){
+                setGridColumns();
+            });
+
+            var setGridColumns = function(){
+                if($scope.data && !$scope.gridColumns){
+                    $scope.gridColumns = $scope.data.headers;
+                    angular.forEach($scope.gridColumns, function(g){
+                        g.show = true;
+                    });
+                }
+            }
+
+            setGridColumns();
 
             $scope.sortGrid = function(gridHeader){
                 if ($scope.sortColumn && $scope.sortColumn.id === gridHeader.id){

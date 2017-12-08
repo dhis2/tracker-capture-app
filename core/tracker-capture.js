@@ -361,6 +361,7 @@ function getBatchPrograms( programs, batch )
                     });
                 }
 
+
                 dhis2.tc.store.set( 'programs', program );
             });
         }

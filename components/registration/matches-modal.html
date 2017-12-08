@@ -1,0 +1,17 @@
+
+
+<div class="modal-header page">
+        <h3>{{'Matching tracked entity instances'| translate}}</h3>
+    </div>
+    <div class="modal-body page">   
+        <tracker-tei-list
+            tei-data="gridData" 
+            on-tei-clicked="openTei(tei)"
+        >
+        </tracker-tei-list>
+    </div>
+    <div class="modal-footer page">        
+        <button class="btn btn-default" data-ng-click="cancel()">{{'back'| translate}}</button>
+        <button type="button" ng-if="allowRegistration" class="btn btn-primary" ng-click="register('DASHBOARD')">{{'save_and_continue'| translate}}</button>
+        <button type="button" ng-if="allowRegistration" class="btn btn-success"  ng-click="register('SELF')">{{'save_and_add_new'| translate}}</button>
+</div> 

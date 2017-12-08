@@ -1,0 +1,13 @@
+<div class="modal-header page">
+    <h3>{{'Duplicate tracked entity instance'| translate}}</h3>
+</div>
+<div class="modal-body page">   
+    <tracker-tei-list
+        tei-data="gridData"
+    >
+    </tracker-tei-list>
+</div>
+<div class="modal-footer page">        
+    <button class="btn btn-default" data-ng-click="cancel()">{{'back'| translate}}</button>
+    <button type="button" class="btn btn-primary" ng-click="openTei(gridData.rows.own[0])">{{'Open'| translate}}</button>
+</div> 

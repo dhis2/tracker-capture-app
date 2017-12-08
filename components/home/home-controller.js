@@ -27,17 +27,20 @@ trackerCapture.controller('HomeController',function(
             {
                 name: "Lists",
                 template: "../components/home/lists/lists.html",
-                class: "col-xs-12"
+                class: "col-xs-12",
+                shouldReset: true
             },
             {
                 name: "Search",
                 template: "../components/home/search/search.html",
                 class: "",
+                shouldReset: true
             },
             {
                 name: "Register",
                 template: "../components/registration/registration.html",
-                class: "col-lg-6 col-md-8",
+                class: "col-lg-8 col-md-10",
+                shouldReset: false,
                 onPostLoad: function(){
                     $rootScope.$broadcast('registrationWidget', {registrationMode: 'REGISTRATION'});
                }
@@ -63,6 +66,10 @@ trackerCapture.controller('HomeController',function(
         });
 
         var resetView = function(){
+            var loaded = $.grep($scope.views, function(v){ return !v.shouldReset && v.loaded;});
+            angular.forEach(loaded, function(v){
+                v.loaded = false;
+            });
             if($scope.currentView){
                 $scope.currentView = null;
                 $timeout(function(){ $scope.setCurrentView($scope.views[0]);});
@@ -101,10 +108,10 @@ trackerCapture.controller('HomeController',function(
 
         var loadOptionSets = function(){
             if(!$scope.base.optionSets){
-                $scope.base.optionSets = {};
+                $scope.base.optionSets = $scope.optionSets = {};
                 return MetaDataFactory.getAll('optionSets').then(function(optSets){
                     angular.forEach(optSets, function(optionSet){
-                        $scope.base.optionSets[optionSet.id] = optionSet;
+                        $scope.base.optionSets[optionSet.id] = $scope.optionSets[optionSet.id] = optionSet;
                     });
                     CurrentSelection.setOptionSets($scope.base.optionSets);
                 });
@@ -130,11 +137,26 @@ trackerCapture.controller('HomeController',function(
                     $scope.currentView.onSelected();
                 }
             }
+            if(!view.shouldReset){
+                view.loaded = true;
+            }
+
+        }
+
+        $scope.goToRegistrationWithData = function(registrationPrefill){
+            var regView = $scope.views[2];
+            regView.loaded = false;
+            //Using timeout to make view reset
+            $timeout(function(){
+                $scope.registrationPrefill = registrationPrefill;
+                $scope.setCurrentView(regView);
+            });
 
         }
         $scope.$on('$includeContentLoaded', function(event, target){
             if($scope.currentView && $scope.currentView.template === target){
                 if($scope.currentView.onPostLoad) $scope.currentView.onPostLoad();
+
             }
           });
 

@@ -970,11 +970,62 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             if(pAttribute.renderOptionsAsRadio){
                                 att.renderOptionsAsRadio = pAttribute.renderOptionsAsRadio;
                             }
+                            att.searchable = true;
+                            /*
+                            if(pAttribute.searchable)
+                            {
+                                att.searchable = pAttribute.searchable;
+                            }*/
                             programAttributes.push(att);
                         }
                     });
 
                     def.resolve(programAttributes);
+                }
+                else{
+                    var attributes = [];
+                    angular.forEach(atts, function(attribute){
+                        if (attribute.displayInListNoProgram) {
+                            attributes.push(attribute);
+                        }
+                    });
+
+                    attributes = orderByFilter(attributes, '-sortOrderInListNoProgram').reverse();
+                    def.resolve(attributes);
+                }
+            });
+            return def.promise;
+        },
+        getByTrackedEntityType: function(trackedEntityType){
+            var def = $q.defer();
+            this.getAll().then(function(atts){
+
+                if(trackedEntityType && trackedEntityType.id){
+                    var attributes = [];
+                    var trackedEntityTypeAttributes = [];
+                    angular.forEach(atts, function(attribute){
+                        attributes[attribute.id] = attribute;
+                    });
+
+                    angular.forEach(trackedEntityType.trackedEntityTypeAttributes, function(teAttribute){
+                        var att = attributes[teAttribute.trackedEntityAttribute.id];
+                        if (att) {
+                            att.mandatory = teAttribute.mandatory;
+                            if (teAttribute.displayInList) {
+                                att.displayInListNoProgram = true;
+                            }
+                            if(teAttribute.renderOptionsAsRadio){
+                                att.renderOptionsAsRadio = teAttribute.renderOptionsAsRadio;
+                            }
+                            if(teAttribute.searchable)
+                            {
+                                att.searchable = teAttribute.searchable;
+                            }
+                            trackedEntityTypeAttributes.push(att);
+                        }
+                    });
+
+                    def.resolve(trackedEntityTypeAttributes);
                 }
                 else{
                     var attributes = [];
@@ -2269,5 +2320,197 @@ i
 
     this.setTrackedEntityList = function(trackedEntityList){
         this.trackedEntityList = trackedEntityList;
+    }
+})
+.service("SearchGroupService", function(TEIService, $q, OperatorFactory, AttributesFactory){
+    var programSearchConfigsById = {};
+    var trackedEntityTypeSearchConfigsById = {};
+    var defaultOperators = OperatorFactory.defaultOperators;
+
+    var makeSearchConfig = function(dimensionAttributes, requiredNumberOfSetAttributes){
+        var searchConfig = { searchGroups: [], searchGroupsByAttributeId: {}};
+        if(dimensionAttributes){
+            var defaultSearchGroup = { attributes: []};
+            var attributes = AttributesFactory.generateAttributeFilters(angular.copy(dimensionAttributes));
+            angular.forEach(attributes, function(attr){
+                if(attr.unique){
+                    if(attr.valueType === "TEXT") attr.operator = "Eq";
+                    var uniqueSearchGroup = {
+                        uniqueGroup: true,
+                        attributes: [attr]
+                    }
+                    searchConfig.searchGroups.push(uniqueSearchGroup);
+                    searchConfig.searchGroupsByAttributeId[attr.id] = uniqueSearchGroup;
+                }else if(attr.searchable){
+                    if(attr.optionSetValue && attr.valueType === "TEXT") attr.operator = "Eq";
+                    defaultSearchGroup.attributes.push(attr);
+                    searchConfig.searchGroupsByAttributeId[attr.id] = defaultSearchGroup;
+                }
+            });
+            if(defaultSearchGroup.attributes.length !== 0){
+                defaultSearchGroup.requiredNumberOfSetAttributes = requiredNumberOfSetAttributes;
+                searchConfig.searchGroups.push(defaultSearchGroup);
+            }
+        }
+        return searchConfig;
+    }
+    this.getSearchConfigForProgram = function(program) {
+        var def = $q.defer();
+        if(!programSearchConfigsById[program.id]){
+            return AttributesFactory.getByProgram(program).then(function(attributes)
+            {
+                var searchConfig = makeSearchConfig(attributes, 1);
+                programSearchConfigsById[program.id] = searchConfig;
+                def.resolve(angular.copy(searchConfig));
+                return def.promise;
+            });
+        }
+        def.resolve(angular.copy(programSearchConfigsById[program.id]));
+        return def.promise;
+    }
+    this.getSearchConfigForTrackedEntityType = function(trackedEntityType,mapSearchGroupsToAttributes){
+        var def = $q.defer();
+        if(!trackedEntityTypeSearchConfigsById[trackedEntityType.id]){
+            return AttributesFactory.getByTrackedEntityType(trackedEntityType).then(function(attributes)
+            {
+                var searchConfig = makeSearchConfig(attributes, 1);
+                trackedEntityTypeSearchConfigsById[trackedEntityType.id] = searchConfig;
+                def.resolve(angular.copy(searchConfig));
+                return def.promise;
+            });
+        }
+        def.resolve(angular.copy(trackedEntityTypeSearchConfigsById[trackedEntityType.id]));
+        return def.promise;
+    }
+
+    this.search = function(searchGroup, program, orgUnit){
+        var uniqueSearch = false;
+        var numberOfSetAttributes = 0;
+        var query = {url: null, hasValue: false};
+        if(searchGroup){
+            angular.forEach(searchGroup.attributes, function(attr){
+                if(attr.unique) uniqueSearch = true;
+                if(attr.valueType === 'DATE' || attr.valueType === 'NUMBER' || attr.valueType === 'DATETIME'){
+                    var q = '';
+    
+                    if(attr.operator === OperatorFactory.defaultOperators[0]){
+                        var exactValue = searchGroup[attr.id] ? searchGroup[attr.id].exactValue : null;
+                        if(exactValue == null) exactValue = searchGroup[attr.id];
+
+
+                        if(exactValue && exactValue !== ''){
+                            query.hasValue = true;
+                            if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
+                                exactValue = DateUtils.formatFromUserToApi(exactValue);
+                            }
+                            if(attr.valueType === 'DATETIME') {
+                                q += 'LIKE:' + exactValue + ':';
+                            } else {
+                                q += 'EQ:' + exactValue + ':';
+                            }
+                            numberOfSetAttributes++;
+                        }
+                    }
+                    if(attr.operator === OperatorFactory.defaultOperators[1]){
+                        var startValue =  searchGroup[attr.id] ? searchGroup[attr.id].startValue : null;
+                        var endDate = searchGroup[attr.id] ? searchGroup[attr.id].endValue : null;
+                        if(startValue && startValue !== ''){
+                            query.hasValue = true;
+                            if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
+                                startValue = DateUtils.formatFromUserToApi(startValue);
+                            }
+                            q += 'GT:' + startValue + ':';
+                        }
+                        if(endValue && endValue !== ''){
+                            query.hasValue = true;
+                            if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
+                                endValue = DateUtils.formatFromUserToApi(endValue);
+                            }
+                            q += 'LT:' + endValue + ':';
+                        }
+                    }
+                    if(query.url){
+                        if(q){
+                            numberOfSetAttributes++;
+                            q = q.substr(0,q.length-1);
+                            query.url = query.url + '&filter=' + attr.id + ':' + q;
+                        }
+                    }
+                    else{
+                        if(q){
+                            numberOfSetAttributes++;
+                            q = q.substr(0,q.length-1);
+                            query.url = 'filter=' + attr.id + ':' + q;
+                        }
+                    }
+                }
+                else{
+                    var value = searchGroup[attr.id] ? searchGroup[attr.id].value : null;
+                    if(value == null) value = searchGroup[attr.id];
+                    if(value && value !== ''){
+                        query.hasValue = true;
+    
+                        if(angular.isArray(value)){
+                            var q = '';
+                            angular.forEach(value, function(val){
+                                q += val + ';';
+                            });
+    
+                            q = q.substr(0,q.length-1);
+    
+                            if(query.url){
+                                if(q){
+                                    numberOfSetAttributes++;
+                                    query.url = query.url + '&filter=' + attr.id + ':IN:' + q;
+                                }
+                            }
+                            else{
+                                if(q){
+                                    numberOfSetAttributes++;
+                                    query.url = 'filter=' + attr.id + ':IN:' + q;
+                                }
+                            }
+                        }
+                        else{
+                            if(query.url){
+                                numberOfSetAttributes++;
+                                if(attr.operator === "Eq"){
+                                    query.url = query.url + '&filter=' + attr.id + ':EQ:' + value;
+                                }else{
+                                    query.url = query.url + '&filter=' + attr.id + ':LIKE:' + value;
+                                }
+                                
+                            }
+                            else{
+                                numberOfSetAttributes++;
+                                if(attr.operator === "Eq"){
+                                    query.url = 'filter=' + attr.id + ':EQ:' + value;
+                                }else{
+                                    query.url = 'filter=' + attr.id + ':LIKE:' + value;
+                                }
+                                
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.requiredNumberOfSetAttributes)){
+            var programUrl = "";
+            if(program) programUrl = "program="+program.id;
+            return TEIService.search(orgUnit.id, 'ALL',null, programUrl, query.url, null, false).then(function(response){
+                if(response && response.rows && response.rows.length > 0){
+                    if(uniqueSearch) return { status: "UNIQUE", data: response };
+                    return { status: "MATCHES", data: response };
+                }
+                return { status: "NOMATCH"};
+            });
+        }else{
+            var def = $q.defer();
+            def.resolve({status: "NOMATCH"});
+            return def.promise;
+        }
+
     }
 });

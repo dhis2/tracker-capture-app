@@ -3,6 +3,7 @@
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RegistrationController', 
         function($rootScope,
+                $q,
                 $scope,
                 $location,
                 $timeout,
@@ -26,7 +27,8 @@ trackerCapture.controller('RegistrationController',
                 TrackerRulesFactory,
                 TrackerRulesExecutionService,
                 TCStorageService,
-                ModalService) {
+                ModalService,
+                SearchGroupService) {
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
     $scope.customRegistrationForm = null;    
@@ -124,6 +126,28 @@ trackerCapture.controller('RegistrationController',
         }
     };
 
+    var setSearchConfig = function(){
+        var promise = null;
+        if($scope.selectedProgram){
+            promise = SearchGroupService.getSearchConfigForProgram($scope.selectedProgram);
+        }else if($scope.trackedEntities && $scope.trackedEntities.selected){
+            promise = SearchGroupService.getSearchConfigForTrackedEntity($socpe.trackedEntities.selected);
+        }
+        if(promise){
+            promise.then(function(searchConfig){
+                $scope.searchConfig = searchConfig;
+                if($scope.searchConfig){
+                    for(var key in $scope.selectedTei){
+                        if($scope.attributesById[key]){
+                            var group = $scope.searchConfig.searchGroupsByAttributeId[key];
+                            if(group) group[key] = $scope.selectedTei[key];
+                        }
+                    }
+                }
+            });
+        }
+        return promise;
+    }
     //watch for selection of program
     $scope.$watch('selectedProgram', function (newValue, oldValue) {
         if (newValue !== oldValue) {
@@ -133,6 +157,8 @@ trackerCapture.controller('RegistrationController',
                 $scope.getAttributes($scope.registrationMode);
             }
         }
+        setSearchConfig();
+
         $scope.model.minEnrollmentDate = "";
         $scope.model.maxEnrollmentDate =  ($scope.selectedProgram && $scope.selectedProgram.selectEnrollmentDatesInFuture) ? '' : "0";
         if ($scope.selectedOrgUnit.reportDateRange) {
@@ -157,9 +183,28 @@ trackerCapture.controller('RegistrationController',
         if ($scope.registrationMode !== 'REGISTRATION') {
             $scope.selectedTei = args.selectedTei;
             $scope.tei = angular.copy(args.selectedTei);
+
+            
+        }
+
+        if($scope.registrationMode === 'REGISTRATION'){
+            if($scope.registrationPrefill && !$scope.registrationPrefill.finished){
+                for(var key in $scope.registrationPrefill){
+                    if($scope.attributesById[key]){
+                        $scope.tei[key] = $scope.selectedTei[key] = $scope.registrationPrefill[key];
+                        if($scope.searchConfig){
+                            var group = $scope.searchConfig.searchGroupsByAttributeId[key];
+                            if(group) group[key] = $scope.registrationPrefill[key];
+                        }
+                    }
+                }
+                $scope.registrationPrefill.finished = true;
+            }
+
         }
 
         $scope.teiOriginal = angular.copy($scope.tei);
+        $scope.teiPreviousValues = angular.copy($scope.tei);
 
         if ($scope.registrationMode === 'PROFILE') {
             $scope.selectedEnrollment = args.enrollment ? args.enrollment : {};
@@ -485,38 +530,60 @@ trackerCapture.controller('RegistrationController',
     };
 
     $scope.teiValueUpdated = function (tei, field) {
-        searchForMatchingTeis(tei.field)
-        .then($scope.executeRules);
+        searchForExistingTeis(tei,field)
+        .then(function()
+        {
+            $scope.teiPreviousValues[field] = tei[field];
+            return $scope.executeRules();
+        }, function(){
+            $scope.teiPreviousValues[field] = tei[field];
+            return;
+        });
     };
 
-
-    var searchForMatchingTeis = function(tei, field){
-        var def = $q.defer();
-        if(field.triggersDuplicateSearch)
-        {
-            if(field.unique){
-                // search for field duplicates
-            }else{
-                //search for matching teis
+    var searchForExistingTeis = function(tei, field){
+        var searchGroup = $scope.searchConfig.searchGroupsByAttributeId[field];
+        if(searchGroup) searchGroup[field] = tei[field];
+        return SearchGroupService.search(searchGroup, $scope.selectedProgram, $scope.selectedOrgUnit).then(function(res){
+            if(res.status === "NOMATCH"){
+                $scope.matchingTeis = [];
+                return;
             }
-        }
-        def.resolve();
-        return def.promise;
+            if(res.status === "MATCHES" && $scope.registrationMode === "REGISTRATION"){
+                $scope.matchingTeis = res.data;
+            }
+            if(res.status === "UNIQUE"){
+                return showDuplicateModal(res.data);
+            }
+
+        });
     }
 
     $scope.saveDataValueForRadio = function(field, context, value){
+        var def = null;
         if(field.dataElement) {
             //The saveDataValueForRadio was called from the dataentry template. Update dataelement og current event:
             context[field.dataElement.id] = value;
+            def = $q.defer();
+            def.resolve();
         }
         else {
             //The saveDataValueForRadio was called from the registration controller. Update the selected TEI:
+
             context[field.id] = value;
-            searchForMatchingTeis(context, field)
-            .then($scope.executeRules);
-            return;
+            def = searchForExistingTeis(context, field.id).then(function()
+            {
+                $scope.teiPreviousValues[field.id] = context[field.id];
+            }, function(){
+                $scope.teiPreviousValues[field.id] = context[field.id];
+            });
         }
-        $scope.executeRules();
+        def.then(function()
+        {
+            return $scope.executeRules();
+        }, function(){
+            return;
+        });
     }
 
     //listen for rule effect changes
@@ -618,6 +685,85 @@ trackerCapture.controller('RegistrationController',
             cancelFunction();
         }
     };
+
+    $scope.showMatchesModal = function(allowRegistration){
+        return $modal.open({
+            templateUrl: 'components/registration/matches-modal.html',
+            controller: function($scope,$modalInstance, TEIGridService,orgUnit, data,allowRegistration)
+            {
+                $scope.allowRegistration = allowRegistration;
+                $scope.gridData = TEIGridService.format(orgUnit.id, data, false, null, null);
+                
+                $scope.openTei = function(){
+                    $modalInstance.close({ action: "OPENTEI", tei: tei});
+                }
+                $scope.register = function(destination){
+                    $modalInstance.close({ action: "REGISTERTEI", destination: destination});
+                }
+                $scope.cancel = function(){
+                    $modalInstance.close({ action: "CANCEL"});
+                }
+            },
+            resolve: {
+                orgUnit: function(){
+                    return $scope.selectedOrgUnit;
+                },
+                data: function(){
+                    return $scope.matchingTeis;
+                },
+                allowRegistration: function(){
+                    return allowRegistration;
+                }
+            }
+        }).result.then(function(res){
+            if(res.action === "OPENTEI"){
+                openTei(res.tei);
+            }else if(res.action === "REGISTERTEI"){
+                $scope.registerEntity(res.destination);
+            }
+        });
+    }
+
+    var showDuplicateModal = function(duplicateTei){
+        return $modal.open({
+            templateUrl: 'components/registration/duplicate-modal.html',
+            controller: function($scope,$modalInstance, TEIGridService,orgUnit, data)
+            {
+                $scope.gridData = TEIGridService.format(orgUnit.id, data, false, null, null);
+
+                $scope.openTei = function(tei){
+                    $modalInstance.close({ action: "OPENTEI", tei: tei});
+                }
+                $scope.cancel = function(){
+                    $modalInstance.close({ action: "CANCEL"});
+                }
+            },
+            resolve: {
+                orgUnit: function(){
+                    return $scope.selectedOrgUnit;
+                },
+                data: function(){
+                    return duplicateTei;
+                }
+            }
+        }).result.then(function(res){
+            var def = $q.defer();
+            if(res.action === "OPENTEI"){
+                def.resolve();
+                openTei(res.tei);
+                return def.promise;
+            }else{
+                def.reject();
+                return def.promise;
+            }
+        });
+    }
+
+    var openTei = function(tei){
+        $location.path('/dashboard').search({tei: tei.id,
+            program: $scope.selectedProgram ? $scope.selectedProgram.id: null,
+            ou: $scope.selectedOrgUnit.id});
+    }
 
     $scope.showAttributeMap = function (obj, id) {
         var lat = "",

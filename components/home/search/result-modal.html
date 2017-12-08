@@ -1,0 +1,29 @@
+<div class="modal-header page">
+        <h3>{{'Search_result'| translate}}</h3>
+    </div>
+    <div class="modal-body page">
+        <div ng-if="!gridData">
+            <span ng-if="!gridData">
+                No results found. Do you want to register a new tracked entity instance?
+            </span>
+        </div>
+        <div ng-if="gridData && !isUnique">
+                <tracker-tei-list
+                    tei-data="gridData"
+                    on-tei-clicked="openTei(tei)"
+            >
+            </tracker-tei-list>
+        </div>
+        <div ng-if="gridData && isUnique">
+                <tracker-tei-list
+                    tei-data="gridData"
+            >
+            </tracker-tei-list>
+        </div>
+
+    </div>
+    <div class="modal-footer page">        
+        <button class="btn btn-default" data-ng-click="cancel()">{{'back'| translate}}</button>
+        <button type="button" class="btn btn-primary" ng-if="isUnique" ng-click="openTei(gridData.rows.own[0])">{{'open'| translate}}</button>
+        <button type="button" class="btn btn-primary" ng-if="!gridData || !isUnique" ng-click="openRegistration()">{{'go_to_registration'| translate}}</button>
+    </div> 
