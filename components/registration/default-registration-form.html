@@ -22,22 +22,16 @@
             <ng-form name="innerForm">
                 <span ng-if="attribute.optionSetValue" class="hideInPrint">
                     <span ng-if="!attribute.renderOptionsAsRadio || optionSets[attributesById[attribute.id].optionSet.id].options.length >= 7">
-                        <ui-select  ng-model="selectedTei[attribute.id]"
-                                    theme="select2"
-                                    ng-required="attribute.mandatory"
-                                    name="foo" 
-                                    d2-attribute-validator
-                                    attribute-data={{attribute}}
-                                    selected-program-id={{selectedProgram.id}}  
-                                    selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                                    ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
-                                    on-select="teiValueUpdated(selectedTei, attribute.id)"
-                                    class="ui-select-style">
-                            <ui-select-match allow-clear="true"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
-                            <ui-select-choices  repeat="option.displayName as option in optionSets[attributesById[attribute.id].optionSet.id].options | filter: $select.search | limitTo:maxOptionSize">
-                              <span ng-bind-html="option.displayName | highlight: $select.search"></span>
-                            </ui-select-choices>
-                        </ui-select>
+                        <d2-option-list d2-model="selectedTei"
+                                        d2-model-id="attribute.id"
+                                        d2-required="attribute.mandatory"
+                                        d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                                        d2-save-methode="teiValueUpdated"
+                                        d2-save-methode-parameter1="selectedTei"
+                                        d2-save-methode-parameter2="attribute.id"
+                                        d2-max-option-size="maxOptionSize"
+                                        d2-all-options="optionSets[attributesById[attribute.id].optionSet.id].options">
+                        </d2-option-list>
                     </span>
                     <span ng-if="attribute.renderOptionsAsRadio && optionSets[attributesById[attribute.id].optionSet.id].options.length < 7">
                         <d2-radio id="attribute.id" 
