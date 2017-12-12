@@ -2330,14 +2330,15 @@ i
     var makeSearchConfig = function(dimensionAttributes, requiredNumberOfSetAttributes){
         var searchConfig = { searchGroups: [], searchGroupsByAttributeId: {}};
         if(dimensionAttributes){
-            var defaultSearchGroup = { attributes: []};
+            var defaultSearchGroup = { attributes: [], ouMode: {name: 'ALL'}};
             var attributes = AttributesFactory.generateAttributeFilters(angular.copy(dimensionAttributes));
             angular.forEach(attributes, function(attr){
                 if(attr.unique){
                     if(attr.valueType === "TEXT") attr.operator = "Eq";
                     var uniqueSearchGroup = {
                         uniqueGroup: true,
-                        attributes: [attr]
+                        attributes: [attr],
+                        ouMode: {name: 'ALL'}
                     }
                     searchConfig.searchGroups.push(uniqueSearchGroup);
                     searchConfig.searchGroupsByAttributeId[attr.id] = uniqueSearchGroup;
@@ -2383,7 +2384,7 @@ i
         return def.promise;
     }
 
-    this.search = function(searchGroup, program, orgUnit){
+    this.search = function(searchGroup, program, orgUnit, pager){
         var uniqueSearch = false;
         var numberOfSetAttributes = 0;
         var query = {url: null, hasValue: false};
@@ -2499,7 +2500,8 @@ i
         if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.requiredNumberOfSetAttributes)){
             var programUrl = "";
             if(program) programUrl = "program="+program.id;
-            return TEIService.search(orgUnit.id, 'ALL',null, programUrl, query.url, null, false).then(function(response){
+            var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
+            return TEIService.search(searchOrgUnit.id, searchGroup.ouMode.name,null, programUrl, query.url, pager, true).then(function(response){
                 if(response && response.rows && response.rows.length > 0){
                     if(uniqueSearch) return { status: "UNIQUE", data: response };
                     return { status: "MATCHES", data: response };

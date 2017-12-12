@@ -2330,3 +2330,30 @@ button.list-group-item-danger.active:focus {
 .overflow-registration{
     overflow: auto;
 }
+.search-more-options-header{
+    cursor: pointer;
+    background-clip: content-box;
+    border-radius: 10px;
+}
+
+.search-more-options-header:hover{
+    background-color: #ebebeb;
+}
+.more-options-label{
+    font-style: italic;
+    font-weight: 540!important;
+}
+.modal-search-bottom-text{
+    display:inline-flex;
+    margin-right:10px;
+    margin-top:5px;
+}
+.modal-search-bottom-buttons{
+    display:inline-flex;
+    margin-left:auto;
+    max-height: 39px;
+}
+.modal-search-bottom{
+    text-align:unset;
+    display:flex;
+}

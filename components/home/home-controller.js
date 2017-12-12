@@ -19,7 +19,9 @@ trackerCapture.controller('HomeController',function(
     TEIGridService,
     TEIService,
     GridColumnService,
-    ProgramWorkingListService) {
+    ProgramWorkingListService,
+    TCStorageService,
+    orderByFilter) {
         var previousProgram = null;
         $scope.base = {};
 
@@ -47,15 +49,48 @@ trackerCapture.controller('HomeController',function(
             }
         ];
 
+        var ouLevels = CurrentSelection.getOuLevels();
+        if(!ouLevels){
+            TCStorageService.currentStore.open().done(function(){
+                TCStorageService.currentStore.getAll('ouLevels').done(function(response){
+                    ouLevels = angular.isObject(response) ? orderByFilter(response, '-level').reverse() : [];
+                    CurrentSelection.setOuLevels(orderByFilter(ouLevels, '-level').reverse());
+                    mapOuLevelsToId();
+                });
+            });
+        }else{
+            mapOuLevelsToId();
+        }
+
+        var mapOuLevelsToId = function(){
+            $scope.base.ouLevelsByLevel = {};
+            angular.forEach(ouLevels, function(ouLevel){
+                $scope.base.ouLevelsByLevel[ouLevel.level] = ouLevel;
+            })
+        }
+        
         OrgUnitFactory.getSearchTreeRoot().then(function(response) {
             $scope.orgUnits = response.organisationUnits;
+            $scope.base.orgUnitsById = {};
             angular.forEach($scope.orgUnits, function(ou){
+                mapOrgUnitToId(ou, $scope.base.orgUnitsById);
                 ou.show = true;
                 angular.forEach(ou.children, function(o){
                     o.hasChildren = o.children && o.children.length > 0 ? true : false;
                 });
             });
         });
+
+        var mapOrgUnitToId = function(orgUnit, obj){
+            if(orgUnit){
+                obj[orgUnit.id] = orgUnit;
+                if(orgUnit.children && orgUnit.children.length > 0){
+                    angular.forEach(orgUnit.children, function(child){
+                        mapOrgUnitToId(child, obj);
+                    });
+                }
+            }
+        }
 
         $scope.$watch('selectedOrgUnit', function() {
             if( angular.isObject($scope.selectedOrgUnit)){
@@ -99,6 +134,7 @@ trackerCapture.controller('HomeController',function(
             }
             return resolvedEmptyPromise();
         }
+
         
         var resolvedEmptyPromise = function(){
             var deferred = $q.defer();

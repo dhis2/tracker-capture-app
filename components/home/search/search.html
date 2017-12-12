@@ -96,9 +96,50 @@
                 </span>
             </div>
         </div>
-        <div class="form-group" ng-if="!searchGroup.uniqueGroup">
-            <label class=" col-xs-4 control-label">More options</label>
-            <span class="fa" ng-class="{  }"
+        <div class="form-group" ng-if="!searchGroup.uniqueGroup" style="margin-top: 10px; margin-bottom: 10px;">
+            <div class="col-xs-12 search-more-options-header" ng-click="searchGroup.moreOptionsOpen = !searchGroup.moreOptionsOpen" style="height:28px;line-height:28px;">
+                <label class=" col-xs-4 control-label" style="font-weight:bold!important;">More options</label>
+                <i class="pull-right" ng-class="{'fa fa-chevron-up vertical-center': searchGroup.moreOptionsOpen, 'fa fa-chevron-down vertical-center': !searchGroup.moreOptionsOpen}" style="padding-right:4px;"></i>
+            </div>
+            <div ng-show="searchGroup.moreOptionsOpen" class="col-xs-12" >
+                <div class="form-group">
+                    <label class=" col-xs-4 no-padding more-options-label control-label">{{'org_unit' | translate}}</label>
+                    <div class="col-xs-8 no-padding">
+                        <div style="margin-right:15px; margin-left:20px;margin-top:6px;">
+                            <script type="text/ng-template" id="orgUnitTree.html">
+                                <span class="org-unit-tree-button" ng-click="expandCollapseOrgUnitTree(orgUnit)" ng-show="orgUnit.show && orgUnit.children.length > 0"><i class="fa fa-minus-square-o"></i></span>
+                                <span class="org-unit-tree-button" ng-click="expandCollapseOrgUnitTree(orgUnit)" ng-show="(!orgUnit.show && orgUnit.children.length > 0) || (!orgUnit.show && orgUnit.hasChildren)"><i class="fa fa-plus-square-o"></i></span>
+                                <span class="org-unit-tree-button" ng-click="setSelectedOrgUnit(orgUnit, searchGroup)" ng-class="{'selected-org-unit' : orgUnit.id === searchGroup.orgUnit.id}">{{orgUnit.displayName}}</span>
+                                <ul class="tree" id="tree" ng-show="orgUnit.show">
+                                    <li ng-repeat="orgUnit in orgUnit.children | orderBy:'displayName'" ng-include="'orgUnitTree.html'"></li>
+                                </ul>
+                            </script>
+                            <ul class="tree" id="tree">
+                                <li ng-repeat="orgUnit in orgUnits | orderBy:'displayName'" ng-include="'orgUnitTree.html'"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-4 no-padding more-options-label control-label">{{'ou_search_scope'| translate}}</label>
+                    <div class="col-xs-8">
+                        <div class="radio">
+                            <label><input type="radio" ng-model="searchGroup.ouMode.name" name="all" value="ALL" ng-change="setOuModeAll(searchGroup)"> {{'ALL'| translate}}</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="searchGroup.ouMode.name" name="selected" value="SELECTED" ng-disabled="!searchGroup.orgUnit"> {{'SELECTED'| translate}}</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="searchGroup.ouMode.name" name="children" value="CHILDREN" ng-disabled="!searchGroup.orgUnit"> {{'CHILDREN'| translate}}</label>
+                        </div>
+                        <div class="radio disabled">
+                            <label><input type="radio" ng-model="searchGroup.ouMode.name" name="descendants" value="DESCENDANTS" ng-disabled="!searchGroup.orgUnit"> {{'DESCENDANTS'| translate}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--
             <accordion>
                 <accordion-group is-open="true">
                     <accordion-heading>
@@ -118,12 +159,12 @@
                         </ul>
                     </div>                      
                 </accordion-group> 
-            </accordion>
+            </accordion>-->
         </div>
 
         <div class="form-group search-tei-form-button">
             <div class="col-md-12 text-center" style="height:34px;line-height:34px;">
-                <span ng-class="{ 'error' : searchGroup.submitError}" ng-if="searchGroup.requiredNumberOfSetAttributes">Fill in at least {{searchGroup.requiredNumberOfSetAttributes}} {{searchGroup.requiredNumberOfSetAttributes === 1 ? 'attribute' : 'attributes'}} to search</span>
+                <span ng-class="{ 'error' : searchGroup.error}" ng-if="searchGroup.requiredNumberOfSetAttributes">Fill in at least {{searchGroup.requiredNumberOfSetAttributes}} {{searchGroup.requiredNumberOfSetAttributes === 1 ? 'attribute' : 'attributes'}} to search</span>
                 <button class="btn btn-default pull-right" ng-click="search(searchGroup)"><span class="fa fa-search-plus"></span></button>
             </div>
 

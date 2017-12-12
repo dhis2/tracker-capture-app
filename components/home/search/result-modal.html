@@ -1,16 +1,25 @@
 <div class="modal-header page">
-        <h3>{{'Search_result'| translate}}</h3>
+
+
+        <h3 ng-if="isUnique && gridData">{{translateWithTETName('tracked_entity_instance_unique_found_header')}}</h3>
+        <h3 ng-if="!isUnique && gridData">{{translateWithTETName('tracked_entity_instance_search_results_header')}}</h3>
+        <h3 ng-if="!gridData">{{translateWithTETName('no_tracked_entity_instance_found_header', true)}}</h3>
     </div>
     <div class="modal-body page">
         <div ng-if="!gridData">
             <span ng-if="!gridData">
-                No results found. Do you want to register a new tracked entity instance?
+                    {{translateWithTETName(translateWithTETName('no_tracked_entity_instance_found_description',true),true)}}
+            </span>
+            <span ng-if="tooManySearchResults">
+                    {{translateWithTETName('large_number_of_search_results_warning')}}
             </span>
         </div>
         <div ng-if="gridData && !isUnique">
                 <tracker-tei-list
                     tei-data="gridData"
                     on-tei-clicked="openTei(tei)"
+                    tei-refetch-data="refetchData(pager, sortColumn)"
+                    tei-pager="pager"
             >
             </tracker-tei-list>
         </div>
@@ -22,8 +31,18 @@
         </div>
 
     </div>
-    <div class="modal-footer page">        
-        <button class="btn btn-default" data-ng-click="cancel()">{{'back'| translate}}</button>
-        <button type="button" class="btn btn-primary" ng-if="isUnique" ng-click="openTei(gridData.rows.own[0])">{{'open'| translate}}</button>
-        <button type="button" class="btn btn-primary" ng-if="!gridData || !isUnique" ng-click="openRegistration()">{{'go_to_registration'| translate}}</button>
+    <div class="modal-footer page modal-search-bottom">   
+        <div class="modal-search-bottom-text">
+                <span ng-if="isUnique && gridData && !orgUnitLoading">
+                        {{translateWithOULevelName(translateWithTETName('tracked_entity_instance_unique_found_description', true), gridData.rows.own[0].orgUnit)}}
+                </span>
+                <span ng-if="!isUnique && gridData">
+                        {{translateWithTETName('tracked_entity_instance_search_matches_description', true)}}
+                </span>
+        </div>
+        <div class="modal-search-bottom-buttons">
+                <button class="btn btn-default" data-ng-click="cancel()">{{'back'| translate}}</button>
+                <button type="button" class="btn btn-primary" ng-if="isUnique" ng-click="openTei(gridData.rows.own[0])">{{'open'| translate}}</button>
+                <button type="button" class="btn btn-primary" ng-if="!gridData || !isUnique" ng-click="openRegistration()">{{'go_to_registration'| translate}}</button>
+        </div>
     </div> 
