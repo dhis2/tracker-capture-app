@@ -1,6 +1,6 @@
 <div ng-if="currentTrackedEntityList.data">
     <div class="alert alert-warning vertical-spacing" ng-if="currentTrackedEntityList.data.length === 0 || !currentTrackedEntityList.data.length">
-        {{'no'| translate}} {{parent.selectedProgram.trackedEntity.displayName|| 'records' | translate}} {{'found'| translate}}
+        {{'no'| translate}} {{parent.selectedProgram.trackedEntityType.displayName|| 'records' | translate}} {{'found'| translate}}
     </div>
 
     <div class="small-vertical-spacing" ng-if="currentTrackedEntityList.data.length > 0">
@@ -23,7 +23,7 @@
             <tbody id="list">
                 <tr ng-repeat="trackedEntity in currentTrackedEntityList.data.rows.own" 
                     ng-click="openTei(trackedEntity)"
-                    ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
+                    ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
                     title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
@@ -43,7 +43,7 @@
                 </tr>
                 <tr ng-repeat="trackedEntity in currentTrackedEntityList.data.rows.other" 
                     ng-click="openTei(trackedEntity)"
-                    ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
+                    ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
                     title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">

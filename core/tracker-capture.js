@@ -222,10 +222,7 @@ function getRelationships()
 function getTrackedEntityTypes()
 {
     dhis2.tc.store.getKeys('trackedEntityTypes').done(function(res){
-        if(res.length > 0){
-            return;
-        }        
-        return dhis2.tracker.getTrackerObjects('trackedEntityTypes', 'trackedEntityTypes', DHIS2URL + '/trackedEntityTypes.json', 'paging=false&fields=id,displayName', 'idb', dhis2.tc.store);
+        return dhis2.tracker.getTrackerObjects('trackedEntityTypes', 'trackedEntityTypes', DHIS2URL + '/trackedEntityTypes.json', 'paging=false&fields=id,displayName,trackedEntityTypeAttributes[*,trackedEntityAttribute[id,unique]]', 'idb', dhis2.tc.store);
     });    
 }
 

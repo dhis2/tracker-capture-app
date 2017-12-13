@@ -679,8 +679,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return def.promise;
         },
-        extendWithSearchGroups: function(trackedEntities, attributesById){
-            angular.forEach(trackedEntities, function(te){
+        extendWithSearchGroups: function(trackedEntityTypes, attributesById){
+            angular.forEach(trackedEntityTypes, function(te){
                 var searchGroups = [];
                 var group = { attributes: []};
                 if(te.attributes){

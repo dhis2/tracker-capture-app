@@ -130,8 +130,8 @@ trackerCapture.controller('RegistrationController',
         var promise = null;
         if($scope.selectedProgram){
             promise = SearchGroupService.getSearchConfigForProgram($scope.selectedProgram);
-        }else if($scope.trackedEntities && $scope.trackedEntities.selected){
-            promise = SearchGroupService.getSearchConfigForTrackedEntityType($scope.trackedEntities.selected);
+        }else if($scope.trackedEntityTypes && $scope.trackedEntityTypes.selected){
+            promise = SearchGroupService.getSearchConfigForTrackedEntityType($scope.trackedEntityTypes.selected);
         }
         if(promise){
             promise.then(function(searchConfig){
@@ -905,8 +905,8 @@ trackerCapture.controller('RegistrationController',
 
     $scope.translateWithTETName = function(text, nameToLower){
         var trackedEntityTypeName = $scope.selectedProgram ? 
-            $scope.selectedProgram.trackedEntity.displayName : 
-            ($scope.trackedEntities.selected ? $scope.trackedEntities.selected.displayName : "tracked entity instance");
+            $scope.selectedProgram.trackedEntityType.displayName : 
+            ($scope.trackedEntityTypes.selected ? $scope.trackedEntityTypes.selected.displayName : "tracked entity instance");
 
         if(nameToLower) trackedEntityTypeName = trackedEntityTypeName.toLowerCase();
         var translated = $translate.instant(text);

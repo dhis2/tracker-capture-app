@@ -94,7 +94,7 @@ trackerCapture.controller('SearchController',function(
 
         var translateWithTETName = function(text, nameToLower){
             var trackedEntityTypeName = $scope.base.selectedProgram ? 
-                $scope.base.selectedProgram.trackedEntity.displayName : 
+                $scope.base.selectedProgram.trackedEntityType.displayName : 
                 ($scope.trackedEntityTypes.selected ? $scope.trackedEntityTypes.selected.displayName : "tracked entity instance");
 
             if(nameToLower) trackedEntityTypeName = trackedEntityTypeName.toLowerCase();
