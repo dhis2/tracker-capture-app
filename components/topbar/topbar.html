@@ -1,0 +1,9 @@
+<div ng-controller="TopBarController">
+    <div class="dashboard-info-box" ng-if="topBarConfig.settings && topBarConfig.settings.active">
+        <ul class="list-inline-fullwidth">
+            <li ng-repeat="topBarValue in topBarValues | filter: topBarValuesFilter | orderBy: topBarValuesOrder">
+                {{topBarValue.name | trimquotes}} <span ng-if="topBarValue.value">: {{topBarValue.value | trimquotes}}</span>
+            </li>
+        </ul>
+    </div>
+</div>

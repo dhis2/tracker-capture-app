@@ -40,9 +40,9 @@
                         </td>
                         <td>
                             <select class="form-control" 
-                                    ng-model="trackedEntities.selected"
+                                    ng-model="trackedEntityTypes.selected"
                                     ng-disabled="selectedOrgUnit.closedStatus"
-                                    ng-options="trackedEntity.displayName for trackedEntity in trackedEntities.available | orderBy: 'displayName'">                                
+                                    ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.available | orderBy: 'displayName'">                                
                             </select>                            
                         </td>
                     </tr>                   

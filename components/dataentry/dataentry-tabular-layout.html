@@ -9,7 +9,7 @@
                 <span ng-show="dataentryTabularWidget.expand"><i class="fa fa-chevron-up vertical-center" title="{{collapseLabel}}"></i></span>
                 <span ng-show="!dataentryTabularWidget.expand"><i class="fa fa-chevron-down vertical-center" title="{{expandLabel}}"></i></span>
             </a>
-            <a class="small-horizontal-spacing" href ng-click="removeWidget(dataentryTabularWidget)" title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>
+            <a ng-show="userAuthority.canAdministerDashboard || !lockedList[selectedProgram.id]" class="small-horizontal-spacing" href ng-click="removeWidget(dataentryTabularWidget)" title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>
         </span>
     </div>
 

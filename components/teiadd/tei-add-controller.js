@@ -117,10 +117,10 @@ trackerCapture.controller('TEIAddController',
             $scope.addingTeiAssociate = true;
             ProgramFactory.getProgramsByOu($scope.selectedOrgUnit, $scope.selectedProgram).then(function (response) {
                 $scope.programs = response.programs;
-                if ($scope.selectedAttribute && $scope.selectedAttribute.trackedEntity && $scope.selectedAttribute.trackedEntity.id) {
+                if ($scope.selectedAttribute && $scope.selectedAttribute.trackedEntityType && $scope.selectedAttribute.trackedEntityType.id) {
                     $scope.programs = [];
                     angular.forEach(response.programs, function (pr) {
-                        if (pr.trackedEntity && pr.trackedEntity.id === $scope.selectedAttribute.trackedEntity.id) {
+                        if (pr.trackedEntityType && pr.trackedEntityType.id === $scope.selectedAttribute.trackedEntityType.id) {
                             $scope.programs.push(pr);
                         }
                     });
@@ -139,8 +139,8 @@ trackerCapture.controller('TEIAddController',
 
             CurrentSelection.setRelationshipOwner({});
 
-            if ($scope.selectedAttribute && $scope.selectedAttribute.trackedEntity && $scope.selectedAttribute.trackedEntity.id) {
-                $scope.selectedTrackedEntity = $scope.selectedAttribute.trackedEntity;
+            if ($scope.selectedAttribute && $scope.selectedAttribute.trackedEntityType && $scope.selectedAttribute.trackedEntityType.id) {
+                $scope.selectedTrackedEntity = $scope.selectedAttribute.trackedEntityType;
             }
         }
 
@@ -273,7 +273,7 @@ trackerCapture.controller('TEIAddController',
                     return;
                 }
 
-                //$scope.programUrl = 'trackedEntity=' + $scope.selectedTrackedEntity.id;
+                //$scope.programUrl = 'trackedEntityType=' + $scope.selectedTrackedEntity.id;
             }
 
             $scope.fetchTei();
@@ -627,10 +627,10 @@ trackerCapture.controller('TEIAddController',
         
     }); 
             
-    $scope.trackedEntities = {available: []};
+    $scope.trackedEntityTypes = {available: []};
     TEService.getAll().then(function(entities){
-        $scope.trackedEntities.available = entities;   
-        $scope.trackedEntities.selected = $scope.trackedEntities.available[0];
+        $scope.trackedEntityTypes.available = entities;   
+        $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.available[0];
     });
     
     $scope.registerEntity = function(){
@@ -643,15 +643,15 @@ trackerCapture.controller('TEIAddController',
         
         //form is valid, continue the registration
         //get selected entity
-        var selectedTrackedEntity = $scope.trackedEntities.selected.id; 
+        var selectedTrackedEntity = $scope.trackedEntityTypes.selected.id; 
         if($scope.selectedProgramForRelative){
-            selectedTrackedEntity = $scope.selectedProgramForRelative.trackedEntity.id;
+            selectedTrackedEntity = $scope.selectedProgramForRelative.trackedEntityType.id;
         }
         
         //get tei attributes and their values
         //but there could be a case where attributes are non-mandatory and
         //registration form comes empty, in this case enforce at least one value
-        $scope.selectedTei.trackedEntity = $scope.tei.trackedEntity = selectedTrackedEntity; 
+        $scope.selectedTei.trackedEntityType = $scope.tei.trackedEntityType = selectedTrackedEntity; 
         $scope.selectedTei.orgUnit = $scope.tei.orgUnit = $scope.selectedOrgUnit.id;
         $scope.selectedTei.attributes = $scope.tei.attributes = [];
         

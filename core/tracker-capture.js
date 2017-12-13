@@ -29,7 +29,7 @@ if( dhis2.tc.memoryOnly ) {
 dhis2.tc.store = new dhis2.storage.Store({
     name: 'dhis2tc',
     adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],
-    objectStores: ['programs', 'trackedEntities', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants']
+    objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants']
 });
 
 (function($) {
@@ -137,7 +137,7 @@ function downloadMetaData()
     promise = promise.then( getConstants );
     promise = promise.then( getOrgUnitLevels );
     promise = promise.then( getRelationships );       
-    promise = promise.then( getTrackedEntities );    
+    promise = promise.then( getTrackedEntityTypes );    
     promise = promise.then( getMetaPrograms );
     promise = promise.then( filterMissingPrograms );
     promise = promise.then( getPrograms );
@@ -219,13 +219,13 @@ function getRelationships()
     });    
 }
 
-function getTrackedEntities()
+function getTrackedEntityTypes()
 {
-    dhis2.tc.store.getKeys('trackedEntities').done(function(res){
+    dhis2.tc.store.getKeys('trackedEntityTypes').done(function(res){
         if(res.length > 0){
             return;
         }        
-        return dhis2.tracker.getTrackerObjects('trackedEntities', 'trackedEntities', DHIS2URL + '/trackedEntities.json', 'paging=false&fields=id,displayName', 'idb', dhis2.tc.store);
+        return dhis2.tracker.getTrackerObjects('trackedEntityTypes', 'trackedEntityTypes', DHIS2URL + '/trackedEntityTypes.json', 'paging=false&fields=id,displayName', 'idb', dhis2.tc.store);
     });    
 }
 
@@ -330,7 +330,7 @@ function getBatchPrograms( programs, batch )
     $.ajax( {
         url: DHIS2URL + '/programs.json',
         type: 'GET',
-        data: 'fields=*,dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],trackedEntity[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],organisationUnits[id,displayName],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,description,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique]]&paging=false&filter=id:in:' + ids
+        data: 'fields=*,dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],trackedEntityType[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],organisationUnits[id,displayName],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,description,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique]]&paging=false&filter=id:in:' + ids
     }).done( function( response ){
 
         if(response.programs){
@@ -452,7 +452,7 @@ function filterMissingTrackedEntityAttributes( programs, trackedEntityAttributes
 
 function getTrackedEntityAttributes( programs, trackedEntityAttributes)
 {
-    return dhis2.tracker.getBatches( trackedEntityAttributeIds, batchSize, {programs: programs, trackedEntityAttributes: trackedEntityAttributes}, 'attributes', 'trackedEntityAttributes', DHIS2URL + '/trackedEntityAttributes.json', 'paging=false&fields=:all,optionSet[id,version],trackedEntity[id,displayName]', 'idb', dhis2.tc.store );
+    return dhis2.tracker.getBatches( trackedEntityAttributeIds, batchSize, {programs: programs, trackedEntityAttributes: trackedEntityAttributes}, 'attributes', 'trackedEntityAttributes', DHIS2URL + '/trackedEntityAttributes.json', 'paging=false&fields=:all,optionSet[id,version],trackedEntityType[id,displayName]', 'idb', dhis2.tc.store );
 }
 
 function getOptionSetsForAttributes( data )

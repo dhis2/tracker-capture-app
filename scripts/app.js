@@ -41,7 +41,7 @@ import '../components/messaging/messaging-controller.js';
 import '../components/home/home-controller.js';
 import '../components/home/lists/lists-controller.js';
 import '../components/home/search/search-controller.js';
-
+import '../components/topbar/topbar-controller.js';
 
 import L from 'leaflet';
 import 'leaflet-geocoder-mapzen';

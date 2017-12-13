@@ -104,11 +104,10 @@ trackerCapture.controller('RegistrationController',
         orgUnitName: $scope.selectedOrgUnit ? $scope.selectedOrgUnit.displayName : ""
     };
 
-    $scope.trackedEntities = {available: []};
+    $scope.trackedEntityTypes = {available: []};
     TEService.getAll().then(function (entities) {
-        $scope.trackedEntities.available = entities;
-        $scope.trackedEntities.selected = $scope.trackedEntities.available[0];
-        setSearchConfig();
+        $scope.trackedEntityTypes.available = entities;
+        $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.available[0];
     });
 
     var getProgramRules = function () {
@@ -333,7 +332,7 @@ trackerCapture.controller('RegistrationController',
         var selections = CurrentSelection.get();
         CurrentSelection.set({
             tei: $scope.selectedTei,
-            te: $scope.selectedTei.trackedEntity,
+            te: $scope.selectedTei.trackedEntityType,
             prs: selections.prs,
             pr: $scope.selectedProgram,
             prNames: selections.prNames,
@@ -466,7 +465,7 @@ trackerCapture.controller('RegistrationController',
         //form is valid, continue the registration
         //get selected entity
         if (!$scope.selectedTei.trackedEntityInstance) {
-            $scope.selectedTei.trackedEntity = $scope.tei.trackedEntity = $scope.selectedProgram && $scope.selectedProgram.trackedEntity && $scope.selectedProgram.trackedEntity.id ? $scope.selectedProgram.trackedEntity.id : $scope.trackedEntities.selected.id;
+            $scope.selectedTei.trackedEntityType = $scope.tei.trackedEntityType = $scope.selectedProgram && $scope.selectedProgram.trackedEntityType && $scope.selectedProgram.trackedEntityType.id ? $scope.selectedProgram.trackedEntityType.id : $scope.trackedEntityTypes.selected.id;
             $scope.selectedTei.orgUnit = $scope.tei.orgUnit = $scope.selectedOrgUnit.id;
             $scope.selectedTei.attributes = $scope.tei.attributes = [];
         }
