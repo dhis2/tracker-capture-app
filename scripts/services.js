@@ -898,19 +898,37 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }
             return def.promise;
         },
-        getGeneratedAttributeValue: function(attribute) {
-            var deferred = $q.defer();
-            $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generate').then(function (response) {
-                if (response && response.data) {
-                    deferred.resolve(response.data);
+        getGeneratedAttributeValue: function(attribute, selectedTei, program, orgUnit) {
+            var getValueUrl = function(url, valueToSet, selectedTei, program, orgUnit){
+                var valueUrl = valueToSet+"=";
+                switch(valueToSet){
+                    case "org_unit_code":
+                        return valueUrl+orgUnit.code;
+                    default:
+                        throw "value not supported";
                 }
-            }, function (response) {
-                var errorBody = $translate.instant('failed_to_generate_tracked_entity_attribute');
-                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
-                deferred.resolve(response.data);
-                return null;
+            }
+
+            return $http.get(DHIS2URL + '/trackedEntityAttributes/'+attribute+'/requiredValues').then(function(response){
+                var requiredValuesUrl = "";
+                if(response && response.data){
+                    if(response.required){
+                        angular.forEach(response.required, function(requiredValue){
+                            requiredValuesUrl += getValueUrl(requiredValuesUrl, value, selectedTei, program, orgUnit);
+                        });
+                    }
+                }
+                return $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generate'+requiredValuesUrl).then(function (response) {
+                    if (response && response.data) {
+                        return response.data;
+                    }
+                    return null;
+                }, function (response) {
+                    var errorBody = $translate.instant('failed_to_generate_tracked_entity_attribute');
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
+                    return response.data;
+                });
             });
-            return deferred.promise;
         }
     };
 })
