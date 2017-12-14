@@ -2352,12 +2352,13 @@ i
     var makeSearchConfig = function(dimensionAttributes, requiredNumberOfSetAttributes){
         var searchConfig = { searchGroups: [], searchGroupsByAttributeId: {}};
         if(dimensionAttributes){
-            var defaultSearchGroup = { attributes: [], ouMode: {name: 'ALL'}};
+            var defaultSearchGroup = { id: dhis2.util.uid(), attributes: [], ouMode: {name: 'ALL'}};
             var attributes = AttributesFactory.generateAttributeFilters(angular.copy(dimensionAttributes));
             angular.forEach(attributes, function(attr){
                 if(attr.unique){
                     if(attr.valueType === "TEXT") attr.operator = "Eq";
                     var uniqueSearchGroup = {
+                        id: dhis2.util.uid(),
                         uniqueGroup: true,
                         attributes: [attr],
                         ouMode: {name: 'ALL'}

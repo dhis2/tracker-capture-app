@@ -49,6 +49,13 @@ trackerCapture.controller('HomeController',function(
             }
         ];
 
+        var mapOuLevelsToId = function(){
+            $scope.base.ouLevelsByLevel = {};
+            angular.forEach(ouLevels, function(ouLevel){
+                $scope.base.ouLevelsByLevel[ouLevel.level] = ouLevel;
+            })
+        }
+
         var ouLevels = CurrentSelection.getOuLevels();
         if(!ouLevels){
             TCStorageService.currentStore.open().done(function(){
@@ -61,14 +68,18 @@ trackerCapture.controller('HomeController',function(
         }else{
             mapOuLevelsToId();
         }
-
-        var mapOuLevelsToId = function(){
-            $scope.base.ouLevelsByLevel = {};
-            angular.forEach(ouLevels, function(ouLevel){
-                $scope.base.ouLevelsByLevel[ouLevel.level] = ouLevel;
-            })
-        }
         
+        var mapOrgUnitToId = function(orgUnit, obj){
+            if(orgUnit){
+                obj[orgUnit.id] = orgUnit;
+                if(orgUnit.children && orgUnit.children.length > 0){
+                    angular.forEach(orgUnit.children, function(child){
+                        mapOrgUnitToId(child, obj);
+                    });
+                }
+            }
+        }
+
         OrgUnitFactory.getSearchTreeRoot().then(function(response) {
             $scope.orgUnits = response.organisationUnits;
             $scope.base.orgUnitsById = {};
@@ -81,16 +92,7 @@ trackerCapture.controller('HomeController',function(
             });
         });
 
-        var mapOrgUnitToId = function(orgUnit, obj){
-            if(orgUnit){
-                obj[orgUnit.id] = orgUnit;
-                if(orgUnit.children && orgUnit.children.length > 0){
-                    angular.forEach(orgUnit.children, function(child){
-                        mapOrgUnitToId(child, obj);
-                    });
-                }
-            }
-        }
+
 
         $scope.$watch('selectedOrgUnit', function() {
             if( angular.isObject($scope.selectedOrgUnit)){

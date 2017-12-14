@@ -544,6 +544,10 @@ trackerCapture.controller('RegistrationController',
     var searchForExistingTeis = function(tei, field){
         var searchGroup = $scope.searchConfig.searchGroupsByAttributeId[field];
         if(searchGroup) searchGroup[field] = tei[field];
+        return searchForExistingTeisBySearchGroup(searchGroup);
+    }
+
+    var searchForExistingTeisBySearchGroup = function(searchGroup){
         return SearchGroupService.search(searchGroup, $scope.selectedProgram, $scope.selectedOrgUnit).then(function(res){
             if(res.status === "NOMATCH"){
                 $scope.matchingTeis = [];
@@ -556,7 +560,6 @@ trackerCapture.controller('RegistrationController',
             if(res.status === "UNIQUE"){
                 return showDuplicateModal(res.data, field);
             }
-
         });
     }
 
@@ -603,6 +606,18 @@ trackerCapture.controller('RegistrationController',
             $scope.hiddenSections = effectResult.hiddenSections;
             $scope.assignedFields = effectResult.assignedFields;
             $scope.warningMessages = effectResult.warningMessages;
+
+            if($scope.assignedFields){
+                var searchedGroups = {};
+                angular.forEach($scope.assignedFields, function(field){
+                    var group = $scope.searchConfig.searchGroupsByAttributeId[field];
+                    if(group && searchedGroups[group.id]){
+                        searchForExistingTeisBySearchGroup(group);
+                        searchedGroups[group.id] = true;
+                    }
+    
+                });
+            }
         }
     });
 
