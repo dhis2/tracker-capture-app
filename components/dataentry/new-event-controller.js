@@ -187,7 +187,7 @@ trackerCapture.controller('EventCreationController',
     };
 
     $scope.save = function () {
-
+        $scope.lockButton = true;
         $scope.getCategoryOptions();
         
         //check for form validity
@@ -251,6 +251,7 @@ trackerCapture.controller('EventCreationController',
             } else {
                 $scope.eventCreationForm.submitted = false;
             }
+            $scope.lockButton = false;
         });
     };
 
