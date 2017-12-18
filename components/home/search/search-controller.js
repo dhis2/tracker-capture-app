@@ -19,7 +19,8 @@ trackerCapture.controller('SearchController',function(
     CurrentSelection,
     TEService,
     SearchGroupService,
-    OperatorFactory) {
+    OperatorFactory,
+    TEIGridService) {
 
         $scope.trackedEntityTypes = {};
         $scope.searchConfig = {};
@@ -77,12 +78,20 @@ trackerCapture.controller('SearchController',function(
                     else if(attr.valueType !== "TEXT" && attr.valueType !== "TRUE_ONLY" && searchGroup[key]) nrOfSetAttributes++;
                 }
             }
-            if(searchGroup.requiredNumberOfSetAttributes > nrOfSetAttributes){
+            if(searchGroup.minAttributesRequiredToSearch > nrOfSetAttributes){
                 searchGroup.error = true;
                 return;
             }
-            return SearchGroupService.search(searchGroup, $scope.base.selectedProgram, $scope.selectedOrgUnit).then(function(res){
-                    return showResultModal(res, searchGroup);
+            return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+                    //If only one tei found and in selectedOrgUnit, go straight to dashboard
+                    if(res && res.data && res.data.rows && res.data.rows.length === 1){
+                        var gridData = TEIGridService.format($scope.selectedOrgUnit.id, res.data, false, null, null);
+                        if(gridData.rows.own.length ===1){
+                            openTei(gridData.rows.own[0]);
+                            return;
+                        }
+                    }
+                    return showResultModal(res, gridData, searchGroup);
             });
         }
 
@@ -181,7 +190,7 @@ trackerCapture.controller('SearchController',function(
                 },
                 resolve: {
                     refetchDataFn: function(){
-                        return function(pager,sortColumn){ return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,$scope.selectedOrgUnit, pager); }
+                        return function(pager,sortColumn){ return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, pager); }
                     },
 
                     orgUnit: function(){

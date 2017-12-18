@@ -164,7 +164,7 @@
 
         <div class="form-group search-tei-form-button">
             <div class="col-md-12 text-center" style="height:34px;line-height:34px;">
-                <span ng-class="{ 'error' : searchGroup.error}" ng-if="searchGroup.requiredNumberOfSetAttributes">Fill in at least {{searchGroup.requiredNumberOfSetAttributes}} {{searchGroup.requiredNumberOfSetAttributes === 1 ? 'attribute' : 'attributes'}} to search</span>
+                <span ng-class="{ 'error' : searchGroup.error}" ng-if="searchGroup.minAttributesRequiredToSearch">Fill in at least {{searchGroup.minAttributesRequiredToSearch}} {{searchGroup.minAttributesRequiredToSearch === 1 ? 'attribute' : 'attributes'}} to search</span>
                 <button class="btn btn-default pull-right" ng-click="search(searchGroup)"><span class="fa fa-search-plus"></span></button>
             </div>
 

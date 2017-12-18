@@ -757,7 +757,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
 
-        search: function(ouId, ouMode, queryUrl, programUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
+        search: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
             var url;
             var deferred = $q.defer();
 
@@ -772,8 +772,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             if(queryUrl){
                 url = url + '&'+ queryUrl;
             }
-            if(programUrl){
-                url = url + '&' + programUrl;
+            if(programOrTETUrl){
+                url = url + '&' + programOrTETUrl;
             }
             if(attributeUrl){
                 url = url + '&' + attributeUrl;
@@ -2349,7 +2349,7 @@ i
     var trackedEntityTypeSearchConfigsById = {};
     var defaultOperators = OperatorFactory.defaultOperators;
 
-    var makeSearchConfig = function(dimensionAttributes, requiredNumberOfSetAttributes){
+    var makeSearchConfig = function(dimensionAttributes, minAttributesRequiredToSearch){
         var searchConfig = { searchGroups: [], searchGroupsByAttributeId: {}};
         if(dimensionAttributes){
             var defaultSearchGroup = { id: dhis2.util.uid(), attributes: [], ouMode: {name: 'ALL'}};
@@ -2372,7 +2372,7 @@ i
                 }
             });
             if(defaultSearchGroup.attributes.length !== 0){
-                defaultSearchGroup.requiredNumberOfSetAttributes = requiredNumberOfSetAttributes;
+                defaultSearchGroup.minAttributesRequiredToSearch = minAttributesRequiredToSearch;
                 searchConfig.searchGroups.push(defaultSearchGroup);
             }
         }
@@ -2383,7 +2383,7 @@ i
         if(!programSearchConfigsById[program.id]){
             return AttributesFactory.getByProgram(program).then(function(attributes)
             {
-                var searchConfig = makeSearchConfig(attributes, 1);
+                var searchConfig = makeSearchConfig(attributes, program.minAttributesRequiredToSearch);
                 programSearchConfigsById[program.id] = searchConfig;
                 def.resolve(angular.copy(searchConfig));
                 return def.promise;
@@ -2397,7 +2397,7 @@ i
         if(!trackedEntityTypeSearchConfigsById[trackedEntityType.id]){
             return AttributesFactory.getByTrackedEntityType(trackedEntityType).then(function(attributes)
             {
-                var searchConfig = makeSearchConfig(attributes, 1);
+                var searchConfig = makeSearchConfig(attributes, trackedEntityType.minAttributesRequiredToSearch);
                 trackedEntityTypeSearchConfigsById[trackedEntityType.id] = searchConfig;
                 def.resolve(angular.copy(searchConfig));
                 return def.promise;
@@ -2407,7 +2407,7 @@ i
         return def.promise;
     }
 
-    this.search = function(searchGroup, program, orgUnit, pager){
+    this.search = function(searchGroup, program,trackedEntityType, orgUnit, pager){
         var uniqueSearch = false;
         var numberOfSetAttributes = 0;
         var query = {url: null, hasValue: false};
@@ -2520,11 +2520,15 @@ i
             });
         }
 
-        if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.requiredNumberOfSetAttributes)){
-            var programUrl = "";
-            if(program) programUrl = "program="+program.id;
+        if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.minAttributesRequiredToSearch)){
+            var programOrTETUrl = "";
+            if(program){
+                programOrTETUrl = "program="+program.id;
+            }else{
+                programOrTETUrl = "trackedEntityType="+trackedEntityType.id;
+            }
             var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
-            return TEIService.search(searchOrgUnit.id, searchGroup.ouMode.name,null, programUrl, query.url, pager, true).then(function(response){
+            return TEIService.search(searchOrgUnit.id, searchGroup.ouMode.name,null, programOrTETUrl, query.url, pager, true).then(function(response){
                 if(response && response.rows && response.rows.length > 0){
                     if(uniqueSearch) return { status: "UNIQUE", data: response };
                     return { status: "MATCHES", data: response };

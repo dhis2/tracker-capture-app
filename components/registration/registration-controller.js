@@ -548,7 +548,7 @@ trackerCapture.controller('RegistrationController',
     }
 
     var searchForExistingTeisBySearchGroup = function(searchGroup){
-        return SearchGroupService.search(searchGroup, $scope.selectedProgram, $scope.selectedOrgUnit).then(function(res){
+        return SearchGroupService.search(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
             if(res.status === "NOMATCH"){
                 $scope.matchingTeis = [];
                 return;
@@ -740,7 +740,7 @@ trackerCapture.controller('RegistrationController',
                     return $scope.matchingTeis;
                 },
                 refetchDataFn: function(){
-                    return function(pager, sortColumn){ return SearchGroupService.search($scope.matchingTeisSearchGroup, $scope.selectedProgram, $scope.selectedOrgUnit,pager);}
+                    return function(pager, sortColumn){ return SearchGroupService.search($scope.matchingTeisSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);}
                 },
                 modalData: function(){
                     return modalData;
