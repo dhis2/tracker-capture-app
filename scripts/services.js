@@ -874,7 +874,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 if(error && error.status === 403){
                     NotificationService.showNotifcationDialog( $translate.instant('error'),  $translate.instant('access_denied'));
                 }
-                deferred.resolve(null);
+                deferred.reject(error);
             });
             return deferred.promise;
         },
@@ -2349,26 +2349,34 @@ i
     var trackedEntityTypeSearchConfigsById = {};
     var defaultOperators = OperatorFactory.defaultOperators;
 
-    var makeSearchConfig = function(dimensionAttributes, minAttributesRequiredToSearch){
+    var makeSearchConfig = function(dimensionAttributes, minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup){
         var searchConfig = { searchGroups: [], searchGroupsByAttributeId: {}};
         if(dimensionAttributes){
-            var defaultSearchGroup = { id: dhis2.util.uid(), attributes: [], ouMode: {name: 'ALL'}};
+            var defaultSearchGroup = { id: dhis2.util.uid(), attributes: [], ouMode: {name: 'ACCESSIBLE'}, orgunitUnique: false};
             var attributes = AttributesFactory.generateAttributeFilters(angular.copy(dimensionAttributes));
             angular.forEach(attributes, function(attr){
-                if(attr.unique){
-                    if(attr.valueType === "TEXT") attr.operator = "Eq";
-                    var uniqueSearchGroup = {
-                        id: dhis2.util.uid(),
-                        uniqueGroup: true,
-                        attributes: [attr],
-                        ouMode: {name: 'ALL'}
+                if(attr.searchable){
+                    searchConfig.searchGroupsByAttributeId[attr.id] = {};
+                    if(attr.unique){
+                        var uniqueAttr = attr.orgunitScope ? angular.copy(attr) : attr;
+                        uniqueAttr.operator = "Eq";
+                        var uniqueSearchGroup = {
+                            id: dhis2.util.uid(),
+                            uniqueGroup: true,
+                            orgunitUnique: uniqueAttr.orgunitScope,
+                            attributes: [uniqueAttr],
+                            ouMode: {name: 'ACCESSIBLE'}
+                        }
+                        if(uniqueAttr.orgunitScope) uniqueSearchGroup.ouMode = {name: 'SELECTED'};
+                        searchConfig.searchGroups.push(uniqueSearchGroup);
+                        searchConfig.searchGroupsByAttributeId[uniqueAttr.id].unique = uniqueSearchGroup;
                     }
-                    searchConfig.searchGroups.push(uniqueSearchGroup);
-                    searchConfig.searchGroupsByAttributeId[attr.id] = uniqueSearchGroup;
-                }else if(attr.searchable){
-                    if(attr.optionSetValue && attr.valueType === "TEXT") attr.operator = "Eq";
-                    defaultSearchGroup.attributes.push(attr);
-                    searchConfig.searchGroupsByAttributeId[attr.id] = defaultSearchGroup;
+                    if(!attr.unique || attr.orgunitScope){
+                        if(attr.optionSetValue && attr.valueType === "TEXT") attr.operator = "Eq";
+                        defaultSearchGroup.attributes.push(attr);
+                        searchConfig.searchGroupsByAttributeId[attr.id].default = defaultSearchGroup;
+                    }
+
                 }
             });
             if(defaultSearchGroup.attributes.length !== 0){
@@ -2378,12 +2386,12 @@ i
         }
         return searchConfig;
     }
-    this.getSearchConfigForProgram = function(program) {
+    this.getSearchConfigForProgram = function(program, orgUnitUniqueAsSearchGroup) {
         var def = $q.defer();
         if(!programSearchConfigsById[program.id]){
             return AttributesFactory.getByProgram(program).then(function(attributes)
             {
-                var searchConfig = makeSearchConfig(attributes, program.minAttributesRequiredToSearch);
+                var searchConfig = makeSearchConfig(attributes, program.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
                 programSearchConfigsById[program.id] = searchConfig;
                 def.resolve(angular.copy(searchConfig));
                 return def.promise;
@@ -2392,12 +2400,12 @@ i
         def.resolve(angular.copy(programSearchConfigsById[program.id]));
         return def.promise;
     }
-    this.getSearchConfigForTrackedEntityType = function(trackedEntityType,mapSearchGroupsToAttributes){
+    this.getSearchConfigForTrackedEntityType = function(trackedEntityType,orgUnitUniqueAsSearchGroup){
         var def = $q.defer();
         if(!trackedEntityTypeSearchConfigsById[trackedEntityType.id]){
             return AttributesFactory.getByTrackedEntityType(trackedEntityType).then(function(attributes)
             {
-                var searchConfig = makeSearchConfig(attributes, trackedEntityType.minAttributesRequiredToSearch);
+                var searchConfig = makeSearchConfig(attributes, trackedEntityType.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
                 trackedEntityTypeSearchConfigsById[trackedEntityType.id] = searchConfig;
                 def.resolve(angular.copy(searchConfig));
                 return def.promise;
@@ -2413,7 +2421,7 @@ i
         var query = {url: null, hasValue: false};
         if(searchGroup){
             angular.forEach(searchGroup.attributes, function(attr){
-                if(attr.unique) uniqueSearch = true;
+                if(searchGroup.uniqueGroup) uniqueSearch = true;
                 if(attr.valueType === 'DATE' || attr.valueType === 'NUMBER' || attr.valueType === 'DATETIME'){
                     var q = '';
     

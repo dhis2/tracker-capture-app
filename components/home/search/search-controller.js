@@ -92,6 +92,9 @@ trackerCapture.controller('SearchController',function(
                         }
                     }
                     return showResultModal(res, gridData, searchGroup);
+            }, function(error)
+            {
+                return showErrorModal(error.data);
             });
         }
 
@@ -130,7 +133,26 @@ trackerCapture.controller('SearchController',function(
         }
 
 
-        
+        var showErrorModal = function(error){
+            return $modal.open({
+                templateUrl: 'components/home/search/error-modal.html',
+                controller: function($scope,$modalInstance, error){
+                    $scope.errorMessage = error && error.message? error.message : null;
+                    $scope.close = function(){
+                        $modalInstance.close();
+                    }
+                },
+                resolve: {
+                    error: function(){
+                        return error;
+                    }
+                }
+            });
+        }
+
+        $scope.isOrgunitUnique = function(item){
+            return item.orgunitUnique;
+        }
 
         var showResultModal = function(res, searchGroup){
             var internalService = {
@@ -236,16 +258,16 @@ trackerCapture.controller('SearchController',function(
         $scope.setSelectedOrgUnit = function(orgUnit, searchGroup){
             if(searchGroup.orgUnit && searchGroup.orgUnit.id === orgUnit.id){
                 searchGroup.orgUnit = null;
-                searchGroup.ouMode = {name: "ALL"};
+                searchGroup.ouMode = {name: "ACCESSIBLE"};
                 return;
             }
             searchGroup.orgUnit = orgUnit;
-            if(searchGroup.ouMode && searchGroup.ouMode.name === "ALL"){
+            if(searchGroup.ouMode && searchGroup.ouMode.name === "ACCESSIBLE"){
                 searchGroup.ouMode = { name: "SELECTED" };
             }
         }
 
-        $scope.setOuModeAll = function(searchGroup){
+        $scope.setOuModeAccessible = function(searchGroup){
             searchGroup.orgUnit = null;
         }
 

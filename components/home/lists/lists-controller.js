@@ -65,7 +65,7 @@ trackerCapture.controller('ListsController',function(
             if(!userGridColumns){
                 return GridColumnService.get("trackerCaptureGridColumns").then(function (gridColumns) {
                     userGridColumns = gridColumns;
-                    if($scope.base.selectedProgram){
+                    if($scope.base.selectedProgram && userGridColumns){
                         $scope.gridColumns = userGridColumns[$scope.base.selectedProgram.id];
                     }
                 });

@@ -41,7 +41,7 @@ trackerCapture.controller('HomeController',function(
             {
                 name: "Register",
                 template: "../components/registration/registration.html",
-                class: "col-lg-8 col-md-10",
+                class: "col-lg-10 col-md-12",
                 shouldReset: false,
                 onPostLoad: function(){
                     $rootScope.$broadcast('registrationWidget', {registrationMode: 'REGISTRATION'});
@@ -83,9 +83,10 @@ trackerCapture.controller('HomeController',function(
         OrgUnitFactory.getSearchTreeRoot().then(function(response) {
             $scope.orgUnits = response.organisationUnits;
             $scope.base.orgUnitsById = {};
+            var byLevel = {};
             angular.forEach($scope.orgUnits, function(ou){
                 mapOrgUnitToId(ou, $scope.base.orgUnitsById);
-                ou.show = true;
+                ou.show = false;
                 angular.forEach(ou.children, function(o){
                     o.hasChildren = o.children && o.children.length > 0 ? true : false;
                 });

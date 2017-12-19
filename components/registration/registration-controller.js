@@ -139,8 +139,15 @@ trackerCapture.controller('RegistrationController',
                 if($scope.searchConfig){
                     for(var key in $scope.selectedTei){
                         if($scope.attributesById[key]){
-                            var group = $scope.searchConfig.searchGroupsByAttributeId[key];
-                            if(group) group[key] = $scope.selectedTei[key];
+                            var groups = $scope.searchConfig.searchGroupsByAttributeId[key];
+                            if(groups){
+                                if(groups.default){
+                                    groups.default[key] = $scope.selectedTei[key];
+                                }
+                                if(groups.unique){
+                                    groups.unique[key] = $scope.selectedTei[key];
+                                }
+                            }
                         }
                     }
                 }
@@ -193,8 +200,15 @@ trackerCapture.controller('RegistrationController',
                     if($scope.attributesById[key]){
                         $scope.tei[key] = $scope.selectedTei[key] = $scope.registrationPrefill[key];
                         if($scope.searchConfig){
-                            var group = $scope.searchConfig.searchGroupsByAttributeId[key];
-                            if(group) group[key] = $scope.registrationPrefill[key];
+                            var groups = $scope.searchConfig.searchGroupsByAttributeId[key];
+                            if(groups){
+                                if(groups.default){
+                                    groups.default[key] = $scope.registrationPrefill[key];
+                                }
+                                if(groups.unique){
+                                    groups.unique[key] = $scope.registrationPrefill[key];
+                                }
+                            }
                         }
                     }
                 }
@@ -537,17 +551,28 @@ trackerCapture.controller('RegistrationController',
             return $scope.executeRules();
         }, function(){
             $scope.teiPreviousValues[field] = tei[field];
+            return $scope.executeRules();
             return;
         });
     };
 
     var searchForExistingTeis = function(tei, field){
-        var searchGroup = $scope.searchConfig.searchGroupsByAttributeId[field];
-        if(searchGroup) searchGroup[field] = tei[field];
-        return searchForExistingTeisBySearchGroup(searchGroup);
+        var searchGroups = $scope.searchConfig.searchGroupsByAttributeId[field];
+        var promises = [];
+        if(searchGroups){
+            if(searchGroups.default){
+                searchGroups.default[field] = tei[field];
+                promises.push(searchForExistingTeisBySearchGroup(searchGroups.default, field));
+            } 
+            if(searchGroups.unique){
+                searchGroups.unique[field] = tei[field];
+                promises.push(searchForExistingTeisBySearchGroup(searchGroups.unique, field));
+            }
+        }
+        return $q.all(promises);
     }
 
-    var searchForExistingTeisBySearchGroup = function(searchGroup){
+    var searchForExistingTeisBySearchGroup = function(searchGroup,field){
         return SearchGroupService.search(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
             if(res.status === "NOMATCH"){
                 $scope.matchingTeis = [];
@@ -610,12 +635,17 @@ trackerCapture.controller('RegistrationController',
             if($scope.assignedFields){
                 var searchedGroups = {};
                 angular.forEach($scope.assignedFields, function(field){
-                    var group = $scope.searchConfig.searchGroupsByAttributeId[field];
-                    if(group && searchedGroups[group.id]){
-                        searchForExistingTeisBySearchGroup(group);
-                        searchedGroups[group.id] = true;
-                    }
-    
+                    var groups = $scope.searchConfig.searchGroupsByAttributeId[field];
+                    if(groups){
+                        if(groups.default && searchedGroups[groups.default.id]){
+                            searchForExistingTeisBySearchGroup(groups.default);
+                            searchedGroups[groups.default.id] = true;  
+                        }
+                        if(groups.unique && searchedGroups[groups.unique.id]){
+                            searchForExistingTeisBySearchGroup(groups.unique);
+                            searchedGroups[groups.unique.id] = true;  
+                        }
+                    }    
                 });
             }
         }
