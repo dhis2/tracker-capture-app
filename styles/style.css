@@ -1091,26 +1091,6 @@ table.table-striped tr td.optionset {
     background-color: #eee
 }
 
-.form-control-select2 {
-    display: block;
-    width: 100%;
-    height: 30px;
-    padding: 2px 6px;
-    font-size: 14px;
-    line-height: 1.0;
-    color: #555;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    vertical-align: middle;
-    background-color: #fff;
-    background-image: none;
-    border: 1px solid #ccc;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-}
-
 .form-control-checkbox {
     height: 24px;
     width: 24px;
@@ -2301,4 +2281,79 @@ button.list-group-item-danger.active:focus {
 
 .hide-clear .ui-datepicker-cmd-clear {
     display: none;
+}
+.program-select {
+    height:36px;
+}
+
+
+.custom-workinglist-dropdown {
+    width:400px;
+}
+@media (max-width:767px){
+    .custom-workinglist-dropdown {
+        width:400px;
+        right: 0;
+        left: auto;
+    }
+}
+
+.custom-workinglist-dropdown-main {
+    width: 100%;
+    float: right;
+    height: 100%;
+    padding-bottom: 5px;
+}
+
+.custom-workinglist-dropdown-list {
+    margin: 5px;
+    padding: 5px 9px 5px 5px;
+    max-height: 570px;
+    overflow-y: auto;
+}
+.search-tei-form {
+    margin-top: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid lightgray;
+}
+.search-tei-form:last-of-type {
+    border-bottom: none;
+}
+
+.search-tei-form > .form-group > .control-label { 
+    font-weight: bold!important;
+}
+.search-tei-form > .form-group {
+    margin-bottom: 0px;
+}
+
+.overflow-registration{
+    overflow: auto;
+}
+.search-more-options-header{
+    cursor: pointer;
+    background-clip: content-box;
+    border-radius: 10px;
+}
+
+.search-more-options-header:hover{
+    background-color: #ebebeb;
+}
+.more-options-label{
+    font-style: italic;
+    font-weight: 540!important;
+}
+.modal-search-bottom-text{
+    display:inline-flex;
+    margin-right:10px;
+    margin-top:5px;
+}
+.modal-search-bottom-buttons{
+    display:inline-flex;
+    margin-left:auto;
+    max-height: 39px;
+}
+.modal-search-bottom{
+    text-align:unset;
+    display:flex;
 }

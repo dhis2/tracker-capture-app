@@ -266,14 +266,14 @@ trackerCapture.controller('TEIAddController',
             }
 
             if ($scope.addingTeiAssociate) {
-                if (!$scope.selectedTrackedEntity || !$scope.selectedTrackedEntity.id) {
+                if (!$scope.selectedTrackedEntityType || !$scope.selectedTrackedEntityType.id) {
                     NotificationService.showNotifcationDialog($translate.instant("searching_error"),
                         $translate.instant("no_entity_for_tracker_associate_attribute"));
                     $scope.teiFetched = true;
                     return;
                 }
 
-                //$scope.programUrl = 'trackedEntityType=' + $scope.selectedTrackedEntity.id;
+                //$scope.programUrl = 'trackedEntityType=' + $scope.selectedTrackedEntityType.id;
             }
 
             $scope.fetchTei();

@@ -3,6 +3,7 @@
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RegistrationController', 
         function($rootScope,
+                $q,
                 $scope,
                 $location,
                 $timeout,
@@ -26,7 +27,8 @@ trackerCapture.controller('RegistrationController',
                 TrackerRulesFactory,
                 TrackerRulesExecutionService,
                 TCStorageService,
-                ModalService) {
+                ModalService,
+                SearchGroupService) {
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
     $scope.customRegistrationForm = null;    
@@ -124,6 +126,35 @@ trackerCapture.controller('RegistrationController',
         }
     };
 
+    var setSearchConfig = function(){
+        var promise = null;
+        if($scope.selectedProgram){
+            promise = SearchGroupService.getSearchConfigForProgram($scope.selectedProgram);
+        }else if($scope.trackedEntityTypes && $scope.trackedEntityTypes.selected){
+            promise = SearchGroupService.getSearchConfigForTrackedEntityType($scope.trackedEntityTypes.selected);
+        }
+        if(promise){
+            promise.then(function(searchConfig){
+                $scope.searchConfig = searchConfig;
+                if($scope.searchConfig){
+                    for(var key in $scope.selectedTei){
+                        if($scope.attributesById[key]){
+                            var groups = $scope.searchConfig.searchGroupsByAttributeId[key];
+                            if(groups){
+                                if(groups.default){
+                                    groups.default[key] = $scope.selectedTei[key];
+                                }
+                                if(groups.unique){
+                                    groups.unique[key] = $scope.selectedTei[key];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        return promise;
+    }
     //watch for selection of program
     $scope.$watch('selectedProgram', function (newValue, oldValue) {
         if (newValue !== oldValue) {
@@ -133,6 +164,8 @@ trackerCapture.controller('RegistrationController',
                 $scope.getAttributes($scope.registrationMode);
             }
         }
+        setSearchConfig();
+
         $scope.model.minEnrollmentDate = "";
         $scope.model.maxEnrollmentDate =  ($scope.selectedProgram && $scope.selectedProgram.selectEnrollmentDatesInFuture) ? '' : "0";
         if ($scope.selectedOrgUnit.reportDateRange) {
@@ -157,9 +190,35 @@ trackerCapture.controller('RegistrationController',
         if ($scope.registrationMode !== 'REGISTRATION') {
             $scope.selectedTei = args.selectedTei;
             $scope.tei = angular.copy(args.selectedTei);
+
+            
+        }
+
+        if($scope.registrationMode === 'REGISTRATION'){
+            if($scope.registrationPrefill && !$scope.registrationPrefill.finished){
+                for(var key in $scope.registrationPrefill){
+                    if($scope.attributesById[key]){
+                        $scope.tei[key] = $scope.selectedTei[key] = $scope.registrationPrefill[key];
+                        if($scope.searchConfig){
+                            var groups = $scope.searchConfig.searchGroupsByAttributeId[key];
+                            if(groups){
+                                if(groups.default){
+                                    groups.default[key] = $scope.registrationPrefill[key];
+                                }
+                                if(groups.unique){
+                                    groups.unique[key] = $scope.registrationPrefill[key];
+                                }
+                            }
+                        }
+                    }
+                }
+                $scope.registrationPrefill.finished = true;
+            }
+
         }
 
         $scope.teiOriginal = angular.copy($scope.tei);
+        $scope.teiPreviousValues = angular.copy($scope.tei);
 
         if ($scope.registrationMode === 'PROFILE') {
             $scope.selectedEnrollment = args.enrollment ? args.enrollment : {};
@@ -485,21 +544,75 @@ trackerCapture.controller('RegistrationController',
     };
 
     $scope.teiValueUpdated = function (tei, field) {
-        $scope.executeRules();
+        searchForExistingTeis(tei,field)
+        .then(function()
+        {
+            $scope.teiPreviousValues[field] = tei[field];
+            return $scope.executeRules();
+        }, function(){
+            $scope.teiPreviousValues[field] = tei[field];
+            return $scope.executeRules();
+            return;
+        });
     };
 
+    var searchForExistingTeis = function(tei, field){
+        var searchGroups = $scope.searchConfig.searchGroupsByAttributeId[field];
+        var promises = [];
+        if(searchGroups){
+            if(searchGroups.default){
+                searchGroups.default[field] = tei[field];
+                promises.push(searchForExistingTeisBySearchGroup(searchGroups.default, field));
+            } 
+            if(searchGroups.unique){
+                searchGroups.unique[field] = tei[field];
+                promises.push(searchForExistingTeisBySearchGroup(searchGroups.unique, field));
+            }
+        }
+        return $q.all(promises);
+    }
+
+    var searchForExistingTeisBySearchGroup = function(searchGroup,field){
+        return SearchGroupService.search(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+            if(res.status === "NOMATCH"){
+                $scope.matchingTeis = [];
+                return;
+            }
+            if(res.status === "MATCHES" && $scope.registrationMode === "REGISTRATION"){
+                $scope.matchingTeis = res.data;
+                $scope.matchingTeisSearchGroup = searchGroup;
+            }
+            if(res.status === "UNIQUE"){
+                return showDuplicateModal(res.data, field);
+            }
+        });
+    }
 
     $scope.saveDataValueForRadio = function(field, context, value){
+        var def = null;
         if(field.dataElement) {
             //The saveDataValueForRadio was called from the dataentry template. Update dataelement og current event:
             context[field.dataElement.id] = value;
+            def = $q.defer();
+            def.resolve();
         }
         else {
             //The saveDataValueForRadio was called from the registration controller. Update the selected TEI:
-            context[field.id] = value;
-        }
 
-        $scope.executeRules();
+            context[field.id] = value;
+            def = searchForExistingTeis(context, field.id).then(function()
+            {
+                $scope.teiPreviousValues[field.id] = context[field.id];
+            }, function(){
+                $scope.teiPreviousValues[field.id] = context[field.id];
+            });
+        }
+        def.then(function()
+        {
+            return $scope.executeRules();
+        }, function(){
+            return;
+        });
     }
 
     //listen for rule effect changes
@@ -518,6 +631,23 @@ trackerCapture.controller('RegistrationController',
             $scope.hiddenSections = effectResult.hiddenSections;
             $scope.assignedFields = effectResult.assignedFields;
             $scope.warningMessages = effectResult.warningMessages;
+
+            if($scope.assignedFields){
+                var searchedGroups = {};
+                angular.forEach($scope.assignedFields, function(field){
+                    var groups = $scope.searchConfig.searchGroupsByAttributeId[field];
+                    if(groups){
+                        if(groups.default && searchedGroups[groups.default.id]){
+                            searchForExistingTeisBySearchGroup(groups.default);
+                            searchedGroups[groups.default.id] = true;  
+                        }
+                        if(groups.unique && searchedGroups[groups.unique.id]){
+                            searchForExistingTeisBySearchGroup(groups.unique);
+                            searchedGroups[groups.unique.id] = true;  
+                        }
+                    }    
+                });
+            }
         }
     });
 
@@ -601,6 +731,118 @@ trackerCapture.controller('RegistrationController',
             cancelFunction();
         }
     };
+
+    $scope.showMatchesModal = function(allowRegistration){
+        var modalData = {
+            allowRegistration: allowRegistration,
+            translateWithTETName: $scope.translateWithTETName
+        }
+        return $modal.open({
+            templateUrl: 'components/registration/matches-modal.html',
+            controller: function($scope,$modalInstance, TEIGridService,orgUnit, data,modalData,refetchDataFn)
+            {
+                $scope.allowRegistration = modalData.allowRegistration;
+                $scope.translateWithTETName = modalData.translateWithTETName;
+                $scope.gridData = TEIGridService.format(orgUnit.id, data, false, null, null);
+                $scope.pager = data && data.metaData ? data.metaData.pager : null;
+                $scope.openTei = function(){
+                    $modalInstance.close({ action: "OPENTEI", tei: tei});
+                }
+                $scope.register = function(destination){
+                    $modalInstance.close({ action: "REGISTERTEI", destination: destination});
+                }
+                $scope.cancel = function(){
+                    $modalInstance.close({ action: "CANCEL"});
+                }
+
+                $scope.refetchData = function(pager, sortColumn){
+                    refetchDataFn(pager,sortColumn).then(function(res){
+                        $scope.pager = res.data && res.data.metaData ? res.data.metaData.pager : null;
+                        $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, null, null);
+                    });
+                }
+            },
+            resolve: {
+                orgUnit: function(){
+                    return $scope.selectedOrgUnit;
+                },
+                data: function(){
+                    return $scope.matchingTeis;
+                },
+                refetchDataFn: function(){
+                    return function(pager, sortColumn){ return SearchGroupService.search($scope.matchingTeisSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);}
+                },
+                modalData: function(){
+                    return modalData;
+                }
+            }
+        }).result.then(function(res){
+            if(res.action === "OPENTEI"){
+                openTei(res.tei);
+            }else if(res.action === "REGISTERTEI"){
+                $scope.registerEntity(res.destination);
+            }
+        });
+    }
+
+    $scope.getMatchingTeisLength = function(){
+        if($scope.matchingTeis){
+            if($scope.matchingTeis.metaData && $scope.matchingTeis.metaData.pager && $scope.matchingTeis.metaData.pager.total){
+                return $scope.matchingTeis.metaData.pager.total;
+            }else if($scope.matchingTeis && $scope.matchingTeis.rows){
+                return $scope.matchingTeis.rows.length;
+            }
+        }
+        return 0;
+    }
+
+    var showDuplicateModal = function(duplicateTei, field){
+        var modalData = {
+            orgUnit: $scope.selectedOrgUnit,
+            data: duplicateTei,
+            attribute: field,
+            translateWithTEAName: $scope.translateWithTEAName,
+            translateWithTETName: $scope.translateWithTETName
+        };
+
+        return $modal.open({
+            templateUrl: 'components/registration/duplicate-modal.html',
+            controller: function($scope,$modalInstance, TEIGridService,modalData)
+            {
+                $scope.attribute = modalData.attribute;
+                $scope.gridData = TEIGridService.format(modalData.orgUnit.id, modalData.data, false, null, null);
+                $scope.translateWithTEAName = modalData.translateWithTEAName;
+                $scope.translateWithTETName = modalData.translateWithTETName;
+                $scope.openTei = function(tei){
+                    $modalInstance.close({ action: "OPENTEI", tei: tei});
+                }
+                $scope.cancel = function(){
+                    $modalInstance.close({ action: "CANCEL"});
+                }
+            },
+            resolve: {
+                modalData: function(){
+                    return modalData;
+                }
+            }
+        }).result.then(function(res){
+            var def = $q.defer();
+            if(res.action === "OPENTEI"){
+                def.resolve();
+                openTei(res.tei);
+                return def.promise;
+            }else{
+                def.reject();
+                return def.promise;
+            }
+        });
+    }
+
+    var openTei = function(tei){
+        $location.path('/dashboard').search({tei: tei.id,
+            program: $scope.selectedProgram ? $scope.selectedProgram.id: null,
+            ou: $scope.selectedOrgUnit.id});
+    }
 
     $scope.showAttributeMap = function (obj, id) {
         var lat = "",
@@ -705,4 +947,40 @@ trackerCapture.controller('RegistrationController',
             $scope.currentEvent.eventDate = date;
         }
     };
+
+    $scope.translateWithTETName = function(text, nameToLower){
+        var trackedEntityTypeName = $scope.selectedProgram ? 
+            $scope.selectedProgram.trackedEntityType.displayName : 
+            ($scope.trackedEntityTypes.selected ? $scope.trackedEntityTypes.selected.displayName : "tracked entity instance");
+
+        if(nameToLower) trackedEntityTypeName = trackedEntityTypeName.toLowerCase();
+        var translated = $translate.instant(text);
+
+        return translated.replace("{trackedEntityTypeName}", trackedEntityTypeName);
+    }
+
+    $scope.translateWithMatchingTeisLength = function(multipleText, singleText){
+        var length = 0;
+        if($scope.matchingTeis){
+            if($scope.matchingTeis.metaData && $scope.matchingTeis.metaData.pager){
+                length = $scope.matchingTeis.metaData.pager.total;
+            }else if($scope.matchingTeis.rows){
+                length = $scope.matchingTeis.rows.length;
+            }
+        }
+        if(length === 1){
+            return $translate.instant(singleText);
+        } 
+        var translated = $translate.instant(multipleText);
+        return translated.replace("{count}", length.toString());
+    }
+
+    $scope.translateWithTEAName = function(text,attributeId, toLower){
+        var attributeName = "attribute";
+        var attribute = $scope.attributesById[attributeId];
+        if(attribute) attributeName = attribute.displayName;
+        if(toLower) attributeName = attributeName.toLowerCase();
+        var translated = $translate.instant(text);
+        return translated.replace("{trackedEntityAttributeName}", attributeName);
+    }
 });
