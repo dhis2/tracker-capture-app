@@ -28,19 +28,19 @@ trackerCapture.controller('HomeController',function(
         $scope.views = [
             {
                 name: "Lists",
-                template: "../components/home/lists/lists.html",
+                template: "components/home/lists/lists.html",
                 class: "col-xs-12",
                 shouldReset: true
             },
             {
                 name: "Search",
-                template: "../components/home/search/search.html",
+                template: "components/home/search/search.html",
                 class: "",
                 shouldReset: true
             },
             {
                 name: "Register",
-                template: "../components/registration/registration.html",
+                template: "components/registration/registration.html",
                 class: "col-lg-10 col-md-12",
                 shouldReset: false,
                 onPostLoad: function(){
