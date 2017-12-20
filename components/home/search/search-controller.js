@@ -67,35 +67,42 @@ trackerCapture.controller('SearchController',function(
             deferred.resolve();
             return deferred.promise;
         }
-
+        var searching = false;
         $scope.search = function(searchGroup){
-            var nrOfSetAttributes = 0;
-            for(var key in searchGroup){
-                var attr = $scope.base.attributesById[key];
-                if(attr){
-                    if(attr.valueType === "TEXT" && searchGroup[key] && searchGroup[key].value !== "") nrOfSetAttributes++;
-                    else if(attr.valueType !== "TEXT" && attr.valueType === "TRUE_ONLY") nrOfSetAttributes++;
-                    else if(attr.valueType !== "TEXT" && attr.valueType !== "TRUE_ONLY" && searchGroup[key]) nrOfSetAttributes++;
-                }
-            }
-            if(searchGroup.minAttributesRequiredToSearch > nrOfSetAttributes){
-                searchGroup.error = true;
-                return;
-            }
-            return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
-                    //If only one tei found and in selectedOrgUnit, go straight to dashboard
-                    if(res && res.data && res.data.rows && res.data.rows.length === 1){
-                        var gridData = TEIGridService.format($scope.selectedOrgUnit.id, res.data, false, null, null);
-                        if(gridData.rows.own.length ===1){
-                            openTei(gridData.rows.own[0]);
-                            return;
-                        }
+            if(!searching){
+                searching = true;
+                var nrOfSetAttributes = 0;
+                for(var key in searchGroup){
+                    var attr = $scope.base.attributesById[key];
+                    if(attr){
+                        if(attr.valueType === "TEXT" && searchGroup[key] && searchGroup[key].value !== "") nrOfSetAttributes++;
+                        else if(attr.valueType !== "TEXT" && attr.valueType === "TRUE_ONLY") nrOfSetAttributes++;
+                        else if(attr.valueType !== "TEXT" && attr.valueType !== "TRUE_ONLY" && searchGroup[key]) nrOfSetAttributes++;
                     }
-                    return showResultModal(res, gridData, searchGroup);
-            }, function(error)
-            {
-                return showErrorModal(error.data);
-            });
+                }
+                if(searchGroup.minAttributesRequiredToSearch > nrOfSetAttributes){
+                    searchGroup.error = true;
+                    searching = false;
+                    return;
+                }
+                searchGroup.error = false;
+                return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+                        //If only one tei found and in selectedOrgUnit, go straight to dashboard
+                        if(res && res.data && res.data.rows && res.data.rows.length === 1){
+                            var gridData = TEIGridService.format($scope.selectedOrgUnit.id, res.data, false, null, null);
+                            if(gridData.rows.own.length ===1){
+                                searching = false;
+                                openTei(gridData.rows.own[0]);
+                                return;
+                            }
+                        }
+                        return showResultModal(res, gridData, searchGroup).then(function(){ searching = false;});
+                }, function(error)
+                {
+                    return showErrorModal(error.data).then(function(){ searching = false;});
+                });
+            }
+
         }
 
         var openTei = function(tei){
@@ -147,7 +154,7 @@ trackerCapture.controller('SearchController',function(
                         return error;
                     }
                 }
-            });
+            }).result.then(function(){return;}, function(){return;});
         }
 
         $scope.isOrgunitUnique = function(item){
@@ -236,7 +243,7 @@ trackerCapture.controller('SearchController',function(
                     $scope.goToRegistrationWithData(registrationPrefill);
                 }
                 return def.promise;
-            });
+            }, function(){return;});
         }
         $scope.expandCollapseOrgUnitTree = function(orgUnit) {
             if( orgUnit.hasChildren ){
