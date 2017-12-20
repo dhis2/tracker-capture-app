@@ -96,7 +96,7 @@ trackerCapture.controller('SearchController',function(
                                 return;
                             }
                         }
-                        return showResultModal(res, gridData, searchGroup).then(function(){ searching = false;});
+                        return showResultModal(res, searchGroup).then(function(){ searching = false;});
                 }, function(error)
                 {
                     return showErrorModal(error.data).then(function(){ searching = false;});
