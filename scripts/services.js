@@ -451,6 +451,22 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
 
             return def.promise;
+        },
+        extendWithSearchGroups: function(programs, attributesById){
+            angular.forEach(programs, function(program){
+                var searchGroups = [];
+                var group = { attributes: []};
+                if(program.programAttributes){
+                    angular.forEach(program.attributes, function(programAttribute){
+                        var attr = attributesById[programAttribute.attribute];
+                        if(attr.unique){
+                            searchGroups.push({ attributes: [teAttribute]});
+                        }else if(programAttribute.searchable){
+                            group.attributes.push(programAttribute);
+                        }
+                    });
+                }
+            });
         }
     };
 })
@@ -636,7 +652,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service for getting tracked entity */
-.factory('TEService', function(TCStorageService, $q, $rootScope) {
+.factory('TEService', function(TCStorageService, $q, $rootScope, AttributesFactory) {
 
     return {
         getAll: function(){
@@ -662,6 +678,24 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 });
             });
             return def.promise;
+        },
+        extendWithSearchGroups: function(trackedEntityTypes, attributesById){
+            angular.forEach(trackedEntityTypes, function(te){
+                var searchGroups = [];
+                var group = { attributes: []};
+                if(te.attributes){
+                    angular.forEach(te.attributes, function(teAttribute){
+                        var attr = attributesById[teAttribute.attribute];
+                        var searchAttribute = teAttribute;
+                        searchAttribute.attribute = angular.copy(attr);
+                        if(attr.unique){
+                            searchGroups.push({ attributes: [searchAttribute]});
+                        }else if(searchAttribute.searchable){
+                            group.attributes.push(searchAttribute);
+                        }
+                    });
+                }
+            });
         }
     };
 })
@@ -669,6 +703,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 /* Service for getting tracked entity instances */
 .factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService ) {
     var errorHeader = $translate.instant("error");
+
+    var getFormatUrl = function(){
+        
+    }
     return {
         get: function(entityUid, optionSets, attributesById){
             var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
@@ -718,7 +756,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        search: function(ouId, ouMode, queryUrl, programUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
+
+        search: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
             var url;
             var deferred = $q.defer();
 
@@ -733,8 +772,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             if(queryUrl){
                 url = url + '&'+ queryUrl;
             }
-            if(programUrl){
-                url = url + '&' + programUrl;
+            if(programOrTETUrl){
+                url = url + '&' + programOrTETUrl;
             }
             if(attributeUrl){
                 url = url + '&' + attributeUrl;
@@ -835,7 +874,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 if(error && error.status === 403){
                     NotificationService.showNotifcationDialog( $translate.instant('error'),  $translate.instant('access_denied'));
                 }
-                deferred.resolve(null);
+                deferred.reject(error);
             });
             return deferred.promise;
         },
@@ -984,11 +1023,60 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             if(pAttribute.renderOptionsAsRadio){
                                 att.renderOptionsAsRadio = pAttribute.renderOptionsAsRadio;
                             }
+                            if(pAttribute.searchable)
+                            {
+                                att.searchable = pAttribute.searchable;
+                            }
                             programAttributes.push(att);
                         }
                     });
 
                     def.resolve(programAttributes);
+                }
+                else{
+                    var attributes = [];
+                    angular.forEach(atts, function(attribute){
+                        if (attribute.displayInListNoProgram) {
+                            attributes.push(attribute);
+                        }
+                    });
+
+                    attributes = orderByFilter(attributes, '-sortOrderInListNoProgram').reverse();
+                    def.resolve(attributes);
+                }
+            });
+            return def.promise;
+        },
+        getByTrackedEntityType: function(trackedEntityType){
+            var def = $q.defer();
+            this.getAll().then(function(atts){
+
+                if(trackedEntityType && trackedEntityType.id){
+                    var attributes = [];
+                    var trackedEntityTypeAttributes = [];
+                    angular.forEach(atts, function(attribute){
+                        attributes[attribute.id] = attribute;
+                    });
+
+                    angular.forEach(trackedEntityType.trackedEntityTypeAttributes, function(teAttribute){
+                        var att = attributes[teAttribute.trackedEntityAttribute.id];
+                        if (att) {
+                            att.mandatory = teAttribute.mandatory;
+                            if (teAttribute.displayInList) {
+                                att.displayInListNoProgram = true;
+                            }
+                            if(teAttribute.renderOptionsAsRadio){
+                                att.renderOptionsAsRadio = teAttribute.renderOptionsAsRadio;
+                            }
+                            if(teAttribute.searchable)
+                            {
+                                att.searchable = teAttribute.searchable;
+                            }
+                            trackedEntityTypeAttributes.push(att);
+                        }
+                    });
+
+                    def.resolve(trackedEntityTypeAttributes);
                 }
                 else{
                     var attributes = [];
@@ -2227,7 +2315,270 @@ i
         }
     };
 })
+.service('ProgramWorkingListService', function($http,$q){
+    var programWorkingListConfigs = {};
 
+    this.getConfigs = function(program){
+        var def = $q.defer();
+        if(program && !programWorkingListConfigs[program.id]){
+
+            //Temporary until working list is implemented
+            var programUrl = "program="+program.id+"&programStatus="
+            def.resolve([
+                {
+                    name: "active_enrollment",
+                    description: "active_enrollment",
+                    icon: "fa fa-circle-o",
+                    url: "program="+program.id+"&programStatus=ACTIVE",
+                    order: 1
+                },
+                {
+                    name: "all_enrollments",
+                    description: "all_enrollment",
+                    icon: "fa fa-list",
+                    url: "program="+program.id+"",
+                    order: 0
+                },
+                {
+                    name: "completed_enrollment",
+                    description: "completed_enrollment",
+                    icon: "fa fa-check",
+                    url: "program="+program.id+"&programStatus=COMPLETED",
+                    order: 2
+                },
+                {
+                    name: "cancelled_enrollment",
+                    description: "cancelled_enrollment",
+                    icon: "fa fa-times",
+                    url: "program="+program.id+"&programStatus=CANCELLED",
+                    order: 3
+                }
+            ]);
+            return def.promise;
+            /*return $http.get(DHIS2URL+'/programWorkingLists?program='+program.id, function(response){
+                var config = programWorkingListConfigs[program.id] = response;
+                return config;
+            });*/
+        }else if(program && programWorkingListConfigs[program.id]){
+            def.resolve(programWorkingListConfigs[program.id]);
+            return def.promise;
+        }else{
+            def.resolve([]);
+            return def.promise;
+        }
+    }
+
+
+    this.setTrackedEntityList = function(trackedEntityList){
+        this.trackedEntityList = trackedEntityList;
+    }
+})
+.service("SearchGroupService", function(TEIService, $q, OperatorFactory, AttributesFactory){
+    var programSearchConfigsById = {};
+    var trackedEntityTypeSearchConfigsById = {};
+    var defaultOperators = OperatorFactory.defaultOperators;
+
+    var makeSearchConfig = function(dimensionAttributes, minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup){
+        var searchConfig = { searchGroups: [], searchGroupsByAttributeId: {}};
+        if(dimensionAttributes){
+            var defaultSearchGroup = { id: dhis2.util.uid(), attributes: [], ouMode: {name: 'ACCESSIBLE'}, orgunitUnique: false};
+            var attributes = AttributesFactory.generateAttributeFilters(angular.copy(dimensionAttributes));
+            angular.forEach(attributes, function(attr){
+                if(attr.searchable){
+                    searchConfig.searchGroupsByAttributeId[attr.id] = {};
+                    if(attr.unique){
+                        var uniqueAttr = attr.orgunitScope ? angular.copy(attr) : attr;
+                        uniqueAttr.operator = "Eq";
+                        var uniqueSearchGroup = {
+                            id: dhis2.util.uid(),
+                            uniqueGroup: true,
+                            orgunitUnique: uniqueAttr.orgunitScope,
+                            attributes: [uniqueAttr],
+                            ouMode: {name: 'ACCESSIBLE'}
+                        }
+                        if(uniqueAttr.orgunitScope) uniqueSearchGroup.ouMode = {name: 'SELECTED'};
+                        searchConfig.searchGroups.push(uniqueSearchGroup);
+                        searchConfig.searchGroupsByAttributeId[uniqueAttr.id].unique = uniqueSearchGroup;
+                    }
+                    if(!attr.unique || attr.orgunitScope){
+                        if(attr.optionSetValue && attr.valueType === "TEXT") attr.operator = "Eq";
+                        defaultSearchGroup.attributes.push(attr);
+                        searchConfig.searchGroupsByAttributeId[attr.id].default = defaultSearchGroup;
+                    }
+
+                }
+            });
+            if(defaultSearchGroup.attributes.length !== 0){
+                defaultSearchGroup.minAttributesRequiredToSearch = minAttributesRequiredToSearch;
+                searchConfig.searchGroups.push(defaultSearchGroup);
+            }
+        }
+        return searchConfig;
+    }
+    this.getSearchConfigForProgram = function(program, orgUnitUniqueAsSearchGroup) {
+        var def = $q.defer();
+        if(!programSearchConfigsById[program.id]){
+            return AttributesFactory.getByProgram(program).then(function(attributes)
+            {
+                var searchConfig = makeSearchConfig(attributes, program.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
+                programSearchConfigsById[program.id] = searchConfig;
+                def.resolve(angular.copy(searchConfig));
+                return def.promise;
+            });
+        }
+        def.resolve(angular.copy(programSearchConfigsById[program.id]));
+        return def.promise;
+    }
+    this.getSearchConfigForTrackedEntityType = function(trackedEntityType,orgUnitUniqueAsSearchGroup){
+        var def = $q.defer();
+        if(!trackedEntityTypeSearchConfigsById[trackedEntityType.id]){
+            return AttributesFactory.getByTrackedEntityType(trackedEntityType).then(function(attributes)
+            {
+                var searchConfig = makeSearchConfig(attributes, trackedEntityType.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
+                trackedEntityTypeSearchConfigsById[trackedEntityType.id] = searchConfig;
+                def.resolve(angular.copy(searchConfig));
+                return def.promise;
+            });
+        }
+        def.resolve(angular.copy(trackedEntityTypeSearchConfigsById[trackedEntityType.id]));
+        return def.promise;
+    }
+
+    this.search = function(searchGroup, program,trackedEntityType, orgUnit, pager){
+        var uniqueSearch = false;
+        var numberOfSetAttributes = 0;
+        var query = {url: null, hasValue: false};
+        if(searchGroup){
+            angular.forEach(searchGroup.attributes, function(attr){
+                if(searchGroup.uniqueGroup) uniqueSearch = true;
+                if(attr.valueType === 'DATE' || attr.valueType === 'NUMBER' || attr.valueType === 'DATETIME'){
+                    var q = '';
+    
+                    if(attr.operator === OperatorFactory.defaultOperators[0]){
+                        var exactValue = searchGroup[attr.id] ? searchGroup[attr.id].exactValue : null;
+                        if(exactValue == null) exactValue = searchGroup[attr.id];
+
+
+                        if(exactValue && exactValue !== ''){
+                            query.hasValue = true;
+                            if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
+                                exactValue = DateUtils.formatFromUserToApi(exactValue);
+                            }
+                            if(attr.valueType === 'DATETIME') {
+                                q += 'LIKE:' + exactValue + ':';
+                            } else {
+                                q += 'EQ:' + exactValue + ':';
+                            }
+                            numberOfSetAttributes++;
+                        }
+                    }
+                    if(attr.operator === OperatorFactory.defaultOperators[1]){
+                        var startValue =  searchGroup[attr.id] ? searchGroup[attr.id].startValue : null;
+                        var endDate = searchGroup[attr.id] ? searchGroup[attr.id].endValue : null;
+                        if(startValue && startValue !== ''){
+                            query.hasValue = true;
+                            if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
+                                startValue = DateUtils.formatFromUserToApi(startValue);
+                            }
+                            q += 'GT:' + startValue + ':';
+                        }
+                        if(endValue && endValue !== ''){
+                            query.hasValue = true;
+                            if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
+                                endValue = DateUtils.formatFromUserToApi(endValue);
+                            }
+                            q += 'LT:' + endValue + ':';
+                        }
+                    }
+                    if(query.url){
+                        if(q){
+                            numberOfSetAttributes++;
+                            q = q.substr(0,q.length-1);
+                            query.url = query.url + '&filter=' + attr.id + ':' + q;
+                        }
+                    }
+                    else{
+                        if(q){
+                            numberOfSetAttributes++;
+                            q = q.substr(0,q.length-1);
+                            query.url = 'filter=' + attr.id + ':' + q;
+                        }
+                    }
+                }
+                else{
+                    var value = searchGroup[attr.id] ? searchGroup[attr.id].value : null;
+                    if(value == null) value = searchGroup[attr.id];
+                    if(value && value !== ''){
+                        query.hasValue = true;
+    
+                        if(angular.isArray(value)){
+                            var q = '';
+                            angular.forEach(value, function(val){
+                                q += val + ';';
+                            });
+    
+                            q = q.substr(0,q.length-1);
+    
+                            if(query.url){
+                                if(q){
+                                    numberOfSetAttributes++;
+                                    query.url = query.url + '&filter=' + attr.id + ':IN:' + q;
+                                }
+                            }
+                            else{
+                                if(q){
+                                    numberOfSetAttributes++;
+                                    query.url = 'filter=' + attr.id + ':IN:' + q;
+                                }
+                            }
+                        }
+                        else{
+                            if(query.url){
+                                numberOfSetAttributes++;
+                                if(attr.operator === "Eq"){
+                                    query.url = query.url + '&filter=' + attr.id + ':EQ:' + value;
+                                }else{
+                                    query.url = query.url + '&filter=' + attr.id + ':LIKE:' + value;
+                                }
+                                
+                            }
+                            else{
+                                numberOfSetAttributes++;
+                                if(attr.operator === "Eq"){
+                                    query.url = 'filter=' + attr.id + ':EQ:' + value;
+                                }else{
+                                    query.url = 'filter=' + attr.id + ':LIKE:' + value;
+                                }
+                                
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.minAttributesRequiredToSearch)){
+            var programOrTETUrl = "";
+            if(program){
+                programOrTETUrl = "program="+program.id;
+            }else{
+                programOrTETUrl = "trackedEntityType="+trackedEntityType.id;
+            }
+            var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
+            return TEIService.search(searchOrgUnit.id, searchGroup.ouMode.name,null, programOrTETUrl, query.url, pager, true).then(function(response){
+                if(response && response.rows && response.rows.length > 0){
+                    if(uniqueSearch) return { status: "UNIQUE", data: response };
+                    return { status: "MATCHES", data: response };
+                }
+                return { status: "NOMATCH"};
+            });
+        }else{
+            var def = $q.defer();
+            def.resolve({status: "NOMATCH"});
+            return def.promise;
+        }
+    }
+})
 .factory('RuleBoundFactory', function()
 {
     var initData = function(){

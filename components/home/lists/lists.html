@@ -1,0 +1,57 @@
+<div ng-controller="ListsController">
+    <div class="hideInPrint" ng-if="selectedProgram" ng-cloak>
+        <div class="btn-group hideInPrint">
+            <button type="button" ng-repeat="workingList in selectedProgram.workingLists | orderBy: 'order'" class="btn btn-default small-vertical-spacing" ng-class="getWorkingListButtonClass(workingList)" ng-click="setWorkingList(workingList)" title="{{workingList.description | translate}}">
+                <span ng-class="workingList.icon"></span>
+            </button>
+        </div>
+        <div class="btn-group">
+            <div class="dropdown small-vertical-spacing">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" ng-class="getWorkingListButtonClass({ name: 'custom'})" >Custom working list<span style="margin-left:12px" class="fa fa-caret-down"></span></button>
+                <div class="dropdown-menu custom-workinglist-dropdown">
+                    <form name="searchForm">
+                        <div ng-include="'../components/home/lists/custom-workinglist.html'"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    
+    
+        <div class="pull-right dropdown small-vertical-spacing" ng-if="currentTrackedEntityList.data">
+            <span class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"><span class="fa fa-download"></span></button>
+                <ul class="dropdown-menu">
+                    <li><h6 class="dropdown-header">Download as</h6></li>
+                    <li class="divider"></li>
+                    <li ng-repeat="format in listExportFormats"><a href ng-click="getExportList(format)">{{format}}</a></li>
+                </ul>
+            </span>
+            <button type="button" class="btn btn-default" onclick="javascript:window.print()" title="{{'print' | translate}}"><span class="fa fa-print"></span></button>
+            <button class="btn btn-default"ng-click="showHideListColumns()" title="{{'show_hide_columns'| translate}}"><span class="fa fa-table"></span></button>
+        </div>
+    
+        <span ng-if="currentTrackedEntityList.data && pager.total">
+            {{'total'| translate}}:  {{pager.total}}
+        </span>
+        
+        
+        <i ng-if="currentTrackedEntityList.loading" class="fa fa-spinner fa-spin fa-2x"></i>
+    </div>
+    <!--- Error display for search begins -->
+    <div class="row" ng-if="currentTrackedEntityList && currentTrackedEntityList.type == trackedEntityListTypes.CUSTOM">
+        <div class="vertical-spacing" ng-if="emptyCustomWorkingListValues">
+            <div class="alert alert-warning">{{'search_input_required'| translate}}</div>
+        </div>
+    </div>    
+    
+    <!--- Error display for search ends -->    
+    <tracker-tei-list 
+        tei-data="currentTrackedEntityList.data" 
+        tei-pager="pager" 
+        tei-sort-column="currentTrackedEntityList.sortColumn"
+        tei-grid-columns="gridColumns"
+        tei-refetch-data="fetchTeis(pager, sortColumn)"
+        on-tei-clicked="openTei(tei)"
+        >
+    </tracker-tei-list>
+</div>

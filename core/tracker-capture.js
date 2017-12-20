@@ -222,10 +222,7 @@ function getRelationships()
 function getTrackedEntityTypes()
 {
     dhis2.tc.store.getKeys('trackedEntityTypes').done(function(res){
-        if(res.length > 0){
-            return;
-        }        
-        return dhis2.tracker.getTrackerObjects('trackedEntityTypes', 'trackedEntityTypes', DHIS2URL + '/trackedEntityTypes.json', 'paging=false&fields=id,displayName', 'idb', dhis2.tc.store);
+        return dhis2.tracker.getTrackerObjects('trackedEntityTypes', 'trackedEntityTypes', DHIS2URL + '/trackedEntityTypes.json', 'paging=false&fields=id,displayName,maxTeiCountToReturn,minAttributesRequiredToSearch,trackedEntityTypeAttributes[*,trackedEntityAttribute[id,unique]]', 'idb', dhis2.tc.store);
     });    
 }
 
@@ -330,7 +327,7 @@ function getBatchPrograms( programs, batch )
     $.ajax( {
         url: DHIS2URL + '/programs.json',
         type: 'GET',
-        data: 'fields=*,dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],trackedEntityType[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],organisationUnits[id,displayName],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,description,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique]]&paging=false&filter=id:in:' + ids
+        data: 'fields=*,dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],trackedEntityType[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],organisationUnits[id,displayName],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,description,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique,orgunitScope]],minAttributesRequiredToSearch,maxTeiCountToReturn&paging=false&filter=id:in:' + ids
     }).done( function( response ){
 
         if(response.programs){
@@ -360,6 +357,7 @@ function getBatchPrograms( programs, batch )
                         }
                     });
                 }
+
 
                 dhis2.tc.store.set( 'programs', program );
             });
