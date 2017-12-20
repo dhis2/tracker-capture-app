@@ -938,7 +938,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return def.promise;
         },
         getGeneratedAttributeValue: function(attribute, selectedTei, program, orgUnit) {
-            var getValueUrl = function(url, valueToSet, selectedTei, program, orgUnit, required){
+            var getValueUrl = function(valueToSet, selectedTei, program, orgUnit, required){
                 var valueUrlBase = valueToSet+"=";
                 var valueUrl = null;
                 switch(valueToSet){
@@ -953,26 +953,31 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }
 
             return $http.get(DHIS2URL + '/trackedEntityAttributes/'+attribute+'/requiredValues').then(function(response){
-                var requiredValuesUrl = "";
-                var optionalValuesUrl = "";
+                var paramsUrl = "?";
                 if(response && response.data){
-                    if(response.required){
-                        angular.forEach(response.required, function(requiredValue){
-                            var valueUrl = getValueUrl(requiredValuesUrl, value, selectedTei, program, orgUnit,true);
-                            if(requiredValuesUrl === "") requiredValuesUrl = "?"+valueUrl;
-                            else requiredValuesUrl+="&"+valueUrl;
+                    if(response.data.required){
+                        angular.forEach(response.data.required, function(requiredValue){
+                            var valueUrl = getValueUrl(requiredValue, selectedTei, program, orgUnit,true);
+                            paramsUrl+="&"+valueUrl;
                         });
                     }
-                    if(response.optional){
-                        angular.forEach(response.optional, function(optionalValue){
-                            var valueUrl = getValueUrl(requiredValuesUrl, value, selectedTei, program, orgUnit,false);
-                            if(valueUrl) optionalValuesUrl += "&"+valueUrl;
+                    if(response.data.optional){
+                        angular.forEach(response.data.optional, function(optionalValue){
+                            var valueUrl = getValueUrl(optionalValue, selectedTei, program, orgUnit,false);
+                            if(valueUrl) paramsUrl += "&"+valueUrl;
                         });
                     }
                 }
-                return $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generate'+requiredValuesUrl).then(function (response) {
+                if(paramsUrl.length >= 2 && paramsUrl.charAt(1) === "&") paramsUrl = paramsUrl.slice(0,1)+paramsUrl.slice(2);
+                return $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generateAndReserve'+paramsUrl).then(function (response) {
                     if (response && response.data) {
-                        return response.data;
+                        var value = null;
+                        angular.forEach(response.data, function(generated){
+                            if(generated.trackedEntityAttribute.id === attribute){
+                                value = generated.value;
+                            }
+                        })
+                        return value;
                     }
                     return null;
                 }, function (response) {
