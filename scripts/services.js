@@ -937,19 +937,55 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }
             return def.promise;
         },
-        getGeneratedAttributeValue: function(attribute) {
-            var deferred = $q.defer();
-            $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generate').then(function (response) {
-                if (response && response.data) {
-                    deferred.resolve(response.data);
+        getGeneratedAttributeValue: function(attribute, selectedTei, program, orgUnit) {
+            var getValueUrl = function(valueToSet, selectedTei, program, orgUnit, required){
+                var valueUrlBase = valueToSet+"=";
+                var valueUrl = null;
+                switch(valueToSet){
+                    case "org_unit_code":
+                        if(orgUnit && orgUnit.code) valueUrl = valueUrlBase+orgUnit.code;
+                        break;
+                    default:
+                        throw "value not supported";
                 }
-            }, function (response) {
-                var errorBody = $translate.instant('failed_to_generate_tracked_entity_attribute');
-                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
-                deferred.resolve(response.data);
-                return null;
+                if(required && !valueUrl) throw "value "+valueToSet+ "not found";
+                return valueUrl;
+            }
+
+            return $http.get(DHIS2URL + '/trackedEntityAttributes/'+attribute+'/requiredValues').then(function(response){
+                var paramsUrl = "?";
+                if(response && response.data){
+                    if(response.data.required){
+                        angular.forEach(response.data.required, function(requiredValue){
+                            var valueUrl = getValueUrl(requiredValue, selectedTei, program, orgUnit,true);
+                            paramsUrl+="&"+valueUrl;
+                        });
+                    }
+                    if(response.data.optional){
+                        angular.forEach(response.data.optional, function(optionalValue){
+                            var valueUrl = getValueUrl(optionalValue, selectedTei, program, orgUnit,false);
+                            if(valueUrl) paramsUrl += "&"+valueUrl;
+                        });
+                    }
+                }
+                if(paramsUrl.length >= 2 && paramsUrl.charAt(1) === "&") paramsUrl = paramsUrl.slice(0,1)+paramsUrl.slice(2);
+                return $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generateAndReserve'+paramsUrl).then(function (response) {
+                    if (response && response.data) {
+                        var value = null;
+                        angular.forEach(response.data, function(generated){
+                            if(generated.trackedEntityAttribute.id === attribute){
+                                value = generated.value;
+                            }
+                        })
+                        return value;
+                    }
+                    return null;
+                }, function (response) {
+                    var errorBody = $translate.instant('failed_to_generate_tracked_entity_attribute');
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
+                    return response.data;
+                });
             });
-            return deferred.promise;
         }
     };
 })
