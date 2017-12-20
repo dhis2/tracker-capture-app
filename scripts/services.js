@@ -899,22 +899,35 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return def.promise;
         },
         getGeneratedAttributeValue: function(attribute, selectedTei, program, orgUnit) {
-            var getValueUrl = function(url, valueToSet, selectedTei, program, orgUnit){
-                var valueUrl = valueToSet+"=";
+            var getValueUrl = function(url, valueToSet, selectedTei, program, orgUnit, required){
+                var valueUrlBase = valueToSet+"=";
+                var valueUrl = null;
                 switch(valueToSet){
                     case "org_unit_code":
-                        return valueUrl+orgUnit.code;
+                        if(orgUnit && orgUnit.code) valueUrl = valueUrlBase+orgUnit.code;
+                        break;
                     default:
                         throw "value not supported";
                 }
+                if(required && !valueUrl) throw "value "+valueToSet+ "not found";
+                return valueUrl;
             }
 
             return $http.get(DHIS2URL + '/trackedEntityAttributes/'+attribute+'/requiredValues').then(function(response){
                 var requiredValuesUrl = "";
+                var optionalValuesUrl = "";
                 if(response && response.data){
                     if(response.required){
                         angular.forEach(response.required, function(requiredValue){
-                            requiredValuesUrl += getValueUrl(requiredValuesUrl, value, selectedTei, program, orgUnit);
+                            var valueUrl = getValueUrl(requiredValuesUrl, value, selectedTei, program, orgUnit,true);
+                            if(requiredValuesUrl === "") requiredValuesUrl = "?"+valueUrl;
+                            else requiredValuesUrl+="&"+valueUrl;
+                        });
+                    }
+                    if(response.optional){
+                        angular.forEach(response.optional, function(optionalValue){
+                            var valueUrl = getValueUrl(requiredValuesUrl, value, selectedTei, program, orgUnit,false);
+                            if(valueUrl) optionalValuesUrl += "&"+valueUrl;
                         });
                     }
                 }
