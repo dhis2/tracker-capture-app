@@ -992,12 +992,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             if(pAttribute.renderOptionsAsRadio){
                                 att.renderOptionsAsRadio = pAttribute.renderOptionsAsRadio;
                             }
-                            att.searchable = true;
-                            /*
                             if(pAttribute.searchable)
                             {
                                 att.searchable = pAttribute.searchable;
-                            }*/
+                            }
                             programAttributes.push(att);
                         }
                     });
