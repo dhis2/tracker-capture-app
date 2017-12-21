@@ -80,7 +80,7 @@ trackerCapture.controller('HomeController',function(
             }
         }
 
-        /*OrgUnitFactory.getSearchTreeRoot().then(function(response) {
+        OrgUnitFactory.getSearchTreeRoot().then(function(response) {
             $scope.orgUnits = response.organisationUnits;
             $scope.base.orgUnitsById = {};
             var byLevel = {};
@@ -91,7 +91,7 @@ trackerCapture.controller('HomeController',function(
                     o.hasChildren = o.children && o.children.length > 0 ? true : false;
                 });
             });
-        });*/
+        });
 
 
 
