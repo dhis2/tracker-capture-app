@@ -10,7 +10,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     var store = new dhis2.storage.Store({
         name: "dhis2tc",
         adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],
-        objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements']
+        objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements', 'programAccess','programStageAccess','trackedEntityTypeAccess']
     });
     return{
         currentStore: store
@@ -313,83 +313,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 /* Factory to fetch programs */
 .factory('ProgramFactory', function($q, $rootScope, $location, SessionStorageService, TCStorageService, orderByFilter, OrgUnitFactory, CommonUtils) {
-
+    var access = null;
     return {
-
-        getAll: function(){
-
-            var roles = SessionStorageService.get('USER_PROFILE');
-            var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
-            var def = $q.defer();
-            OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function (orgUnit) {
-                var ou = orgUnit;
-
-                TCStorageService.currentStore.open().done(function () {
-                    TCStorageService.currentStore.getAll('programs').done(function (prs) {
-                        var programs = [];
-                        angular.forEach(prs, function (pr) {
-                            if (pr.organisationUnits.hasOwnProperty(ou.id) && CommonUtils.userHasValidRole(pr, 'programs', userRoles)) {
-                                programs.push(pr);
-                            }
-                        });
-                        $rootScope.$apply(function () {
-                            def.resolve(programs);
-                        });
-                    });
-                });
-            });
-
-            return def.promise;
-        },
-        getAllForUser: function(selectedProgram){
-            var roles = SessionStorageService.get('USER_PROFILE');
-            var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
-            var def = $q.defer();
-
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll('programs').done(function(prs){
-                    var programs = [];
-                    angular.forEach(prs, function(pr){
-                        if(CommonUtils.userHasValidRole(pr, 'programs', userRoles)){
-                            programs.push(pr);
-                        }
-                    });
-
-                    programs = orderByFilter(programs, '-displayName').reverse();
-
-                    if(programs.length === 0){
-                        selectedProgram = null;
-                    }
-                    else if(programs.length === 1){
-                        selectedProgram = programs[0];
-                    }
-                    else{
-                        if(selectedProgram){
-                            var continueLoop = true;
-                            for(var i=0; i<programs.length && continueLoop; i++){
-                                if(programs[i].id === selectedProgram.id){
-                                    selectedProgram = programs[i];
-                                    continueLoop = false;
-                                }
-                            }
-                            if(continueLoop){
-                                selectedProgram = null;
-                            }
-                        }
-                    }
-
-                    if(!selectedProgram || angular.isUndefined(selectedProgram) && programs.legth > 0){
-                        selectedProgram = programs[0];
-                    }
-
-                    $rootScope.$apply(function(){
-                        def.resolve({programs: programs, selectedProgram: selectedProgram});
-                    });
-                });
-            });
-
-            return def.promise;
-        },
         get: function(uid){
 
             var def = $q.defer();
@@ -403,53 +328,84 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return def.promise;
         },
-        getProgramsByOu: function(ou, selectedProgram){
+        getAllAccesses: function(){
+            var def = $q.defer();
+            if(access){
+                def.resolve(access);
+            }else{
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.getAll('programAccess').done(function(programAccess){
+                        access = { programsById: {}, programStagesById: {}};
+                        angular.forEach(programAccess, function(program){
+                            access.programsById[program.id] = program.access;
+                            angular.forEach(program.programStages, function(programStage){
+                                access.programStagesById[programStage.id] = programStage.access;
+                            });
+                        });
+                        def.resolve(access);
+                    });
+                });
+            }
+            return def.promise;
+            
+        },
+        getProgramsByOu: function(ou,loadSelectedProgram, selectedProgram){
             var roles = SessionStorageService.get('USER_PROFILE');
             var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
             var def = $q.defer();
 
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll('programs').done(function(prs){
-                    var programs = [];
-                    angular.forEach(prs, function(pr){
-                        if(pr.organisationUnits.hasOwnProperty( ou.id ) && CommonUtils.userHasValidRole(pr, 'programs', userRoles)){
-                            programs.push(pr);
-                        }
-                    });
-
-                    programs = orderByFilter(programs, '-displayName').reverse();
-
-                    if(programs.length === 0){
-                        selectedProgram = null;
-                    }
-                    else if(programs.length === 1){
-                        selectedProgram = programs[0];
-                    }
-                    else{
-                        if(selectedProgram){
-                            var continueLoop = true;
-                            for(var i=0; i<programs.length && continueLoop; i++){
-                                if(programs[i].id === selectedProgram.id){
-                                    selectedProgram = programs[i];
-                                    continueLoop = false;
-                                }
+            this.getAllAccesses().then(function(accesses){
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.getAll('programs').done(function(prs){
+                        var programs = [];
+                        angular.forEach(prs, function(pr){
+                            if(pr.organisationUnits.hasOwnProperty( ou.id ) && CommonUtils.userHasValidRole(pr, 'programs', userRoles) && accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read){
+                                pr.access = accesses.programsById[pr.id];
+                                var accessiblePrs = [];
+                                angular.forEach(pr.programStages, function(prs){
+                                    if(accesses.programStagesById[prs.id] && accesses.programStagesById[prs.id].data.read){
+                                        prs.access = accesses.programStagesById[prs.id];
+                                        accessiblePrs.push(prs);
+                                    }
+                                });
+                                pr.programStages = accessiblePrs;
+                                programs.push(pr);
                             }
-                            if(continueLoop){
+                        });
+                        programs = orderByFilter(programs, '-displayName').reverse();
+                        if(loadSelectedProgram){
+                            if(programs.length === 0){
                                 selectedProgram = null;
                             }
+                            else if(programs.length === 1){
+                                selectedProgram = programs[0];
+                            }
+                            else{
+                                if(selectedProgram){
+                                    var continueLoop = true;
+                                    for(var i=0; i<programs.length && continueLoop; i++){
+                                        if(programs[i].id === selectedProgram.id){
+                                            selectedProgram = programs[i];
+                                            continueLoop = false;
+                                        }
+                                    }
+                                    if(continueLoop){
+                                        selectedProgram = null;
+                                    }
+                                }
+                            }
+        
+                            if(!selectedProgram || angular.isUndefined(selectedProgram) && programs.legth > 0){
+                                selectedProgram = programs[0];
+                            }
                         }
-                    }
-
-                    if(!selectedProgram || angular.isUndefined(selectedProgram) && programs.legth > 0){
-                        selectedProgram = programs[0];
-                    }
-
-                    $rootScope.$apply(function(){
-                        def.resolve({programs: programs, selectedProgram: selectedProgram});
+    
+                        $rootScope.$apply(function(){
+                            def.resolve({programs: programs, selectedProgram: selectedProgram});
+                        });
                     });
                 });
             });
-
             return def.promise;
         },
         extendWithSearchGroups: function(programs, attributesById){
@@ -653,30 +609,74 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 /* Service for getting tracked entity */
 .factory('TEService', function(TCStorageService, $q, $rootScope, AttributesFactory) {
-
+    var allAccesses = null;
     return {
         getAll: function(){
             var def = $q.defer();
 
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll('trackedEntityTypes').done(function(entities){
-                    $rootScope.$apply(function(){
-                        def.resolve(entities);
+            this.getAllAccesses().then(function(accesses){
+                TCStorageService.currentStore.open().done(function(){
+
+                    TCStorageService.currentStore.getAll('trackedEntityTypes').done(function(entities){
+                        angular.forEach(entities, function(entity){
+                            entity.access = accesses[entity.id];
+                        })
+                        $rootScope.$apply(function(){
+                            
+                            def.resolve(entities);
+                        });
+                    });
+                });
+                
+            });
+            return def.promise;
+
+        },
+        get: function(uid){
+            var def = $q.defer();
+
+            this.getAccess(uid).then(function(access){
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.get('trackedEntityTypes', uid).done(function(te){
+                        if(te){
+                            te.access = access;
+                        }
+                        $rootScope.$apply(function(){
+                            def.resolve(te);
+                        });
                     });
                 });
             });
             return def.promise;
         },
-        get: function(uid){
+        getAccess: function(uid){
             var def = $q.defer();
-
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.get('trackedEntityTypes', uid).done(function(te){
-                    $rootScope.$apply(function(){
-                        def.resolve(te);
+            if(allAccesses){
+                def.resolve(allAccesses[uid]);
+            }else{
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.get('trackedEntityTypeAccess', uid).done(function(teAccess){
+                        def.resolve({data: {write: true, read: true}});//teAccess.access);
                     });
                 });
-            });
+            }
+            return def.promise;
+        },
+        getAllAccesses: function(){
+            var def = $q.defer();
+            if(allAccesses){
+                def.resolve(allAccesses);
+            }else{
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.getAll('trackedEntityTypeAccess').done(function(teAccess){
+                        allAccesses = {};
+                        angular.forEach(teAccess, function(a){
+                            allAccesses[a.id] = {data: {write: true, read: true}};//a.access;
+                        })
+                        def.resolve(allAccesses);
+                    });
+                });
+            }
             return def.promise;
         },
         extendWithSearchGroups: function(trackedEntityTypes, attributesById){
@@ -2659,4 +2659,42 @@ i
             return ruleBoundData;
         }
     }
+})
+.service('AccessUtils', function($q, TCStorageService){
+
+    this.anyWritable = function(accessKeyValuePair){
+        if(accessKeyValuePair){
+            for(var accessKey in accessKeyValuePair){
+                var access = accessKeyValuePair[accessKey];
+                if(access && access.data && access.data.write) return true;
+            }
+        }
+        return false;
+    }
+    this.isReadable = function(obj){
+        if(obj && obj.access && obj.access.data && obj.access.data.read){
+            return true;
+        }
+        return false;
+    }
+    this.isWritable = function(obj){
+        if(obj.access && obj.access.data && obj.access.data.write){
+            return true;
+        }
+        return false;
+    }
+
+    this.toWritable = function(arr){
+        var service = this;
+        if(!arr) return arr;
+        var writable = [];
+        angular.forEach(arr, function(obj){
+            if(service.isWritable(obj)){
+                writable.push(obj);
+            }
+        });
+        return writable;
+    }
 });
+
+

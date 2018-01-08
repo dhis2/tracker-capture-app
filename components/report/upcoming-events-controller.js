@@ -59,7 +59,7 @@ trackerCapture.controller('UpcomingEventsController',
     //load programs associated with the selected org unit.
     $scope.loadPrograms = function() {
         if (angular.isObject($scope.selectedOrgUnit)){
-            ProgramFactory.getAllForUser($scope.model.selectedProgram).then(function(response){
+            ProgramFactory.getProgramsByOu($scope.selectedOrgUnit,true, $scope.model.selectedProgram).then(function(response){
                 $scope.programs = response.programs;
                 $scope.model.selectedProgram = response.selectedProgram;
             });

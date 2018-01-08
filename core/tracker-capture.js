@@ -29,7 +29,7 @@ if( dhis2.tc.memoryOnly ) {
 dhis2.tc.store = new dhis2.storage.Store({
     name: 'dhis2tc',
     adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],
-    objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants']
+    objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'programAccess','programStageAccess', 'trackedEntityTypeAccess']
 });
 
 (function($) {
@@ -137,7 +137,7 @@ function downloadMetaData()
     promise = promise.then( getConstants );
     promise = promise.then( getOrgUnitLevels );
     promise = promise.then( getRelationships );       
-    promise = promise.then( getTrackedEntityTypes );    
+    promise = promise.then( getTrackedEntityTypesWithAccess );    
     promise = promise.then( getMetaPrograms );
     promise = promise.then( filterMissingPrograms );
     promise = promise.then( getPrograms );
@@ -146,7 +146,10 @@ function downloadMetaData()
     promise = promise.then( getTrackedEntityAttributes );
     promise = promise.then( getOptionSetsForAttributes );
     promise = promise.then( getOptionSetsForDataElements );
-    promise = promise.then( getOptionSets );   
+    promise = promise.then( getOptionSets );
+    promise = promise.then(getProgramAccess);
+    promise = promise.then(getProgramStageAccess);
+    promise = promise.then(getTrackedEntityTypeAccess);
     promise.done(function() {
         //Enable ou selection after meta-data has downloaded
         $( "#orgUnitTree" ).removeClass( "disable-clicks" );
@@ -219,17 +222,41 @@ function getRelationships()
     });    
 }
 
-function getTrackedEntityTypes()
+function getTrackedEntityTypesWithAccess()
 {
-    dhis2.tc.store.getKeys('trackedEntityTypes').done(function(res){
-        return dhis2.tracker.getTrackerObjects('trackedEntityTypes', 'trackedEntityTypes', DHIS2URL + '/trackedEntityTypes.json', 'paging=false&fields=id,displayName,maxTeiCountToReturn,minAttributesRequiredToSearch,trackedEntityTypeAttributes[*,trackedEntityAttribute[id,unique]]', 'idb', dhis2.tc.store);
-    });    
+    return dhis2.tracker.getTrackerObjects('trackedEntityTypes', 'trackedEntityTypes', DHIS2URL + '/trackedEntityTypes.json', 'paging=false&fields=id,displayName,maxTeiCountToReturn,minAttributesRequiredToSearch,trackedEntityTypeAttributes[*,trackedEntityAttribute[id,unique]],access[data[read,write]]', 'idb', dhis2.tc.store);
 }
 
 function getMetaPrograms()
 {   
     console.log('in programs..'); 
     return dhis2.tracker.getTrackerObjects('programs', 'programs', DHIS2URL + '/programs.json', 'filter=programType:eq:WITH_REGISTRATION&paging=false&fields=id,version,programTrackedEntityAttributes[trackedEntityAttribute[id,optionSet[id,version]]],programStages[id,programStageDataElements[dataElement[id,optionSet[id,version]]]]', 'temp', dhis2.tc.store);
+}
+
+function getProgramAccess(){
+    return dhis2.tracker.getTrackerObjects('programAccess','programs', DHIS2URL+'/programs.json', 'paging=false&fields=id,access[data[read,write]],programStages[access[data[read,write]]]','temp', dhis2.tc.store).then(function(programAccesses){
+        //Temporary getting programStageAccess
+        var programAccessesById = {};
+        _.each(_.values(programAccesses), function(programAccess){
+            programAccess.programStages = [];
+            programAccessesById[programAccess.id] = programAccess;
+        });
+        return dhis2.tracker.getTrackerObjects('programStageAccess','programStages', DHIS2URL+'/programStages.json', 'paging=false&fields=id,program,access[data[read,write]]','temp', dhis2.tc.store).then(function(programStageAccesses){
+            _.each(_.values(programStageAccesses), function(programStageAccess){
+                programAccessesById[programStageAccess.program.id].programStages.push(programStageAccess);
+            });
+            return dhis2.tc.store.setAll('programAccess',programAccesses);
+        });
+
+    });
+}
+
+function getProgramStageAccess(){
+    return dhis2.tracker.getTrackerObjects('programStageAccess','programStages', DHIS2URL+'/programStages.json', 'paging=false&fields=id,access[data[read,write]]','idb', dhis2.tc.store);
+}
+
+function getTrackedEntityTypeAccess(){
+    return dhis2.tracker.getTrackerObjects('trackedEntityTypeAccess','trackedEntityTypes', DHIS2URL+'/trackedEntityTypes.json', 'paging=false&fields=id,access[data[read,write]]','idb', dhis2.tc.store);
 }
 
 function filterMissingPrograms( programs )
@@ -262,10 +289,28 @@ function filterMissingPrograms( programs )
         });  
     });
 
+    /*_.each( _.values( programs ), function ( program ) {        
+        build = build.then(function() {
+            var d = $.Deferred();
+            var p = d.promise();
+            dhis2.tc.store.get('programAccess', userId).done(function(obj) {
+                if(obj){
+                    if(!obj[program.id] || obj[program.id].version !== program.version){
+                        accessIds.push(program.id);
+                    }
+                }else{
+                    accessIds.push(program.id);
+                }
+                d.resolve();
+            });
+            return p;
+        });  
+    });*/
+
     build.done(function() {
         def.resolve();
         promise = promise.done( function () {
-            mainDef.resolve( programs, ids );
+            mainDef.resolve( programs, ids);
         } );
     }).fail(function(){
         mainDef.resolve( null, null );
@@ -276,7 +321,7 @@ function filterMissingPrograms( programs )
     return mainPromise;
 }
 
-function getPrograms( programs, ids )
+function getPrograms( programs, ids, accessIds )
 {
     if( !ids || !ids.length || ids.length < 1){
         return;
@@ -306,11 +351,11 @@ function getPrograms( programs, ids )
     build.done(function() {
         def.resolve();
         promise = promise.done( function () {                      
-            mainDef.resolve( programs, ids );
+            mainDef.resolve( programs, ids, accessIds );
         } );        
         
     }).fail(function(){
-        mainDef.resolve( null, null );
+        mainDef.resolve( null, null,null );
     });
 
     builder.resolve();

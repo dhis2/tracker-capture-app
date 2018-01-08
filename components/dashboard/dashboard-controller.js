@@ -169,13 +169,13 @@ trackerCapture.controller('DashboardController',
                                         }
                                         selectedEnrollment = selectedEnrollment ? selectedEnrollment : backupSelectedEnrollment;
 
-                                        ProgramFactory.getAll().then(function (programs) {
+                                        ProgramFactory.getProgramsByOu($scope.selectedOrgUnit, false).then(function (response) {
                                             $scope.programs = [];
                                             $scope.programNames = [];
                                             $scope.programStageNames = [];
 
                                             //get programs valid for the selected ou and tei
-                                            angular.forEach(programs, function (program) {
+                                            angular.forEach(response.programs, function (program) {
                                                 if (program.trackedEntityType && program.trackedEntityType.id === $scope.selectedTei.trackedEntityType) {
                                                     $scope.programs.push(program);
                                                     $scope.programNames[program.id] = {

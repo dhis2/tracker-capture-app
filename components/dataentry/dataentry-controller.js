@@ -30,7 +30,8 @@ trackerCapture.controller('DataEntryController',
                 AttributesFactory,
                 TrackerRulesFactory,
                 EventCreationService,
-                AuthorityService) {
+                AuthorityService,
+                AccessUtils) {
     
     //Unique instance id for the controller:
     $scope.instanceId = Math.floor(Math.random() * 1000000000);
@@ -1104,7 +1105,6 @@ trackerCapture.controller('DataEntryController',
     };
     
     $scope.showCreateEvent = function (stage, eventCreationAction, suggestedStage) {        
-        
         var availableStages = [];
         if(!stage){
             
@@ -1142,6 +1142,13 @@ trackerCapture.controller('DataEntryController',
                 NotificationService.showNotifcationDialog(headerText, bodyText);
                 return;
             }
+        }
+        var writable = AccessUtils.toWritable(availableStages);
+        if(writable.length === 0){
+            var headerText = $translate.instant("no_accessible_programstages");
+            var bodyText = $translate.instant("no_accessible_programstages_to_create");
+            NotificationService.showNotifcationDialog(headerText, bodyText);
+            return;
         }
         var autoCreate = stage && stage.displayEventsInTable ? stage.displayEventsInTable : false;
         EventCreationService.showModal($scope.eventsByStage, stage, availableStages, $scope.programStages, $scope.selectedEntity, $scope.selectedProgram, $scope.selectedOrgUnit, $scope.selectedEnrollment, autoCreate, eventCreationAction, allApplicableEvents,suggestedStage, $scope.selectedCategories)
