@@ -214,6 +214,11 @@ trackerCapture.controller('RegistrationController',
                 }
                 $scope.registrationPrefill.finished = true;
             }
+            CurrentSelection.set({
+                te: $scope.trackedEntityTypes.selected,
+                pr: $scope.selectedProgram,
+                orgUnit: $scope.selectedOrgUnit
+            });
 
         }
 
