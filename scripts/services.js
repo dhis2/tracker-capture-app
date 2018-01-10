@@ -2379,7 +2379,7 @@ i
         this.trackedEntityList = trackedEntityList;
     }
 })
-.service("SearchGroupService", function(TEIService, $q, OperatorFactory, AttributesFactory){
+.service("SearchGroupService", function(TEIService, $q, OperatorFactory, AttributesFactory, DateUtils){
     var programSearchConfigsById = {};
     var trackedEntityTypeSearchConfigsById = {};
     var defaultOperators = OperatorFactory.defaultOperators;
@@ -2480,7 +2480,7 @@ i
                     }
                     if(attr.operator === OperatorFactory.defaultOperators[1]){
                         var startValue =  searchGroup[attr.id] ? searchGroup[attr.id].startValue : null;
-                        var endDate = searchGroup[attr.id] ? searchGroup[attr.id].endValue : null;
+                        var endValue = searchGroup[attr.id] ? searchGroup[attr.id].endValue : null;
                         if(startValue && startValue !== ''){
                             query.hasValue = true;
                             if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
