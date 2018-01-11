@@ -148,7 +148,6 @@ function downloadMetaData()
     promise = promise.then( getOptionSetsForDataElements );
     promise = promise.then( getOptionSets );
     promise = promise.then(getProgramAccess);
-    promise = promise.then(getProgramStageAccess);
     promise = promise.then(getTrackedEntityTypeAccess);
     promise.done(function() {
         //Enable ou selection after meta-data has downloaded
@@ -249,10 +248,6 @@ function getProgramAccess(){
         });
 
     });
-}
-
-function getProgramStageAccess(){
-    return dhis2.tracker.getTrackerObjects('programStageAccess','programStages', DHIS2URL+'/programStages.json', 'paging=false&fields=id,access[data[read,write]]','idb', dhis2.tc.store);
 }
 
 function getTrackedEntityTypeAccess(){

@@ -516,6 +516,8 @@ trackerCapture.controller('DashboardController',
         }, 500);
     };
 
+
+
     $scope.activiateTEI = function () {
         var st = !$scope.selectedTei.inactive || $scope.selectedTei.inactive === '' ? true : false;
 
@@ -536,8 +538,20 @@ trackerCapture.controller('DashboardController',
         }, function () {
         });
     };
-    
+
+    var canDeleteTei = function(){
+        return $scope.trackedEntityType && $scope.trackedEntityType.access.data.write
+            && $scope.selectedProgram && $scope.selectedProgram.access.data.write
+            && $scope.userAuthority.canDeleteTei && $scope.userAuthority.canDeleteEnrollment;
+    }
+
     $scope.deleteTEI = function () {
+        if(!canDeleteTei()){
+            var bodyText = $translate.instant('you_do_not_have_the_necessary_authorities_to_delete') + ' ' + $translate.instant('this').toLowerCase() +' '+ $scope.trackedEntityType.displayName.toLowerCase();
+            var headerText = $translate.instant('delete')+ ' ' + $scope.trackedEntityType.displayName.toLowerCase() + ' ' + $translate.instant('not_allowed').toLowerCase();
+            NotificationService.showNotifcationDialog(headerText, bodyText);
+            return;
+        }
         var modalOptions = {
             closeButtonText: 'no',
             actionButtonText: 'yes',
@@ -656,4 +670,8 @@ trackerCapture.controller('DashboardController',
         }
         $location.path('/dashboard').search({tei: tei, program: pr ? pr : null, ou: orgUnitUrl ? orgUnitUrl : null});
     };
+
+    $scope.showManageTeiDropdown = function(){
+        return $scope.trackedEntityType && $scope.trackedEntityType.access.data.write && $scope.selectedProgram && $scope.selectedProgram.access.data.write;
+    }
 });

@@ -2237,7 +2237,7 @@ i
 
 .service('EventCreationService', function($modal){
 
-    this.showModal = function(eventsByStage, stage, availableStages,programStages,selectedEntity,selectedProgram,selectedOrgUnit,selectedEnrollment, autoCreate, eventCreationAction,allEventsSorted, suggestedStage, selectedCategories){
+    this.showModal = function(eventsByStage, stage, availableStages, writableStages, programStages,selectedEntity,selectedProgram,selectedOrgUnit,selectedEnrollment, autoCreate, eventCreationAction,allEventsSorted, selectedCategories){
         var modalInstance = $modal.open({
             templateUrl: 'components/dataentry/new-event.html',
             controller: 'EventCreationController',
@@ -2250,6 +2250,9 @@ i
                 },
                 stages: function(){
                     return availableStages;
+                },
+                writableStages: function(){
+                    return writableStages;
                 },
                 allStages: function(){
                     return programStages;
@@ -2274,9 +2277,6 @@ i
                 },
                 events: function(){
                     return allEventsSorted;
-                },
-                suggestedStage: function(){
-                    return suggestedStage;
                 },
                 selectedCategories: function () {
                     return selectedCategories;

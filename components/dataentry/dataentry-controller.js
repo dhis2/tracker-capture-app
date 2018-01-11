@@ -1106,7 +1106,15 @@ trackerCapture.controller('DataEntryController',
     
     $scope.showCreateEvent = function (stage, eventCreationAction, suggestedStage) {        
         var availableStages = [];
-        if(!stage){
+        if(stage){
+            if(!stage.access.data.write){
+                var headerText = $translate.instant("stage_write_required");
+                var bodyText = $translate.instant("stage_write_required");
+                NotificationService.showNotifcationDialog(headerText, bodyText);
+                return;
+            }
+        }else
+        {
             
             //get applicable events
             var allApplicableEvents = [];
@@ -1135,23 +1143,25 @@ trackerCapture.controller('DataEntryController',
                         availableStages.push(stage);
                     }
                 });
-            }           
+            }          
             if(availableStages.length === 0) {
                 var headerText = $translate.instant("error");
                 var bodyText = $translate.instant("no_stages_available");
                 NotificationService.showNotifcationDialog(headerText, bodyText);
                 return;
             }
+            var writableStages = AccessUtils.toWritable(availableStages); 
+            if(writableStages.length === 0) {
+                var headerText = $translate.instant("no_accessible_program_stages");
+                var bodyText = $translate.instant("no_accessible_program_stages");
+                NotificationService.showNotifcationDialog(headerText, bodyText);
+                return;
+            }
         }
-        var writable = AccessUtils.toWritable(availableStages);
-        if(writable.length === 0){
-            var headerText = $translate.instant("no_accessible_programstages");
-            var bodyText = $translate.instant("no_accessible_programstages_to_create");
-            NotificationService.showNotifcationDialog(headerText, bodyText);
-            return;
-        }
+        
+
         var autoCreate = stage && stage.displayEventsInTable ? stage.displayEventsInTable : false;
-        EventCreationService.showModal($scope.eventsByStage, stage, availableStages, $scope.programStages, $scope.selectedEntity, $scope.selectedProgram, $scope.selectedOrgUnit, $scope.selectedEnrollment, autoCreate, eventCreationAction, allApplicableEvents,suggestedStage, $scope.selectedCategories)
+        EventCreationService.showModal($scope.eventsByStage, stage,availableStages, writableStages, $scope.programStages, $scope.selectedEntity, $scope.selectedProgram, $scope.selectedOrgUnit, $scope.selectedEnrollment, autoCreate, eventCreationAction, allApplicableEvents,suggestedStage, $scope.selectedCategories)
                 .then(function (eventContainer) {
                     if(angular.isDefined(eventContainer)){                
                         var ev = eventContainer.ev;

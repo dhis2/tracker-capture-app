@@ -106,9 +106,16 @@ trackerCapture.controller('RegistrationController',
     };
 
     $scope.trackedEntityTypes = {available: []};
+    var trackedEntityTypesById = {};
     TEService.getAll().then(function (entities) {
+        angular.forEach(entities, function(entity){
+            trackedEntityTypesById[entity.id] = entity;
+        });
         $scope.trackedEntityTypes.available = AccessUtils.toWritable(entities);
         $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.available[0];
+        if($scope.selectedProgram){
+            $scope.trackedEntityTypes.selected = trackedEntityTypesById[$scope.selectedProgram.trackedEntityType.id];
+        }
     });
 
     var getProgramRules = function () {
@@ -126,7 +133,9 @@ trackerCapture.controller('RegistrationController',
             });
         }
     };
-
+    $scope.hasTeiProgramWrite = function(){
+        return $scope.trackedEntityTypes && $scope.trackedEntityTypes.selected && $scope.trackedEntityTypes.selected.access.data.write && $scope.selectedProgram && $scope.selectedProgram.access.data.write;
+    }
     var setSearchConfig = function(){
         var promise = null;
         if($scope.selectedProgram){
@@ -163,6 +172,9 @@ trackerCapture.controller('RegistrationController',
 
             if ($scope.registrationMode === 'REGISTRATION') {
                 $scope.getAttributes($scope.registrationMode);
+            }
+            if(newValue){
+                $scope.trackedEntityTypes.selected = trackedEntityTypesById[newValue.trackedEntityType.id];
             }
         }
         setSearchConfig();

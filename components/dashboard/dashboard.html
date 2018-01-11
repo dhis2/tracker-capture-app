@@ -31,7 +31,7 @@
                 
                 <div ng-include="'program-selector'" ng-if="!topBarConfig.settings || !topBarConfig.settings.active" style="flex: 1 100%;"></div>
                 <div ng-include="'components/topbar/topbar.html'" ng-style="{'flex' : (topBarConfig.settings && topBarConfig.settings.active) ? '1 100%' : '0'}"></div>
-                <div ng-class="topbarRightSizeClass" style="width:150px">
+                <div ng-class="topbarRightSizeClass" style="width:150px; display:flex;">
                     <button type="button"
                             title="{{model.stickyDisabled ? stickLabel : unstickLabel}}"
                             ng-show="(dashboardWidgets | filter: {parent: 'smallerWidget', show: true}).length > 0"
@@ -41,7 +41,7 @@
                         <i class="fa fa-thumb-tack"></i>
                     </button>
                     
-                    <div class="btn-group trim">
+                    <div class="btn-group trim" ng-if="showManageTeiDropdown()">
                         <button type="button" title="{{'manage' | translate}} {{trackedEntityType.displayName}}" class="btn btn-danger dropdown-toggle" ng-disabled="selectedOrgUnit.closedStatus" data-toggle="dropdown">
                             <i class="fa fa-exclamation-circle"></i>
                         </button>

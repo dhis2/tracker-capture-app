@@ -12,9 +12,9 @@
                 </td>
                 <td class="absorbing-column">
                     <ui-select ng-model="model.selectedStage">
-                        <ui-select-match allow-clear="true" placeholder=""></ui-select-match>
+                        <ui-select-match>{{$select.selected.displayName}}</ui-select-match>
                         <ui-select-choices repeat="stage in stages" ui-disable-choice="!stage.access.data.write">
-                            <span>{{stage.displayName}}</span><span class="pull-right fa fa-info"></span>
+                            <span>{{stage.displayName}} <span ng-if="!stage.access.data.write"> ({{'read_only' | translate}})</span></span>
                         </ui-select-choices>
                     </ui-select>
                     <!--<select class="form-control" 
