@@ -2390,7 +2390,7 @@ i
             var defaultSearchGroup = { id: dhis2.util.uid(), attributes: [], ouMode: {name: 'ACCESSIBLE'}, orgunitUnique: false};
             var attributes = AttributesFactory.generateAttributeFilters(angular.copy(dimensionAttributes));
             angular.forEach(attributes, function(attr){
-                if(attr.searchable){
+                if(attr.searchable || (attr.unique && !attr.orgunitScope)){
                     searchConfig.searchGroupsByAttributeId[attr.id] = {};
                     if(attr.unique){
                         var uniqueAttr = attr.orgunitScope ? angular.copy(attr) : attr;

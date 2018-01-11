@@ -20,12 +20,13 @@ trackerCapture.controller('SearchController',function(
     TEService,
     SearchGroupService,
     OperatorFactory,
-    TEIGridService) {
+    TEIGridService,
+    AccessUtils) {
 
         $scope.trackedEntityTypes = {};
         $scope.searchConfig = {};
         $scope.defaultOperators = OperatorFactory.defaultOperators;
-
+        $scope.selectedProgramTET
 
 
         $scope.$watch('base.selectedProgram', function() {
@@ -54,12 +55,22 @@ trackerCapture.controller('SearchController',function(
         }
 
         var loadTrackedEntityTypes = function(){
+            var promise;
             if(!$scope.trackedEntityTypes.all){
-                return TEService.getAll().then(function(trackedEntityTypes){
+                promise = TEService.getAll().then(function(trackedEntityTypes){
                     $scope.trackedEntityTypes.all = trackedEntityTypes;
                 });
+            }else{
+                promise = emptyPromise();
             }
-            return emptyPromise();
+            return promise.then(function(){
+                if($scope.base.selectedProgram){
+                    var tet = $.grep($scope.trackedEntityTypes.all, function(tet){
+                        return tet.id == $scope.base.selectedProgram.trackedEntityType.id;
+                    });
+                    $scope.trackedEntityTypes.selected = tet[0];
+                }
+            });
         }
 
         var emptyPromise = function(){
@@ -86,7 +97,8 @@ trackerCapture.controller('SearchController',function(
                     return;
                 }
                 searchGroup.error = false;
-                return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+                var trackedEntityType = $scope.base.selectedProgram ? null : $scope.trackedEntityTypes.selected;
+                return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,trackedEntityType, $scope.selectedOrgUnit).then(function(res){
                         //If only one tei found and in selectedOrgUnit, go straight to dashboard
                         if(res && res.data && res.data.rows && res.data.rows.length === 1){
                             var gridData = TEIGridService.format($scope.selectedOrgUnit.id, res.data, false, null, null);
@@ -112,9 +124,7 @@ trackerCapture.controller('SearchController',function(
         }
 
         var translateWithTETName = function(text, nameToLower){
-            var trackedEntityTypeName = $scope.base.selectedProgram ? 
-                $scope.base.selectedProgram.trackedEntityType.displayName : 
-                ($scope.trackedEntityTypes.selected ? $scope.trackedEntityTypes.selected.displayName : "tracked entity instance");
+            var trackedEntityTypeName = $scope.trackedEntityTypes.selected ? $scope.trackedEntityTypes.selected.displayName : "tracked entity instance";
 
             if(nameToLower) trackedEntityTypeName = trackedEntityTypeName.toLowerCase();
             var translated = $translate.instant(text);
@@ -161,20 +171,30 @@ trackerCapture.controller('SearchController',function(
             return item.orgunitUnique;
         }
 
+        var canOpenRegistration = function(){
+            if($scope.base.selectedProgram){
+                return AccessUtils.isWritable($scope.base.selectedProgram) && AccessUtils.isWritable($scope.trackedEntityTypes.selected);
+            }else{
+                return AccessUtils.isWritable($scope.trackedEntityTypes.selected);
+            }   
+        }
+
         var showResultModal = function(res, searchGroup){
             var internalService = {
                 translateWithOULevelName: translateWithOULevelName,
                 translateWithTETName: translateWithTETName,
                 base: $scope.base
             }
-
+            var program = $scope.base.selectedProgram;
+            var tet = $scope.base.selectedProgram ? null : $scope.trackedEntityTypes.selected;
 
             return $modal.open({
                 templateUrl: 'components/home/search/result-modal.html',
-                controller: function($scope,$modalInstance, TEIGridService,OrgUnitFactory, orgUnit, res, refetchDataFn, internalService)
+                controller: function($scope,$modalInstance, TEIGridService,OrgUnitFactory, orgUnit, res, refetchDataFn, internalService, canOpenRegistration)
                 {
                     $scope.gridData = null;
                     $scope.isUnique = false;
+                    $scope.canOpenRegistration = canOpenRegistration;
                     var loadData =  function(){
                         if(res.status !== "NOMATCH"){
                             $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, null, null);
@@ -183,10 +203,10 @@ trackerCapture.controller('SearchController',function(
     
                         if(res.status === "UNIQUE"){
                             $scope.isUnique = true;
-                            var orgUnitId = $scope.gridData.rows.own[0].orgUnit;
-                            if(!internalService.base.orgUnitsById[orgUnitId]){
+                            $scope.uniqueTei = $scope.gridData.rows.own.length > 0 ? $scope.gridData.rows.own[0] : $scope.gridData.rows.other[0];
+                            if(!internalService.base.orgUnitsById[$scope.uniqueTei.orgUnit]){
                                 $scope.orgUnitLoading = true;
-                                OrgUnitFactory.get(orgUnitId).then(function(ou){
+                                OrgUnitFactory.get($scope.uniqueTei.orgUnit).then(function(ou){
                                     internalService.base.orgUnitsById[ou.id] = ou;
                                     $scope.orgUnitLoading = false;
                                 });
@@ -219,7 +239,7 @@ trackerCapture.controller('SearchController',function(
                 },
                 resolve: {
                     refetchDataFn: function(){
-                        return function(pager,sortColumn){ return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, pager); }
+                        return function(pager,sortColumn){ return SearchGroupService.search(searchGroup, program,trackedEntityType, $scope.selectedOrgUnit, pager); }
                     },
 
                     orgUnit: function(){
@@ -230,6 +250,9 @@ trackerCapture.controller('SearchController',function(
                     },
                     internalService: function(){
                         return internalService;
+                    },
+                    canOpenRegistration: function(){
+                        return canOpenRegistration();
                     }
                 }
             }).result.then(function(res){
