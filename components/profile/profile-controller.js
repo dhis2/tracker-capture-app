@@ -105,5 +105,5 @@ trackerCapture.controller('ProfileController',
         $timeout(function() { 
             $rootScope.$broadcast('registrationWidget', {registrationMode: 'PROFILE', selectedTei: $scope.selectedTei, enrollment: $scope.selectedEnrollment});
         }, 600);
-    };  
+    };
 });

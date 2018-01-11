@@ -126,6 +126,7 @@ trackerCapture.controller('ListsController',function(
     
 
         $scope.getWorkingListButtonClass = function(workingList){
+            if(workingList.name ==="custom" && $scope.showCustomWorkingListInline) return "active";
             if($scope.currentTrackedEntityList)
                 if($scope.currentTrackedEntityList.type === $scope.trackedEntityListTypes.WORKINGLIST){
                     var config = $scope.currentTrackedEntityList.config;
@@ -144,6 +145,9 @@ trackerCapture.controller('ListsController',function(
             setCurrentTrackedEntityList($scope.trackedEntityListTypes.WORKINGLIST, workingList, null);
             fetchWorkingList();
         }
+        $scope.toggleShowCustomWorkingListInline = function(){
+            $scope.showCustomWorkingListInline = !$scope.showCustomWorkingListInline;
+        }
 
         var fetchWorkingList = function(){
             if($scope.currentTrackedEntityList.type === $scope.trackedEntityListTypes.WORKINGLIST){
@@ -152,10 +156,10 @@ trackerCapture.controller('ListsController',function(
                 var url = getOrderUrl(config.url);
                 TEIService.search($scope.selectedOrgUnit.id, ouModes[0].name, url,null, null, $scope.pager, true).then(setCurrentTrackedEntityListData);
             }
-
         }
 
         var setCurrentTrackedEntityList = function(type, config, data){
+            $scope.showCustomWorkingListInline = false;
             $scope.currentTrackedEntityList = { type: type, config: config, data: data };
             if(!$scope.currentTrackedEntityList.sortColumn){
                 $scope.currentTrackedEntityList.sortColumn = {

@@ -21,33 +21,40 @@ trackerCapture.controller('HomeController',function(
     GridColumnService,
     ProgramWorkingListService,
     TCStorageService,
-    orderByFilter) {
+    orderByFilter,
+    TEService,
+    AccessUtils) {
         var previousProgram = null;
         $scope.base = {};
 
-        $scope.views = [
-            {
-                name: "Lists",
-                template: "components/home/lists/lists.html",
-                class: "col-xs-12",
-                shouldReset: true
-            },
-            {
-                name: "Search",
-                template: "components/home/search/search.html",
-                class: "",
-                shouldReset: true
-            },
-            {
+        var viewsByType = {
+            registration: {
                 name: "Register",
                 template: "components/registration/registration.html",
                 class: "col-lg-10 col-md-12",
                 shouldReset: false,
+                disabled: true,
                 onPostLoad: function(){
                     $rootScope.$broadcast('registrationWidget', {registrationMode: 'REGISTRATION'});
                }
-            }
-        ];
+            },
+            lists: {
+                name: "Lists",
+                template: "components/home/lists/lists.html",
+                class: "col-xs-12",
+                shouldReset: true,
+                disabled: false,
+            },
+            search: {
+                name: "Search",
+                template: "components/home/search/search.html",
+                class: "",
+                shouldReset: true,
+                disabled: false
+            },
+
+        }
+        $scope.views = [viewsByType.lists, viewsByType.search, viewsByType.registration];
 
         var mapOuLevelsToId = function(){
             $scope.base.ouLevelsByLevel = {};
@@ -105,6 +112,7 @@ trackerCapture.controller('HomeController',function(
         });
 
         var resetView = function(){
+            viewsByType.registration.disabled = true;
             var loaded = $.grep($scope.views, function(v){ return !v.shouldReset && v.loaded;});
             angular.forEach(loaded, function(v){
                 v.loaded = false;
@@ -129,7 +137,7 @@ trackerCapture.controller('HomeController',function(
         }
 
         var loadPrograms = function(){
-            return ProgramFactory.getProgramsByOu($scope.selectedOrgUnit, previousProgram).then(function(response){
+            return ProgramFactory.getProgramsByOu($scope.selectedOrgUnit,true, previousProgram).then(function(response){
                 $scope.programs = response.programs;
                 $scope.setProgram(response.selectedProgram);
             });
@@ -173,6 +181,16 @@ trackerCapture.controller('HomeController',function(
             previousProgram = $scope.base.selectedProgram;
             $scope.base.selectedProgram = $scope.selectedProgram = selectedProgram;
             resetView();
+            if(selectedProgram){
+                TEService.get(selectedProgram.trackedEntityType.id).then(function(te){
+                    viewsByType.registration.disabled = !AccessUtils.isWritable(te) || !AccessUtils.isWritable(selectedProgram);
+                });
+            }else{
+                TEService.getAllAccesses().then(function(accesses){
+                    viewsByType.registration.disabled =  !AccessUtils.anyWritable(accesses);
+                });
+            }         
+
         }
 
         $scope.setCurrentView = function(view)
