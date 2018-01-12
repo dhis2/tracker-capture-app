@@ -713,10 +713,12 @@ trackerCapture.controller('RegistrationController',
                 }
             }
         });
-        modalInstance.result.then(function (res) {
+        return modalInstance.result.then(function (res) {
             if (res && res.id) {
+                //Send object with tei id and program id
                 $scope.selectedTei[selectedAttribute.id] = res.id;
             }
+            return res;
         });
     };
 

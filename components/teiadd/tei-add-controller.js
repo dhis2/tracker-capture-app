@@ -270,7 +270,7 @@ trackerCapture.controller('TEIAddController',
             }
 
             if ($scope.addingTeiAssociate) {
-                if (!$scope.selectedTrackedEntityType || !$scope.selectedTrackedEntityType.id) {
+                if (!$scope.selectedProgram.trackedEntityType || !$scope.selectedProgram.trackedEntityType.id) {
                     NotificationService.showNotifcationDialog($translate.instant("searching_error"),
                         $translate.instant("no_entity_for_tracker_associate_attribute"));
                     $scope.teiFetched = true;

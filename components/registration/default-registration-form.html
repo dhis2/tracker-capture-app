@@ -270,39 +270,13 @@
                         </textarea>
                     </span>
                     <span ng-switch-when="TRACKER_ASSOCIATE">
-                        <span class="input-group">                            
-                            <input type="text"
-                                name="foo" 
-                                class="form-control"
-                                ng-model="selectedTei[attribute.id]" 
-                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                                attribute-data={{attribute}}
-                                selected-program-id={{selectedProgram.id}}  
-                                selected-tei-id={{selectedTei.trackedEntityInstance}}
-                                ng-disabled="true" 
-                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                                ng-required="attribute.mandatory"/>
-                            <span class="input-group-btn">
-                                <button class="btn btn-grp hideInPrint trim"
-                                        ng-if="!selectedTei[attribute.id] " 
-                                        ng-class="{true: 'disable-clicks'} [editingDisabled]"
-                                        ng-disabled="selectedOrgUnit.closedStatus"
-                                        type="button" 
-                                        title="{{'add'| translate}} {{attribute.displayName}}"
-                                        ng-click="getTrackerAssociate(attribute, selectedTei[attribute.id])">
-                                        <i class="fa fa-external-link"></i>                             
-                                </button>
-                                <button class="btn btn-grp hideInPrint trim"
-                                        ng-if="selectedTei[attribute.id]" 
-                                        ng-class="{true: 'disable-clicks'} [editingDisabled]"
-                                        ng-disabled="selectedOrgUnit.closedStatus"
-                                        type="button" 
-                                        title="{{'remove'| translate}} {{attribute.displayName}}"
-                                        ng-click="selectedTei[attribute.id] = null">
-                                        <i class="fa fa-trash-o"></i>                             
-                                </button>
-                            </span>
-                        </span>
+                        <d2-tracker-associate d2-selected-tei="selectedTei" 
+                                              d2-attribute="attribute" 
+                                              d2-selected-program="selectedProgram" 
+                                              d2-blur-methode="teiValueUpdated" 
+                                              d2-selected-orgunit="selectedOrgUnit" 
+                                              d2-get-ta-promise="getTrackerAssociate">
+                        </d2-tracker-associate>
                     </span>
                     <span ng-switch-when="COORDINATE">
                         <d2-map id="{{attribute.id}}"
