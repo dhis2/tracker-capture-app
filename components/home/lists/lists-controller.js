@@ -47,7 +47,8 @@ trackerCapture.controller('ListsController',function(
                 loadAttributesByProgram()
                 .then(loadGridColumns)
                 .then(loadWorkingLists)
-                .then(loadCachedData);
+                .then(loadCachedData)
+                .then(setDefault);
             }
         }
 
@@ -115,6 +116,12 @@ trackerCapture.controller('ListsController',function(
                 }
             }else{
                 CurrentSelection.setFrontPageData(null);
+            }
+        }
+
+        var setDefault = function(){
+            if(!$scope.currentTrackedEntityList && $scope.base.selectedProgram && $scope.base.selectedProgram.workingLists.length > 0){
+                $scope.setWorkingList($scope.base.selectedProgram.workingLists[0]);
             }
         }
 

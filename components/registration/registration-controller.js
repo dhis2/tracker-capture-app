@@ -1005,4 +1005,11 @@ trackerCapture.controller('RegistrationController',
         var translated = $translate.instant(text);
         return translated.replace("{trackedEntityAttributeName}", attributeName);
     }
+
+    $scope.attributeFieldDisabled = function(attribute){
+        if($scope.isDisabled(attribute)) return true;
+        if(selectedOrgUnit.closedStatus) return true;
+        if(!$scope.hasTeiProgramWrite()) return true;
+        return false;
+    }
 });

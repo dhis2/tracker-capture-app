@@ -795,7 +795,7 @@ trackerCapture.controller('DataEntryController',
     };
     
     function broadcastDataEntryControllerData(){
-        $rootScope.$broadcast('dataEntryControllerData', {programStages: $scope.programStages, eventsByStage: $scope.eventsByStage, addNewEvent: $scope.addNewEvent, openEvent: $scope.openEventExternal, deleteScheduleOverDueEvents: $scope.deleteScheduleAndOverdueEvents, executeRules: $scope.executeRules });
+        $rootScope.$broadcast('dataEntryControllerData', {programStages: $scope.programStages,allEventsSorted: $scope.allEventsSorted, eventsByStage: $scope.eventsByStage, addNewEvent: $scope.addNewEvent, openEvent: $scope.openEventExternal, deleteScheduleOverDueEvents: $scope.deleteScheduleAndOverdueEvents, executeRules: $scope.executeRules });
     }
     
     $scope.getEvents = function () {
@@ -2187,8 +2187,26 @@ trackerCapture.controller('DataEntryController',
         }
     };
 
+    $scope.canDeleteEvent = function(){
+        return $scope.currentStage && $scope.currentStage.access.data.write && $scope.userAuthority.canDeleteEvent;
+    }
+
+    var verifyCanDeleteEvent = function(){
+        if($scope.canDeleteEvent()){
+            if(!$scope.userAuthority.canDeleteExpired){
+                if($scope.currentEvent.expired || $scope.selectedEnrollment.expired) return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
     $scope.deleteEvent = function () {
-        
+        if(!verifyCanDeleteEvent()){
+            var bodyText = $translate.instant('you_do_not_have_the_necessary_authorities_to_delete') +' '+ $translate.instant('this') +' '+$translate.instant('event').toLowerCase();
+            var headerText = $translate.instant('delete_failed');
+            return NotificationService.showNotifcationDialog(headerText, bodyText);
+        }
         var modalOptions = {
             closeButtonText: 'cancel',
             actionButtonText: 'delete',

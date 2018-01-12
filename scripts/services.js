@@ -2321,7 +2321,7 @@ i
         }
     };
 })
-.service('ProgramWorkingListService', function($http,$q){
+.service('ProgramWorkingListService', function($http,$q, orderByFilter){
     var programWorkingListConfigs = {};
 
     this.getConfigs = function(program){
@@ -2329,8 +2329,8 @@ i
         if(program && !programWorkingListConfigs[program.id]){
 
             //Temporary until working list is implemented
-            var programUrl = "program="+program.id+"&programStatus="
-            def.resolve([
+            var programUrl = "program="+program.id+"&programStatus=";
+            var tempWorkingLists = [
                 {
                     name: "active_enrollment",
                     description: "active_enrollment",
@@ -2359,7 +2359,9 @@ i
                     url: "program="+program.id+"&programStatus=CANCELLED",
                     order: 3
                 }
-            ]);
+            ];
+            var orderedWorkingLists = orderByFilter(tempWorkingLists, '-order').reverse();
+            def.resolve(orderedWorkingLists);
             return def.promise;
             /*return $http.get(DHIS2URL+'/programWorkingLists?program='+program.id, function(response){
                 var config = programWorkingListConfigs[program.id] = response;
