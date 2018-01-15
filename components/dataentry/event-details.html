@@ -15,8 +15,8 @@
                picker-class="hide-clear"
                name="eventDate"
                ng-model="currentEvent.eventDate"
-               ng-change="verifyExpiryDate(currentEvent.eventDate)"
-               ng-disabled="selectedOrgUnit.closedStatus || currentEvent.status === 'SKIPPED' || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || currentStage.periodType"
+               ng-change="verifyEventExpiryDate('eventDate')"
+               ng-disabled="!eventEditable() || currentStage.periodType"
                ng-required="true"
                blur-or-change="saveEventDate()"
                ng-focus="setDateOnFocus(currentEvent.eventDate, selectedEnrollment.enrollmentDate)"/>
@@ -43,9 +43,9 @@
                name="dueDate"
                min-date="model.minDate?model.maxDate : ''"
                ng-model="currentEvent.dueDate"
-               ng-change="verifyExpiryDate('currentEvent.dueDate')"
+               ng-change="verifyEventExpiryDate('dueDate')"
                blur-or-change="saveDueDate()"
-               ng-disabled="selectedOrgUnit.closedStatus || currentEvent.eventDate || !schedulingEnabled || currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"/>
+               ng-disabled="!eventEditable() || currentEvent.eventDate || !schedulingEnabled"/>
         <input type="text"
                class="form-control not-for-screen"
                ng-class="{'input-success': dueDateSaved}"

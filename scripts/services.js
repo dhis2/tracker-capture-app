@@ -606,6 +606,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         }
     };
 })
+.factory('EnrollmentUtils', function(){
+    return {
+        isExpired: function(program, enrollment){
+
+        }
+    }
+})
 
 /* Service for getting tracked entity */
 .factory('TEService', function(TCStorageService, $q, $rootScope, AttributesFactory) {
@@ -2231,6 +2238,17 @@ i
         },
         getEditingStatus: function(dhis2Event, stage, orgUnit, tei, enrollment){
             return (dhis2Event.orgUnit !== orgUnit.id && DateUtils.isValid(dhis2Event.eventDate)) || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || tei.inactive || enrollment.status !== 'ACTIVE';
+        },
+        isExpired: function(program, event){
+            var expired = !DateUtils.verifyExpiryDate(event.eventDate, program.expiryPeriodType, program.expiryDays, false);
+            if(expired) return true;
+
+            if(event.status === 'COMPLETED' && program.completeEventsExpiryDays && program.completeEventsExpiryDays > 0){
+                var expiryDate = moment(event.completedDate).add(program.completeEventsExpiryDays, 'days');
+                var now = moment();
+                if(expiryDate < now) return true;
+            }
+            return false;
         }
     };
 })

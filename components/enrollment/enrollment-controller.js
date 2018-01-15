@@ -97,6 +97,7 @@ trackerCapture.controller('EnrollmentController',
 
         });
         $scope.verifyExpiryDate = function(eventDateStr) {
+            if($scope.userAuthority.canEditExpiredStuff) return true;
             var dateGetter = $parse(eventDateStr);
             var dateSetter = dateGetter.assign;
             var date = dateGetter($scope);
@@ -105,7 +106,9 @@ trackerCapture.controller('EnrollmentController',
             }
 
             if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("event_date_out_of_range"));
                 dateSetter($scope, null);
+                
             }
         };
         $scope.loadEnrollmentDetails = function (enrollment) {

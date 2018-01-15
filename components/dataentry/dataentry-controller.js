@@ -86,7 +86,6 @@ trackerCapture.controller('DataEntryController',
     $scope.attributesById = CurrentSelection.getAttributesById();
 
     $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
-
     if(!$scope.attributesById){
         $scope.attributesById = [];
         AttributesFactory.getAll().then(function(atts){
@@ -153,31 +152,26 @@ trackerCapture.controller('DataEntryController',
         return $scope.getDescriptionTextForDescription(description, $scope.descriptionTypes.full, useInStage);
     };
 
-    $scope.verifyExpiryDate = function(eventDateStr) {
-        var dateGetter = $parse(eventDateStr);
-        var dateSetter = dateGetter.assign;
-        var date = dateGetter($scope);
 
-        var modalOptions = {
-            headerText: 'warning',
-            bodyText: 'no_blank_date'
-        };
-        
-        if(!date) {
-            if(!$scope.originalDate) {
-                $scope.currentEvent.eventDate = $scope.currentEventOriginal.eventDate;
-            } else {
-                $scope.currentEvent.eventDate = $scope.originalDate;
+    $scope.verifyEventExpiryDate = function(field) {
+        if(!$scope.userAuthority.canEditExpiredStuff){
+            var date = $scope.currentEvent[field];
+    
+            
+            if(!date) {
+                var modalOptions = {
+                    headerText: 'warning',
+                    bodyText: 'no_blank_date'
+                };
+                $scope.currentEvent[field] = $scope.currentEventOriginal[field];
+                ModalService.showModal({}, modalOptions);
+                return;
             }
-            ModalService.showModal({}, modalOptions);
-            return;
-        } else {
-            $scope.originalDate = eventDateStr;
-        }
-
-        if($scope.selectedProgram.expiryPeriodType && $scope.selectedProgram.expiryDays) {
-            if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
-                dateSetter($scope, null);
+    
+            if($scope.selectedProgram.expiryPeriodType && $scope.selectedProgram.expiryDays) {
+                if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays, true)) {
+                    $scope.currentEvent[field] = $scope.currentEventOriginal[field];
+                }
             }
         }
     };
@@ -806,6 +800,7 @@ trackerCapture.controller('DataEntryController',
         if (angular.isObject(events) && events.length > 0) {
             angular.forEach(events, function (dhis2Event) {
                 if ($scope.selectedEnrollment && $scope.selectedEnrollment.enrollment === dhis2Event.enrollment && dhis2Event.orgUnit) {
+                    dhis2Event.expired = EventUtils.isExpired($scope.selectedProgram, dhis2Event);
                     if (dhis2Event.notes) {
                         dhis2Event.notes = orderByFilter(dhis2Event.notes, '-storedDate');
                         angular.forEach(dhis2Event.notes, function (note) {
@@ -1648,6 +1643,8 @@ trackerCapture.controller('DataEntryController',
             sortEventsByStage('UPDATE');
             
             $scope.currentElement = {id: "eventDate", event: eventToSave.event, saved: true};
+            $scope.currentEventOriginal = angular.copy($scope.currentEvent);
+            $scope.currentStageEventsOriginal = angular.copy($scope.currentStageEvents);
             $scope.executeRules();
         });
     };
@@ -2187,6 +2184,20 @@ trackerCapture.controller('DataEntryController',
         }
     };
 
+    $scope.dataElementEditable = function(prStDe){
+        if($scope.eventEditable()){
+            if($scope.assignedFields[$scope.currentEvent.event][prStDe.dataElement.id]) return false;
+            return true;
+        }
+        return false;
+    }
+
+    $scope.eventEditable = function(){
+        if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE' || $scope.currentEvent.editingNotAllowed) return false;
+        if($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff) return false;
+        return true;
+    }
+
     $scope.canDeleteEvent = function(){
         return $scope.currentStage && $scope.currentStage.access.data.write && $scope.userAuthority.canDeleteEvent;
     }
@@ -2282,6 +2293,9 @@ trackerCapture.controller('DataEntryController',
         if ($scope.currentEvent && $scope.currentEvent.event === ev.event && (angular.isUndefined(skipCurrentEventStyle) || skipCurrentEventStyle === false)) {
             style = style + '-darker' + ' ' + ' current-event';
         }        
+        if(ev.expired && !$scope.userAuthority.canEditExpiredStuff){
+            return "custom-tracker-complete";
+        }
         
         return style;
     };
@@ -2811,7 +2825,12 @@ trackerCapture.controller('DataEntryController',
     
     $scope.getEventStyleLabel = function(event){
         if($scope.eventStyleLabels[event.event]){
-            return "(" + $scope.eventStyleLabels[event.event] + ")";
+            var label = "(" + $scope.eventStyleLabels[event.event];
+            if(event.expired){
+                label += ", expired";
+            }
+            label += ")";
+            return label;
         }
         return '';
     };

@@ -29,7 +29,9 @@ trackerCapture.controller('RegistrationController',
                 TCStorageService,
                 ModalService,
                 SearchGroupService,
-                AccessUtils) {
+                AccessUtils,
+                AuthorityService,
+                SessionStorageService) {
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
     $scope.customRegistrationForm = null;    
@@ -48,6 +50,7 @@ trackerCapture.controller('RegistrationController',
     $scope.registrationMode = 'REGISTRATION';
     var flag = {debug: true, verbose: false};
     $rootScope.ruleeffects = {};
+    $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
 
     $scope.attributesById = CurrentSelection.getAttributesById();
 
@@ -304,7 +307,7 @@ trackerCapture.controller('RegistrationController',
                             $scope.allowProvidedElsewhereExists[$scope.currentStage.id] = true;
                         }
                     });
-
+                    $scope.currentEventOriginal = angular.copy($scope.currentEvent);
                     $scope.customDataEntryForm = CustomFormService.getForProgramStage($scope.currentStage, $scope.prStDes);
                 }
             }
@@ -944,32 +947,32 @@ trackerCapture.controller('RegistrationController',
     };
 
     $scope.saveDatavalue = function () {
+        $scope.currentEventOriginal = angular.copy($scope.currentEvent);
         $scope.executeRules();
     };
 
-    $scope.verifyExpiryDate = function(eventDateStr) {
-        var dateGetter, dateSetter, date;
-        dateGetter = $parse(eventDateStr);
-        dateSetter = dateGetter.assign;
-        date = dateGetter($scope);
-        if(!date) {
-            return;
-        }
-        if($scope.model.ouDates) {
-            if (!DateUtils.verifyOrgUnitPeriodDate(date, $scope.model.ouDates.startDate, $scope.model.ouDates.endDate)) {
-                dateSetter($scope, null);
+    $scope.saveEventDate = function(){
+        $scope.saveDatavalue();
+    }
+    $scope.verifyEventExpiryDate = function(field) {
+        if(!$scope.userAuthority.canEditExpiredStuff){
+            var date = $scope.currentEvent[field];
+            if(!date) {
+                var modalOptions = {
+                    headerText: 'warning',
+                    bodyText: 'no_blank_date'
+                };
+                $scope.currentEvent[field] = $scope.currentEventOriginal[field];
+                ModalService.showModal({}, modalOptions);
+                return;
+            }
+    
+            if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays, true)) {
+                $scope.currentEvent[field] = $scope.currentEventOriginal[field];
                 return;
             }
         }
-        if (!DateUtils.verifyExpiryDate(date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)) {
-            dateSetter($scope, null);
-        }
-    };
 
-    $scope.setDateOnFocus = function(currentValue, date) {
-        if(!currentValue) {
-            $scope.currentEvent.eventDate = date;
-        }
     };
 
     $scope.translateWithTETName = function(text, nameToLower){
@@ -1010,8 +1013,24 @@ trackerCapture.controller('RegistrationController',
 
     $scope.attributeFieldDisabled = function(attribute){
         if($scope.isDisabled(attribute)) return true;
-        if(selectedOrgUnit.closedStatus) return true;
+        if($scope.selectedOrgUnit.closedStatus) return true;
         if(!$scope.hasTeiProgramWrite()) return true;
         return false;
+    }
+
+    $scope.dataElementEditable = function(prStDe){
+        if($scope.eventEditable()){
+            if($scope.assignedFields && $scope.assignedFields[$scope.currentEvent.event] && $scope.assignedFields[$scope.currentEvent.event][prStDe.dataElement.id]){
+                return false;
+            } 
+            return true;
+        }
+        return false;
+    }
+
+    $scope.eventEditable = function(){
+        if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE' || $scope.currentEvent.editingNotAllowed) return false;
+        if($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff) return false;
+        return true;
     }
 });

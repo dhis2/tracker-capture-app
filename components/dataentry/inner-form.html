@@ -5,7 +5,7 @@
                 <d2-option-list d2-model="currentEvent"
                                 d2-model-id="prStDe.dataElement.id"
                                 d2-required="prStDe.compulsory"
-                                d2-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                                d2-disabled="!dataElementEditable(prStDe)"
                                 d2-save-methode="saveDatavalue"
                                 d2-save-methode-parameter1="prStDe"
                                 d2-save-methode-parameter2="innerForm.foo"
@@ -22,7 +22,7 @@
                     d2-object="currentEvent" 
                     d2-options="optionSets[prStDe.dataElement.optionSet.id].options"
                     d2-required="prStDe.compulsory"
-                    d2-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                    d2-disabled="!dataElementEditable(prStDe)"
                     d2-function="saveDataValueForRadio(prStDe, currentEvent, value)">                                                    
                 </d2-radio>
             </div>
@@ -41,7 +41,7 @@
                        ng-model="currentEvent[prStDe.dataElement.id]"
                        d2-number-validator
                        ng-required={{prStDe.compulsory}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-disabled="!dataElementEditable(prStDe)"
                        ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                        name="foo"/>
             </div>
@@ -58,7 +58,7 @@
                        ng-model="currentEvent[prStDe.dataElement.id]"
                        d2-number-validator
                        ng-required={{prStDe.compulsory}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-disabled="!dataElementEditable(prStDe)"
                        ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                        name="foo"/>
             </div>
@@ -75,7 +75,7 @@
                        ng-model="currentEvent[prStDe.dataElement.id]"
                        d2-number-validator
                        ng-required={{prStDe.compulsory}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-disabled="!dataElementEditable(prStDe)"
                        ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                        name="foo"/>
             </div>
@@ -92,7 +92,7 @@
                        ng-model="currentEvent[prStDe.dataElement.id]"
                        d2-number-validator
                        ng-required={{prStDe.compulsory}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-disabled="!dataElementEditable(prStDe)"
                        ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                        name="foo"/>
             </div>
@@ -109,7 +109,7 @@
                        ng-model="currentEvent[prStDe.dataElement.id]"
                        d2-number-validator
                        ng-required={{prStDe.compulsory}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-disabled="!dataElementEditable(prStDe)"
                        ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                        name="foo"/>
             </div>
@@ -126,7 +126,7 @@
                        ng-model="currentEvent[prStDe.dataElement.id]"
                        d2-number-validator
                        ng-required={{prStDe.compulsory}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-disabled="!dataElementEditable(prStDe)"
                        ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                        name="foo"/>
             </div>
@@ -165,7 +165,7 @@
                           class="form-control"
                           ng-model="currentEvent[prStDe.dataElement.id]"
                           ng-required={{prStDe.compulsory}}
-                          ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                          ng-disabled="!dataElementEditable(prStDe)"
                           ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                           name="foo">
                 </textarea>
@@ -181,7 +181,7 @@
                        class="form-control"
                        ng-model="currentEvent[prStDe.dataElement.id]"
                        ng-required={{prStDe.compulsory}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-disabled="!dataElementEditable(prStDe)"
                        ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                        name="foo"/>
             </div>
@@ -194,7 +194,7 @@
                 <d2-radio-button
                     class="form-control"
                     dh-required="prStDe.compulsory"
-                    dh-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id] === true"
+                    dh-disabled="!dataElementEditable(prStDe)"
                     dh-value="currentEvent[prStDe.dataElement.id]"
                     dh-name="foo"
                     dh-current-element="currentElement"
@@ -219,7 +219,7 @@
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id,false, currentEvent)"
                        ng-model="currentEvent[prStDe.dataElement.id]"
                        ng-required={{prStDe.compulsory}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-disabled="!dataElementEditable(prStDe)"
                        blur-or-change="saveDatavalue(prStDe, innerForm.foo)"
                        name="foo"/>
             </div>
@@ -236,7 +236,7 @@
                      time-save-methode-parameter2="innerForm.foo"
                      time-element="currentElement"
                      time-use-notification="true"
-                     time-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id] ? true : false">
+                     time-disabled="!dataElementEditable(prStDe)">
             </d2-time>
         </div>
         <div ng-switch-when="DATETIME">
@@ -251,7 +251,7 @@
                           datetime-element="currentElement"
                           datetime-disable-popup="true"
                           datetime-use-notification="true"
-                          datetime-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id] ? true : false"
+                          datetime-disabled="!dataElementEditable(prStDe)"
                           datetime-outerform="outerDataEntryForm">
             </d2-date-time>            
         </div>
@@ -261,7 +261,7 @@
                        class="form-control-checkbox"
                        ng-model="currentEvent[prStDe.dataElement.id]"
                        ng-required={{prStDe.compulsory}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-disabled="!dataElementEditable(prStDe)"
                        ng-change="saveDatavalue(prStDe, innerForm.foo)"
                        name="foo"/>
             </div>
@@ -289,7 +289,7 @@
                                 <i class="fa fa-upload"></i>
                                 <input type="file"
                                        ng-required={{prStDe.compulsory}}
-                                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                                       ng-disabled="!dataElementEditable(prStDe)"
                                        name="foo"
                                        input-field-id={{prStDe.dataElement.id}}
                                        d2-file-input-ps="currentStage"
@@ -311,7 +311,7 @@
                     d2-lng-saved="currentElement.saved && currentElement.id === prStDe.dataElement.id"
                     d2-object="currentEvent" 
                     d2-required="prStDe.compulsory"
-                    d2-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                    d2-disabled="!dataElementEditable(prStDe)"
                     d2-function="saveDatavalue(arg1)" 
                     d2-coordinate-format="'TEXT'"
                     d2-function-param-text="prStDe"
@@ -324,7 +324,7 @@
                     id="{{prStDe.dataElement.id}}"
                     d2-value="currentEvent[prStDe.dataElement.id]"
                     d2-required="prStDe.compulsory"
-                    d2-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                    d2-disabled="!dataElementEditable(prStDe)"
                     d2-object="currentEvent"
                     d2-function="saveDatavalue(prStDe, innerForm.foo)"
                     d2-orgunit-names="orgUnitNames">
@@ -339,7 +339,7 @@
                    d2-attribute-validator
                    selected-program-id={{selectedProgram.id}}
                    selected-tei-id={{selectedTei.trackedEntityInstance}}
-                   ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                   ng-disabled="!dataElementEditable(prStDe)"
                    ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                    ng-required={{prStDe.compulsory}}/>
         </span>
@@ -353,7 +353,7 @@
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id, currentEvent)"
                        ng-model="currentEvent[prStDe.dataElement.id]"
                        ng-required={{prStDe.compulsory}}
-                       ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][prStDe.dataElement.id]"
+                       ng-disabled="!dataElementEditable(prStDe)"
                        ng-blur="saveDatavalue(prStDe, innerForm.foo)"
                        name="foo"/>
             </div>
