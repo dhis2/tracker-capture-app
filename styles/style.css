@@ -2357,3 +2357,7 @@ button.list-group-item-danger.active:focus {
     text-align:unset;
     display:flex;
 }
+
+.select2-drop{
+    z-index: 1000;
+}
