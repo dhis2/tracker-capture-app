@@ -56,7 +56,13 @@ trackerCapture.controller('DashboardController',
             })
         }
         return def.promise;
-    }    
+    }
+
+    var loadTrackedEntityType = function(){
+        return TEService.get($scope.selectedTei.trackedEntityType).then(function (te) {
+            $scope.trackedEntityType = te;
+        });
+    }
 
     function updateDashboard() {
         
@@ -68,7 +74,7 @@ trackerCapture.controller('DashboardController',
             }
 
             $scope.selectedTeiId = ($location.search()).tei;
-            $scope.selectedProgramId = ($location.search()).program;
+            $scope.selectedProgramId = $scope.selectedProgram ? $scope.selectedProgram.id : ($location.search()).program;
             $scope.selectedOrgUnit = orgUnit;
             $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
             $scope.sortedTeiIds = CurrentSelection.getSortedTeiIds();
@@ -142,8 +148,7 @@ trackerCapture.controller('DashboardController',
                                 $scope.selectedTei = response;
 
                                 //get the entity type
-                                TEService.get($scope.selectedTei.trackedEntityType).then(function (te) {
-                                    $scope.trackedEntityType = te;
+                                loadTrackedEntityType().then(function () {
 
                                     //get enrollments for the selected tei
                                     EnrollmentService.getByEntity($scope.selectedTeiId).then(function (response) {
@@ -661,7 +666,7 @@ trackerCapture.controller('DashboardController',
 
     $scope.fetchTei = function (mode) {
         var current = $scope.sortedTeiIds.indexOf($scope.selectedTeiId);
-        var pr = ($location.search()).program;
+        var pr = $scope.selectedProgram ? $scope.program.id : ($location.search()).program;
         var tei = null;
         if (mode === 'NEXT') {
             tei = $scope.sortedTeiIds[current + 1];

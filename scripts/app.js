@@ -64,7 +64,8 @@ angular.module('trackerCapture')
 
     $routeProvider.when('/', {
         templateUrl:'components/home/home.html',
-        controller: 'HomeController'
+        controller: 'HomeController',
+        reloadOnSearch: true
     }).when('/dashboard',{
         templateUrl:'components/dashboard/dashboard.html',
         controller: 'DashboardController'

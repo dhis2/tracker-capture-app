@@ -178,7 +178,7 @@ trackerCapture.controller('RelationshipController',
         });
 
         var selections = CurrentSelection.get();
-        CurrentSelection.set({tei: $scope.selectedTei, te: $scope.selectedTei.trackedEntityType, prs: selections.prs, pr: $scope.selectedProgram, prNames: selections.prNames, prStNames: selections.prStNames, enrollments: selections.enrollments, selectedEnrollment: $scope.selectedEnrollment, optionSets: selections.optionSets, orgUnit:selections.orgUnit});
+        CurrentSelection.set({tei: $scope.selectedTei, te: $scope.trackedEntityType, prs: selections.prs, pr: $scope.selectedProgram, prNames: selections.prNames, prStNames: selections.prStNames, enrollments: selections.enrollments, selectedEnrollment: $scope.selectedEnrollment, optionSets: selections.optionSets, orgUnit:selections.orgUnit});
     };
     
     var getRelativeAttributes = function(tei){

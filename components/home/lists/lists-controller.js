@@ -26,7 +26,8 @@ trackerCapture.controller('ListsController',function(
         var defaultCustomWorkingListValues = { ouMode: ouModes[0], programStatus: ""};
         var gridColumnsContainer = "trackerCaptureGridColumns";
 
-        $scope.trackedEntityListTypes = { CUSTOM: "CUSTOM", WORKINGLIST: "WORKINGLIST"};
+        $scope.workingListTypes = { NORMAL: "NORMAL", CUSTOM: "CUSTOM"};
+        $scope.trackedEntityListTypes = { WORKINGLIST: "WORKINGLIST", CUSTOM: "CUSTOM"};
         $scope.listExportFormats = ["XML","JSON","CSV"];
         $scope.customWorkingListValues = defaultCustomWorkingListValues;
         $scope.defaultOperators = OperatorFactory.defaultOperators;
@@ -85,8 +86,7 @@ trackerCapture.controller('ListsController',function(
 
         
         var loadWorkingLists = function(){
-            return ProgramWorkingListService.getConfigs($scope.base.selectedProgram).then(function(programWorkingLists)
-            {
+            return ProgramWorkingListService.getWorkingListsForProgram($scope.base.selectedProgram).then(function(programWorkingLists){
                 $scope.base.selectedProgram.workingLists = programWorkingLists;
             });
         }
@@ -100,19 +100,19 @@ trackerCapture.controller('ListsController',function(
 
         var loadCachedData = function(){
             var frontPageData = CurrentSelection.getFrontPageData();
-            var selectedProgramID = $scope.base.selectedProgram ? $scope.base.selectedProgram.id : null;
-            if(frontPageData && frontPageData.selectedOrgUnit.id == $scope.selectedOrgUnit.id && frontPageData.program.id == selectedProgramID){
-                $scope.pager = frontPageData.pager;
-                $scope.customWorkingListValues = frontPageData.customWorkingListValues;
-                $scope.gridColumns = frontPageData.gridColumns;
-                if(frontPageData.trackedEntityList && frontPageData.trackedEntityList.refresh){
-                    if(frontPageData.trackedEntityList.type == $scope.trackedEntityListTypes.CUSTOM){
+            if(frontPageData && frontPageData.viewData && frontPageData.viewData ==='Lists'){
+                var viewData = frontPageData.viewData;
+                $scope.pager = viewData.pager;
+                $scope.customWorkingListValues = viewData.customWorkingListValues;
+                $scope.gridColumns = viewData.gridColumns;
+                if(viewData.trackedEntityList && viewData.trackedEntityList.refresh){
+                    if(viewData.trackedEntityList.type == $scope.trackedEntityListTypes.CUSTOM){
                         $scope.setCustomWorkingList();
                     }else{
-                        $scope.setWorkingList(frontPageData.trackedEntityList.config);
+                        $scope.setWorkingList(viewData.trackedEntityList.config);
                     }
                 }else{
-                    $scope.currentTrackedEntityList = frontPageData.trackedEntityList;
+                    $scope.currentTrackedEntityList = viewData.trackedEntityList;
                 }
             }else{
                 CurrentSelection.setFrontPageData(null);
@@ -126,6 +126,7 @@ trackerCapture.controller('ListsController',function(
         }
 
         $scope.openTei = function(tei){
+            updateCurrentSelection();
             $location.path('/dashboard').search({tei: tei.id,
                 program: $scope.base.selectedProgram ? $scope.base.selectedProgram.id: null,
                 ou: $scope.selectedOrgUnit.id});
@@ -158,14 +159,16 @@ trackerCapture.controller('ListsController',function(
 
         var fetchWorkingList = function(){
             if($scope.currentTrackedEntityList.type === $scope.trackedEntityListTypes.WORKINGLIST){
-                var config = $scope.currentTrackedEntityList.config;
                 $scope.currentTrackedEntityList.loading = true;
-                var url = getOrderUrl(config.url);
-                TEIService.search($scope.selectedOrgUnit.id, ouModes[0].name, url,null, null, $scope.pager, true).then(setCurrentTrackedEntityListData);
+                ProgramWorkingListService.getWorkingListData($scope.selectedOrgUnit, $scope.currentTrackedEntityList.config, $scope.pager, $scope.currentTrackedEntityList.sortColumn).then(setCurrentTrackedEntityListData);
             }
         }
 
         var setCurrentTrackedEntityList = function(type, config, data){
+            if($scope.currentTrackedEntityList && $scope.currentTrackedEntityList.config){
+                $scope.currentTrackedEntityList.config.cachedOrgUnit = null;
+                $scope.currentTrackedEntityList.config.cachedSorting = null;
+            }
             $scope.showCustomWorkingListInline = false;
             $scope.currentTrackedEntityList = { type: type, config: config, data: data };
             if(!$scope.currentTrackedEntityList.sortColumn){
@@ -180,7 +183,7 @@ trackerCapture.controller('ListsController',function(
             if (serverResponse && serverResponse.metaData && serverResponse.metaData.pager) setPager(serverResponse.metaData.pager);
             $scope.currentTrackedEntityList.data = TEIGridService.format($scope.selectedOrgUnit.id, serverResponse, false, $scope.base.optionSets, null);
             $scope.currentTrackedEntityList.loading = false;
-            updateCurrentSelection();
+            //updateCurrentSelection();
         }
     
 
@@ -387,17 +390,16 @@ trackerCapture.controller('ListsController',function(
                 });
                 CurrentSelection.setSortedTeiIds(sortedTeiIds);
             }
-
-
-            var frontPageData = {
-                program: $scope.base.selectedProgram,
-                trackedEntityList: $scope.currentTrackedEntityList,
-                customWorkingListValues: $scope.customWorkingListValues,
-                gridColumns: $scope.gridColumns,
-                selectedOrgUnit: $scope.selectedOrgUnit,
-                pager: $scope.pager
+            if (typeof $scope.base.setFrontPageData === "function") {
+                var viewData = {
+                    name: "lists",
+                    trackedEntityList: $scope.currentTrackedEntityList,
+                    customWorkingListValues: $scope.customWorkingListValues,
+                    gridColumns: $scope.gridColumns,
+                    selectedOrgUnit: $scope.selectedOrgUnit,
+                    pager: $scope.pager
+                }
+                $scope.base.setFrontPageData(viewData);
             }
-            CurrentSelection.setFrontPageData(frontPageData);
-
         }
 });

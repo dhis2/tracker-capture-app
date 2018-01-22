@@ -102,16 +102,18 @@ trackerCapture.controller('HomeController',function(
 
 
 
-        $scope.$watch('selectedOrgUnit', function() {
+        $scope.$watch('selectedOrgUnit', function(a,b,c) {
             if( angular.isObject($scope.selectedOrgUnit) && !$scope.selectedOrgUnit.loaded){
                 loadOrgUnit()
                 .then(loadAttributes)
                 .then(loadOptionSets)
-                .then(loadPrograms);
+                .then(loadPrograms)
+                .then(loadCachedData);
             }
         });
 
-        var resetView = function(){
+        var resetView = function(defaultView){
+            var viewToSet = defaultView ? defaultView : $scope.views[0];
             viewsByType.registration.disabled = true;
             var loaded = $.grep($scope.views, function(v){ return !v.shouldReset && v.loaded;});
             angular.forEach(loaded, function(v){
@@ -119,10 +121,10 @@ trackerCapture.controller('HomeController',function(
             });
             if($scope.currentView){
                 $scope.currentView = null;
-                $timeout(function(){ $scope.setCurrentView($scope.views[0]);});
+                $timeout(function(){ $scope.setCurrentView(viewToSet);});
                 return;
             }
-            $scope.setCurrentView($scope.views[0]);
+            $scope.setCurrentView(viewToSet);
 
         }
 
@@ -141,6 +143,14 @@ trackerCapture.controller('HomeController',function(
                 $scope.programs = response.programs;
                 $scope.setProgram(response.selectedProgram);
             });
+        }
+
+        var loadCachedData = function(){
+            var frontPageData = CurrentSelection.getFrontPageData();
+            if(frontPageData){
+                var view = frontPageData.currentView ? $scope.viewsByType[frontPageData.currentView] : null;
+                $scope.setProgram(frontPageData.selectedProgram, view);
+            }
         }
 
         var loadAttributes = function(){
@@ -177,20 +187,26 @@ trackerCapture.controller('HomeController',function(
             return resolvedEmptyPromise();
         }
 
-        $scope.setProgram = function(selectedProgram){
+        $scope.setProgram = function(selectedProgram, defaultView){
             previousProgram = $scope.base.selectedProgram;
             $scope.base.selectedProgram = $scope.selectedProgram = selectedProgram;
-            resetView();
-            if(selectedProgram){
-                TEService.get(selectedProgram.trackedEntityType.id).then(function(te){
-                    viewsByType.registration.disabled = !AccessUtils.isWritable(te) || !AccessUtils.isWritable(selectedProgram);
-                });
-            }else{
-                TEService.getAllAccesses().then(function(accesses){
-                    viewsByType.registration.disabled =  !AccessUtils.anyWritable(accesses);
-                });
-            }         
+            resetView(defaultView);
+            loadCanRegister();      
 
+        }
+        var loadCanRegister = function(){
+            if($scope.selectedProgram){
+                if($scope.selectedProgram.registrationAccess){
+                    viewsByType.registration.disabled = $scope.selectedProgram.registrationAccess.disabled;
+                    return;
+                }
+                TEService.get($scope.selectedProgram.trackedEntityType.id).then(function(te){
+                    viewsByType.registration.disabled = !AccessUtils.isWritable(te) || !AccessUtils.isWritable($scope.selectedProgram);
+                    $scope.selectedProgram.registrationAccess = { disabled: viewsByType.registration.disabled};
+                });
+                return;
+            }
+            
         }
 
         $scope.setCurrentView = function(view)
@@ -208,7 +224,7 @@ trackerCapture.controller('HomeController',function(
             if(!view.shouldReset){
                 view.loaded = true;
             }
-
+            loadCanRegister();
         }
 
         $scope.goToRegistrationWithData = function(registrationPrefill){
@@ -221,12 +237,22 @@ trackerCapture.controller('HomeController',function(
             });
 
         }
+
+        $scope.setFrontPageData = function(viewData){
+            CurrentSelection.setFrontPageData({
+                viewData: viewData,
+                selectedView: viewData.name,
+                selectedProgram: $scope.selectedProgram,
+                selectedOrgUnit: $scope.selectedOrgUnit
+            });
+        }
+
+        $scope.base.setFrontPageData = $scope.setFrontPageData;
         $scope.$on('$includeContentLoaded', function(event, target){
             if($scope.currentView && $scope.currentView.template === target){
                 if($scope.currentView.onPostLoad) $scope.currentView.onPostLoad();
 
             }
           });
-
         
 });

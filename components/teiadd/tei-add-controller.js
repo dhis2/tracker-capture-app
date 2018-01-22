@@ -27,9 +27,11 @@ trackerCapture.controller('TEIAddController',
             existingAssociateUid,
             addingRelationship,
             selectedTei,
-            AccessUtils
+            AccessUtils,
+            TEService
             ){
     var selection = CurrentSelection.get();
+   
     $scope.base = {};
     $scope.attributesById = CurrentSelection.getAttributesById();
     if(!$scope.attributesById){
@@ -328,8 +330,15 @@ trackerCapture.controller('TEIAddController',
         };
 
         $scope.onSelectedProgram = function(program){
+            $scope.selectedProgramForRelative = program;
             $scope.base.selectedProgram = program;
             $scope.setAttributesForSearch(program);
+            TEService.get(selectedProgram.trackedEntityType.id).then(function(te){
+                $scope.canRegister = AccessUtils.isWritable(te) && AccessUtils.isWritable(selectedProgram);
+                var g = 1;
+                var u  = 2;
+
+            });
 
         }
         //set attributes as per selected program
@@ -400,6 +409,10 @@ trackerCapture.controller('TEIAddController',
             $scope.showRegistrationDiv = !$scope.showRegistrationDiv;
             $scope.showTrackedEntityDiv = !$scope.showRegistrationDiv;
         };
+
+        $scope.hideRegistration = function(){
+            $scope.showRegistrationDiv = false;
+        }
 
         $scope.close = function () {
             $modalInstance.close($scope.mainTei.relationships ? $scope.mainTei.relationships : []);

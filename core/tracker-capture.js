@@ -49,6 +49,8 @@ dhis2.tc.store = new dhis2.storage.Store({
  * 2. Load meta-data (and notify ouwt) 
  * 
  */
+
+
 $(document).ready(function()
 {
     $.ajaxSetup({

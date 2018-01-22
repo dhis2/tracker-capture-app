@@ -195,8 +195,10 @@ trackerCapture.controller('SearchController',function(
                     $scope.gridData = null;
                     $scope.isUnique = false;
                     $scope.canOpenRegistration = canOpenRegistration;
+                    $scope.tooManySearchResults = false;
                     var loadData =  function(){
-                        if(res.status !== "NOMATCH"){
+                        $scope.tooManySearchResults = res.status === "TOOMANYMATCHES";
+                        if(res.status !== "NOMATCH" && res.status !== "TOOMANYMATCHES"){
                             $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, null, null);
                         }
                         $scope.pager = res.data && res.data.metaData ? res.data.metaData.pager : null;

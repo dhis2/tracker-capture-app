@@ -6,6 +6,35 @@
 
 var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResource'])
 
+.filter('orderByKey', function(){
+    var compareValues = function(key, order='asc') {
+        return function(a, b) {
+            if(!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+                // property doesn't exist on either object
+                return 0; 
+            }
+        
+            const varA = (typeof a[key] === 'string') ? 
+                a[key].toUpperCase() : a[key];
+            const varB = (typeof b[key] === 'string') ? 
+                b[key].toUpperCase() : b[key];
+        
+            let comparison = 0;
+            if (varA > varB) {
+                comparison = 1;
+            } else if (varA < varB) {
+                comparison = -1;
+            }
+            return (
+                (order == 'desc') ? (comparison * -1) : comparison
+            );
+        };
+    }
+    return function(array, key, direction){
+        return array.sort(compareValues(key, direction));
+    }
+})
+
 .factory('TCStorageService', function(){
     var store = new dhis2.storage.Store({
         name: "dhis2tc",
@@ -395,7 +424,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                 }
                             }
         
-                            if(!selectedProgram || angular.isUndefined(selectedProgram) && programs.legth > 0){
+                            if(!selectedProgram || angular.isUndefined(selectedProgram) && programs.length > 0){
                                 selectedProgram = programs[0];
                             }
                         }
@@ -763,7 +792,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-
         search: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
             var url;
             var deferred = $q.defer();
@@ -2339,62 +2367,184 @@ i
         }
     };
 })
-.service('ProgramWorkingListService', function($http,$q, orderByFilter){
-    var programWorkingListConfigs = {};
-
-    this.getConfigs = function(program){
-        var def = $q.defer();
-        if(program && !programWorkingListConfigs[program.id]){
-
-            //Temporary until working list is implemented
-            var programUrl = "program="+program.id+"&programStatus=";
-            var tempWorkingLists = [
-                {
-                    name: "active_enrollment",
-                    description: "active_enrollment",
-                    icon: "fa fa-circle-o",
-                    url: "program="+program.id+"&programStatus=ACTIVE",
-                    order: 1
-                },
-                {
-                    name: "all_enrollments",
-                    description: "all_enrollment",
-                    icon: "fa fa-list",
-                    url: "program="+program.id+"",
-                    order: 0
-                },
-                {
-                    name: "completed_enrollment",
-                    description: "completed_enrollment",
-                    icon: "fa fa-check",
-                    url: "program="+program.id+"&programStatus=COMPLETED",
-                    order: 2
-                },
-                {
-                    name: "cancelled_enrollment",
-                    description: "cancelled_enrollment",
-                    icon: "fa fa-times",
-                    url: "program="+program.id+"&programStatus=CANCELLED",
-                    order: 3
-                }
-            ];
-            var orderedWorkingLists = orderByFilter(tempWorkingLists, '-order').reverse();
-            def.resolve(orderedWorkingLists);
-            return def.promise;
-            /*return $http.get(DHIS2URL+'/programWorkingLists?program='+program.id, function(response){
-                var config = programWorkingListConfigs[program.id] = response;
-                return config;
-            });*/
-        }else if(program && programWorkingListConfigs[program.id]){
-            def.resolve(programWorkingListConfigs[program.id]);
-            return def.promise;
-        }else{
-            def.resolve([]);
-            return def.promise;
+.service('ProgramWorkingListService', function($http,$q,$filter, orderByFilter,orderByKeyFilter, TEIService){
+    var workingListsByProgram = null;
+    var cachedMultipleEventFiltersData = {};
+    var getDefaultWorkingLists = function(program){
+        //Temporary until working list is implemented
+        var defaultWorkingLists = [
+            {
+                name: "active_enrollment",
+                description: "active_enrollment",
+                program: {id: program.id},
+                enrollmentStatus: "ACTIVE",
+                style: {icon: "fa fa-circle-o"},
+                sortOrder: 1
+            },
+            {
+                name: "all_enrollments",
+                description: "all_enrollment",
+                program: {id: program.id},
+                style: {icon: "fa fa-list"},
+                sortOrder: 0
+            },
+            {
+                name: "completed_enrollment",
+                description: "completed_enrollment",
+                program: {id: program.id},
+                style: {icon: "fa fa-check"},
+                enrollmentStatus: "COMPLETED",
+                sortOrder: 2
+            },
+            {
+                name: "cancelled_enrollment",
+                description: "cancelled_enrollment",
+                program: {id: program.id},
+                style: {icon: "fa fa-times" },
+                enrollmentStatus: "CANCELLED",
+                sortOrder: 3
+            }
+        ];
+        return defaultWorkingLists;
+    }
+    var getPeriodDate = function(days){
+        return moment().add(days,'days').format('YYYY-MM-DD');
+    }
+    var getEventUrl = function(eventFilter){
+        var eventUrl = null;
+        if(eventFilter.eventStatus) eventUrl = "eventStatus="+eventFilter.eventStatus;
+        if(eventFilter.eventCreatedPeriod){
+            if(eventUrl) eventUrl+= "&";
+            eventUrl+="eventStartDate="+getPeriodDate(eventFilter.eventCreatedPeriod.periodFrom);
+            eventUrl+="&eventEndDate="+getPeriodDate(eventFilter.eventCreatedPeriod.periodTo);
         }
+        if(eventFilter.programStage){
+            if(eventUrl) eventUrl+="&";
+            eventUrl+="programStage="+eventFilter.programStage;
+        }
+        return eventUrl;
+    }
+    var getCachedMultipleEventFiltersData = function(workingList, pager, sortColumn){
+        var cachedData = cachedMultipleEventFiltersData[workingList.name];
+        if(!pager) pager = { page: 1, pageSize: 50, pageCount: Math.ceil(cachedData.rows.length/50)};
+        var pageEnd = (pager.pageSize*pager.page);
+        var pageStart = pageEnd - pager.pageSize;
+
+        var pageRows = cachedData.rows.slice(pageStart, pageEnd);
+        var data = {
+            rows: pageRows, 
+            height: pageRows.length,
+            width: cachedData.width,
+            headers: cachedData.headers,
+            metaData: {pager: pager}
+        }
+        return data;
+    }
+    var getWorkingListDataWithMultipleEventFilters = function(searchParams, workingList, pager, sortColumn){
+        var def = $q.defer();
+        if(workingList.cachedSorting === searchParams.sortUrl && workingList.cachedOrgUnit === searchParams.orgUnitId){
+            var data = getCachedMultipleEventFiltersData(workingList,pager);
+            def.resolve(data);
+        }else{
+            var promises = [];
+            angular.forEach(workingList.eventFilters, function(eventFilter){
+                var eventUrl = getEventUrl(eventFilter);
+                var tempPager = {
+                    pageSize:1000,
+                    page: 1
+                }
+                promises.push(TEIService.search(searchParams.orgUnitId, "SELECTED", searchParams.sortUrl, searchParams.programUrl, eventUrl,tempPager, true));
+            });
+            $q.all(promises).then(function(response){
+                var data = { height: 0, width: 0, rows: []};
+                var existingTeis = {};
+                var allRows = [];
+                angular.forEach(response, function(responseData){
+                    data.headers = data.headers && data.headers.length > responseData.headers.length ? data.headers : responseData.headers;
+                    data.width  = data.width > responseData.width ? data.width : responseData.width;
+                    allRows = allRows.concat(responseData.rows);
+                });
+                //Getting distinct list
+                var existing = {};
+                data.rows = allRows.filter(function(d){
+                    if(existing[d[0]])return false;
+                    existing[d[0]] = true;
+                    return true;
+                });
+                var sortColumnIndex = data.headers.findIndex(function(h){ return h.name === sortColumn.id});
+                if(sortColumnIndex) data.rows = orderByKeyFilter(data.rows, sortColumnIndex, sortColumn.direction);
+                //order list
+                cachedMultipleEventFiltersData[workingList.name] = data;
+                workingList.cachedSorting = searchParams.sortUrl;
+                workingList.cachedOrgUnit = searchParams.orgUnitId;
+                var data = getCachedMultipleEventFiltersData(workingList, pager, sortColumn);
+                def.resolve(data);
+            });
+        }
+        return def.promise;
     }
 
+    this.getWorkingListsForProgram = function(program){
+        var def = $q.defer();
+        if(!program){
+            def.resolve([]);
+        }
 
+        if(!workingListsByProgram){
+            $http.get(DHIS2URL+"/trackedEntityInstanceFilters?fields=*&paging=false").then(function(response){
+                workingListsByProgram = {};
+                if(response && response.data && response.data.trackedEntityInstanceFilters){
+                    angular.forEach(response.data.trackedEntityInstanceFilters, function(workingList){
+                        if(!workingListsByProgram[workingList.program.id]) workingListsByProgram[workingList.program.id] = [];
+                        workingListsByProgram[workingList.program.id].push(workingList);
+                    });
+                }else{
+                    workingListsByProgram[program.id] = getDefaultWorkingLists(program);
+                }
+                for(var key in workingListsByProgram){
+                    if(angular.isArray(workingListsByProgram[key])){
+                        workingListsByProgram[key] = orderByKeyFilter(workingListsByProgram[key], 'sortOrder', 'asc');
+                    }
+                }
+                var programWorkingLists = workingListsByProgram[program.id] ? workingListsByProgram[program.id] : [];
+                def.resolve(programWorkingLists);
+            });
+        }else{
+            var workingLists = workingListsByProgram[program.id];
+            if(!workingLists){
+                workingLists = getDefaultWorkingLists(program);
+                workingListsByProgram[program.id] = workingLists;
+            } 
+            def.resolve(workingLists);
+        }
+        return def.promise;
+    }
+
+    this.getWorkingListData = function(orgUnit, workingList, pager, sortColumn){
+        var searchParams = {
+            orgUnitId: orgUnit.id,
+            programUrl: "program="+workingList.program.id,
+            eventUrl: null
+        }
+        if(workingList.enrollmentStatus){
+            searchParams.programUrl += "&programStatus="+workingList.enrollmentStatus;
+        }
+        if(sortColumn){
+            searchParams.sortUrl = "order="+sortColumn.id+':'+sortColumn.direction;
+        }
+        if(workingList.enrollmentCreatedPeriod){
+            var enrollmentStartDate = moment().add(workingList.enrollmentCreatedPeriod.periodFrom, 'days').format("YYYY-MM-DD");
+            var enrollmentEndDate = moment().add(workingList.enrollmentCreatedPeriod.periodTo, 'days').format("YYYY-MM-DD");
+            searchParams.programUrl += "&programStartDate="+enrollmentStartDate+"&programEndDate="+enrollmentEndDate;
+        }
+        if(workingList.eventFilters){
+            if(workingList.eventFilters.length > 1){
+                return getWorkingListDataWithMultipleEventFilters(searchParams, workingList, pager, sortColumn);
+            }
+            searchParams.eventUrl = getEventUrl(workingList.eventFilters[0]);
+        }
+        return TEIService.search(searchParams.orgUnitId, "SELECTED", searchParams.sortUrl, searchParams.programUrl, searchParams.eventUrl, pager, true);
+    }
     this.setTrackedEntityList = function(trackedEntityList){
         this.trackedEntityList = trackedEntityList;
     }
@@ -2597,6 +2747,15 @@ i
                     return { status: "MATCHES", data: response };
                 }
                 return { status: "NOMATCH"};
+            },function(error){
+                var d = $q.defer();
+                if(error && error.data && error.data.message === "maxteicountreached"){
+                    d.resolve({ status: "TOOMANYMATCHES", data: null});
+                } 
+                else {
+                    d.reject(error);
+                }
+                return d.promise;
             });
         }else{
             var def = $q.defer();

@@ -3,11 +3,12 @@
 
         <h3 ng-if="isUnique && gridData">{{translateWithTETName('tracked_entity_instance_unique_found_header')}}</h3>
         <h3 ng-if="!isUnique && gridData">{{translateWithTETName('tracked_entity_instance_search_results_header')}}</h3>
-        <h3 ng-if="!gridData">{{translateWithTETName('no_tracked_entity_instance_found_header', true)}}</h3>
+        <h3 ng-if="!gridData && !tooManySearchResults">{{translateWithTETName('no_tracked_entity_instance_found_header', true)}}</h3>
+        <h3 ng-if="tooManySearchResults">{{'too_many_search_results' | translate}}</h3>
     </div>
     <div class="modal-body page">
         <div ng-if="!gridData">
-            <span ng-if="!gridData">
+            <span ng-if="!gridData && !tooManySearchResults">
                     <span ng-if="canOpenRegistration">
                         {{translateWithTETName(translateWithTETName('no_tracked_entity_instance_found_go_to_registration_description',true),true)}}
                     </span>
