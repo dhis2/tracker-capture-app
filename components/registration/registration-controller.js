@@ -434,7 +434,16 @@ trackerCapture.controller('RegistrationController',
             NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("form_is_empty_fill_at_least_one"));
             return;
         }
-        performRegistration(destination);
+
+        if(!destination) {
+            TEIService.getRelationships($scope.tei.trackedEntityInstance).then(function(result) {
+                $scope.tei.relationships = result;
+                performRegistration(destination);
+            });
+        } else {
+            performRegistration(destination);
+        }
+        
     };
 
     $scope.executeRules = function () {
