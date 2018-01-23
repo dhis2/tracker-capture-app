@@ -10,7 +10,8 @@ trackerCapture.controller('TopBarController',
                 $modal,
                 RuleBoundFactory,
                 MetaDataFactory,
-                CurrentSelection) {
+                CurrentSelection,
+                AttributesFactory) {
 
     
     var feedbackFieldSelection = {};
@@ -22,6 +23,7 @@ trackerCapture.controller('TopBarController',
     var indicatorsTextEffectValues = {};
     var indicatorsKeyDataEffectValues= {};
     var attributesValues = {};
+    var programAttributes = [];
     
     $scope.topBarConfig = $scope.topBarConfig;
     $scope.topBarConfig.openSettings = function(){
@@ -154,30 +156,40 @@ trackerCapture.controller('TopBarController',
         return values;
     }
 
+    $scope.$on('teiupdated', function(){
+        if(programAttributes){
+            var selections = CurrentSelection.get();
+            var tei = selections.tei;
+            setAttributes(tei);
+        }
+
+    });
+
+    var setAttributes = function(tei){
+        var values = {};
+        var attributeFields = {};
+        angular.forEach(programAttributes, function(attr){
+            attributeFields[attr.id] = attr.displayName;
+            if(tei && tei[attr.id]) values[attr.id] = {id: attr.id, name: attr.displayName, value: tei[attr.id]};
+        });
+        attributesValues = values;
+        setValues();
+        attributesFieldSelection = attributeFields;
+    }
+
     $scope.$on('dashboardWidgets', function(event, args) {
         var selections = CurrentSelection.get();
-        $scope.attributesById = CurrentSelection.getAttributesById();
-        var attributeFields = {};
         var tei = selections.tei;
         angular.forEach(tei.attributes, function(attr){
             tei[attr.attribute] = attr.value;
         });
         var selectedProgram = selections.pr;
 
-
-        var values = {};
-        for (var key in $scope.attributesById) {
-            if($scope.attributesById.hasOwnProperty(key)){
-                attributeFields[key] = $scope.attributesById[key].displayName;
-            }
-            if(tei && tei[key]){
-                values[key] = {id: key, name: $scope.attributesById[key].displayName, value: tei[key]};
-            }
-        }
-        attributesValues = values;
-        setValues();
-        attributesFieldSelection = attributeFields;
-
+        AttributesFactory.getByProgram(selectedProgram).then(function (atts) 
+        {
+            programAttributes = atts;
+            setAttributes(tei);
+        });
 
         MetaDataFactory.getByProgram("programRules", selectedProgram.id).then(function(rules){
             var feedBackFields = {};

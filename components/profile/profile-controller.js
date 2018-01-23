@@ -60,7 +60,7 @@ trackerCapture.controller('ProfileController',
         selections = CurrentSelection.get();
         $scope.attributes
         $scope.selectedTei = angular.copy(selections.tei);
-        $scope.trackedEntity = selections.te;
+        $scope.trackedEntityType = selections.te;
         $scope.selectedProgram = selections.pr;   
         $scope.selectedEnrollment = selections.selectedEnrollment;
         $scope.optionSets = selections.optionSets;
@@ -105,5 +105,5 @@ trackerCapture.controller('ProfileController',
         $timeout(function() { 
             $rootScope.$broadcast('registrationWidget', {registrationMode: 'PROFILE', selectedTei: $scope.selectedTei, enrollment: $scope.selectedEnrollment});
         }, 600);
-    };  
+    };
 });

@@ -1247,9 +1247,9 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-d2-tracker@28.0.21:
-  version "28.0.21"
-  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-28.0.21.tgz#91053e5247512de4351ca98bef5806d1d9f3ad23"
+d2-tracker@29.0.9:
+  version "29.0.9"
+  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-29.0.9.tgz#9ce48cd164ff4efe42517002feac7df24858f2f8"
   dependencies:
     gulp "^3.9.1"
     gulp-angular-templatecache "^2.0.0"
@@ -1270,10 +1270,6 @@ dateformat@^1.0.11:
   dependencies:
     get-stdin "^4.0.1"
     meow "^3.3.0"
-
-dateformat@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-2.0.0.tgz#2743e3abb5c3fc2462e527dca445e04e9f4dee17"
 
 debug@^2.1.1, debug@^2.2.0:
   version "2.3.3"
@@ -1909,30 +1905,7 @@ gulp-header@1.8.2:
     object-assign "*"
     through2 "^2.0.0"
 
-gulp-util@*, gulp-util@^3.0.0, gulp-util@^3.0.1:
-  version "3.0.8"
-  resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.8.tgz#0054e1e744502e27c04c187c3ecc505dd54bbb4f"
-  dependencies:
-    array-differ "^1.0.0"
-    array-uniq "^1.0.2"
-    beeper "^1.0.0"
-    chalk "^1.0.0"
-    dateformat "^2.0.0"
-    fancy-log "^1.1.0"
-    gulplog "^1.0.0"
-    has-gulplog "^0.1.0"
-    lodash._reescape "^3.0.0"
-    lodash._reevaluate "^3.0.0"
-    lodash._reinterpolate "^3.0.0"
-    lodash.template "^3.0.0"
-    minimist "^1.1.0"
-    multipipe "^0.1.2"
-    object-assign "^3.0.0"
-    replace-ext "0.0.1"
-    through2 "^2.0.0"
-    vinyl "^0.5.0"
-
-gulp-util@3.0.7:
+gulp-util@*, gulp-util@3.0.7, gulp-util@^3.0.0, gulp-util@^3.0.1:
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.7.tgz#78925c4b8f8b49005ac01a011c557e6218941cbb"
   dependencies:

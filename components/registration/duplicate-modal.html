@@ -1,0 +1,19 @@
+<div class="modal-header page">
+    <h3>{{translateWithTEAName('tracked_entity_attributes_already_existing_header',attribute)}}</h3>
+</div>
+<div class="modal-body page">   
+    <tracker-tei-list
+        tei-data="gridData"
+    >
+    </tracker-tei-list>
+</div>
+<div class="modal-footer page modal-search-bottom">
+    <span class="modal-search-bottom-text">
+        {{translateWithTETName(translateWithTETName(translateWithTEAName('tracked_entity_attributes_already_existing_description',attribute),true),true)}}    
+    </span>
+    <div class="modal-search-bottom-buttons">
+        <button class="btn btn-default" data-ng-click="cancel()">{{'back'| translate}}</button>
+        <button type="button" class="btn btn-primary" ng-click="openTei(gridData.rows.own[0])">{{'Open'| translate}}</button>
+    </div>     
+
+</div>

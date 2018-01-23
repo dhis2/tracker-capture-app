@@ -14,7 +14,7 @@
 <i ng-if="!teiFetched && showTrackedEntityDiv && enrollmentStatus==='TODAY'" class="fa fa-spinner fa-spin fa-2x"></i>
 <div ng-if="teiFetched">
     <div class="alert alert-warning vertical-spacing" ng-if="trackedEntityList.length === 0 || !trackedEntityList.length">
-        {{'no'| translate}} {{selectedProgram.trackedEntity.displayName|| 'records' | translate}} {{'found'| translate}}
+        {{'no'| translate}} {{selectedProgram.trackedEntityType.displayName|| 'records' | translate}} {{'found'| translate}}
     </div>
 
     <div class="small-vertical-spacing" ng-if="trackedEntityList.length > 0">
@@ -36,87 +36,87 @@
             </thead>
             <tbody id="list">
                 <tr ng-if="!addingTeiAssociate"
-                    ng-repeat="trackedEntity in trackedEntityList.rows.own | orderBy:d2Sort:reverse" 
-                    ng-click="mainTei.trackedEntityInstance ? assignRelationship(trackedEntity) : showDashboard(trackedEntity)"
-                    ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
+                    ng-repeat="trackedEntityType in trackedEntityList.rows.own | orderBy:d2Sort:reverse" 
+                    ng-click="mainTei.trackedEntityInstance ? assignRelationship(trackedEntityType) : showDashboard(trackedEntityType)"
+                    ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
                     title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">
-                                <span ng-if="trackedEntity[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
-                                <span ng-if="trackedEntity[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
                             </span>
                             <span ng-switch-when="TRUE_ONLY">
-                                <span ng-if="trackedEntity[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
                             </span>
                             <span ng-switch-when="ORGANISATION_UNIT">
-                                {{trackedEntity[gridColumn.id] && orgUnitNames[trackedEntity[gridColumn.id]] ? orgUnitNames[trackedEntity[gridColumn.id]] : trackedEntity[gridColumn.id]}}
+                                {{trackedEntityType[gridColumn.id] && orgUnitNames[trackedEntityType[gridColumn.id]] ? orgUnitNames[trackedEntityType[gridColumn.id]] : trackedEntityType[gridColumn.id]}}
                             </span>
-                            <span ng-switch-default>{{trackedEntity[gridColumn.id]}}</span>
+                            <span ng-switch-default>{{trackedEntityType[gridColumn.id]}}</span>
                         </span>
                     </td>
                 </tr>
                 <tr ng-if="!addingTeiAssociate"
-                    ng-repeat="trackedEntity in trackedEntityList.rows.other | orderBy:d2Sort:reverse" 
-                    ng-click="mainTei.trackedEntityInstance ? assignRelationship(trackedEntity) : showDashboard(trackedEntity)"
-                    ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
+                    ng-repeat="trackedEntityType in trackedEntityList.rows.other | orderBy:d2Sort:reverse" 
+                    ng-click="mainTei.trackedEntityInstance ? assignRelationship(trackedEntityType) : showDashboard(trackedEntityType)"
+                    ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
                     title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">
-                                <span ng-if="trackedEntity[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
-                                <span ng-if="trackedEntity[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
                             </span>
                             <span ng-switch-when="TRUE_ONLY">
-                                <span ng-if="trackedEntity[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
                             </span>
                             <span ng-switch-when="ORGANISATION_UNIT">
-                                {{trackedEntity[gridColumn.id] && orgUnitNames[trackedEntity[gridColumn.id]] ? orgUnitNames[trackedEntity[gridColumn.id]] : trackedEntity[gridColumn.id]}}
+                                {{trackedEntityType[gridColumn.id] && orgUnitNames[trackedEntityType[gridColumn.id]] ? orgUnitNames[trackedEntityType[gridColumn.id]] : trackedEntityType[gridColumn.id]}}
                             </span>
-                            <span ng-switch-default>{{trackedEntity[gridColumn.id]}}</span>
+                            <span ng-switch-default>{{trackedEntityType[gridColumn.id]}}</span>
                         </span>
                     </td>
                 </tr>
 
                 <tr ng-if="addingTeiAssociate"
-                    ng-repeat="trackedEntity in trackedEntityList.rows.own| orderBy:d2Sort:reverse" 
-                    ng-click="assignRelationship(trackedEntity)"
-                    ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
+                    ng-repeat="trackedEntityType in trackedEntityList.rows.own| orderBy:d2Sort:reverse" 
+                    ng-click="assignRelationship(trackedEntityType)"
+                    ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
                     title="{{'select'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">
-                                <span ng-if="trackedEntity[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
-                                <span ng-if="trackedEntity[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
                             </span>
                             <span ng-switch-when="TRUE_ONLY">
-                                <span ng-if="trackedEntity[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
                             </span>
                             <span ng-switch-when="ORGANISATION_UNIT">
-                                {{trackedEntity[gridColumn.id] && orgUnitNames[trackedEntity[gridColumn.id]] ? orgUnitNames[trackedEntity[gridColumn.id]] : trackedEntity[gridColumn.id]}}
+                                {{trackedEntityType[gridColumn.id] && orgUnitNames[trackedEntityType[gridColumn.id]] ? orgUnitNames[trackedEntityType[gridColumn.id]] : trackedEntityType[gridColumn.id]}}
                             </span>
-                            <span ng-switch-default>{{trackedEntity[gridColumn.id]}}</span>
+                            <span ng-switch-default>{{trackedEntityType[gridColumn.id]}}</span>
                         </span>
                     </td>
                 </tr>
                 <tr ng-if="addingTeiAssociate"
-                    ng-repeat="trackedEntity in trackedEntityList.rows.other| orderBy:d2Sort:reverse" 
-                    ng-click="assignRelationship(trackedEntity)"
-                    ng-class="{true: 'inactive-tei'} [trackedEntity.inactive]"
+                    ng-repeat="trackedEntityType in trackedEntityList.rows.other| orderBy:d2Sort:reverse" 
+                    ng-click="assignRelationship(trackedEntityType)"
+                    ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
                     title="{{'select'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">
-                                <span ng-if="trackedEntity[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
-                                <span ng-if="trackedEntity[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
                             </span>
                             <span ng-switch-when="TRUE_ONLY">
-                                <span ng-if="trackedEntity[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
+                                <span ng-if="trackedEntityType[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
                             </span>
                             <span ng-switch-when="ORGANISATION_UNIT">
-                                {{trackedEntity[gridColumn.id] && orgUnitNames[trackedEntity[gridColumn.id]] ? orgUnitNames[trackedEntity[gridColumn.id]] : trackedEntity[gridColumn.id]}}
+                                {{trackedEntityType[gridColumn.id] && orgUnitNames[trackedEntityType[gridColumn.id]] ? orgUnitNames[trackedEntityType[gridColumn.id]] : trackedEntityType[gridColumn.id]}}
                             </span>
-                            <span ng-switch-default>{{trackedEntity[gridColumn.id]}}</span>
+                            <span ng-switch-default>{{trackedEntityType[gridColumn.id]}}</span>
                         </span>
                     </td>
                 </tr>

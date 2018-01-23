@@ -1,0 +1,70 @@
+<div ng-if="currentTrackedEntityList.data">
+    <div class="alert alert-warning vertical-spacing" ng-if="currentTrackedEntityList.data.length === 0 || !currentTrackedEntityList.data.length">
+        {{'no'| translate}} {{parent.selectedProgram.trackedEntityType.displayName|| 'records' | translate}} {{'found'| translate}}
+    </div>
+
+    <div class="small-vertical-spacing" ng-if="currentTrackedEntityList.data.length > 0">
+        <table class="table table-striped dhis2-table-hover table-bordered">               
+            <thead>                        
+                <tr>
+                    <th ng-repeat="gridColumn in gridColumns| filter:{show: true}" class='mouse-pointer' ng-click="sortGrid(gridColumn)">                            
+                        <!-- sort icon begins -->                                
+                        <span ng-hide="gridColumn.showFilter" class="bold pointer" title="{{'sort'| translate}}" class="fa fa-sort">
+                            <span class="fa-stack">
+                                <span ng-class="{true: 'red'} [currentTrackedEntityList.sortColumn.id === gridColumn.id && currentTrackedEntityList.sortColumn.direction === 'asc']"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
+                                <span ng-class="{true: 'red'} [currentTrackedEntityList.sortColumn.id === gridColumn.id && currentTrackedEntityList.sortColumn.direction === 'desc']"><i class="fa fa-sort-desc fa-stack-1x"></i></span>
+                            </span>
+                            {{gridColumn.displayName}}
+                        </span>
+                        <!-- sort icon ends -->                            
+                    </th>                              
+                </tr>                        
+            </thead>
+            <tbody id="list">
+                <tr ng-repeat="trackedEntity in currentTrackedEntityList.data.rows.own" 
+                    ng-click="openTei(trackedEntity)"
+                    ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
+                    title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
+                    <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
+                        <span ng-switch="gridColumn.valueType">
+                            <span ng-switch-when="BOOLEAN">
+                                <span ng-if="trackedEntity[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
+                                <span ng-if="trackedEntity[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
+                            </span>
+                            <span ng-switch-when="TRUE_ONLY">
+                                <span ng-if="trackedEntity[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
+                            </span>
+                            <span ng-switch-when="ORGANISATION_UNIT">
+                                {{trackedEntity[gridColumn.id] && orgUnitNames[trackedEntity[gridColumn.id]] ? orgUnitNames[trackedEntity[gridColumn.id]] : trackedEntity[gridColumn.id]}}
+                            </span>
+                            <span ng-switch-default>{{trackedEntity[gridColumn.id]}}</span>
+                        </span>
+                    </td>
+                </tr>
+                <tr ng-repeat="trackedEntity in currentTrackedEntityList.data.rows.other" 
+                    ng-click="openTei(trackedEntity)"
+                    ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
+                    title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
+                    <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
+                        <span ng-switch="gridColumn.valueType">
+                            <span ng-switch-when="BOOLEAN">
+                                <span ng-if="trackedEntity[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
+                                <span ng-if="trackedEntity[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
+                            </span>
+                            <span ng-switch-when="TRUE_ONLY">
+                                <span ng-if="trackedEntity[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
+                            </span>
+                            <span ng-switch-when="ORGANISATION_UNIT">
+                                {{trackedEntity[gridColumn.id] && orgUnitNames[trackedEntity[gridColumn.id]] ? orgUnitNames[trackedEntity[gridColumn.id]] : trackedEntity[gridColumn.id]}}
+                            </span>
+                            <span ng-switch-default>{{trackedEntity[gridColumn.id]}}</span>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>        
+        </table>
+        <div class="hideInPrint">
+            <serverside-paginator></serverside-paginator>
+        </div>
+    </div>
+</div>

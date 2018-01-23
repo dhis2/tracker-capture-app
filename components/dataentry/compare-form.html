@@ -75,7 +75,7 @@
                                    max-date="0"
                                    min-date=""
                                    ng-model="currentEvent.eventDate"
-                                   ng-disabled="selectedOrgUnit.closedStatus || currentEvent.status === 'SKIPPED' || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
+                                   ng-disabled="!eventEditable()"
                                    ng-required="true"
                                    blur-or-change="saveEventDate()"/>
                             <input type="text"
@@ -123,7 +123,7 @@
                                    d2-date                                
                                    ng-model="currentEvent.dueDate"
                                    blur-or-change="saveDueDate()" 
-                                   ng-disabled="selectedOrgUnit.closedStatus || currentEvent.eventDate || !schedulingEnabled || currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"/>
+                                   ng-disabled="!eventEditable() || currentEvent.eventDate"/>
                             <span ng-if="invalidDueDate === currentEvent.event" class="error">{{'date_required'| translate}}</span>
                         </div>                
                         <div ng-if="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed" class="compare-form-extra-padding">
@@ -272,7 +272,7 @@
                                 <input type="checkbox"
                                    class=""
                                    ng-model="currentEvent.providedElsewhere[prStDe.dataElement.id]"
-                                   ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
+                                   ng-disabled="!eventEditable()"
                                    ng-change="saveDatavalueLocation(prStDe)"/>
                             </span>
                         </div>
@@ -412,7 +412,7 @@
                                             <input type="checkbox"
                                                    class=""
                                                    ng-model="currentEvent.providedElsewhere[prStDes[de.id].dataElement.id]"
-                                                   ng-disabled="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed"
+                                                   ng-disabled="!eventEditable()"
                                                    ng-change="saveDatavalueLocation(prStDes[de.id])"/>
                                         </div>
                                     </div>                                    

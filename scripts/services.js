@@ -6,11 +6,40 @@
 
 var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResource'])
 
+.filter('orderByKey', function(){
+    var compareValues = function(key, order='asc') {
+        return function(a, b) {
+            if(!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+                // property doesn't exist on either object
+                return 0; 
+            }
+        
+            const varA = (typeof a[key] === 'string') ? 
+                a[key].toUpperCase() : a[key];
+            const varB = (typeof b[key] === 'string') ? 
+                b[key].toUpperCase() : b[key];
+        
+            let comparison = 0;
+            if (varA > varB) {
+                comparison = 1;
+            } else if (varA < varB) {
+                comparison = -1;
+            }
+            return (
+                (order == 'desc') ? (comparison * -1) : comparison
+            );
+        };
+    }
+    return function(array, key, direction){
+        return array.sort(compareValues(key, direction));
+    }
+})
+
 .factory('TCStorageService', function(){
     var store = new dhis2.storage.Store({
         name: "dhis2tc",
         adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],
-        objectStores: ['programs', 'trackedEntities', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements']
+        objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements', 'programAccess','programStageAccess','trackedEntityTypeAccess']
     });
     return{
         currentStore: store
@@ -313,83 +342,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 /* Factory to fetch programs */
 .factory('ProgramFactory', function($q, $rootScope, $location, SessionStorageService, TCStorageService, orderByFilter, OrgUnitFactory, CommonUtils) {
-
+    var access = null;
     return {
-
-        getAll: function(){
-
-            var roles = SessionStorageService.get('USER_PROFILE');
-            var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
-            var def = $q.defer();
-            OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function (orgUnit) {
-                var ou = orgUnit;
-
-                TCStorageService.currentStore.open().done(function () {
-                    TCStorageService.currentStore.getAll('programs').done(function (prs) {
-                        var programs = [];
-                        angular.forEach(prs, function (pr) {
-                            if (pr.organisationUnits.hasOwnProperty(ou.id) && CommonUtils.userHasValidRole(pr, 'programs', userRoles)) {
-                                programs.push(pr);
-                            }
-                        });
-                        $rootScope.$apply(function () {
-                            def.resolve(programs);
-                        });
-                    });
-                });
-            });
-
-            return def.promise;
-        },
-        getAllForUser: function(selectedProgram){
-            var roles = SessionStorageService.get('USER_PROFILE');
-            var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
-            var def = $q.defer();
-
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll('programs').done(function(prs){
-                    var programs = [];
-                    angular.forEach(prs, function(pr){
-                        if(CommonUtils.userHasValidRole(pr, 'programs', userRoles)){
-                            programs.push(pr);
-                        }
-                    });
-
-                    programs = orderByFilter(programs, '-displayName').reverse();
-
-                    if(programs.length === 0){
-                        selectedProgram = null;
-                    }
-                    else if(programs.length === 1){
-                        selectedProgram = programs[0];
-                    }
-                    else{
-                        if(selectedProgram){
-                            var continueLoop = true;
-                            for(var i=0; i<programs.length && continueLoop; i++){
-                                if(programs[i].id === selectedProgram.id){
-                                    selectedProgram = programs[i];
-                                    continueLoop = false;
-                                }
-                            }
-                            if(continueLoop){
-                                selectedProgram = null;
-                            }
-                        }
-                    }
-
-                    if(!selectedProgram || angular.isUndefined(selectedProgram) && programs.legth > 0){
-                        selectedProgram = programs[0];
-                    }
-
-                    $rootScope.$apply(function(){
-                        def.resolve({programs: programs, selectedProgram: selectedProgram});
-                    });
-                });
-            });
-
-            return def.promise;
-        },
         get: function(uid){
 
             var def = $q.defer();
@@ -403,54 +357,101 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return def.promise;
         },
-        getProgramsByOu: function(ou, selectedProgram){
+        getAllAccesses: function(){
+            var def = $q.defer();
+            if(access){
+                def.resolve(access);
+            }else{
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.getAll('programAccess').done(function(programAccess){
+                        access = { programsById: {}, programStagesById: {}};
+                        angular.forEach(programAccess, function(program){
+                            access.programsById[program.id] = program.access;
+                            angular.forEach(program.programStages, function(programStage){
+                                access.programStagesById[programStage.id] = programStage.access;
+                            });
+                        });
+                        def.resolve(access);
+                    });
+                });
+            }
+            return def.promise;
+            
+        },
+        getProgramsByOu: function(ou,loadSelectedProgram, selectedProgram){
             var roles = SessionStorageService.get('USER_PROFILE');
             var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
             var def = $q.defer();
 
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll('programs').done(function(prs){
-                    var programs = [];
-                    angular.forEach(prs, function(pr){
-                        if(pr.organisationUnits.hasOwnProperty( ou.id ) && CommonUtils.userHasValidRole(pr, 'programs', userRoles)){
-                            programs.push(pr);
-                        }
-                    });
-
-                    programs = orderByFilter(programs, '-displayName').reverse();
-
-                    if(programs.length === 0){
-                        selectedProgram = null;
-                    }
-                    else if(programs.length === 1){
-                        selectedProgram = programs[0];
-                    }
-                    else{
-                        if(selectedProgram){
-                            var continueLoop = true;
-                            for(var i=0; i<programs.length && continueLoop; i++){
-                                if(programs[i].id === selectedProgram.id){
-                                    selectedProgram = programs[i];
-                                    continueLoop = false;
-                                }
+            this.getAllAccesses().then(function(accesses){
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.getAll('programs').done(function(prs){
+                        var programs = [];
+                        angular.forEach(prs, function(pr){
+                            if(pr.organisationUnits.hasOwnProperty( ou.id ) && CommonUtils.userHasValidRole(pr, 'programs', userRoles) && accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read){
+                                pr.access = accesses.programsById[pr.id];
+                                var accessiblePrs = [];
+                                angular.forEach(pr.programStages, function(prs){
+                                    if(accesses.programStagesById[prs.id] && accesses.programStagesById[prs.id].data.read){
+                                        prs.access = accesses.programStagesById[prs.id];
+                                        accessiblePrs.push(prs);
+                                    }
+                                });
+                                pr.programStages = accessiblePrs;
+                                programs.push(pr);
                             }
-                            if(continueLoop){
+                        });
+                        programs = orderByFilter(programs, '-displayName').reverse();
+                        if(loadSelectedProgram){
+                            if(programs.length === 0){
                                 selectedProgram = null;
                             }
+                            else if(programs.length === 1){
+                                selectedProgram = programs[0];
+                            }
+                            else{
+                                if(selectedProgram){
+                                    var continueLoop = true;
+                                    for(var i=0; i<programs.length && continueLoop; i++){
+                                        if(programs[i].id === selectedProgram.id){
+                                            selectedProgram = programs[i];
+                                            continueLoop = false;
+                                        }
+                                    }
+                                    if(continueLoop){
+                                        selectedProgram = null;
+                                    }
+                                }
+                            }
+        
+                            if(!selectedProgram || angular.isUndefined(selectedProgram) && programs.length > 0){
+                                selectedProgram = programs[0];
+                            }
                         }
-                    }
-
-                    if(!selectedProgram || angular.isUndefined(selectedProgram) && programs.legth > 0){
-                        selectedProgram = programs[0];
-                    }
-
-                    $rootScope.$apply(function(){
-                        def.resolve({programs: programs, selectedProgram: selectedProgram});
+    
+                        $rootScope.$apply(function(){
+                            def.resolve({programs: programs, selectedProgram: selectedProgram});
+                        });
                     });
                 });
             });
-
             return def.promise;
+        },
+        extendWithSearchGroups: function(programs, attributesById){
+            angular.forEach(programs, function(program){
+                var searchGroups = [];
+                var group = { attributes: []};
+                if(program.programAttributes){
+                    angular.forEach(program.attributes, function(programAttribute){
+                        var attr = attributesById[programAttribute.attribute];
+                        if(attr.unique){
+                            searchGroups.push({ attributes: [teAttribute]});
+                        }else if(programAttribute.searchable){
+                            group.attributes.push(programAttribute);
+                        }
+                    });
+                }
+            });
         }
     };
 })
@@ -634,34 +635,103 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         }
     };
 })
+.factory('EnrollmentUtils', function(){
+    return {
+        isExpired: function(program, enrollment){
+
+        }
+    }
+})
 
 /* Service for getting tracked entity */
-.factory('TEService', function(TCStorageService, $q, $rootScope) {
-
+.factory('TEService', function(TCStorageService, $q, $rootScope, AttributesFactory) {
+    var allAccesses = null;
     return {
         getAll: function(){
             var def = $q.defer();
 
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.getAll('trackedEntities').done(function(entities){
-                    $rootScope.$apply(function(){
-                        def.resolve(entities);
+            this.getAllAccesses().then(function(accesses){
+                TCStorageService.currentStore.open().done(function(){
+
+                    TCStorageService.currentStore.getAll('trackedEntityTypes').done(function(entities){
+                        angular.forEach(entities, function(entity){
+                            entity.access = accesses[entity.id];
+                        })
+                        $rootScope.$apply(function(){
+                            
+                            def.resolve(entities);
+                        });
+                    });
+                });
+                
+            });
+            return def.promise;
+
+        },
+        get: function(uid){
+            var def = $q.defer();
+
+            this.getAccess(uid).then(function(access){
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.get('trackedEntityTypes', uid).done(function(te){
+                        if(te){
+                            te.access = access;
+                        }
+                        $rootScope.$apply(function(){
+                            def.resolve(te);
+                        });
                     });
                 });
             });
             return def.promise;
         },
-        get: function(uid){
+        getAccess: function(uid){
             var def = $q.defer();
-
-            TCStorageService.currentStore.open().done(function(){
-                TCStorageService.currentStore.get('trackedEntities', uid).done(function(te){
-                    $rootScope.$apply(function(){
-                        def.resolve(te);
+            if(allAccesses){
+                def.resolve(allAccesses[uid]);
+            }else{
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.get('trackedEntityTypeAccess', uid).done(function(teAccess){
+                        def.resolve({data: {write: true, read: true}});//teAccess.access);
                     });
                 });
-            });
+            }
             return def.promise;
+        },
+        getAllAccesses: function(){
+            var def = $q.defer();
+            if(allAccesses){
+                def.resolve(allAccesses);
+            }else{
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.getAll('trackedEntityTypeAccess').done(function(teAccess){
+                        allAccesses = {};
+                        angular.forEach(teAccess, function(a){
+                            allAccesses[a.id] = {data: {write: true, read: true}};//a.access;
+                        })
+                        def.resolve(allAccesses);
+                    });
+                });
+            }
+            return def.promise;
+        },
+        extendWithSearchGroups: function(trackedEntityTypes, attributesById){
+            angular.forEach(trackedEntityTypes, function(te){
+                var searchGroups = [];
+                var group = { attributes: []};
+                if(te.attributes){
+                    angular.forEach(te.attributes, function(teAttribute){
+                        var attr = attributesById[teAttribute.attribute];
+                        var searchAttribute = teAttribute;
+                        searchAttribute.attribute = angular.copy(attr);
+                        if(attr.unique){
+                            searchGroups.push({ attributes: [searchAttribute]});
+                        }else if(searchAttribute.searchable){
+                            group.attributes.push(searchAttribute);
+                        }
+                    });
+                }
+            });
         }
     };
 })
@@ -669,6 +739,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 /* Service for getting tracked entity instances */
 .factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService ) {
     var errorHeader = $translate.instant("error");
+
+    var getFormatUrl = function(){
+        
+    }
     return {
         get: function(entityUid, optionSets, attributesById){
             var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
@@ -718,7 +792,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        search: function(ouId, ouMode, queryUrl, programUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
+        search: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
             var url;
             var deferred = $q.defer();
 
@@ -733,8 +807,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             if(queryUrl){
                 url = url + '&'+ queryUrl;
             }
-            if(programUrl){
-                url = url + '&' + programUrl;
+            if(programOrTETUrl){
+                url = url + '&' + programOrTETUrl;
             }
             if(attributeUrl){
                 url = url + '&' + attributeUrl;
@@ -835,7 +909,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 if(error && error.status === 403){
                     NotificationService.showNotifcationDialog( $translate.instant('error'),  $translate.instant('access_denied'));
                 }
-                deferred.resolve(null);
+                deferred.reject(error);
             });
             return deferred.promise;
         },
@@ -898,19 +972,55 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }
             return def.promise;
         },
-        getGeneratedAttributeValue: function(attribute) {
-            var deferred = $q.defer();
-            $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generate').then(function (response) {
-                if (response && response.data) {
-                    deferred.resolve(response.data);
+        getGeneratedAttributeValue: function(attribute, selectedTei, program, orgUnit) {
+            var getValueUrl = function(valueToSet, selectedTei, program, orgUnit, required){
+                var valueUrlBase = valueToSet+"=";
+                var valueUrl = null;
+                switch(valueToSet){
+                    case "org_unit_code":
+                        if(orgUnit && orgUnit.code) valueUrl = valueUrlBase+orgUnit.code;
+                        break;
+                    default:
+                        throw "value not supported";
                 }
-            }, function (response) {
-                var errorBody = $translate.instant('failed_to_generate_tracked_entity_attribute');
-                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
-                deferred.resolve(response.data);
-                return null;
+                if(required && !valueUrl) throw "value "+valueToSet+ "not found";
+                return valueUrl;
+            }
+
+            return $http.get(DHIS2URL + '/trackedEntityAttributes/'+attribute+'/requiredValues').then(function(response){
+                var paramsUrl = "?";
+                if(response && response.data){
+                    if(response.data.required){
+                        angular.forEach(response.data.required, function(requiredValue){
+                            var valueUrl = getValueUrl(requiredValue, selectedTei, program, orgUnit,true);
+                            paramsUrl+="&"+valueUrl;
+                        });
+                    }
+                    if(response.data.optional){
+                        angular.forEach(response.data.optional, function(optionalValue){
+                            var valueUrl = getValueUrl(optionalValue, selectedTei, program, orgUnit,false);
+                            if(valueUrl) paramsUrl += "&"+valueUrl;
+                        });
+                    }
+                }
+                if(paramsUrl.length >= 2 && paramsUrl.charAt(1) === "&") paramsUrl = paramsUrl.slice(0,1)+paramsUrl.slice(2);
+                return $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generateAndReserve'+paramsUrl).then(function (response) {
+                    if (response && response.data) {
+                        var value = null;
+                        angular.forEach(response.data, function(generated){
+                            if(generated.trackedEntityAttribute.id === attribute){
+                                value = generated.value;
+                            }
+                        })
+                        return value;
+                    }
+                    return null;
+                }, function (response) {
+                    var errorBody = $translate.instant('failed_to_generate_tracked_entity_attribute');
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
+                    return response.data;
+                });
             });
-            return deferred.promise;
         }
     };
 })
@@ -945,6 +1055,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
                     angular.forEach(program.programTrackedEntityAttributes, function(pAttribute){
                         var att = attributes[pAttribute.trackedEntityAttribute.id];
+                        att.programTrackedEntityAttribute = pAttribute;
                         if (att) {
                             att.mandatory = pAttribute.mandatory;
                             if (pAttribute.displayInList) {
@@ -953,11 +1064,60 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             if(pAttribute.renderOptionsAsRadio){
                                 att.renderOptionsAsRadio = pAttribute.renderOptionsAsRadio;
                             }
+                            if(pAttribute.searchable)
+                            {
+                                att.searchable = pAttribute.searchable;
+                            }
                             programAttributes.push(att);
                         }
                     });
 
                     def.resolve(programAttributes);
+                }
+                else{
+                    var attributes = [];
+                    angular.forEach(atts, function(attribute){
+                        if (attribute.displayInListNoProgram) {
+                            attributes.push(attribute);
+                        }
+                    });
+
+                    attributes = orderByFilter(attributes, '-sortOrderInListNoProgram').reverse();
+                    def.resolve(attributes);
+                }
+            });
+            return def.promise;
+        },
+        getByTrackedEntityType: function(trackedEntityType){
+            var def = $q.defer();
+            this.getAll().then(function(atts){
+
+                if(trackedEntityType && trackedEntityType.id){
+                    var attributes = [];
+                    var trackedEntityTypeAttributes = [];
+                    angular.forEach(atts, function(attribute){
+                        attributes[attribute.id] = attribute;
+                    });
+
+                    angular.forEach(trackedEntityType.trackedEntityTypeAttributes, function(teAttribute){
+                        var att = attributes[teAttribute.trackedEntityAttribute.id];
+                        if (att) {
+                            att.mandatory = teAttribute.mandatory;
+                            if (teAttribute.displayInList) {
+                                att.displayInListNoProgram = true;
+                            }
+                            if(teAttribute.renderOptionsAsRadio){
+                                att.renderOptionsAsRadio = teAttribute.renderOptionsAsRadio;
+                            }
+                            if(teAttribute.searchable)
+                            {
+                                att.searchable = teAttribute.searchable;
+                            }
+                            trackedEntityTypeAttributes.push(att);
+                        }
+                    });
+
+                    def.resolve(trackedEntityTypeAttributes);
                 }
                 else{
                     var attributes = [];
@@ -2106,13 +2266,24 @@ i
         },
         getEditingStatus: function(dhis2Event, stage, orgUnit, tei, enrollment){
             return (dhis2Event.orgUnit !== orgUnit.id && DateUtils.isValid(dhis2Event.eventDate)) || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || tei.inactive || enrollment.status !== 'ACTIVE';
+        },
+        isExpired: function(program, event){
+            var expired = !DateUtils.verifyExpiryDate(event.eventDate, program.expiryPeriodType, program.expiryDays, false);
+            if(expired) return true;
+
+            if(event.status === 'COMPLETED' && program.completeEventsExpiryDays && program.completeEventsExpiryDays > 0){
+                var expiryDate = moment(event.completedDate).add(program.completeEventsExpiryDays, 'days');
+                var now = moment();
+                if(expiryDate < now) return true;
+            }
+            return false;
         }
     };
 })
 
 .service('EventCreationService', function($modal){
 
-    this.showModal = function(eventsByStage, stage, availableStages,programStages,selectedEntity,selectedProgram,selectedOrgUnit,selectedEnrollment, autoCreate, eventCreationAction,allEventsSorted, suggestedStage, selectedCategories){
+    this.showModal = function(eventsByStage, stage, availableStages, writableStages, programStages,selectedEntity,selectedProgram,selectedOrgUnit,selectedEnrollment, autoCreate, eventCreationAction,allEventsSorted, selectedCategories){
         var modalInstance = $modal.open({
             templateUrl: 'components/dataentry/new-event.html',
             controller: 'EventCreationController',
@@ -2125,6 +2296,9 @@ i
                 },
                 stages: function(){
                     return availableStages;
+                },
+                writableStages: function(){
+                    return writableStages;
                 },
                 allStages: function(){
                     return programStages;
@@ -2149,9 +2323,6 @@ i
                 },
                 events: function(){
                     return allEventsSorted;
-                },
-                suggestedStage: function(){
-                    return suggestedStage;
                 },
                 selectedCategories: function () {
                     return selectedCategories;
@@ -2196,7 +2367,403 @@ i
         }
     };
 })
+.service('ProgramWorkingListService', function($http,$q,$filter, orderByFilter,orderByKeyFilter, TEIService){
+    var workingListsByProgram = null;
+    var cachedMultipleEventFiltersData = {};
+    var getDefaultWorkingLists = function(program){
+        //Temporary until working list is implemented
+        var defaultWorkingLists = [
+            {
+                name: "active_enrollment",
+                description: "active_enrollment",
+                program: {id: program.id},
+                enrollmentStatus: "ACTIVE",
+                style: {icon: "fa fa-circle-o"},
+                sortOrder: 1
+            },
+            {
+                name: "all_enrollments",
+                description: "all_enrollment",
+                program: {id: program.id},
+                style: {icon: "fa fa-list"},
+                sortOrder: 0
+            },
+            {
+                name: "completed_enrollment",
+                description: "completed_enrollment",
+                program: {id: program.id},
+                style: {icon: "fa fa-check"},
+                enrollmentStatus: "COMPLETED",
+                sortOrder: 2
+            },
+            {
+                name: "cancelled_enrollment",
+                description: "cancelled_enrollment",
+                program: {id: program.id},
+                style: {icon: "fa fa-times" },
+                enrollmentStatus: "CANCELLED",
+                sortOrder: 3
+            }
+        ];
+        return defaultWorkingLists;
+    }
+    var getPeriodDate = function(days){
+        return moment().add(days,'days').format('YYYY-MM-DD');
+    }
+    var getEventUrl = function(eventFilter){
+        var eventUrl = null;
+        if(eventFilter.eventStatus) eventUrl = "eventStatus="+eventFilter.eventStatus;
+        if(eventFilter.eventCreatedPeriod){
+            if(eventUrl) eventUrl+= "&";
+            eventUrl+="eventStartDate="+getPeriodDate(eventFilter.eventCreatedPeriod.periodFrom);
+            eventUrl+="&eventEndDate="+getPeriodDate(eventFilter.eventCreatedPeriod.periodTo);
+        }
+        if(eventFilter.programStage){
+            if(eventUrl) eventUrl+="&";
+            eventUrl+="programStage="+eventFilter.programStage;
+        }
+        return eventUrl;
+    }
+    var getCachedMultipleEventFiltersData = function(workingList, pager, sortColumn){
+        var cachedData = cachedMultipleEventFiltersData[workingList.name];
+        if(!pager) pager = { page: 1, pageSize: 50, pageCount: Math.ceil(cachedData.rows.length/50)};
+        var pageEnd = (pager.pageSize*pager.page);
+        var pageStart = pageEnd - pager.pageSize;
 
+        var pageRows = cachedData.rows.slice(pageStart, pageEnd);
+        var data = {
+            rows: pageRows, 
+            height: pageRows.length,
+            width: cachedData.width,
+            headers: cachedData.headers,
+            metaData: {pager: pager}
+        }
+        return data;
+    }
+    var getWorkingListDataWithMultipleEventFilters = function(searchParams, workingList, pager, sortColumn){
+        var def = $q.defer();
+        if(workingList.cachedSorting === searchParams.sortUrl && workingList.cachedOrgUnit === searchParams.orgUnitId){
+            var data = getCachedMultipleEventFiltersData(workingList,pager);
+            def.resolve(data);
+        }else{
+            var promises = [];
+            angular.forEach(workingList.eventFilters, function(eventFilter){
+                var eventUrl = getEventUrl(eventFilter);
+                var tempPager = {
+                    pageSize:1000,
+                    page: 1
+                }
+                promises.push(TEIService.search(searchParams.orgUnitId, "SELECTED", searchParams.sortUrl, searchParams.programUrl, eventUrl,tempPager, true));
+            });
+            $q.all(promises).then(function(response){
+                var data = { height: 0, width: 0, rows: []};
+                var existingTeis = {};
+                var allRows = [];
+                angular.forEach(response, function(responseData){
+                    data.headers = data.headers && data.headers.length > responseData.headers.length ? data.headers : responseData.headers;
+                    data.width  = data.width > responseData.width ? data.width : responseData.width;
+                    allRows = allRows.concat(responseData.rows);
+                });
+                //Getting distinct list
+                var existing = {};
+                data.rows = allRows.filter(function(d){
+                    if(existing[d[0]])return false;
+                    existing[d[0]] = true;
+                    return true;
+                });
+                var sortColumnIndex = data.headers.findIndex(function(h){ return h.name === sortColumn.id});
+                if(sortColumnIndex) data.rows = orderByKeyFilter(data.rows, sortColumnIndex, sortColumn.direction);
+                //order list
+                cachedMultipleEventFiltersData[workingList.name] = data;
+                workingList.cachedSorting = searchParams.sortUrl;
+                workingList.cachedOrgUnit = searchParams.orgUnitId;
+                var data = getCachedMultipleEventFiltersData(workingList, pager, sortColumn);
+                def.resolve(data);
+            });
+        }
+        return def.promise;
+    }
+
+    this.getWorkingListsForProgram = function(program){
+        var def = $q.defer();
+        if(!program){
+            def.resolve([]);
+        }
+
+        if(!workingListsByProgram){
+            $http.get(DHIS2URL+"/trackedEntityInstanceFilters?fields=*&paging=false").then(function(response){
+                workingListsByProgram = {};
+                if(response && response.data && response.data.trackedEntityInstanceFilters){
+                    angular.forEach(response.data.trackedEntityInstanceFilters, function(workingList){
+                        if(!workingListsByProgram[workingList.program.id]) workingListsByProgram[workingList.program.id] = [];
+                        workingListsByProgram[workingList.program.id].push(workingList);
+                    });
+                }else{
+                    workingListsByProgram[program.id] = getDefaultWorkingLists(program);
+                }
+                for(var key in workingListsByProgram){
+                    if(angular.isArray(workingListsByProgram[key])){
+                        workingListsByProgram[key] = orderByKeyFilter(workingListsByProgram[key], 'sortOrder', 'asc');
+                    }
+                }
+                var programWorkingLists = workingListsByProgram[program.id] ? workingListsByProgram[program.id] : [];
+                def.resolve(programWorkingLists);
+            });
+        }else{
+            var workingLists = workingListsByProgram[program.id];
+            if(!workingLists){
+                workingLists = getDefaultWorkingLists(program);
+                workingListsByProgram[program.id] = workingLists;
+            } 
+            def.resolve(workingLists);
+        }
+        return def.promise;
+    }
+
+    this.getWorkingListData = function(orgUnit, workingList, pager, sortColumn){
+        var searchParams = {
+            orgUnitId: orgUnit.id,
+            programUrl: "program="+workingList.program.id,
+            eventUrl: null
+        }
+        if(workingList.enrollmentStatus){
+            searchParams.programUrl += "&programStatus="+workingList.enrollmentStatus;
+        }
+        if(sortColumn){
+            searchParams.sortUrl = "order="+sortColumn.id+':'+sortColumn.direction;
+        }
+        if(workingList.enrollmentCreatedPeriod){
+            var enrollmentStartDate = moment().add(workingList.enrollmentCreatedPeriod.periodFrom, 'days').format("YYYY-MM-DD");
+            var enrollmentEndDate = moment().add(workingList.enrollmentCreatedPeriod.periodTo, 'days').format("YYYY-MM-DD");
+            searchParams.programUrl += "&programStartDate="+enrollmentStartDate+"&programEndDate="+enrollmentEndDate;
+        }
+        if(workingList.eventFilters){
+            if(workingList.eventFilters.length > 1){
+                return getWorkingListDataWithMultipleEventFilters(searchParams, workingList, pager, sortColumn);
+            }
+            searchParams.eventUrl = getEventUrl(workingList.eventFilters[0]);
+        }
+        return TEIService.search(searchParams.orgUnitId, "SELECTED", searchParams.sortUrl, searchParams.programUrl, searchParams.eventUrl, pager, true);
+    }
+    this.setTrackedEntityList = function(trackedEntityList){
+        this.trackedEntityList = trackedEntityList;
+    }
+})
+.service("SearchGroupService", function(TEIService, $q, OperatorFactory, AttributesFactory, DateUtils){
+    var programSearchConfigsById = {};
+    var trackedEntityTypeSearchConfigsById = {};
+    var defaultOperators = OperatorFactory.defaultOperators;
+
+    var makeSearchConfig = function(dimensionAttributes, minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup){
+        var searchConfig = { searchGroups: [], searchGroupsByAttributeId: {}};
+        if(dimensionAttributes){
+            var defaultSearchGroup = { id: dhis2.util.uid(), attributes: [], ouMode: {name: 'ACCESSIBLE'}, orgunitUnique: false};
+            var attributes = AttributesFactory.generateAttributeFilters(angular.copy(dimensionAttributes));
+            angular.forEach(attributes, function(attr){
+                if(attr.searchable || (attr.unique && !attr.orgunitScope)){
+                    searchConfig.searchGroupsByAttributeId[attr.id] = {};
+                    if(attr.unique){
+                        var uniqueAttr = attr.orgunitScope ? angular.copy(attr) : attr;
+                        uniqueAttr.operator = "Eq";
+                        var uniqueSearchGroup = {
+                            id: dhis2.util.uid(),
+                            uniqueGroup: true,
+                            orgunitUnique: uniqueAttr.orgunitScope,
+                            attributes: [uniqueAttr],
+                            ouMode: {name: 'ACCESSIBLE'}
+                        }
+                        if(uniqueAttr.orgunitScope) uniqueSearchGroup.ouMode = {name: 'SELECTED'};
+                        searchConfig.searchGroups.push(uniqueSearchGroup);
+                        searchConfig.searchGroupsByAttributeId[uniqueAttr.id].unique = uniqueSearchGroup;
+                    }
+                    if(!attr.unique || attr.orgunitScope){
+                        if(attr.optionSetValue && attr.valueType === "TEXT") attr.operator = "Eq";
+                        defaultSearchGroup.attributes.push(attr);
+                        searchConfig.searchGroupsByAttributeId[attr.id].default = defaultSearchGroup;
+                    }
+
+                }
+            });
+            if(defaultSearchGroup.attributes.length !== 0){
+                defaultSearchGroup.minAttributesRequiredToSearch = minAttributesRequiredToSearch;
+                searchConfig.searchGroups.push(defaultSearchGroup);
+            }
+        }
+        return searchConfig;
+    }
+    this.getSearchConfigForProgram = function(program, orgUnitUniqueAsSearchGroup) {
+        var def = $q.defer();
+        if(!programSearchConfigsById[program.id]){
+            return AttributesFactory.getByProgram(program).then(function(attributes)
+            {
+                var searchConfig = makeSearchConfig(attributes, program.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
+                programSearchConfigsById[program.id] = searchConfig;
+                def.resolve(angular.copy(searchConfig));
+                return def.promise;
+            });
+        }
+        def.resolve(angular.copy(programSearchConfigsById[program.id]));
+        return def.promise;
+    }
+    this.getSearchConfigForTrackedEntityType = function(trackedEntityType,orgUnitUniqueAsSearchGroup){
+        var def = $q.defer();
+        if(!trackedEntityTypeSearchConfigsById[trackedEntityType.id]){
+            return AttributesFactory.getByTrackedEntityType(trackedEntityType).then(function(attributes)
+            {
+                var searchConfig = makeSearchConfig(attributes, trackedEntityType.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
+                trackedEntityTypeSearchConfigsById[trackedEntityType.id] = searchConfig;
+                def.resolve(angular.copy(searchConfig));
+                return def.promise;
+            });
+        }
+        def.resolve(angular.copy(trackedEntityTypeSearchConfigsById[trackedEntityType.id]));
+        return def.promise;
+    }
+
+    this.search = function(searchGroup, program,trackedEntityType, orgUnit, pager){
+        var uniqueSearch = false;
+        var numberOfSetAttributes = 0;
+        var query = {url: null, hasValue: false};
+        if(searchGroup){
+            angular.forEach(searchGroup.attributes, function(attr){
+                if(searchGroup.uniqueGroup) uniqueSearch = true;
+                if(attr.valueType === 'DATE' || attr.valueType === 'NUMBER' || attr.valueType === 'DATETIME'){
+                    var q = '';
+    
+                    if(attr.operator === OperatorFactory.defaultOperators[0]){
+                        var exactValue = searchGroup[attr.id] ? searchGroup[attr.id].exactValue : null;
+                        if(exactValue == null) exactValue = searchGroup[attr.id];
+
+
+                        if(exactValue && exactValue !== ''){
+                            query.hasValue = true;
+                            if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
+                                exactValue = DateUtils.formatFromUserToApi(exactValue);
+                            }
+                            if(attr.valueType === 'DATETIME') {
+                                q += 'LIKE:' + exactValue + ':';
+                            } else {
+                                q += 'EQ:' + exactValue + ':';
+                            }
+                            numberOfSetAttributes++;
+                        }
+                    }
+                    if(attr.operator === OperatorFactory.defaultOperators[1]){
+                        var startValue =  searchGroup[attr.id] ? searchGroup[attr.id].startValue : null;
+                        var endValue = searchGroup[attr.id] ? searchGroup[attr.id].endValue : null;
+                        if(startValue && startValue !== ''){
+                            query.hasValue = true;
+                            if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
+                                startValue = DateUtils.formatFromUserToApi(startValue);
+                            }
+                            q += 'GT:' + startValue + ':';
+                        }
+                        if(endValue && endValue !== ''){
+                            query.hasValue = true;
+                            if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
+                                endValue = DateUtils.formatFromUserToApi(endValue);
+                            }
+                            q += 'LT:' + endValue + ':';
+                        }
+                    }
+                    if(query.url){
+                        if(q){
+                            numberOfSetAttributes++;
+                            q = q.substr(0,q.length-1);
+                            query.url = query.url + '&filter=' + attr.id + ':' + q;
+                        }
+                    }
+                    else{
+                        if(q){
+                            numberOfSetAttributes++;
+                            q = q.substr(0,q.length-1);
+                            query.url = 'filter=' + attr.id + ':' + q;
+                        }
+                    }
+                }
+                else{
+                    var value = searchGroup[attr.id] ? searchGroup[attr.id].value : null;
+                    if(value == null) value = searchGroup[attr.id];
+                    if(value && value !== ''){
+                        query.hasValue = true;
+    
+                        if(angular.isArray(value)){
+                            var q = '';
+                            angular.forEach(value, function(val){
+                                q += val + ';';
+                            });
+    
+                            q = q.substr(0,q.length-1);
+    
+                            if(query.url){
+                                if(q){
+                                    numberOfSetAttributes++;
+                                    query.url = query.url + '&filter=' + attr.id + ':IN:' + q;
+                                }
+                            }
+                            else{
+                                if(q){
+                                    numberOfSetAttributes++;
+                                    query.url = 'filter=' + attr.id + ':IN:' + q;
+                                }
+                            }
+                        }
+                        else{
+                            if(query.url){
+                                numberOfSetAttributes++;
+                                if(attr.operator === "Eq"){
+                                    query.url = query.url + '&filter=' + attr.id + ':EQ:' + value;
+                                }else{
+                                    query.url = query.url + '&filter=' + attr.id + ':LIKE:' + value;
+                                }
+                                
+                            }
+                            else{
+                                numberOfSetAttributes++;
+                                if(attr.operator === "Eq"){
+                                    query.url = 'filter=' + attr.id + ':EQ:' + value;
+                                }else{
+                                    query.url = 'filter=' + attr.id + ':LIKE:' + value;
+                                }
+                                
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.minAttributesRequiredToSearch)){
+            var programOrTETUrl = "";
+            if(program){
+                programOrTETUrl = "program="+program.id;
+            }else{
+                programOrTETUrl = "trackedEntityType="+trackedEntityType.id;
+            }
+            var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
+            return TEIService.search(searchOrgUnit.id, searchGroup.ouMode.name,null, programOrTETUrl, query.url, pager, true).then(function(response){
+                if(response && response.rows && response.rows.length > 0){
+                    if(uniqueSearch) return { status: "UNIQUE", data: response };
+                    return { status: "MATCHES", data: response };
+                }
+                return { status: "NOMATCH"};
+            },function(error){
+                var d = $q.defer();
+                if(error && error.data && error.data.message === "maxteicountreached"){
+                    d.resolve({ status: "TOOMANYMATCHES", data: null});
+                } 
+                else {
+                    d.reject(error);
+                }
+                return d.promise;
+            });
+        }else{
+            var def = $q.defer();
+            def.resolve({status: "NOMATCH"});
+            return def.promise;
+        }
+    }
+})
 .factory('RuleBoundFactory', function()
 {
     var initData = function(){
@@ -2271,4 +2838,42 @@ i
             return ruleBoundData;
         }
     }
+})
+.service('AccessUtils', function($q, TCStorageService){
+
+    this.anyWritable = function(accessKeyValuePair){
+        if(accessKeyValuePair){
+            for(var accessKey in accessKeyValuePair){
+                var access = accessKeyValuePair[accessKey];
+                if(access && access.data && access.data.write) return true;
+            }
+        }
+        return false;
+    }
+    this.isReadable = function(obj){
+        if(obj && obj.access && obj.access.data && obj.access.data.read){
+            return true;
+        }
+        return false;
+    }
+    this.isWritable = function(obj){
+        if(obj.access && obj.access.data && obj.access.data.write){
+            return true;
+        }
+        return false;
+    }
+
+    this.toWritable = function(arr){
+        var service = this;
+        if(!arr) return arr;
+        var writable = [];
+        angular.forEach(arr, function(obj){
+            if(service.isWritable(obj)){
+                writable.push(obj);
+            }
+        });
+        return writable;
+    }
 });
+
+

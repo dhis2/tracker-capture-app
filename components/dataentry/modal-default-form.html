@@ -33,7 +33,7 @@
                        d2-date                                
                        ng-model="currentEvent.dueDate"
                        blur-or-change="saveDueDate()" 
-                       ng-disabled="selectedOrgUnit.closedStatus || currentEvent.eventDate || !schedulingEnabled || currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"/>
+                       ng-disabled="!eventEditable() || currentEvent.eventDate || !schedulingEnabled"/>
                 <span ng-if="invalidDueDate === currentEvent.event" class="error">{{'date_required'| translate}}</span>
             </div>  
         </div>
@@ -51,7 +51,7 @@
                        name="latitude"
                        d2-coordinate-validator
                        ng-blur="saveCoordinate('LAT')"
-                       ng-disabled="selectedOrgUnit.closedStatus || currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"
+                       ng-disabled="!eventEditable()"
                        ng-required="false"/>
                 <div ng-messages="outerDataEntryForm.latitude.$error" ng-if="interacted(outerDataEntryForm.latitude)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">                        
                 </div>
@@ -65,7 +65,7 @@
                        name="longitude" 
                        d2-coordinate-validator
                        ng-blur="saveCoordinate('LNG')"
-                       ng-disabled="selectedOrgUnit.closedStatus || currentEvent.enrollmentStatus !== 'ACTIVE' || currentEvent.editingNotAllowed"
+                       ng-disabled="!eventEditable()"
                        ng-required="false"/>
                 <div ng-messages="outerDataEntryForm.longitude.$error" ng-if="interacted(outerDataEntryForm.longitude)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
                 </div>

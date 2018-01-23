@@ -37,7 +37,7 @@ trackerCapture.controller('RelationshipController',
             }            
         }
         
-        $scope.trackedEntity = $scope.selections.te;
+        $scope.trackedEntityType = $scope.selections.te;
         $scope.selectedEnrollment = $scope.selections.selectedEnrollment;
         $scope.selectedProgram = $scope.selections.pr;
         $scope.programs = $scope.selections.prs;
@@ -178,7 +178,7 @@ trackerCapture.controller('RelationshipController',
         });
 
         var selections = CurrentSelection.get();
-        CurrentSelection.set({tei: $scope.selectedTei, te: $scope.selectedTei.trackedEntity, prs: selections.prs, pr: $scope.selectedProgram, prNames: selections.prNames, prStNames: selections.prStNames, enrollments: selections.enrollments, selectedEnrollment: $scope.selectedEnrollment, optionSets: selections.optionSets, orgUnit:selections.orgUnit});
+        CurrentSelection.set({tei: $scope.selectedTei, te: $scope.trackedEntityType, prs: selections.prs, pr: $scope.selectedProgram, prNames: selections.prNames, prStNames: selections.prStNames, enrollments: selections.enrollments, selectedEnrollment: $scope.selectedEnrollment, optionSets: selections.optionSets, orgUnit:selections.orgUnit});
     };
     
     var getRelativeAttributes = function(tei){

@@ -1,18 +1,10 @@
 <script>
-    $(".search-dropdown-button").on('click', function () {
-        $("#searchDropDown").width($("#searchDropDownParent").width());
-    });
-    $('#searchDropDown').on('click', "[data-stop-propagation]", function (e) {
+    $('.custom-workinglist-dropdown').on('click', "[data-stop-propagation]", function (e) {
         e.stopPropagation();
     });
-
     //stop date picker's event bubling
     $(document).on('click.dropdown touchstart.dropdown.data-api', '#ui-datepicker-div', function (e) {
         e.stopPropagation();
-    });
-
-    $(window).resize(function () {
-        $("#searchDropDown").width($("#searchDropDownParent").width());
     });
 </script>
 
@@ -21,7 +13,6 @@
 </span>
 
 <div id="leftBar">
-    
     <d2-left-bar></d2-left-bar>
     
     <div id="orgUnitTree">
@@ -34,7 +25,6 @@
     <div class="small-horizontal-spacing" ng-if="!treeLoaded">
         {{'loading_tree'| translate}}
     </div>
-    
 </div>
 
 <div class="page add-default-right-padding" id="mainPage">
@@ -60,42 +50,27 @@
         
         <!--- search and registration menu begins -->        
         <div class="row">
-            
             <!-- program selection begins -->
             <div class="col-md-4 small-vertical-spacing hideInPrint">
-                <ui-select ng-model="parent.selectedProgram" 
+                <ui-select ng-model="base.selectedProgram" 
                         theme="select2" 
-                        on-select="setProgram(parent.selectedProgram)"
-                        style="width:100%;">
-                    <ui-select-match allow-clear="true" class="form-control-ui-select" placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+                        on-select="setProgram(base.selectedProgram)"
+                        style="width:100%">
+                    <ui-select-match allow-clear="true" class="form-control-ui-select program-select" placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                     <ui-select-choices  repeat="program in programs | filter: $select.search | limitTo:maxOptionSize">
                         <span ng-bind-html="program.displayName | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
-            </div>            
-            <!-- program selection ends -->
-
-            <!--search/registration buttons begin-->
-            <div class="col-md-4 trim hideInPrint">            
-                <button type="button"
-                        class="btn btn-primary"
-                        ng-disabled="showRegistration || selectedOrgUnit.closedStatus"
-                        ng-click="showHideRegistration()">
-                    {{'register' | translate}}
-                </button>
             </div>
-            <!--search/registration buttons end-->            
             
+            <ul class="nav nav-pills small-vertical-spacing hideInPrint" style="padding-left:15px;">
+                <li ng-repeat="view in views" ng-class="{'active' : view.name === currentView.name}" ng-click="setCurrentView(view)" ng-if="!view.disabled"><a href="">{{view.name}}</a></li>
+            </ul>
         </div>
-        <!--- search and registration menu ends -->    
-        
-        <!--registration form begins -->
-        <div class="row">
-            <div class="col-sm-4 bordered-div container-min-width add-default-padding" ng-if="showRegistration" ng-include="'components/registration/registration.html'"></div>
-            <div class="col-sm-12" ng-if="!showRegistration" ng-include="'views/tei-home.html'"></div>
-        </div>        
-        <!-- registration form ends -->
 
+        <div class="row">
+            <div ng-repeat="view in views" ng-class="view.class" ng-include="view.template" ng-if="(view.name === currentView.name && view.shouldReset) || (!view.shouldReset && view.loaded)" ng-show="view.name === currentView.name && ((view.loaded && !view.shouldReset) || view.shouldReset)"></div>
+        </div>
 </div>           
 
 

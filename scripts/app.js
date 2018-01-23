@@ -12,7 +12,6 @@ import 'd2-tracker/lib/dhis2.angular.templates.js';
 import '../scripts/services.js';
 import '../scripts/filters.js';
 import '../scripts/directives.js';
-import '../scripts/controllers.js';
 import '../scripts/leftbar-menu-controller.js';
 import '../scripts/report-types-controller.js';
 import '../scripts/display-mode-controller.js';
@@ -39,6 +38,9 @@ import '../components/profile/profile-controller.js';
 import '../components/notes/notes-controller.js';
 import '../components/rulebound/rulebound-controller.js';
 import '../components/messaging/messaging-controller.js';
+import '../components/home/home-controller.js';
+import '../components/home/lists/lists-controller.js';
+import '../components/home/search/search-controller.js';
 import '../components/topbar/topbar-controller.js';
 
 import L from 'leaflet';
@@ -61,8 +63,9 @@ angular.module('trackerCapture')
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
 
     $routeProvider.when('/', {
-        templateUrl:'views/home.html',
-        controller: 'SelectionController'
+        templateUrl:'components/home/home.html',
+        controller: 'HomeController',
+        reloadOnSearch: true
     }).when('/dashboard',{
         templateUrl:'components/dashboard/dashboard.html',
         controller: 'DashboardController'

@@ -56,7 +56,13 @@ trackerCapture.controller('DashboardController',
             })
         }
         return def.promise;
-    }    
+    }
+
+    var loadTrackedEntityType = function(){
+        return TEService.get($scope.selectedTei.trackedEntityType).then(function (te) {
+            $scope.trackedEntityType = te;
+        });
+    }
 
     function updateDashboard() {
         
@@ -68,7 +74,7 @@ trackerCapture.controller('DashboardController',
             }
 
             $scope.selectedTeiId = ($location.search()).tei;
-            $scope.selectedProgramId = ($location.search()).program;
+            $scope.selectedProgramId = $scope.selectedProgram ? $scope.selectedProgram.id : ($location.search()).program;
             $scope.selectedOrgUnit = orgUnit;
             $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
             $scope.sortedTeiIds = CurrentSelection.getSortedTeiIds();
@@ -142,8 +148,7 @@ trackerCapture.controller('DashboardController',
                                 $scope.selectedTei = response;
 
                                 //get the entity type
-                                TEService.get($scope.selectedTei.trackedEntity).then(function (te) {
-                                    $scope.trackedEntity = te;
+                                loadTrackedEntityType().then(function () {
 
                                     //get enrollments for the selected tei
                                     EnrollmentService.getByEntity($scope.selectedTeiId).then(function (response) {
@@ -169,14 +174,14 @@ trackerCapture.controller('DashboardController',
                                         }
                                         selectedEnrollment = selectedEnrollment ? selectedEnrollment : backupSelectedEnrollment;
 
-                                        ProgramFactory.getAll().then(function (programs) {
+                                        ProgramFactory.getProgramsByOu($scope.selectedOrgUnit, false).then(function (response) {
                                             $scope.programs = [];
                                             $scope.programNames = [];
                                             $scope.programStageNames = [];
 
                                             //get programs valid for the selected ou and tei
-                                            angular.forEach(programs, function (program) {
-                                                if (program.trackedEntity && program.trackedEntity.id === $scope.selectedTei.trackedEntity) {
+                                            angular.forEach(response.programs, function (program) {
+                                                if (program.trackedEntityType && program.trackedEntityType.id === $scope.selectedTei.trackedEntityType) {
                                                     $scope.programs.push(program);
                                                     $scope.programNames[program.id] = {
                                                         id: program.id,
@@ -208,7 +213,7 @@ trackerCapture.controller('DashboardController',
                                                 CurrentSelection.setSelectedTeiEvents(events);
                                                 CurrentSelection.set({
                                                     tei: $scope.selectedTei,
-                                                    te: $scope.trackedEntity,
+                                                    te: $scope.trackedEntityType,
                                                     prs: $scope.programs,
                                                     pr: $scope.selectedProgram,
                                                     prNames: $scope.programNames,
@@ -333,7 +338,7 @@ trackerCapture.controller('DashboardController',
 
     var setInactiveMessage = function () {
         if ($scope.selectedTei.inactive) {
-            var teName = $scope.trackedEntity && $scope.trackedEntity.displayName ? $scope.trackedEntity.displayName : $translate.instance('tracked_entity_instance');
+            var teName = $scope.trackedEntityType && $scope.trackedEntityType.displayName ? $scope.trackedEntityType.displayName : $translate.instance('tracked_entity_instance');
             setHeaderDelayMessage(teName + " " + $translate.instant('tei_inactive_only_read'));
         }
     };
@@ -486,7 +491,7 @@ trackerCapture.controller('DashboardController',
             $scope.selectedTei = selections.tei;
         }
 
-        $scope.trackedEntity = selections.te;
+        $scope.trackedEntityType = selections.te;
         $scope.optionSets = selections.optionSets;
         $scope.selectedEnrollment = null;
 
@@ -501,7 +506,7 @@ trackerCapture.controller('DashboardController',
 
         CurrentSelection.set({
             tei: $scope.selectedTei,
-            te: $scope.trackedEntity,
+            te: $scope.trackedEntityType,
             prs: $scope.programs,
             pr: $scope.selectedProgram,
             prNames: $scope.programNames,
@@ -515,6 +520,8 @@ trackerCapture.controller('DashboardController',
             $rootScope.$broadcast('selectedItems', {programExists: $scope.programs.length > 0});
         }, 500);
     };
+
+
 
     $scope.activiateTEI = function () {
         var st = !$scope.selectedTei.inactive || $scope.selectedTei.inactive === '' ? true : false;
@@ -536,19 +543,31 @@ trackerCapture.controller('DashboardController',
         }, function () {
         });
     };
-    
+
+    var canDeleteTei = function(){
+        return $scope.trackedEntityType && $scope.trackedEntityType.access.data.write
+            && $scope.selectedProgram && $scope.selectedProgram.access.data.write
+            && $scope.userAuthority.canDeleteTei && $scope.userAuthority.canDeleteEnrollment;
+    }
+
     $scope.deleteTEI = function () {
+        if(!canDeleteTei()){
+            var bodyText = $translate.instant('you_do_not_have_the_necessary_authorities_to_delete') + ' ' + $translate.instant('this').toLowerCase() +' '+ $scope.trackedEntityType.displayName.toLowerCase();
+            var headerText = $translate.instant('delete')+ ' ' + $scope.trackedEntityType.displayName.toLowerCase() + ' ' + $translate.instant('not_allowed').toLowerCase();
+            NotificationService.showNotifcationDialog(headerText, bodyText);
+            return;
+        }
         var modalOptions = {
             closeButtonText: 'no',
             actionButtonText: 'yes',
             headerText: 'delete',
-            bodyText: $translate.instant('are_you_sure_to_proceed') + ' ' + $translate.instant('will_delete_all_data_associated') + ' ' + $scope.trackedEntity.displayName
+            bodyText: $translate.instant('are_you_sure_to_proceed') + ' ' + $translate.instant('will_delete_all_data_associated') + ' ' + $scope.trackedEntityType.displayName
         };
         
         ModalService.showModal({}, modalOptions).then(function (result) {
             TEIService.delete($scope.selectedTeiId).then(function (response) {
                 if( !response ){
-                    var teis = CurrentSelection.getTrackedEntities();                
+                    var teis = CurrentSelection.getTrackedEntityTypes();                
                     if( teis && teis.rows && teis.rows.own && teis.rows.own.length > 0 ){
                         var index = -1;
                         for( var i=0; i<teis.rows.own.length && index === -1; i++ ){
@@ -559,11 +578,11 @@ trackerCapture.controller('DashboardController',
 
                         if( index !== -1 ){
                             teis.rows.own.splice(index, 1);
-                            CurrentSelection.setTrackedEntities(teis);
+                            CurrentSelection.setTrackedEntityTypes(teis);
                         }
                     }
                     
-                    NotificationService.showNotifcationDialog($translate.instant('success'), $scope.trackedEntity.displayName + ' ' + $translate.instant('deleted'));                
+                    NotificationService.showNotifcationDialog($translate.instant('success'), $scope.trackedEntityType.displayName + ' ' + $translate.instant('deleted'));                
                     $scope.back();
                 }
                 
@@ -647,7 +666,7 @@ trackerCapture.controller('DashboardController',
 
     $scope.fetchTei = function (mode) {
         var current = $scope.sortedTeiIds.indexOf($scope.selectedTeiId);
-        var pr = ($location.search()).program;
+        var pr = $scope.selectedProgram ? $scope.program.id : ($location.search()).program;
         var tei = null;
         if (mode === 'NEXT') {
             tei = $scope.sortedTeiIds[current + 1];
@@ -656,4 +675,8 @@ trackerCapture.controller('DashboardController',
         }
         $location.path('/dashboard').search({tei: tei, program: pr ? pr : null, ou: orgUnitUrl ? orgUnitUrl : null});
     };
+
+    $scope.showManageTeiDropdown = function(){
+        return $scope.trackedEntityType && $scope.trackedEntityType.access.data.write && $scope.selectedProgram && $scope.selectedProgram.access.data.write;
+    }
 });

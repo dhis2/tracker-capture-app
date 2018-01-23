@@ -8,7 +8,7 @@
     <div class="modal-body">
         <div class='row'>
             <div class="col-sm-6">
-                <h2>{{selectedProgram.trackedEntity.displayName}} {{'_details'| translate}}</h2>
+                <h2>{{selectedProgram.trackedEntityType.displayName}} {{'_details'| translate}}</h2>
                 <table class="table table-bordered table-compact">
                     <tr ng-repeat="attribute in selectedTei.attributes" ng-show="attribute.show">
                         <td class="bold">

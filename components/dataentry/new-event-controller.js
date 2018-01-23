@@ -18,6 +18,7 @@ trackerCapture.controller('EventCreationController',
                 eventsByStage,
                 stage,
                 stages,
+                writableStages,
                 allStages,
                 tei,
                 program,
@@ -27,7 +28,6 @@ trackerCapture.controller('EventCreationController',
                 autoCreate,
                 EventUtils,
                 events,
-                suggestedStage,
                 selectedCategories,
                 PeriodService,
                 ModalService,
@@ -36,6 +36,7 @@ trackerCapture.controller('EventCreationController',
     $scope.selectedOrgUnit = orgUnit;
     $scope.selectedEnrollment = enrollment;      
     $scope.stages = stages;
+    $scope.writableStages = writableStages;
     $scope.allStages = allStages;
     $scope.events = events;
     $scope.eventCreationAction = eventCreationAction;
@@ -45,7 +46,7 @@ trackerCapture.controller('EventCreationController',
     $scope.isReferralEvent = (eventCreationAction === $scope.eventCreationActions.referral);
     $scope.model = {selectedStage: stage, dueDateInvalid: false, eventDateInvalid: false};
     $scope.stageSpecifiedOnModalOpen = angular.isObject(stage) ? true : false;
-    $scope.suggestedStage = suggestedStage;
+    $scope.suggestedStage = stage;
     $scope.selectedProgram = program;
     $scope.selectedCategories = selectedCategories;
     $scope.pleaseSelectLabel = $translate.instant('please_select');
@@ -89,7 +90,7 @@ trackerCapture.controller('EventCreationController',
         var events = $scope.events;        
         var allStages = $scope.allStages;
         
-        var availableStagesOrdered = $scope.stages.slice();
+        var availableStagesOrdered = $scope.writableStages.slice();
         availableStagesOrdered.sort(function (a,b){
             return a.sortOrder - b.sortOrder;
         });
@@ -98,6 +99,12 @@ trackerCapture.controller('EventCreationController',
         
         if((angular.isUndefined(events) || events.length === 0) && angular.isUndefined($scope.suggestedStage)){
             suggestedStage = availableStagesOrdered[0];
+            for(var i=0; i< availableStagesOrdered.length; i++){
+                if(availableStagesOrdered[i].access.data.write){
+                    suggestedStage = availableStagesOrdered[i];
+                    i = availableStagesOrdered.length;
+                }
+            }
         }
         else{
             angular.forEach(allStages, function(stage){
@@ -110,6 +117,7 @@ trackerCapture.controller('EventCreationController',
                 for(var i = 0; i < events.length; i++){
                     var event = events[i];
                     var eventStage = stagesById[event.programStage];
+                    if(eventStage.access.data.write){
                         if(i > 0){
                             if(eventStage.sortOrder > lastStageForEvents.sortOrder){
                                 lastStageForEvents = eventStage;
@@ -125,11 +133,13 @@ trackerCapture.controller('EventCreationController',
                         else {
                             lastStageForEvents = eventStage;
                         }
+                    }           
                 }   
             }
             else {
                 lastStageForEvents = $scope.suggestedStage;
             }
+            if(!lastStageForEvents) lastStageForEvents = availableStagesOrdered[0];
 
             
             for(var j = 0; j < availableStagesOrdered.length; j++){
@@ -192,7 +202,7 @@ trackerCapture.controller('EventCreationController',
     };
 
     $scope.save = function () {
-
+        $scope.lockButton = true;
         $scope.getCategoryOptions();
         
         //check for form validity
@@ -256,6 +266,7 @@ trackerCapture.controller('EventCreationController',
             } else {
                 $scope.eventCreationForm.submitted = false;
             }
+            $scope.lockButton = false;
         });
     };
 

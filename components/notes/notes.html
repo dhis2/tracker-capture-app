@@ -15,7 +15,7 @@
         <div ng-show="showNotesDiv">
             <div ng-show="!selectedEnrollment" class="alert alert-danger">{{'not_yet_enrolled_note'| translate}}</div>
             <div ng-show="selectedEnrollment" class="remove-default-padding">                
-                <div class="add-default-padding">
+                <div class="add-default-padding" ng-if="selectedProgram.access.data.write">
                     <textarea class="form-control" rows="3" ng-model="note.value" placeholder="{{'your_note_here'| translate}}"></textarea> 
                     <div class="vertical-spacing">
                         <button type="button" 

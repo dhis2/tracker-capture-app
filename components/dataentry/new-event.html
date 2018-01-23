@@ -11,11 +11,17 @@
                     {{'program_stage' | translate}}
                 </td>
                 <td class="absorbing-column">
-                    <select class="form-control" 
+                    <ui-select ng-model="model.selectedStage">
+                        <ui-select-match>{{$select.selected.displayName}}</ui-select-match>
+                        <ui-select-choices repeat="stage in stages" ui-disable-choice="!stage.access.data.write">
+                            <span>{{stage.displayName}} <span ng-if="!stage.access.data.write"> ({{'read_only' | translate}})</span></span>
+                        </ui-select-choices>
+                    </ui-select>
+                    <!--<select class="form-control" 
                             id="programStage"
                             ng-model="model.selectedStage"                                
                             ng-options="stage.displayName for stage in stages">                    
-                    </select>
+                    </select>-->
                 </td>
             </tr>
             
@@ -156,10 +162,10 @@
                 <span ng-if="model.dueDateInvalid" class="error">{{'required'| translate}}</span>
             </div>
         </div>
-    </form>  
+    </form>
 </div>
 <div class="modal-footer page" ng-if="!isReferralEvent">        
-    <button class="btn btn-primary" data-ng-click="save()">{{'save'| translate}}</button>
+    <button ng-disabled="lockButton" class="btn btn-primary" data-ng-click="save()">{{'save'| translate}}</button>
     <button class="btn btn-default" data-ng-click="cancel()">{{'cancel'| translate}}</button>
 </div>
 <div class="modal-footer page" ng-if="isReferralEvent">        

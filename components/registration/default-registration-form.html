@@ -22,22 +22,16 @@
             <ng-form name="innerForm">
                 <span ng-if="attribute.optionSetValue" class="hideInPrint">
                     <span ng-if="!attribute.renderOptionsAsRadio || optionSets[attributesById[attribute.id].optionSet.id].options.length >= 7">
-                        <ui-select  ng-model="selectedTei[attribute.id]"
-                                    theme="select2"
-                                    ng-required="attribute.mandatory"
-                                    name="foo" 
-                                    d2-attribute-validator
-                                    attribute-data={{attribute}}
-                                    selected-program-id={{selectedProgram.id}}  
-                                    selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                                    ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
-                                    on-select="teiValueUpdated(selectedTei, attribute.id)"
-                                    class="ui-select-style">
-                            <ui-select-match allow-clear="true"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
-                            <ui-select-choices  repeat="option.displayName as option in optionSets[attributesById[attribute.id].optionSet.id].options | filter: $select.search | limitTo:maxOptionSize">
-                              <span ng-bind-html="option.displayName | highlight: $select.search"></span>
-                            </ui-select-choices>
-                        </ui-select>
+                        <d2-option-list d2-model="selectedTei"
+                                        d2-model-id="attribute.id"
+                                        d2-required="attribute.mandatory"
+                                        d2-disabled="attributeFieldDisabled(attribute)"
+                                        d2-save-methode="teiValueUpdated"
+                                        d2-save-methode-parameter1="selectedTei"
+                                        d2-save-methode-parameter2="attribute.id"
+                                        d2-max-option-size="maxOptionSize"
+                                        d2-all-options="optionSets[attributesById[attribute.id].optionSet.id].options">
+                        </d2-option-list>
                     </span>
                     <span ng-if="attribute.renderOptionsAsRadio && optionSets[attributesById[attribute.id].optionSet.id].options.length < 7">
                         <d2-radio id="attribute.id" 
@@ -45,7 +39,7 @@
                                 d2-object="selectedTei"
                                 d2-options="optionSets[attributesById[attribute.id].optionSet.id].options"
                                 d2-required="attribute.mandatory"
-                                d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)">
+                                d2-disabled="attributeFieldDisabled(attribute)">
                         </d2-radio>
                     </span>                    
                 </span>
@@ -65,7 +59,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                blur-or-change="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -79,7 +73,7 @@
                                       datetime-save-methode-parameter1="selectedTei"
                                       datetime-save-methode-parameter2="attribute.id"
                                       datetime-use-notification="false"
-                                      datetime-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute) ? true : false">
+                                      datetime-disabled="attributeFieldDisabled(attribute)">
                         </d2-date-time>
                     </span>
                     <span ng-switch-when="TIME">
@@ -90,7 +84,7 @@
                                       time-save-methode-parameter1="selectedTei"
                                       time-save-methode-parameter2="attribute.id"
                                       time-use-notification="false"
-                                      time-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute) ? true : false">
+                                      time-disabled="attributeFieldDisabled(attribute)">
                         </d2-time>
                     </span>
                     <span ng-switch-when="TRUE_ONLY">
@@ -103,7 +97,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-change="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -111,7 +105,7 @@
                         <span class="hideInPrint">
                             <d2-radio-button
                                 dh-required="attribute.mandatory"
-                                dh-disabled="selectedOrgUnit.closedStatus || editingDisabled"
+                                dh-disabled="selectedOrgUnit.closedStatus || editingDisabled || !hasTeiProgramWrite()"
                                 dh-value="selectedTei[attribute.id]"
                                 dh-name="foo"
                                 dh-current-element="currentElement"
@@ -137,7 +131,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -153,7 +147,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}
                                d2-number-validator
                                number-type={{attribute.valueType}}
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -169,7 +163,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -185,7 +179,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -201,7 +195,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -217,7 +211,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                d2-number-validator 
                                number-type={{attribute.valueType}} 
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -226,7 +220,7 @@
                             id="{{attribute.id}}"                             
                             d2-object="selectedTei" 
                             d2-required="attribute.mandatory"
-                            d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)">
+                            d2-disabled="attributeFieldDisabled(attribute)">
                         </d2-age>
                     </span>
                     <span ng-switch-when="EMAIL">
@@ -239,7 +233,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -256,7 +250,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -270,45 +264,20 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory">
                         </textarea>
                     </span>
                     <span ng-switch-when="TRACKER_ASSOCIATE">
-                        <span class="input-group">                            
-                            <input type="text"
-                                name="foo" 
-                                class="form-control"
-                                ng-model="selectedTei[attribute.id]" 
-                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                                attribute-data={{attribute}}
-                                selected-program-id={{selectedProgram.id}}  
-                                selected-tei-id={{selectedTei.trackedEntityInstance}}
-                                ng-disabled="true" 
-                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                                ng-required="attribute.mandatory"/>
-                            <span class="input-group-btn">
-                                <button class="btn btn-grp hideInPrint trim"
-                                        ng-if="!selectedTei[attribute.id]" 
-                                        ng-class="{true: 'disable-clicks'} [editingDisabled]"
-                                        ng-disabled="selectedOrgUnit.closedStatus"
-                                        type="button" 
-                                        title="{{'add'| translate}} {{attribute.displayName}}"
-                                        ng-click="getTrackerAssociate(attribute, selectedTei[attribute.id])">
-                                        <i class="fa fa-external-link"></i>                             
-                                </button>
-                                <button class="btn btn-grp hideInPrint trim"
-                                        ng-if="selectedTei[attribute.id]" 
-                                        ng-class="{true: 'disable-clicks'} [editingDisabled]"
-                                        ng-disabled="selectedOrgUnit.closedStatus"
-                                        type="button" 
-                                        title="{{'remove'| translate}} {{attribute.displayName}}"
-                                        ng-click="selectedTei[attribute.id] = null">
-                                        <i class="fa fa-trash-o"></i>                             
-                                </button>
-                            </span>
-                        </span>
+                        <d2-tracker-associate d2-selected-tei="selectedTei" 
+                                              d2-attribute="attribute" 
+                                              d2-selected-program="selectedProgram" 
+                                              d2-blur-methode="teiValueUpdated" 
+                                              d2-selected-orgunit="selectedOrgUnit" 
+                                              d2-get-ta-promise="getTrackerAssociate"
+                                              >
+                        </d2-tracker-associate>
                     </span>
                     <span ng-switch-when="COORDINATE">
                         <d2-map id="{{attribute.id}}"
@@ -317,7 +286,7 @@
                                 d2-coordinate-format="'TEXT'"
                                 d2-value="selectedTei[attribute.id]"
                                 d2-required="attribute.mandatory"
-                                d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                                d2-disabled="attributeFieldDisabled(attribute)"
                                 d2-function="teiValueUpdated(selectedTei, attribute.id)">                            
                         </d2-map>                        
                     </span>
@@ -326,7 +295,7 @@
                                 selected-org-unit-id="{{selectedOrgUnit.id}}"
                                 id="{{attribute.id}}"
                                 d2-required="attribute.mandatory"
-                                d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                                d2-disabled="attributeFieldDisabled(attribute)"
                                 d2-object="selectedTei"
                                 d2-function="teiValueUpdated(selectedTei, attribute.id)"
                                 d2-orgunit-names="orgUnitNames">
@@ -342,7 +311,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
@@ -356,7 +325,7 @@
                                attribute-data={{attribute}}
                                selected-program-id={{selectedProgram.id}}  
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                               ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory"/>
                     </span>
