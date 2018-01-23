@@ -189,6 +189,24 @@
                 <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
+        <div ng-switch-when="USERNAME">
+            <div class="hideInPrint">
+                <d2-users-input d2-model="currentEvent"
+                                d2-model-id="prStDe.dataElement.id"
+                                d2-required="prStDe.compulsory"
+                                d2-disabled="!dataElementEditable(prStDe)"
+                                d2-save-methode="saveDatavalue"
+                                d2-save-methode-parameter1="prStDe"
+                                d2-save-methode-parameter2="innerForm.foo"
+                                d2-max-option-size="maxOptionSize"
+                                d2-use-notification="true"
+                                d2-element="currentElement">
+                </d2-users-input>
+            </div>
+            <div class="not-for-screen">
+                <input type="text" class="form-control" value={{currentEvent[de.id]}}>
+            </div>
+        </div>
         <div ng-switch-when="BOOLEAN">
             <div class="hideInPrint">
                 <d2-radio-button

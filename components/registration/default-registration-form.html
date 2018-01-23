@@ -269,6 +269,17 @@
                                ng-required="attribute.mandatory">
                         </textarea>
                     </span>
+                    <span ng-switch-when="USERNAME">
+                        <d2-users-input d2-model="selectedTei"
+                                        d2-model-id="attribute.id"
+                                        d2-required="attribute.mandatory"
+                                        d2-disabled="attributeFieldDisabled(attribute)"
+                                        d2-save-methode="teiValueUpdated"
+                                        d2-save-methode-parameter1="selectedTei"
+                                        d2-save-methode-parameter2="attribute.id"
+                                        d2-max-option-size="maxOptionSize">
+                        </d2-users-input>
+                    </span>
                     <span ng-switch-when="TRACKER_ASSOCIATE">
                         <d2-tracker-associate d2-selected-tei="selectedTei" 
                                               d2-attribute="attribute" 

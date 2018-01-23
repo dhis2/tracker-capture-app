@@ -269,6 +269,24 @@
                 <input type="text" class="form-control" value={{currentEvent[de.id]}}>
             </div>
         </div>
+        <div ng-switch-when="USERNAME">
+            <div class="hideInPrint">
+                <d2-users-input d2-model="currentEvent"
+                                d2-model-id="de.id"
+                                d2-required="prStDes[de.id].compulsory"
+                                d2-disabled="!dataElementEditable(prStDes[de.id])"
+                                d2-save-methode="saveDatavalue"
+                                d2-save-methode-parameter1="prStDes[de.id]"
+                                d2-save-methode-parameter2="innerForm.foo"
+                                d2-max-option-size="maxOptionSize"
+                                d2-use-notification="true"
+                                d2-element="currentElement">
+                </d2-users-input>
+            </div>
+            <div class="not-for-screen">
+                <input type="text" class="form-control" value={{currentEvent[de.id]}}>
+            </div>
+        </div>
         <div ng-switch-when="FILE_RESOURCE">
             <div class="hideInPrint">
                 <div class="input-group">
