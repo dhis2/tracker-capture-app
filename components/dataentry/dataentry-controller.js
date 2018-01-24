@@ -684,6 +684,7 @@ trackerCapture.controller('DataEntryController',
                         $scope.model.minDate = $scope.selectedOrgUnit.reportDateRange.minDate;
                         //minDate is in Georgian format, but maxDate is not. This Service converts the date.
                         $scope.model.minDate = DateUtils.formatFromApiToUserCalendar($scope.model.minDate);
+                        $scope.model.minDate = DateUtils.formatFromApiToUser($scope.model.minDate);
                     }
                     if ($scope.selectedOrgUnit.reportDateRange.maxDate) {
                         $scope.model.maxDate = $scope.selectedOrgUnit.reportDateRange.maxDate;
