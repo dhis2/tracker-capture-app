@@ -95,6 +95,7 @@ module.exports = {
         compress: false,
         proxy: [
                 { path: '/api/**', target: dhisConfig.baseUrl, bypass:bypass },
+                { path: '/dhis/dhis-web-commons/**', target: dhisConfig.baseUrl, bypass:bypass},
                 { path: '/dhis-web-commons-ajax-json/**', target: dhisConfig.baseUrl, bypass:bypass },
                 { path: '/dhis-web-commons-stream/**', target: dhisConfig.baseUrl, bypass:bypass },
                 { path: '/dhis-web-commons/***', target: dhisConfig.baseUrl, bypass:bypass, proxyTimeout: 1000 * 60 * 5 },

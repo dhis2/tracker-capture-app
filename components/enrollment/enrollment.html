@@ -102,7 +102,7 @@
                                     <button type="button" 
                                             class="btn btn-danger pull-right"
                                             ng-disabled="selectedOrgUnit.closedStatus"
-                                            ng-if="canDeleteEnrollment()"
+                                            ng-if="selectedProgram.access.data.write"
                                             ng-click="deleteEnrollment()">
                                         {{'delete' | translate}}
                                     </button>

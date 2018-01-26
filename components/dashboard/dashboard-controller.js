@@ -156,6 +156,7 @@ trackerCapture.controller('DashboardController',
                                             return;
                                         }
                                         var enrollments = angular.isObject(response) && response.enrollments ? response.enrollments : [];
+                                        $scope.allEnrollments = angular.copy(enrollments);
                                         var selectedEnrollment = null, backupSelectedEnrollment = null;
                                         if (enrollments.length === 1) {
                                             selectedEnrollment = enrollments[0];
@@ -545,15 +546,19 @@ trackerCapture.controller('DashboardController',
     };
 
     var canDeleteTei = function(){
-        return $scope.trackedEntityType && $scope.trackedEntityType.access.data.write
-            && $scope.selectedProgram && $scope.selectedProgram.access.data.write
-            && $scope.userAuthority.canDeleteTei && $scope.userAuthority.canDeleteEnrollment;
+        if($scope.trackedEntityType && $scope.trackedEntityType.access.data.write){
+            if($scope.allEnrollments && $scope.allEnrollments.length > 0){
+                if(!$scope.userAuthority.canCascadeDeleteTei) return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     $scope.deleteTEI = function () {
         if(!canDeleteTei()){
-            var bodyText = $translate.instant('you_do_not_have_the_necessary_authorities_to_delete') + ' ' + $translate.instant('this').toLowerCase() +' '+ $scope.trackedEntityType.displayName.toLowerCase();
-            var headerText = $translate.instant('delete')+ ' ' + $scope.trackedEntityType.displayName.toLowerCase() + ' ' + $translate.instant('not_allowed').toLowerCase();
+            var bodyText = $translate.instant("cannot_delete_this_tei_because_it_already_contains_enrollments");
+            var headerText = $translate.instant("delete_failed");
             NotificationService.showNotifcationDialog(headerText, bodyText);
             return;
         }

@@ -650,69 +650,25 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         getAll: function(){
             var def = $q.defer();
 
-            this.getAllAccesses().then(function(accesses){
-                TCStorageService.currentStore.open().done(function(){
+            TCStorageService.currentStore.open().done(function(){
 
-                    TCStorageService.currentStore.getAll('trackedEntityTypes').done(function(entities){
-                        angular.forEach(entities, function(entity){
-                            entity.access = accesses[entity.id];
-                        })
-                        $rootScope.$apply(function(){
-                            
-                            def.resolve(entities);
-                        });
+                TCStorageService.currentStore.getAll('trackedEntityTypes').done(function(entities){
+                    $rootScope.$apply(function(){
+                        
+                        def.resolve(entities);
                     });
                 });
-                
             });
             return def.promise;
 
         },
         get: function(uid){
             var def = $q.defer();
-
-            this.getAccess(uid).then(function(access){
-                TCStorageService.currentStore.open().done(function(){
-                    TCStorageService.currentStore.get('trackedEntityTypes', uid).done(function(te){
-                        if(te){
-                            te.access = access;
-                        }
-                        $rootScope.$apply(function(){
-                            def.resolve(te);
-                        });
-                    });
+            TCStorageService.currentStore.open().done(function(){
+                TCStorageService.currentStore.get('trackedEntityTypes', uid).done(function(te){
+                    def.resolve(te);
                 });
             });
-            return def.promise;
-        },
-        getAccess: function(uid){
-            var def = $q.defer();
-            if(allAccesses){
-                def.resolve(allAccesses[uid]);
-            }else{
-                TCStorageService.currentStore.open().done(function(){
-                    TCStorageService.currentStore.get('trackedEntityTypeAccess', uid).done(function(teAccess){
-                        def.resolve({data: {write: true, read: true}});//teAccess.access);
-                    });
-                });
-            }
-            return def.promise;
-        },
-        getAllAccesses: function(){
-            var def = $q.defer();
-            if(allAccesses){
-                def.resolve(allAccesses);
-            }else{
-                TCStorageService.currentStore.open().done(function(){
-                    TCStorageService.currentStore.getAll('trackedEntityTypeAccess').done(function(teAccess){
-                        allAccesses = {};
-                        angular.forEach(teAccess, function(a){
-                            allAccesses[a.id] = {data: {write: true, read: true}};//a.access;
-                        })
-                        def.resolve(allAccesses);
-                    });
-                });
-            }
             return def.promise;
         },
         extendWithSearchGroups: function(trackedEntityTypes, attributesById){

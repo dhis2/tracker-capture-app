@@ -75,24 +75,17 @@ trackerCapture.controller('ProfileController',
         });
         
         //display only those attributes that belong to the selected program
-        //if no program, display attributesInNoProgram        
-        angular.forEach($scope.selectedTei.attributes, function(att){
-            $scope.selectedTei[att.attribute] = att.value;
-        });
-
-
-
-
+        //if no program, display attributesInNoProgram     
+        if($scope.selectedTei){
+            angular.forEach($scope.selectedTei.attributes, function(att){
+                $scope.selectedTei[att.attribute] = att.value;
+            });
+        }
         $timeout(function() { 
             $rootScope.$broadcast('registrationWidget', {registrationMode: 'PROFILE', selectedTei: $scope.selectedTei, enrollment: $scope.selectedEnrollment});
         });
     };
     
-    $scope.testFUncdnsfsd = function(){
-        var s = $scope;
-        var g = 1;
-        var u = g+1;
-    }
     $scope.enableEdit = function(){
         $scope.teiOriginal = angular.copy($scope.selectedTei);
         $scope.editingDisabled = !$scope.editingDisabled; 
