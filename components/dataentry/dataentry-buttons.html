@@ -14,7 +14,7 @@
             ng-disabled="!eventEditable()"
             ng-if="!currentEvent.eventDate">{{currentEvent.status === 'SKIPPED' ? 'unskip' : 'skip'| translate}}</a>
     
-        <div class="pull-right" ng-if="canDeleteEvent()">
+        <div class="pull-right">
             <a href ng-click="deleteEvent()" 
                 ng-disabled="!eventEditable()"
                 class="btn btn-danger horizontal-spacing">{{'delete'| translate}}</a>

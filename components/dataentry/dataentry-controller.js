@@ -196,11 +196,7 @@ trackerCapture.controller('DataEntryController',
         }
     });
     $scope.useReferral = false;
-    $scope.showReferral = false;
-    //Check if user is allowed to make referrals
-    if($scope.useReferral){        
-        $scope.showReferral = $scope.userAuthority.canSearchTeiAcrossAll;        
-    }
+    $scope.showReferral = true;
     
     $scope.$watch("model.eventSearchText", function(newValue, oldValue){        
         if($scope.model.eventSearchText !== ''){
@@ -2077,10 +2073,6 @@ trackerCapture.controller('DataEntryController',
                 $location.path('/').search({program: $scope.selectedProgramId}); 
             }else{
                 if ($scope.currentEvent.status === 'COMPLETED') {//activiate event
-                    if( !$scope.userAuthority.canUnCompleteEvent ){
-                        NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("not_authorized_to_uncomplete_event"));
-                        return;
-                    }
                     $scope.currentEvent.status = 'ACTIVE';
                 }
                 else {//complete event                    
@@ -2194,27 +2186,14 @@ trackerCapture.controller('DataEntryController',
     }
 
     $scope.eventEditable = function(){
+        if(!$scope.currentStage || !$scope.currentStage.access.data.write) return false;
         if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE' || $scope.currentEvent.editingNotAllowed) return false;
         if($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff) return false;
         return true;
     }
 
-    $scope.canDeleteEvent = function(){
-        return $scope.currentStage && $scope.currentStage.access.data.write && $scope.userAuthority.canDeleteEvent;
-    }
-
-    var verifyCanDeleteEvent = function(){
-        if($scope.canDeleteEvent()){
-            if(!$scope.userAuthority.canDeleteExpired){
-                if($scope.currentEvent.expired || $scope.selectedEnrollment.expired) return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
     $scope.deleteEvent = function () {
-        if(!verifyCanDeleteEvent()){
+        if(!eventEditable()){
             var bodyText = $translate.instant('you_do_not_have_the_necessary_authorities_to_delete') +' '+ $translate.instant('this') +' '+$translate.instant('event').toLowerCase();
             var headerText = $translate.instant('delete_failed');
             return NotificationService.showNotifcationDialog(headerText, bodyText);
