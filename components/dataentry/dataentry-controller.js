@@ -53,6 +53,7 @@ trackerCapture.controller('DataEntryController',
     $scope.stagesCanBeShownAsTable = false;
     $scope.hiddenFields = [];
     $scope.assignedFields = [];
+    $scope.mandatoryFields = [];
     $scope.errorMessages = {};
     $scope.warningMessages = {};
     $scope.hiddenSections = {};
@@ -249,6 +250,7 @@ trackerCapture.controller('DataEntryController',
         $scope.warningMessages[event] = [];
         $scope.errorMessages[event] = [];
         $scope.hiddenFields[event] = [];
+        $scope.mandatoryFields[event] = [];
         
         angular.forEach($rootScope.ruleeffects[event], function (effect) {
             //in the data entry controller we only care about the "hidefield", showerror and showwarning actions
@@ -356,8 +358,9 @@ trackerCapture.controller('DataEntryController',
                         }
                     }
                 }
-            }
-            else if (effect.action === "HIDEPROGRAMSTAGE") {
+            }else if (effect.action === "SETMANDATORYFIELD"){                    
+                $scope.mandatoryFields[event][effect.dataElement.id] = effect.ineffect;
+            }else if (effect.action === "HIDEPROGRAMSTAGE") {
                 if (effect.programStage) {
                     if($scope.stagesNotShowingInStageTasks[effect.programStage.id] !== effect.ineffect )
                     {
