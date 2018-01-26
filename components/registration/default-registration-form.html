@@ -16,7 +16,7 @@
             <span class="not-for-screen">
                 {{attribute.displayName}}
             </span>
-            <span ng-if="attribute.mandatory" class="required">*</span>
+            <span ng-if="attribute.mandatory || mandatoryFields[attribute.id]" class="required">*</span>
         </td>
         <td class="absorbing-column">
             <ng-form name="innerForm">
@@ -24,7 +24,7 @@
                     <span ng-if="!attribute.renderOptionsAsRadio || optionSets[attributesById[attribute.id].optionSet.id].options.length >= 7">
                         <ui-select  ng-model="selectedTei[attribute.id]"
                                     theme="select2"
-                                    ng-required="attribute.mandatory"
+                                    ng-required="attribute.mandatory || mandatoryFields[attribute.id]"
                                     name="foo" 
                                     d2-attribute-validator
                                     attribute-data={{attribute}}
@@ -44,8 +44,8 @@
                                 d2-name="foo" 
                                 d2-object="selectedTei"
                                 d2-options="optionSets[attributesById[attribute.id].optionSet.id].options"
-                                d2-required="attribute.mandatory"
-                                d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)">
+                                d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                                d2-required="attribute.mandatory || mandatoryFields[attribute.id]">
                         </d2-radio>
                     </span>                    
                 </span>
@@ -67,14 +67,14 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                blur-or-change="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-when="DATETIME">
                         <d2-date-time datetime-model="selectedTei"
                                       datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                                       datetime-model-id="attribute.id"
                                       datetime-max-date="attribute.allowFutureDate ? '' : 0"
-                                      datetime-required="attribute.mandatory"
+                                      datetime-required="attribute.mandatory || mandatoryFields[attribute.id]"
                                       datetime-save-methode="teiValueUpdated"
                                       datetime-save-methode-parameter1="selectedTei"
                                       datetime-save-methode-parameter2="attribute.id"
@@ -85,7 +85,7 @@
                     <span ng-switch-when="TIME">
                         <d2-time time-model="selectedTei"
                                       time-model-id="attribute.id"
-                                      time-required="attribute.mandatory"
+                                      time-required="attribute.mandatory || mandatoryFields[attribute.id]"
                                       time-save-methode="teiValueUpdated"
                                       time-save-methode-parameter1="selectedTei"
                                       time-save-methode-parameter2="attribute.id"
@@ -105,13 +105,13 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-change="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-when="BOOLEAN" class="form-control">
                         <span class="hideInPrint">
                             <d2-radio-button
-                                dh-required="attribute.mandatory"
                                 dh-disabled="selectedOrgUnit.closedStatus || editingDisabled"
+                                dh-required="attribute.mandatory || mandatoryFields[attribute.id]"
                                 dh-value="selectedTei[attribute.id]"
                                 dh-name="foo"
                                 dh-current-element="currentElement"
@@ -139,7 +139,7 @@
                                number-type={{attribute.valueType}} 
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-when="PERCENTAGE">
                         <input type="number"
@@ -155,7 +155,7 @@
                                number-type={{attribute.valueType}}
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-when="INTEGER_POSITIVE">
                         <input type="number"
@@ -171,7 +171,7 @@
                                number-type={{attribute.valueType}} 
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-when="INTEGER_NEGATIVE">
                         <input type="number"
@@ -187,7 +187,7 @@
                                number-type={{attribute.valueType}} 
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-when="INTEGER_ZERO_OR_POSITIVE">
                         <input type="number"
@@ -203,7 +203,7 @@
                                number-type={{attribute.valueType}} 
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-when="INTEGER">
                         <input type="number"
@@ -219,14 +219,14 @@
                                number-type={{attribute.valueType}} 
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-when="AGE">
                         <d2-age name="foo" 
                             id="{{attribute.id}}"                             
                             d2-object="selectedTei" 
-                            d2-required="attribute.mandatory"
-                            d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)">
+                            d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                            d2-required="attribute.mandatory || mandatoryFields[attribute.id]">
                         </d2-age>
                     </span>
                     <span ng-switch-when="EMAIL">
@@ -241,7 +241,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-when="URL">
                         <input type="url"
@@ -258,7 +258,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-when="LONG_TEXT">
                         <textarea row="3"
@@ -272,7 +272,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory">
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]">
                         </textarea>
                     </span>
                     <span ng-switch-when="TRACKER_ASSOCIATE">
@@ -316,8 +316,8 @@
                                 d2-object="selectedTei" 
                                 d2-coordinate-format="'TEXT'"
                                 d2-value="selectedTei[attribute.id]"
-                                d2-required="attribute.mandatory"
                                 d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                                d2-required="attribute.mandatory || mandatoryFields[attribute.id]"
                                 d2-function="teiValueUpdated(selectedTei, attribute.id)">                            
                         </d2-map>                        
                     </span>
@@ -325,8 +325,8 @@
                         <d2-org-unit-tree
                                 selected-org-unit-id="{{selectedOrgUnit.id}}"
                                 id="{{attribute.id}}"
-                                d2-required="attribute.mandatory"
                                 d2-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
+                                d2-required="attribute.mandatory || mandatoryFields[attribute.id]"
                                 d2-object="selectedTei"
                                 d2-function="teiValueUpdated(selectedTei, attribute.id)"
                                 d2-orgunit-names="orgUnitNames">
@@ -344,7 +344,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-when="PHONE_NUMBER">
                         <input type="text"
@@ -358,7 +358,7 @@
                                selected-tei-id={{selectedTei.trackedEntityInstance}}  
                                ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attribute.mandatory"/>
+                               ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
                     <span ng-switch-default>
                         <span class="alert alert-danger form-control">
