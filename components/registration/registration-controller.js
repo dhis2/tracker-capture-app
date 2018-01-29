@@ -576,7 +576,7 @@ trackerCapture.controller('RegistrationController',
     };
 
     $scope.teiValueUpdated = function (tei, field) {
-        searchForExistingTeis(tei,field)
+        getMatchingTeisCount(tei,field)
         .then(function()
         {
             $scope.teiPreviousValues[field] = tei[field];
@@ -594,11 +594,11 @@ trackerCapture.controller('RegistrationController',
         if(searchGroups){
             if(searchGroups.default){
                 searchGroups.default[field] = tei[field];
-                promises.push(searchForExistingTeisBySearchGroup(searchGroups.default, field));
+                promises.push(getMatchingTeisCountBySearchGroup(searchGroups.default, field));
             } 
             if(searchGroups.unique){
                 searchGroups.unique[field] = tei[field];
-                promises.push(searchForExistingTeisBySearchGroup(searchGroups.unique, field));
+                promises.push(getMatchingTeisCountBySearchGroup(searchGroups.unique, field));
             }
         }
         return $q.all(promises);
@@ -828,7 +828,7 @@ trackerCapture.controller('RegistrationController',
                         return $scope.selectedOrgUnit;
                     },
                     data: function(){
-                        return $scope.matches;
+                        return matches;
                     },
                     refetchDataFn: function(){
                         return function(pager, sortColumn){ return SearchGroupService.search($scope.matchingTeisSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);}
@@ -1025,7 +1025,7 @@ trackerCapture.controller('RegistrationController',
     $scope.translateWithMatchingTeisLength = function(multipleText, singleText){
         var length = 0;
         if($scope.matchingTeisCount){
-            length = matchingTeisCount;
+            length = $scope.matchingTeisCount;
         }
         if(length === 1){
             return $translate.instant(singleText);

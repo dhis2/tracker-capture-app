@@ -695,16 +695,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 /* Service for getting tracked entity instances */
 .factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService ) {
     var errorHeader = $translate.instant("error");
-    var getSearchUrl = function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
-        var url;
+    var getSearchUrl = function(type,ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
+        var baseUrl = DHIS2URL + '/trackedEntityInstances/'+type;
+        var url = baseUrl;
         var deferred = $q.defer();
-
+        
         if (format === "csv") {
-            url = DHIS2URL + '/trackedEntityInstances/query.csv?ou=' + ouId + '&ouMode=' + ouMode;
+            url = url+'.csv?ou=' + ouId + '&ouMode=' + ouMode;
         } else if (format === "xml") {
-            url = DHIS2URL + '/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
+            url = url+'.json?ou=' + ouId + '&ouMode=' + ouMode;
         }else {
-            url = DHIS2URL + '/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
+            url = url+'.json?ou=' + ouId + '&ouMode=' + ouMode;
         }
 
         if(queryUrl){
@@ -781,14 +782,16 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         searchCount: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
-            var url = getSearchUrl(ouId, ouMode,queryUrl, programOrTETUrl, attributeUrl, pager, paging, format);
-            $http.get( url ).then(function(response)
+            var url = getSearchUrl("count",ouId, ouMode,queryUrl, programOrTETUrl, attributeUrl, pager, paging, format);
+            return $http.get( url ).then(function(response)
             {
-                if(response) return response;
+                if(response && response.data) return response.data;
                 return 0;
             });
         },
         search: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
+            var deferred = $q.defer();
+            var url = getSearchUrl("query",ouId, ouMode,queryUrl, programOrTETUrl, attributeUrl, pager, paging, format);
             $http.get( url ).then(function(response){
                 var xmlData, rows, headers, index, itemName, value, jsonData;
                 var trackedEntityInstance, attributesById;
@@ -2677,7 +2680,7 @@ i
                 programOrTETUrl = "trackedEntityType="+trackedEntityType.id;
             }
             var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
-            return { orgUnit: searchOrgUnit, ouMode: searchGroup.ouMode.name, programOrTETUrl: programOrTETUrl, queryUrl: query.url, pager: pager };
+            return { orgUnit: searchOrgUnit, ouMode: searchGroup.ouMode.name, programOrTETUrl: programOrTETUrl, queryUrl: query.url, pager: pager, uniqueSearch: uniqueSearch };
         }
     }
     
@@ -2713,7 +2716,7 @@ i
     this.searchCount = function(searchGroup, program, trackedEntityType, orgUnit, pager){
         var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager);
         if(params){
-            return TEIService.searchCount(searchOrgUnit.id, searchGroup.ouMode.name,null, programOrTETUrl, query.url, pager, true).then(function(response){
+            return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
                 if(response){
                     return response;
                 }
@@ -2731,9 +2734,9 @@ i
         var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager);
         if(params){
             var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
-            return TEIService.search(searchOrgUnit.id, searchGroup.ouMode.name,null, programOrTETUrl, query.url, pager, true).then(function(response){
+            return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
                 if(response && response.rows && response.rows.length > 0){
-                    if(uniqueSearch) return { status: "UNIQUE", data: response };
+                    if(params.uniqueSearch) return { status: "UNIQUE", data: response };
                     return { status: "MATCHES", data: response };
                 }
                 return { status: "NOMATCH"};
