@@ -695,9 +695,41 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 /* Service for getting tracked entity instances */
 .factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService ) {
     var errorHeader = $translate.instant("error");
+    var getSearchUrl = function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
+        var url;
+        var deferred = $q.defer();
 
+        if (format === "csv") {
+            url = DHIS2URL + '/trackedEntityInstances/query.csv?ou=' + ouId + '&ouMode=' + ouMode;
+        } else if (format === "xml") {
+            url = DHIS2URL + '/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
+        }else {
+            url = DHIS2URL + '/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
+        }
+
+        if(queryUrl){
+            url = url + '&'+ queryUrl;
+        }
+        if(programOrTETUrl){
+            url = url + '&' + programOrTETUrl;
+        }
+        if(attributeUrl){
+            url = url + '&' + attributeUrl;
+        }
+        if(paging){
+            var pgSize = pager ? pager.pageSize : 50;
+            var pg = pager ? pager.page : 1;
+            pgSize = pgSize > 1 ? pgSize  : 1;
+            pg = pg > 1 ? pg : 1;
+            url = url + '&pageSize=' + pgSize + '&page=' + pg + '&totalPages=true';
+        }
+        else{
+            url = url + '&paging=false';
+        }
+        return url;
+    }
     var getFormatUrl = function(){
-        
+
     }
     return {
         get: function(entityUid, optionSets, attributesById){
@@ -748,38 +780,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        searchCount: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
+            var url = getSearchUrl(ouId, ouMode,queryUrl, programOrTETUrl, attributeUrl, pager, paging, format);
+            $http.get( url ).then(function(response)
+            {
+                if(response) return response;
+                return 0;
+            });
+        },
         search: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
-            var url;
-            var deferred = $q.defer();
-
-            if (format === "csv") {
-                url = DHIS2URL + '/trackedEntityInstances/query.csv?ou=' + ouId + '&ouMode=' + ouMode;
-            } else if (format === "xml") {
-                url = DHIS2URL + '/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
-            }else {
-                url = DHIS2URL + '/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
-            }
-
-            if(queryUrl){
-                url = url + '&'+ queryUrl;
-            }
-            if(programOrTETUrl){
-                url = url + '&' + programOrTETUrl;
-            }
-            if(attributeUrl){
-                url = url + '&' + attributeUrl;
-            }
-            if(paging){
-                var pgSize = pager ? pager.pageSize : 50;
-                var pg = pager ? pager.page : 1;
-                pgSize = pgSize > 1 ? pgSize  : 1;
-                pg = pg > 1 ? pg : 1;
-                url = url + '&pageSize=' + pgSize + '&page=' + pg + '&totalPages=true';
-            }
-            else{
-                url = url + '&paging=false';
-            }
-
             $http.get( url ).then(function(response){
                 var xmlData, rows, headers, index, itemName, value, jsonData;
                 var trackedEntityInstance, attributesById;
@@ -2547,36 +2556,8 @@ i
         }
         return searchConfig;
     }
-    this.getSearchConfigForProgram = function(program, orgUnitUniqueAsSearchGroup) {
-        var def = $q.defer();
-        if(!programSearchConfigsById[program.id]){
-            return AttributesFactory.getByProgram(program).then(function(attributes)
-            {
-                var searchConfig = makeSearchConfig(attributes, program.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
-                programSearchConfigsById[program.id] = searchConfig;
-                def.resolve(angular.copy(searchConfig));
-                return def.promise;
-            });
-        }
-        def.resolve(angular.copy(programSearchConfigsById[program.id]));
-        return def.promise;
-    }
-    this.getSearchConfigForTrackedEntityType = function(trackedEntityType,orgUnitUniqueAsSearchGroup){
-        var def = $q.defer();
-        if(!trackedEntityTypeSearchConfigsById[trackedEntityType.id]){
-            return AttributesFactory.getByTrackedEntityType(trackedEntityType).then(function(attributes)
-            {
-                var searchConfig = makeSearchConfig(attributes, trackedEntityType.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
-                trackedEntityTypeSearchConfigsById[trackedEntityType.id] = searchConfig;
-                def.resolve(angular.copy(searchConfig));
-                return def.promise;
-            });
-        }
-        def.resolve(angular.copy(trackedEntityTypeSearchConfigsById[trackedEntityType.id]));
-        return def.promise;
-    }
 
-    this.search = function(searchGroup, program,trackedEntityType, orgUnit, pager){
+    var getSearchParams = function(searchGroup, program,trackedEntityType, orgUnit,pager){
         var uniqueSearch = false;
         var numberOfSetAttributes = 0;
         var query = {url: null, hasValue: false};
@@ -2688,7 +2669,6 @@ i
                 }
             });
         }
-
         if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.minAttributesRequiredToSearch)){
             var programOrTETUrl = "";
             if(program){
@@ -2696,6 +2676,60 @@ i
             }else{
                 programOrTETUrl = "trackedEntityType="+trackedEntityType.id;
             }
+            var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
+            return { orgUnit: searchOrgUnit, ouMode: searchGroup.ouMode.name, programOrTETUrl: programOrTETUrl, queryUrl: query.url, pager: pager };
+        }
+    }
+    
+    this.getSearchConfigForProgram = function(program, orgUnitUniqueAsSearchGroup) {
+        var def = $q.defer();
+        if(!programSearchConfigsById[program.id]){
+            return AttributesFactory.getByProgram(program).then(function(attributes)
+            {
+                var searchConfig = makeSearchConfig(attributes, program.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
+                programSearchConfigsById[program.id] = searchConfig;
+                def.resolve(angular.copy(searchConfig));
+                return def.promise;
+            });
+        }
+        def.resolve(angular.copy(programSearchConfigsById[program.id]));
+        return def.promise;
+    }
+    this.getSearchConfigForTrackedEntityType = function(trackedEntityType,orgUnitUniqueAsSearchGroup){
+        var def = $q.defer();
+        if(!trackedEntityTypeSearchConfigsById[trackedEntityType.id]){
+            return AttributesFactory.getByTrackedEntityType(trackedEntityType).then(function(attributes)
+            {
+                var searchConfig = makeSearchConfig(attributes, trackedEntityType.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
+                trackedEntityTypeSearchConfigsById[trackedEntityType.id] = searchConfig;
+                def.resolve(angular.copy(searchConfig));
+                return def.promise;
+            });
+        }
+        def.resolve(angular.copy(trackedEntityTypeSearchConfigsById[trackedEntityType.id]));
+        return def.promise;
+    }
+
+    this.searchCount = function(searchGroup, program, trackedEntityType, orgUnit, pager){
+        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager);
+        if(params){
+            return TEIService.searchCount(searchOrgUnit.id, searchGroup.ouMode.name,null, programOrTETUrl, query.url, pager, true).then(function(response){
+                if(response){
+                    return response;
+                }
+                return 0;
+            },function(error){
+                return 0;
+            });
+        }else{
+            var def = $q.defer();
+            def.resolve(0);
+            return def.promise;
+        }
+    }
+    this.search = function(searchGroup, program,trackedEntityType, orgUnit, pager){
+        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager);
+        if(params){
             var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
             return TEIService.search(searchOrgUnit.id, searchGroup.ouMode.name,null, programOrTETUrl, query.url, pager, true).then(function(response){
                 if(response && response.rows && response.rows.length > 0){

@@ -588,7 +588,7 @@ trackerCapture.controller('RegistrationController',
         });
     };
 
-    var searchForExistingTeis = function(tei, field){
+    var getMatchingTeisCount = function(tei, field){
         var searchGroups = $scope.searchConfig.searchGroupsByAttributeId[field];
         var promises = [];
         if(searchGroups){
@@ -602,6 +602,19 @@ trackerCapture.controller('RegistrationController',
             }
         }
         return $q.all(promises);
+    }
+
+    var getMatchingTeisCountBySearchGroup = function(searchGroup,field){
+        return SearchGroupService.searchCount(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, true).then(function(count){
+            if(searchGroup.unique && count > 0){
+                return SearchGroupService.search(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+                    return showDuplicateModal(res.data, field);
+                });
+            }
+            $scope.matchingTeisCount = count;
+            $scope.matchingTeisSearchGroup = searchGroup;
+            
+        });
     }
 
     var searchForExistingTeisBySearchGroup = function(searchGroup,field){
@@ -766,57 +779,73 @@ trackerCapture.controller('RegistrationController',
         }
     };
 
+    var getMatches = function(searchGroup){
+        return SearchGroupService.search(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+            var matches = [];
+            if(res.status === "NOMATCH"){
+                return;
+            }
+            if(res.status === "MATCHES" && $scope.registrationMode === "REGISTRATION"){
+                matches = res.data;
+            }
+            return matches;
+        });
+    }
+
     $scope.showMatchesModal = function(allowRegistration){
         var modalData = {
             allowRegistration: allowRegistration,
             translateWithTETName: $scope.translateWithTETName
         }
-        return $modal.open({
-            templateUrl: 'components/registration/matches-modal.html',
-            controller: function($scope,$modalInstance, TEIGridService,orgUnit, data,modalData,refetchDataFn)
-            {
-                $scope.allowRegistration = modalData.allowRegistration;
-                $scope.translateWithTETName = modalData.translateWithTETName;
-                $scope.gridData = TEIGridService.format(orgUnit.id, data, false, null, null);
-                $scope.pager = data && data.metaData ? data.metaData.pager : null;
-                $scope.openTei = function(){
-                    $modalInstance.close({ action: "OPENTEI", tei: tei});
-                }
-                $scope.register = function(destination){
-                    $modalInstance.close({ action: "REGISTERTEI", destination: destination});
-                }
-                $scope.cancel = function(){
-                    $modalInstance.close({ action: "CANCEL"});
-                }
-
-                $scope.refetchData = function(pager, sortColumn){
-                    refetchDataFn(pager,sortColumn).then(function(res){
-                        $scope.pager = res.data && res.data.metaData ? res.data.metaData.pager : null;
-                        $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, null, null);
-                    });
-                }
-            },
-            resolve: {
-                orgUnit: function(){
-                    return $scope.selectedOrgUnit;
+        getMatches($scope.matchingTeisSearchGroup).then(function(matches){
+            return $modal.open({
+                templateUrl: 'components/registration/matches-modal.html',
+                controller: function($scope,$modalInstance, TEIGridService,orgUnit, data,modalData,refetchDataFn)
+                {
+                    $scope.allowRegistration = modalData.allowRegistration;
+                    $scope.translateWithTETName = modalData.translateWithTETName;
+                    $scope.gridData = TEIGridService.format(orgUnit.id, data, false, null, null);
+                    $scope.pager = data && data.metaData ? data.metaData.pager : null;
+                    $scope.openTei = function(){
+                        $modalInstance.close({ action: "OPENTEI", tei: tei});
+                    }
+                    $scope.register = function(destination){
+                        $modalInstance.close({ action: "REGISTERTEI", destination: destination});
+                    }
+                    $scope.cancel = function(){
+                        $modalInstance.close({ action: "CANCEL"});
+                    }
+    
+                    $scope.refetchData = function(pager, sortColumn){
+                        refetchDataFn(pager,sortColumn).then(function(res){
+                            $scope.pager = res.data && res.data.metaData ? res.data.metaData.pager : null;
+                            $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, null, null);
+                        });
+                    }
                 },
-                data: function(){
-                    return $scope.matchingTeis;
-                },
-                refetchDataFn: function(){
-                    return function(pager, sortColumn){ return SearchGroupService.search($scope.matchingTeisSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);}
-                },
-                modalData: function(){
-                    return modalData;
+                resolve: {
+                    orgUnit: function(){
+                        return $scope.selectedOrgUnit;
+                    },
+                    data: function(){
+                        return $scope.matches;
+                    },
+                    refetchDataFn: function(){
+                        return function(pager, sortColumn){ return SearchGroupService.search($scope.matchingTeisSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);}
+                    },
+                    modalData: function(){
+                        return modalData;
+                    }
                 }
-            }
-        }).result.then(function(res){
-            if(res.action === "OPENTEI"){
-                openTei(res.tei);
-            }else if(res.action === "REGISTERTEI"){
-                $scope.registerEntity(res.destination);
-            }
+            }).result.then(function(res){
+                if(res.action === "OPENTEI"){
+                    openTei(res.tei);
+                }else if(res.action === "REGISTERTEI"){
+                    $scope.registerEntity(res.destination);
+                }
+            });
         });
+        
     }
 
     $scope.getMatchingTeisLength = function(){
@@ -995,12 +1024,8 @@ trackerCapture.controller('RegistrationController',
 
     $scope.translateWithMatchingTeisLength = function(multipleText, singleText){
         var length = 0;
-        if($scope.matchingTeis){
-            if($scope.matchingTeis.metaData && $scope.matchingTeis.metaData.pager){
-                length = $scope.matchingTeis.metaData.pager.total;
-            }else if($scope.matchingTeis.rows){
-                length = $scope.matchingTeis.rows.length;
-            }
+        if($scope.matchingTeisCount){
+            length = matchingTeisCount;
         }
         if(length === 1){
             return $translate.instant(singleText);
