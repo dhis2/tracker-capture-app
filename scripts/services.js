@@ -2461,7 +2461,7 @@ i
         if(!workingListsByProgram){
             $http.get(DHIS2URL+"/trackedEntityInstanceFilters?fields=*&paging=false").then(function(response){
                 workingListsByProgram = {};
-                if(response && response.data && response.data.trackedEntityInstanceFilters){
+                if(response && response.data && response.data.trackedEntityInstanceFilters && response.data.trackedEntityInstanceFilters.length > 0){
                     angular.forEach(response.data.trackedEntityInstanceFilters, function(workingList){
                         if(!workingListsByProgram[workingList.program.id]) workingListsByProgram[workingList.program.id] = [];
                         workingListsByProgram[workingList.program.id].push(workingList);
