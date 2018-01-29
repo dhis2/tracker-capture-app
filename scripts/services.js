@@ -460,7 +460,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 if(originalTei && formTei[k] !== originalTei[k] && !formTei[k] && !originalTei[k]){
                     formChanged = true;
                 }
-                if( formTei[k] ){
+                if( k in formTei ){
                     var att = attributesById[k];
                     tei.attributes.push({attribute: att.id, value: formTei[k], displayName: att.displayName, valueType: att.valueType});
                     formEmpty = false;              
