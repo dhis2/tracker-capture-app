@@ -196,17 +196,8 @@ trackerCapture.controller('HomeController',function(
         }
         var loadCanRegister = function(){
             if($scope.selectedProgram){
-                if($scope.selectedProgram.registrationAccess){
-                    viewsByType.registration.disabled = $scope.selectedProgram.registrationAccess.disabled;
-                    return;
-                }
-                TEService.get($scope.selectedProgram.trackedEntityType.id).then(function(te){
-                    viewsByType.registration.disabled = !AccessUtils.isWritable(te) || !AccessUtils.isWritable($scope.selectedProgram);
-                    $scope.selectedProgram.registrationAccess = { disabled: viewsByType.registration.disabled};
-                });
-                return;
-            }
-            
+                viewsByType.registration.disabled = !$scope.selectedProgram.access.data.write;
+            }            
         }
 
         $scope.setCurrentView = function(view)
