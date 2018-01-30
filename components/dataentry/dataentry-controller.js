@@ -2196,7 +2196,7 @@ trackerCapture.controller('DataEntryController',
     }
 
     $scope.deleteEvent = function () {
-        if(!eventEditable()){
+        if(!$scope.eventEditable()){
             var bodyText = $translate.instant('you_do_not_have_the_necessary_authorities_to_delete') +' '+ $translate.instant('this') +' '+$translate.instant('event').toLowerCase();
             var headerText = $translate.instant('delete_failed');
             return NotificationService.showNotifcationDialog(headerText, bodyText);
