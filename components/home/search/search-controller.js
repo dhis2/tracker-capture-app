@@ -173,10 +173,9 @@ trackerCapture.controller('SearchController',function(
 
         var canOpenRegistration = function(){
             if($scope.base.selectedProgram){
-                return AccessUtils.isWritable($scope.base.selectedProgram) && AccessUtils.isWritable($scope.trackedEntityTypes.selected);
-            }else{
-                return AccessUtils.isWritable($scope.trackedEntityTypes.selected);
-            }   
+                return AccessUtils.isWritable($scope.base.selectedProgram);
+            }
+            return false; 
         }
 
         var showResultModal = function(res, searchGroup){

@@ -136,8 +136,8 @@ trackerCapture.controller('RegistrationController',
             });
         }
     };
-    $scope.hasTeiProgramWrite = function(){
-        return $scope.trackedEntityTypes && $scope.trackedEntityTypes.selected && $scope.selectedProgram && $scope.selectedProgram.access.data.write;
+    $scope.hasTeiOrProgramWrite = function(){
+        return $scope.trackedEntityTypes && $scope.trackedEntityTypes.selected && $scope.selectedProgram && ($scope.selectedProgram.access.data.write || $scope.trackedEntityTypes.selected.access.data.write);
     }
     var setSearchConfig = function(){
         var promise = null;
@@ -1046,7 +1046,7 @@ trackerCapture.controller('RegistrationController',
     $scope.attributeFieldDisabled = function(attribute){
         if($scope.isDisabled(attribute)) return true;
         if($scope.selectedOrgUnit.closedStatus) return true;
-        if(!$scope.hasTeiProgramWrite()) return true;
+        if(!$scope.hasTeiOrProgramWrite()) return true;
         return false;
     }
 
