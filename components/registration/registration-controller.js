@@ -137,7 +137,7 @@ trackerCapture.controller('RegistrationController',
         }
     };
     $scope.hasTeiProgramWrite = function(){
-        return $scope.trackedEntityTypes && $scope.trackedEntityTypes.selected && $scope.trackedEntityTypes.selected.access.data.write && $scope.selectedProgram && $scope.selectedProgram.access.data.write;
+        return $scope.trackedEntityTypes && $scope.trackedEntityTypes.selected && $scope.selectedProgram && $scope.selectedProgram.access.data.write;
     }
     var setSearchConfig = function(){
         var promise = null;
