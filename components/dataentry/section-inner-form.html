@@ -128,7 +128,7 @@
                        ng-model="currentEvent[de.id]"
                        ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
                        ng-disabled="selectedOrgUnit.closedStatus || selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed || assignedFields[currentEvent.event][de.id]"
-                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)">
             </div>
         </div>
         <div ng-switch-when="AGE">
