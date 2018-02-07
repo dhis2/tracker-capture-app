@@ -240,7 +240,7 @@ trackerCapture.controller('SearchController',function(
                 },
                 resolve: {
                     refetchDataFn: function(){
-                        return function(pager,sortColumn){ return SearchGroupService.search(searchGroup, program,trackedEntityType, $scope.selectedOrgUnit, pager); }
+                        return function(pager,sortColumn){ return SearchGroupService.search(searchGroup, program,tet, $scope.selectedOrgUnit, pager); }
                     },
 
                     orgUnit: function(){
