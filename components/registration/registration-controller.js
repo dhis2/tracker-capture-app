@@ -484,11 +484,11 @@ trackerCapture.controller('RegistrationController',
     };
 
     //check if field is hidden
-    $scope.isHidden = function (id) {
-        //In case the field contains a value, we cant hide it.
-        //If we hid a field with a value, it would falsely seem the user was aware that the value was entered in the UI.
-
-        return $scope.selectedTei[id] ? false : $scope.hiddenFields[id];
+    $scope.isHidden = function (id) {       
+        if($scope.currentEvent && $scope.hiddenFields[$scope.currentEvent.event] && $scope.hiddenFields[$scope.currentEvent.event][id]){
+            return $scope.hiddenFields[$scope.currentEvent.event][id];
+        }
+        return false;
     };
 
     $scope.teiValueUpdated = function (tei, field) {
