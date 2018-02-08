@@ -254,6 +254,21 @@
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
                     </span>
+                    <span ng-switch-when="IMAGE">
+                        <h1>{{attribute.id}}</h1>
+                        <d2-image d2-display-open="true"
+                                  d2-can-edit="true"
+                                  d2-event="selectedTei"
+                                  d2-data-element-id="attribute.id"
+                                  d2-file-names="fileNames"
+                                  d2-current-image-name="currentFileNames"
+                                  d2-ps="currentStage"
+                                  d2-delete-methode="deleteFile"
+                                  d2-download-methode="downloadFile"
+                                  d2-required="attribute.mandatory || mandatoryFields[attribute.id]"
+                                  d2-diabled="attributeFieldDisabled(attribute)">
+                        </d2-image>
+                    </span>
                     <span ng-switch-when="LONG_TEXT">
                         <textarea row="3"
                                name="foo" 

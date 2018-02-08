@@ -322,7 +322,26 @@
             <div class="not-for-screen">
                 <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
-        </div>        
+        </div>
+        <div ng-switch-when="IMAGE">
+            <div class="hideInPrint">
+                <d2-image d2-display-open="true"
+                          d2-can-edit="true"
+                          d2-event="currentEvent"
+                          d2-data-element-id="de.id"
+                          d2-file-names="fileNames"
+                          d2-current-image-name="currentFileNames"
+                          d2-ps="currentStage"
+                          d2-delete-methode="deleteFile"
+                          d2-download-methode="downloadFile"
+                          d2-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                          d2-diabled="!dataElementEditable(prStDes[de.id])">
+                </d2-image>
+            </div>
+            <div class="not-for-screen">
+                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+            </div>
+        </div>       
         <div ng-switch-when="COORDINATE">            
             <d2-map id="{{de.id}}"                    
                     d2-lat-saved="currentElement.saved && currentElement.id === de.id"
