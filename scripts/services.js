@@ -2564,7 +2564,9 @@ i
         var uniqueSearch = false;
         var numberOfSetAttributes = 0;
         var query = {url: null, hasValue: false};
+        var programScope = false;
         if(searchGroup){
+            programScope = searchGroup.uniqueGroup && searchGroup.attributes.length > 0 && searchGroup.attributes[0].programScope;
             angular.forEach(searchGroup.attributes, function(attr){
                 if(searchGroup.uniqueGroup) uniqueSearch = true;
                 if(attr.valueType === 'DATE' || attr.valueType === 'NUMBER' || attr.valueType === 'DATETIME'){
@@ -2673,12 +2675,8 @@ i
             });
         }
         if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.minAttributesRequiredToSearch)){
-            var programOrTETUrl = "";
-            if(program){
-                programOrTETUrl = "program="+program.id;
-            }else{
-                programOrTETUrl = "trackedEntityType="+trackedEntityType.id;
-            }
+            var programOrTETUrl = programScope ? "program="+program.id :"trackedEntityType="+trackedEntityType.id;
+
             var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
             return { orgUnit: searchOrgUnit, ouMode: searchGroup.ouMode.name, programOrTETUrl: programOrTETUrl, queryUrl: query.url, pager: pager, uniqueSearch: uniqueSearch };
         }

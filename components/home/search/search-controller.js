@@ -97,8 +97,7 @@ trackerCapture.controller('SearchController',function(
                     return;
                 }
                 searchGroup.error = false;
-                var trackedEntityType = $scope.base.selectedProgram ? null : $scope.trackedEntityTypes.selected;
-                return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,trackedEntityType, $scope.selectedOrgUnit).then(function(res){
+                return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
                         //If only one tei found and in selectedOrgUnit, go straight to dashboard
                         if(res && res.data && res.data.rows && res.data.rows.length === 1){
                             var gridData = TEIGridService.format($scope.selectedOrgUnit.id, res.data, false, null, null);
@@ -184,8 +183,6 @@ trackerCapture.controller('SearchController',function(
                 translateWithTETName: translateWithTETName,
                 base: $scope.base
             }
-            var program = $scope.base.selectedProgram;
-            var tet = $scope.base.selectedProgram ? null : $scope.trackedEntityTypes.selected;
 
             return $modal.open({
                 templateUrl: 'components/home/search/result-modal.html',
@@ -240,7 +237,7 @@ trackerCapture.controller('SearchController',function(
                 },
                 resolve: {
                     refetchDataFn: function(){
-                        return function(pager,sortColumn){ return SearchGroupService.search(searchGroup, program,tet, $scope.selectedOrgUnit, pager); }
+                        return function(pager,sortColumn){ return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, pager); }
                     },
 
                     orgUnit: function(){
