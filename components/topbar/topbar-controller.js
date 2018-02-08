@@ -179,7 +179,7 @@ trackerCapture.controller('TopBarController',
 
     $scope.$on('dashboardWidgets', function(event, args) {
         var selections = CurrentSelection.get();
-        var tei = selections.tei;
+        var tei = angular.copy(selections.tei);
         angular.forEach(tei.attributes, function(attr){
             tei[attr.attribute] = attr.value;
         });

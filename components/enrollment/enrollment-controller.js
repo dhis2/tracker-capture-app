@@ -270,30 +270,20 @@ trackerCapture.controller('EnrollmentController',
             });
         };
 
-        $scope.canDeleteEnrollment = function(){
-            return $scope.selectedProgram && $scope.selectedProgram.access.data.write && $scope.userAuthority.canDeleteEnrollment;
-        }
-
-        var verifyCanDeleteEnrollment = function(){
-            if($scope.canDeleteEnrollment()){
-                if(!$scope.userAuthority.canDeleteExpired && $scope.selectedEnrollment.expired) return false;
+        var canDeleteEnrollment = function(){
+            if($scope.selectedProgram && $scope.selectedProgram.access.data.write){
                 if($scope.allEventsSorted && $scope.allEventsSorted.length > 0){
-                    if(!$scope.userAuthority.canDeleteEnrollmentIncludingAllEvents || !$scope.userAuthority.canDeleteEvent) return false;
-                    if(!$scope.userAuthority.canDeleteExpired){
-                        angular.forEach($scope.allEventsSorted, function(ev){
-                            if(ev.expired) return false;
-                        });
-                    }
+                    if(!$scope.userAuthority.canCascadeDeleteEnrollment) return false;
                 }
                 return true;
-            }else{
-                return false;
             }
+            return false;
+
         }
         
         $scope.deleteEnrollment = function () {
-            if(!verifyCanDeleteEnrollment()){
-                var bodyText = $translate.instant('you_do_not_have_the_necessary_authorities_to_delete') +' '+ $translate.instant('this') +' '+$translate.instant('enrollment').toLowerCase();
+            if(!canDeleteEnrollment()){
+                var bodyText = $translate.instant("cannot_delete_this_enrollment_because_it_already_contains_events");
                 var headerText = $translate.instant('delete_failed');
                 return NotificationService.showNotifcationDialog(headerText, bodyText);
             }

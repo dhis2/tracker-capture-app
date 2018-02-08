@@ -33,10 +33,10 @@
                         </div>
                     </div>            
                     <div ng-class="getCompareModeColSize(compareModeColDefs.currentEvent)">   
-                        <span ng-if="selectedEnrollment.status === 'ACTIVE' && !currentEvent.editingNotAllowed">                    
+                        <span ng-if="eventEditable()">                    
                             {{'current' | translate}} ({{currentStage.displayName}} {{currentStageEventNumber()}})
                         </span>  
-                        <span ng-if="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed">                    
+                        <span ng-if="!eventEditable()">                    
                             {{'current' | translate}} ({{currentStage.displayName}} {{currentStageEventNumber()}})
                         </span>                        
                     </div> 
@@ -66,7 +66,7 @@
 
                     <div ng-class="getCompareModeColSize(compareModeColDefs.currentEvent)">
 
-                        <div ng-if="selectedEnrollment.status === 'ACTIVE' && !currentEvent.editingNotAllowed" class="compare-form-extra-padding-current-event">
+                        <div ng-if="eventEditable()" class="compare-form-extra-padding-current-event">
                             <input type="text"
                                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                                    class="form-control hideInPrint" 
@@ -85,7 +85,7 @@
                             <span ng-if="invalidDate === currentEvent.event" class="error">{{'date_required'| translate}}</span>
                         </div>
 
-                        <div ng-if="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed" class="compare-form-extra-padding">
+                        <div ng-if="!eventEditable()" class="compare-form-extra-padding">
                             {{currentEvent.eventDate}}
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                     </div>
 
                     <div ng-class="getCompareModeColSize(compareModeColDefs.currentEvent)">
-                        <div ng-if="selectedEnrollment.status === 'ACTIVE' && !currentEvent.editingNotAllowed" class="compare-form-extra-padding-current-event">
+                        <div ng-if="eventEditable()" class="compare-form-extra-padding-current-event">
                             <span ng-if="!currentEvent.eventDate && currentEvent.status !== 'SKIPPED' && !selectedEntity.inactive && selectedEnrollment.status === 'ACTIVE'">
                                 <a href ng-click="enableRescheduling()" title="{{ schedulingEnabled ? 'disable_rescheduling' : 'enable_rescheduling' | translate}}"><span class="text-primary bold">{{'reschedule_duedate'| translate}}</span></a>                        
                             </span>                    
@@ -126,7 +126,7 @@
                                    ng-disabled="!eventEditable() || currentEvent.eventDate"/>
                             <span ng-if="invalidDueDate === currentEvent.event" class="error">{{'date_required'| translate}}</span>
                         </div>                
-                        <div ng-if="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed" class="compare-form-extra-padding">
+                        <div ng-if="!eventEditable()" class="compare-form-extra-padding">
                             {{currentEvent.dueDate}}
                         </div>
                     </div>
@@ -223,13 +223,13 @@
                     </div>
 
                     <div ng-class="getCompareModeColSize(compareModeColDefs.currentEvent)">
-                        <!--<div ng-if="selectedEnrollment.status === 'ACTIVE' && !currentEvent.editingNotAllowed" ng-include="'components/dataentry/inner-form.html'"></div>-->
-                        <div ng-if="selectedEnrollment.status === 'ACTIVE' && !currentEvent.editingNotAllowed" 
+                        <!--<div ng-if="eventEditable()" ng-include="'components/dataentry/inner-form.html'"></div>-->
+                        <div ng-if="eventEditable()" 
                              class="compare-form-extra-padding-current-event current-event-width"                              
                              style="float: left" 
                              dhis2-compiled-include="components/dataentry/inner-form.html">                            
                         </div>                                                                       
-                        <div ng-if="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed" class="compare-form-extra-padding current-event-width" style="float: left">
+                        <div ng-if="!eventEditable()" class="compare-form-extra-padding current-event-width" style="float: left">
                             <div ng-switch="prStDe.dataElement.valueType">
                                 <div ng-switch-when="BOOLEAN">
                                     <dhis2-radio-button
@@ -320,10 +320,10 @@
                                         </div>
                                     </div>            
                                     <div ng-class="getCompareModeColSize(compareModeColDefs.currentEvent)">   
-                                        <span ng-if="selectedEnrollment.status === 'ACTIVE' && !currentEvent.editingNotAllowed">                    
+                                        <span ng-if="eventEditable()">                    
                                             {{'current' | translate}} ({{currentStage.displayName}} {{currentStageEventNumber()}})
                                         </span>  
-                                        <span ng-if="selectedEnrollment.status !== 'ACTIVE' || currentEvent.editingNotAllowed">                    
+                                        <span ng-if="!eventEditable()">                    
                                             {{'current' | translate}} ({{currentStage.displayName}} {{currentStageEventNumber()}})
                                         </span>                        
                                     </div> 

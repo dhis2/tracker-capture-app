@@ -55,6 +55,7 @@ trackerCapture.controller('DataEntryController',
     $scope.stagesCanBeShownAsTable = false;
     $scope.hiddenFields = [];
     $scope.assignedFields = [];
+    $scope.mandatoryFields = [];
     $scope.errorMessages = {};
     $scope.warningMessages = {};
     $scope.hiddenSections = {};
@@ -196,11 +197,7 @@ trackerCapture.controller('DataEntryController',
         }
     });
     $scope.useReferral = false;
-    $scope.showReferral = false;
-    //Check if user is allowed to make referrals
-    if($scope.useReferral){        
-        $scope.showReferral = $scope.userAuthority.canSearchTeiAcrossAll;        
-    }
+    $scope.showReferral = true;
     
     $scope.$watch("model.eventSearchText", function(newValue, oldValue){        
         if($scope.model.eventSearchText !== ''){
@@ -264,6 +261,7 @@ trackerCapture.controller('DataEntryController',
         $scope.warningMessages[event] = [];
         $scope.errorMessages[event] = [];
         $scope.hiddenFields[event] = [];
+        $scope.mandatoryFields[event] = [];
         
         angular.forEach($rootScope.ruleeffects[event], function (effect) {
             //in the data entry controller we only care about the "hidefield", showerror and showwarning actions
@@ -371,8 +369,9 @@ trackerCapture.controller('DataEntryController',
                         }
                     }
                 }
-            }
-            else if (effect.action === "HIDEPROGRAMSTAGE") {
+            }else if (effect.action === "SETMANDATORYFIELD"){                    
+                $scope.mandatoryFields[event][effect.dataElement.id] = effect.ineffect;
+            }else if (effect.action === "HIDEPROGRAMSTAGE") {
                 if (effect.programStage) {
                     if($scope.stagesNotShowingInStageTasks[effect.programStage.id] !== effect.ineffect )
                     {
@@ -699,6 +698,7 @@ trackerCapture.controller('DataEntryController',
                         $scope.model.minDate = $scope.selectedOrgUnit.reportDateRange.minDate;
                         //minDate is in Georgian format, but maxDate is not. This Service converts the date.
                         $scope.model.minDate = DateUtils.formatFromApiToUserCalendar($scope.model.minDate);
+                        $scope.model.minDate = DateUtils.formatFromApiToUser($scope.model.minDate);
                     }
                     if ($scope.selectedOrgUnit.reportDateRange.maxDate) {
                         $scope.model.maxDate = $scope.selectedOrgUnit.reportDateRange.maxDate;
@@ -2076,10 +2076,6 @@ trackerCapture.controller('DataEntryController',
                 $location.path('/').search({program: $scope.selectedProgramId}); 
             }else{
                 if ($scope.currentEvent.status === 'COMPLETED') {//activiate event
-                    if( !$scope.userAuthority.canUnCompleteEvent ){
-                        NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("not_authorized_to_uncomplete_event"));
-                        return;
-                    }
                     $scope.currentEvent.status = 'ACTIVE';
                 }
                 else {//complete event                    
@@ -2193,27 +2189,14 @@ trackerCapture.controller('DataEntryController',
     }
 
     $scope.eventEditable = function(){
+        if(!$scope.currentStage || !$scope.currentStage.access.data.write) return false;
         if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE' || $scope.currentEvent.editingNotAllowed) return false;
         if($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff) return false;
         return true;
     }
 
-    $scope.canDeleteEvent = function(){
-        return $scope.currentStage && $scope.currentStage.access.data.write && $scope.userAuthority.canDeleteEvent;
-    }
-
-    var verifyCanDeleteEvent = function(){
-        if($scope.canDeleteEvent()){
-            if(!$scope.userAuthority.canDeleteExpired){
-                if($scope.currentEvent.expired || $scope.selectedEnrollment.expired) return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
     $scope.deleteEvent = function () {
-        if(!verifyCanDeleteEvent()){
+        if(!$scope.eventEditable()){
             var bodyText = $translate.instant('you_do_not_have_the_necessary_authorities_to_delete') +' '+ $translate.instant('this') +' '+$translate.instant('event').toLowerCase();
             var headerText = $translate.instant('delete_failed');
             return NotificationService.showNotifcationDialog(headerText, bodyText);

@@ -173,10 +173,9 @@ trackerCapture.controller('SearchController',function(
 
         var canOpenRegistration = function(){
             if($scope.base.selectedProgram){
-                return AccessUtils.isWritable($scope.base.selectedProgram) && AccessUtils.isWritable($scope.trackedEntityTypes.selected);
-            }else{
-                return AccessUtils.isWritable($scope.trackedEntityTypes.selected);
-            }   
+                return AccessUtils.isWritable($scope.base.selectedProgram);
+            }
+            return false; 
         }
 
         var showResultModal = function(res, searchGroup){
@@ -241,7 +240,7 @@ trackerCapture.controller('SearchController',function(
                 },
                 resolve: {
                     refetchDataFn: function(){
-                        return function(pager,sortColumn){ return SearchGroupService.search(searchGroup, program,trackedEntityType, $scope.selectedOrgUnit, pager); }
+                        return function(pager,sortColumn){ return SearchGroupService.search(searchGroup, program,tet, $scope.selectedOrgUnit, pager); }
                     },
 
                     orgUnit: function(){

@@ -483,7 +483,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 if(originalTei && formTei[k] !== originalTei[k] && !formTei[k] && !originalTei[k]){
                     formChanged = true;
                 }
-                if( formTei[k] ){
+                if( k in formTei ){
                     var att = attributesById[k];
                     tei.attributes.push({attribute: att.id, value: formTei[k], displayName: att.displayName, valueType: att.valueType});
                     formEmpty = false;
@@ -650,69 +650,25 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         getAll: function(){
             var def = $q.defer();
 
-            this.getAllAccesses().then(function(accesses){
-                TCStorageService.currentStore.open().done(function(){
+            TCStorageService.currentStore.open().done(function(){
 
-                    TCStorageService.currentStore.getAll('trackedEntityTypes').done(function(entities){
-                        angular.forEach(entities, function(entity){
-                            entity.access = accesses[entity.id];
-                        })
-                        $rootScope.$apply(function(){
-                            
-                            def.resolve(entities);
-                        });
+                TCStorageService.currentStore.getAll('trackedEntityTypes').done(function(entities){
+                    $rootScope.$apply(function(){
+                        
+                        def.resolve(entities);
                     });
                 });
-                
             });
             return def.promise;
 
         },
         get: function(uid){
             var def = $q.defer();
-
-            this.getAccess(uid).then(function(access){
-                TCStorageService.currentStore.open().done(function(){
-                    TCStorageService.currentStore.get('trackedEntityTypes', uid).done(function(te){
-                        if(te){
-                            te.access = access;
-                        }
-                        $rootScope.$apply(function(){
-                            def.resolve(te);
-                        });
-                    });
+            TCStorageService.currentStore.open().done(function(){
+                TCStorageService.currentStore.get('trackedEntityTypes', uid).done(function(te){
+                    def.resolve(te);
                 });
             });
-            return def.promise;
-        },
-        getAccess: function(uid){
-            var def = $q.defer();
-            if(allAccesses){
-                def.resolve(allAccesses[uid]);
-            }else{
-                TCStorageService.currentStore.open().done(function(){
-                    TCStorageService.currentStore.get('trackedEntityTypeAccess', uid).done(function(teAccess){
-                        def.resolve({data: {write: true, read: true}});//teAccess.access);
-                    });
-                });
-            }
-            return def.promise;
-        },
-        getAllAccesses: function(){
-            var def = $q.defer();
-            if(allAccesses){
-                def.resolve(allAccesses);
-            }else{
-                TCStorageService.currentStore.open().done(function(){
-                    TCStorageService.currentStore.getAll('trackedEntityTypeAccess').done(function(teAccess){
-                        allAccesses = {};
-                        angular.forEach(teAccess, function(a){
-                            allAccesses[a.id] = {data: {write: true, read: true}};//a.access;
-                        })
-                        def.resolve(allAccesses);
-                    });
-                });
-            }
             return def.promise;
         },
         extendWithSearchGroups: function(trackedEntityTypes, attributesById){
@@ -739,9 +695,42 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 /* Service for getting tracked entity instances */
 .factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService ) {
     var errorHeader = $translate.instant("error");
-
-    var getFormatUrl = function(){
+    var getSearchUrl = function(type,ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
+        var baseUrl = DHIS2URL + '/trackedEntityInstances/'+type;
+        var url = baseUrl;
+        var deferred = $q.defer();
         
+        if (format === "csv") {
+            url = url+'.csv?ou=' + ouId + '&ouMode=' + ouMode;
+        } else if (format === "xml") {
+            url = url+'.json?ou=' + ouId + '&ouMode=' + ouMode;
+        }else {
+            url = url+'.json?ou=' + ouId + '&ouMode=' + ouMode;
+        }
+
+        if(queryUrl){
+            url = url + '&'+ queryUrl;
+        }
+        if(programOrTETUrl){
+            url = url + '&' + programOrTETUrl;
+        }
+        if(attributeUrl){
+            url = url + '&' + attributeUrl;
+        }
+        if(paging){
+            var pgSize = pager ? pager.pageSize : 50;
+            var pg = pager ? pager.page : 1;
+            pgSize = pgSize > 1 ? pgSize  : 1;
+            pg = pg > 1 ? pg : 1;
+            url = url + '&pageSize=' + pgSize + '&page=' + pg + '&totalPages=true';
+        }
+        else{
+            url = url + '&paging=false';
+        }
+        return url;
+    }
+    var getFormatUrl = function(){
+
     }
     return {
         get: function(entityUid, optionSets, attributesById){
@@ -792,38 +781,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        searchCount: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
+            var url = getSearchUrl("count",ouId, ouMode,queryUrl, programOrTETUrl, attributeUrl, pager, paging, format);
+            return $http.get( url ).then(function(response)
+            {
+                if(response && response.data) return response.data;
+                return 0;
+            });
+        },
         search: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
-            var url;
             var deferred = $q.defer();
-
-            if (format === "csv") {
-                url = DHIS2URL + '/trackedEntityInstances/query.csv?ou=' + ouId + '&ouMode=' + ouMode;
-            } else if (format === "xml") {
-                url = DHIS2URL + '/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
-            }else {
-                url = DHIS2URL + '/trackedEntityInstances/query.json?ou=' + ouId + '&ouMode=' + ouMode;
-            }
-
-            if(queryUrl){
-                url = url + '&'+ queryUrl;
-            }
-            if(programOrTETUrl){
-                url = url + '&' + programOrTETUrl;
-            }
-            if(attributeUrl){
-                url = url + '&' + attributeUrl;
-            }
-            if(paging){
-                var pgSize = pager ? pager.pageSize : 50;
-                var pg = pager ? pager.page : 1;
-                pgSize = pgSize > 1 ? pgSize  : 1;
-                pg = pg > 1 ? pg : 1;
-                url = url + '&pageSize=' + pgSize + '&page=' + pg + '&totalPages=true';
-            }
-            else{
-                url = url + '&paging=false';
-            }
-
+            var url = getSearchUrl("query",ouId, ouMode,queryUrl, programOrTETUrl, attributeUrl, pager, paging, format);
             $http.get( url ).then(function(response){
                 var xmlData, rows, headers, index, itemName, value, jsonData;
                 var trackedEntityInstance, attributesById;
@@ -2493,7 +2461,7 @@ i
         if(!workingListsByProgram){
             $http.get(DHIS2URL+"/trackedEntityInstanceFilters?fields=*&paging=false").then(function(response){
                 workingListsByProgram = {};
-                if(response && response.data && response.data.trackedEntityInstanceFilters){
+                if(response && response.data && response.data.trackedEntityInstanceFilters && response.data.trackedEntityInstanceFilters.length > 0){
                     angular.forEach(response.data.trackedEntityInstanceFilters, function(workingList){
                         if(!workingListsByProgram[workingList.program.id]) workingListsByProgram[workingList.program.id] = [];
                         workingListsByProgram[workingList.program.id].push(workingList);
@@ -2591,36 +2559,8 @@ i
         }
         return searchConfig;
     }
-    this.getSearchConfigForProgram = function(program, orgUnitUniqueAsSearchGroup) {
-        var def = $q.defer();
-        if(!programSearchConfigsById[program.id]){
-            return AttributesFactory.getByProgram(program).then(function(attributes)
-            {
-                var searchConfig = makeSearchConfig(attributes, program.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
-                programSearchConfigsById[program.id] = searchConfig;
-                def.resolve(angular.copy(searchConfig));
-                return def.promise;
-            });
-        }
-        def.resolve(angular.copy(programSearchConfigsById[program.id]));
-        return def.promise;
-    }
-    this.getSearchConfigForTrackedEntityType = function(trackedEntityType,orgUnitUniqueAsSearchGroup){
-        var def = $q.defer();
-        if(!trackedEntityTypeSearchConfigsById[trackedEntityType.id]){
-            return AttributesFactory.getByTrackedEntityType(trackedEntityType).then(function(attributes)
-            {
-                var searchConfig = makeSearchConfig(attributes, trackedEntityType.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
-                trackedEntityTypeSearchConfigsById[trackedEntityType.id] = searchConfig;
-                def.resolve(angular.copy(searchConfig));
-                return def.promise;
-            });
-        }
-        def.resolve(angular.copy(trackedEntityTypeSearchConfigsById[trackedEntityType.id]));
-        return def.promise;
-    }
 
-    this.search = function(searchGroup, program,trackedEntityType, orgUnit, pager){
+    var getSearchParams = function(searchGroup, program,trackedEntityType, orgUnit,pager){
         var uniqueSearch = false;
         var numberOfSetAttributes = 0;
         var query = {url: null, hasValue: false};
@@ -2732,7 +2672,6 @@ i
                 }
             });
         }
-
         if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.minAttributesRequiredToSearch)){
             var programOrTETUrl = "";
             if(program){
@@ -2741,9 +2680,63 @@ i
                 programOrTETUrl = "trackedEntityType="+trackedEntityType.id;
             }
             var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
-            return TEIService.search(searchOrgUnit.id, searchGroup.ouMode.name,null, programOrTETUrl, query.url, pager, true).then(function(response){
+            return { orgUnit: searchOrgUnit, ouMode: searchGroup.ouMode.name, programOrTETUrl: programOrTETUrl, queryUrl: query.url, pager: pager, uniqueSearch: uniqueSearch };
+        }
+    }
+    
+    this.getSearchConfigForProgram = function(program, orgUnitUniqueAsSearchGroup) {
+        var def = $q.defer();
+        if(!programSearchConfigsById[program.id]){
+            return AttributesFactory.getByProgram(program).then(function(attributes)
+            {
+                var searchConfig = makeSearchConfig(attributes, program.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
+                programSearchConfigsById[program.id] = searchConfig;
+                def.resolve(angular.copy(searchConfig));
+                return def.promise;
+            });
+        }
+        def.resolve(angular.copy(programSearchConfigsById[program.id]));
+        return def.promise;
+    }
+    this.getSearchConfigForTrackedEntityType = function(trackedEntityType,orgUnitUniqueAsSearchGroup){
+        var def = $q.defer();
+        if(!trackedEntityTypeSearchConfigsById[trackedEntityType.id]){
+            return AttributesFactory.getByTrackedEntityType(trackedEntityType).then(function(attributes)
+            {
+                var searchConfig = makeSearchConfig(attributes, trackedEntityType.minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup);
+                trackedEntityTypeSearchConfigsById[trackedEntityType.id] = searchConfig;
+                def.resolve(angular.copy(searchConfig));
+                return def.promise;
+            });
+        }
+        def.resolve(angular.copy(trackedEntityTypeSearchConfigsById[trackedEntityType.id]));
+        return def.promise;
+    }
+
+    this.searchCount = function(searchGroup, program, trackedEntityType, orgUnit, pager){
+        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager);
+        if(params){
+            return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+                if(response){
+                    return response;
+                }
+                return 0;
+            },function(error){
+                return 0;
+            });
+        }else{
+            var def = $q.defer();
+            def.resolve(0);
+            return def.promise;
+        }
+    }
+    this.search = function(searchGroup, program,trackedEntityType, orgUnit, pager){
+        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager);
+        if(params){
+            var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
+            return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
                 if(response && response.rows && response.rows.length > 0){
-                    if(uniqueSearch) return { status: "UNIQUE", data: response };
+                    if(params.uniqueSearch) return { status: "UNIQUE", data: response };
                     return { status: "MATCHES", data: response };
                 }
                 return { status: "NOMATCH"};
