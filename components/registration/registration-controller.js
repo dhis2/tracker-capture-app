@@ -53,6 +53,8 @@ trackerCapture.controller('RegistrationController',
     $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
 
     $scope.attributesById = CurrentSelection.getAttributesById();
+    $scope.fileNames = CurrentSelection.getFileNames();
+    $scope.currentFileNames = $scope.fileNames;
 
     if(!$scope.attributesById){
         $scope.attributesById = [];
