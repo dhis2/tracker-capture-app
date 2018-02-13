@@ -9,6 +9,7 @@ trackerCapture.controller('RegistrationController',
                 $timeout,
                 $modal,
                 $translate,
+                $window,
                 $parse,
                 orderByFilter,
                 AttributesFactory,
@@ -1068,4 +1069,34 @@ trackerCapture.controller('RegistrationController',
         if($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff) return false;
         return true;
     }
+
+    $scope.deleteFile = function(tei, attribute){
+        
+        if( !attribute ){
+            NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("missing_file_identifier"));
+            return;
+        }
+        
+        var modalOptions = {
+            closeButtonText: 'cancel',
+            actionButtonText: 'remove',
+            headerText: 'remove',
+            bodyText: 'are_you_sure_to_remove'
+        };
+
+        ModalService.showModal({}, modalOptions).then(function(result){            
+            $scope.fileNames[attribute] = null;
+            $scope.fileNames["undefined"][attribute] = null;
+            tei[attribute] = null;
+        });
+    };
+
+    $scope.downloadFile = function(tei, attributeId) {      
+        if( !tei || !tei.trackedEntityInstance || !attributeId){
+            NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("missing_file_identifier"));
+            return;
+        }
+        
+        $window.open('../api/trackedEntityInstances/' + tei.trackedEntityInstance + '/' + attributeId + '/image', '_blank', '');
+    };
 });
