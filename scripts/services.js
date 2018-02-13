@@ -2562,13 +2562,11 @@ i
         return searchConfig;
     }
 
-    var getSearchParams = function(searchGroup, program,trackedEntityType, orgUnit,pager){
+    var getSearchParams = function(searchGroup, program,trackedEntityType, orgUnit,pager, searchScope){
         var uniqueSearch = false;
         var numberOfSetAttributes = 0;
         var query = {url: null, hasValue: false};
-        var programScope = false;
         if(searchGroup){
-            programScope = searchGroup.uniqueGroup && searchGroup.attributes.length > 0 && searchGroup.attributes[0].programScope;
             angular.forEach(searchGroup.attributes, function(attr){
                 if(searchGroup.uniqueGroup) uniqueSearch = true;
                 if(attr.valueType === 'DATE' || attr.valueType === 'NUMBER' || attr.valueType === 'DATETIME'){
@@ -2677,7 +2675,7 @@ i
             });
         }
         if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.minAttributesRequiredToSearch)){
-            var programOrTETUrl = programScope ? "program="+program.id :"trackedEntityType="+trackedEntityType.id;
+            var programOrTETUrl = searchScope === searchScopes.PROGRAM ? "program="+program.id :"trackedEntityType="+trackedEntityType.id;
 
             var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
             return { orgUnit: searchOrgUnit, ouMode: searchGroup.ouMode.name, programOrTETUrl: programOrTETUrl, queryUrl: query.url, pager: pager, uniqueSearch: uniqueSearch };
@@ -2738,7 +2736,7 @@ i
         }
         return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
                 if(response && response.rows && response.rows.length > 0){
-                    var result = { data: response, callingScope: searchScopes.PROGRAM, resultScope: searchScopes.TET };
+                    var result = { data: response, callingScope: searchScopes.PROGRAM, resultScope: searchScopes.PROGRAM };
                     var def = $q.defer();
                     if(params.uniqueSearch){
                         result.status = "UNIQUE";
@@ -2774,19 +2772,21 @@ i
             });
 
     }
-    this.tetScopeSearch = function(tetSearchGroup, program,trackedEntityType, orgUnit, pager){
+    var tetScopeSearch = this.tetScopeSearch = function(tetSearchGroup, program,trackedEntityType, orgUnit, pager){
         var params = getSearchParams(tetSearchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.TET);
         if(params){
             return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
-                var result = {data: response};
+                var result = {data: response, callingScope: searchScopes.TET, resultScope: searchScopes.TET };
                 if(response && response.rows && response.rows.length > 0){
                     if(params.uniqueSearch){
                         result.status = "UNIQUE";
                     }else{
                         result.status = "MATCHES";
                     }
+                }else{
+                    result.status = "NOMATCH";
                 }
-                return { status: "NOMATCH"};
+                return result;
             },function(error){
                 var d = $q.defer();
                 if(error && error.data && error.data.message === "maxteicountreached"){

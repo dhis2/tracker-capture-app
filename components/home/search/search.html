@@ -1,20 +1,24 @@
 <div ng-controller="SearchController" class="col-lg-6 col-md-8 col-sm-10">
-    <h2>Search for tracked entity instance</h2>
-    <form class="form-horizontal search-tei-form" ng-if="!base.selectedProgram">
-        <div class="form-group" >
-            <label class="col-xs-4 control-label" for="trackedEntityTypeSelect">{{'entity_type'| translate}}</label>
-            <div class="col-xs-8">
-                <select class="form-control"
-                    name="trackedEntityTypeSelect"
-                    ng-model="trackedEntityTypes.selected"
-                    ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.all | orderBy: 'displayName'"
-                    ng-change="setTrackedEntityType()"
-                    >
-                    <option value="" disabled selected>Select a tracked entity type</option>
-                </select>  
-            </div>
-        </div>
-    </form>
+    <div ng-if="base.selectedProgram">
+        <h2>{{'search_for'| translate}} {{trackedEntityTypes.selected.displayName.toLowerCase()}}</h2>
+    </div>
+    <div ng-if="!base.selectedProgram">
+            <h2>
+                {{'search_for'| translate}}
+                <select
+                style="height:30px;margin-left:10px;"
+                name="trackedEntityTypeSelect"
+                ng-model="trackedEntityTypes.selected"
+                ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.all | orderBy: 'displayName'"
+                ng-change="setTrackedEntityType()"
+                >
+                <option value="" disabled selected> </option>
+            </select> 
+            </h2>
+
+        
+    </div>
+
 
     <form class="form-horizontal search-tei-form" ng-repeat="searchGroup in searchConfig.searchGroups | filter: {orgunitUnique: 'false'}">
         <div class="form-group" ng-repeat="attribute in searchGroup.attributes">

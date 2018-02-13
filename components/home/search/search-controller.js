@@ -52,12 +52,19 @@ trackerCapture.controller('SearchController',function(
         $scope.setTrackedEntityType = function(){
             if(!$scope.selectedProgram){
                 currentSearchScope = searchScopes.TRACKEDENTITYTYPE;
-                return SearchGroupService.getSearchConfigForTrackedEntityType($scope.trackedEntityTypes.selected).then(function(searchConfig)
-                {
-                    $scope.tetSearchConfig = searchConfig;
-                });
+                return loadTrackedEntityTypeSearchConfig();
             }
             return emptyPromise();
+        }
+
+        var loadTrackedEntityTypeSearchConfig = function(){
+            return SearchGroupService.getSearchConfigForTrackedEntityType($scope.trackedEntityTypes.selected).then(function(searchConfig)
+            {
+                $scope.tetSearchConfig = searchConfig;
+                if(!$scope.base.selectedProgram){
+                    $scope.searchConfig = $scope.tetSearchConfig;
+                }
+            });
         }
 
         var loadTrackedEntityTypes = function(){
@@ -75,7 +82,9 @@ trackerCapture.controller('SearchController',function(
                         return tet.id == $scope.base.selectedProgram.trackedEntityType.id;
                     });
                     $scope.trackedEntityTypes.selected = tet[0];
+                    return loadTrackedEntityTypeSearchConfig();
                 }
+                return emptyPromise();
             });
         }
 
@@ -113,17 +122,19 @@ trackerCapture.controller('SearchController',function(
         }
 
         var findValidTetSearchGroup = function(programSeachGroup){
-            angular.forEach($scope.tetSearchConfig.searchGroups, function(searchGroup){
-                angular.forEach(searchGroup.attributes, function(attr){
+            for(var sg = 0; sg < $scope.tetSearchConfig.searchGroups.length; sg++){
+                var searchGroup = $scope.tetSearchConfig.searchGroups[sg];
+                for(var a=0; a < $scope.tetSearchConfig.searchGroups[sg].attributes.length; a++){
+                    var attr = $scope.tetSearchConfig.searchGroups[sg].attributes[a];
                     var value = programSeachGroup[attr.id];
                     if(value){
                         searchGroup[attr.id] = value;
                     }
-                });
+                }
                 if(isValidSearchGroup(searchGroup)){
                     return searchGroup;
                 }
-            });
+            }
         }
 
         var isValidSearchGroup = function(searchGroup){
@@ -162,7 +173,7 @@ trackerCapture.controller('SearchController',function(
                 //If only one tei found and in selectedOrgUnit, go straight to dashboard
                 if(res && res.data && res.data.rows && res.data.rows.length === 1){
                     var gridData = TEIGridService.format($scope.selectedOrgUnit.id, res.data, false, null, null);
-                    if(gridData.rows.own.length ===1){
+                    if(gridData.rows.own.length ===1 && res.callingScope === res.resultScope){
                         searching = false;
                         openTei(gridData.rows.own[0]);
                         return;
@@ -254,6 +265,7 @@ trackerCapture.controller('SearchController',function(
                         if(res.status !== "NOMATCH" && res.status !== "TOOMANYMATCHES"){
                             $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, null, null);
                         }
+                        $scope.notInSameScope = res.callingScope != res.resultScope;
                         $scope.pager = res.data && res.data.metaData ? res.data.metaData.pager : null;
     
                         if(res.status === "UNIQUE"){
