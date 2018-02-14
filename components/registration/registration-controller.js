@@ -406,6 +406,17 @@ trackerCapture.controller('RegistrationController',
         if (destination === "DASHBOARD" || destination === "SELF") {
            $scope.model.savingRegistration = true;
         }
+
+        //Temp fix for not being able to save images with attribute.value = "" or null.
+        var tempAttributes = [];
+        angular.forEach($scope.tei.attributes, function (attribute) {
+            if(attribute.value !== '' && attribute.value) {
+                tempAttributes.push(attribute);
+            }
+        });
+
+        $scope.tei.attributes = tempAttributes;
+
         RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function (regResponse) {
             var reg = regResponse.response.responseType ==='ImportSummaries' ? regResponse.response.importSummaries[0] : regResponse.response.responseType === 'ImportSummary' ? regResponse.response : {};
             if (reg.status === 'SUCCESS') {
@@ -1085,9 +1096,9 @@ trackerCapture.controller('RegistrationController',
         };
 
         ModalService.showModal({}, modalOptions).then(function(result){            
-            $scope.fileNames[attribute] = null;
-            $scope.fileNames["undefined"][attribute] = null;
-            tei[attribute] = null;
+            $scope.fileNames[attribute] = "";
+            $scope.fileNames["undefined"][attribute] = "";
+            tei[attribute] = "";
         });
     };
 
