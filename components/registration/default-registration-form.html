@@ -78,13 +78,13 @@
                     </span>
                     <span ng-switch-when="TIME">
                         <d2-time time-model="selectedTei"
-                                      time-model-id="attribute.id"
-                                      time-required="attribute.mandatory || mandatoryFields[attribute.id]"
-                                      time-save-methode="teiValueUpdated"
-                                      time-save-methode-parameter1="selectedTei"
-                                      time-save-methode-parameter2="attribute.id"
-                                      time-use-notification="false"
-                                      time-disabled="attributeFieldDisabled(attribute)">
+                                 time-model-id="attribute.id"
+                                 time-required="attribute.mandatory || mandatoryFields[attribute.id]"
+                                 time-save-methode="teiValueUpdated"
+                                 time-save-methode-parameter1="selectedTei"
+                                 time-save-methode-parameter2="attribute.id"
+                                 time-disabled="attributeFieldDisabled(attribute)"
+                                 time-format="timeFormat">
                         </d2-time>
                     </span>
                     <span ng-switch-when="TRUE_ONLY">

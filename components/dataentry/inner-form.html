@@ -252,9 +252,10 @@
                      time-save-methode="saveDatavalue"
                      time-save-methode-parameter1="prStDes[prStDe.dataElement.id]"
                      time-save-methode-parameter2="innerForm.foo"
-                     time-element="currentElement"
                      time-use-notification="true"
-                     time-disabled="!dataElementEditable(prStDe)">
+                     time-element="currentElement"
+                     time-disabled="!dataElementEditable(prStDe)"
+                     time-format="timeFormat">
             </d2-time>
         </div>
         <div ng-switch-when="DATETIME">

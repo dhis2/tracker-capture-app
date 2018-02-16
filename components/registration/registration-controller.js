@@ -54,6 +54,9 @@ trackerCapture.controller('RegistrationController',
 
     $scope.attributesById = CurrentSelection.getAttributesById();
 
+    //Placeholder till proper settings for time is implemented. Currently hard coded to 24h format.
+    $scope.timeFormat = '24h';
+
     if(!$scope.attributesById){
         $scope.attributesById = [];
         AttributesFactory.getAll().then(function(atts){

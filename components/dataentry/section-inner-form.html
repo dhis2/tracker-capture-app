@@ -202,10 +202,10 @@
                      time-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
                      time-save-methode="saveDatavalue"
                      time-save-methode-parameter1="prStDes[de.id]"
-                     time-save-methode-parameter2="innerForm.foo"
                      time-use-notification="true"
                      time-element="currentElement"
-                     time-disabled="!dataElementEditable(prStDes[de.id])">
+                     time-disabled="!dataElementEditable(prStDes[de.id])"
+                     time-format="timeFormat">
             </d2-time>
         </div>
         <div ng-switch-when="DATETIME">
