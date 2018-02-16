@@ -9,6 +9,7 @@ trackerCapture.controller('RegistrationController',
                 $timeout,
                 $modal,
                 $translate,
+                $window,
                 $parse,
                 orderByFilter,
                 AttributesFactory,
@@ -53,6 +54,8 @@ trackerCapture.controller('RegistrationController',
     $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
 
     $scope.attributesById = CurrentSelection.getAttributesById();
+    $scope.fileNames = CurrentSelection.getFileNames();
+    $scope.currentFileNames = $scope.fileNames;
 
     //Placeholder till proper settings for time is implemented. Currently hard coded to 24h format.
     $scope.timeFormat = '24h';
@@ -406,6 +409,17 @@ trackerCapture.controller('RegistrationController',
         if (destination === "DASHBOARD" || destination === "SELF") {
            $scope.model.savingRegistration = true;
         }
+
+        //Temp fix for not being able to save images with attribute.value = "" or null.
+        var tempAttributes = [];
+        angular.forEach($scope.tei.attributes, function (attribute) {
+            if(attribute.value !== '' && attribute.value) {
+                tempAttributes.push(attribute);
+            }
+        });
+
+        $scope.tei.attributes = tempAttributes;
+
         RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function (regResponse) {
             var reg = regResponse.response.responseType ==='ImportSummaries' ? regResponse.response.importSummaries[0] : regResponse.response.responseType === 'ImportSummary' ? regResponse.response : {};
             if (reg.status === 'SUCCESS') {
@@ -1069,4 +1083,34 @@ trackerCapture.controller('RegistrationController',
         if($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff) return false;
         return true;
     }
+
+    $scope.deleteFile = function(tei, attribute){
+        
+        if( !attribute ){
+            NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("missing_file_identifier"));
+            return;
+        }
+        
+        var modalOptions = {
+            closeButtonText: 'cancel',
+            actionButtonText: 'remove',
+            headerText: 'remove',
+            bodyText: 'are_you_sure_to_remove'
+        };
+
+        ModalService.showModal({}, modalOptions).then(function(result){            
+            $scope.fileNames[attribute] = "";
+            $scope.fileNames["undefined"][attribute] = "";
+            tei[attribute] = "";
+        });
+    };
+
+    $scope.downloadFile = function(tei, attributeId) {      
+        if( !tei || !tei.trackedEntityInstance || !attributeId){
+            NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("missing_file_identifier"));
+            return;
+        }
+        
+        $window.open('../api/trackedEntityInstances/' + tei.trackedEntityInstance + '/' + attributeId + '/image', '_blank', '');
+    };
 });

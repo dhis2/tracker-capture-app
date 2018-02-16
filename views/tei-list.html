@@ -32,6 +32,13 @@
                         <span ng-switch-when="ORGANISATION_UNIT">
                             {{tei[gridColumn.id] && orgUnitNames[tei[gridColumn.id]] ? orgUnitNames[tei[gridColumn.id]] : tei[gridColumn.id]}}
                         </span>
+                        <span ng-switch-when="IMAGE">
+                            <div ng-if="tei[gridColumn.id]">
+                                <d2-image-in-list d2-tei="tei"
+                                          d2-attribute-id="gridColumn.id">
+                                </d2-image-in-list>
+                            </div>
+                        </span>
                         <span ng-switch-default>{{tei[gridColumn.id]}}</span>
                     </span>
                 </td>
