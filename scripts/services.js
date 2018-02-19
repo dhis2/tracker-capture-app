@@ -2521,7 +2521,9 @@ i
     var programSearchConfigsById = {};
     var trackedEntityTypeSearchConfigsById = {};
     var defaultOperators = OperatorFactory.defaultOperators;
+    var searchScopes = { PROGRAM: "PROGRAM", TET: "TET"};
 
+    this.getSearchScopes = function(){ return searchScopes;}
     var makeSearchConfig = function(dimensionAttributes, minAttributesRequiredToSearch,orgUnitUniqueAsSearchGroup){
         var searchConfig = { searchGroups: [], searchGroupsByAttributeId: {}};
         if(dimensionAttributes){
@@ -2560,7 +2562,7 @@ i
         return searchConfig;
     }
 
-    var getSearchParams = function(searchGroup, program,trackedEntityType, orgUnit,pager){
+    var getSearchParams = function(searchGroup, program,trackedEntityType, orgUnit,pager, searchScope){
         var uniqueSearch = false;
         var numberOfSetAttributes = 0;
         var query = {url: null, hasValue: false};
@@ -2673,12 +2675,8 @@ i
             });
         }
         if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.minAttributesRequiredToSearch)){
-            var programOrTETUrl = "";
-            if(program){
-                programOrTETUrl = "program="+program.id;
-            }else{
-                programOrTETUrl = "trackedEntityType="+trackedEntityType.id;
-            }
+            var programOrTETUrl = searchScope === searchScopes.PROGRAM ? "program="+program.id :"trackedEntityType="+trackedEntityType.id;
+
             var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
             return { orgUnit: searchOrgUnit, ouMode: searchGroup.ouMode.name, programOrTETUrl: programOrTETUrl, queryUrl: query.url, pager: pager, uniqueSearch: uniqueSearch };
         }
@@ -2730,16 +2728,65 @@ i
             return def.promise;
         }
     }
-    this.search = function(searchGroup, program,trackedEntityType, orgUnit, pager){
-        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager);
+
+    this.programScopeSearch = function(programSearchGroup, tetSearchGroup, program, trackedEntityType, orgUnit, pager){
+        var params = getSearchParams(programSearchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.PROGRAM);
         if(params){
-            var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
-            return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+
+        }
+        return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
                 if(response && response.rows && response.rows.length > 0){
-                    if(params.uniqueSearch) return { status: "UNIQUE", data: response };
-                    return { status: "MATCHES", data: response };
+                    var result = { data: response, callingScope: searchScopes.PROGRAM, resultScope: searchScopes.PROGRAM };
+                    var def = $q.defer();
+                    if(params.uniqueSearch){
+                        result.status = "UNIQUE";
+                    }else{
+                        result.status = "MATCHES";
+                    }
+                    def.resolve(result);
+                    return def.promise;
+                }else{
+                    if(tetSearchGroup){
+                        return tetScopeSearch(tetSearchGroup, program, trackedEntityType, orgUnit, pager).then(function(result){
+                            result.callingScope = searchScopes.PROGRAM;
+                            return result;
+                        },function(){
+                            return {status: "NOMATCH"};
+                        });
+                    }else{
+                        var def = $q.defer();
+                        def.resolve({status: "NOMATCH"});
+                        return def.promise;
+                    }
+
                 }
-                return { status: "NOMATCH"};
+            },function(error){
+                var d = $q.defer();
+                if(error && error.data && error.data.message === "maxteicountreached"){
+                    d.resolve({ status: "TOOMANYMATCHES", data: null});
+                } 
+                else {
+                    d.reject(error);
+                }
+                return d.promise;
+            });
+
+    }
+    var tetScopeSearch = this.tetScopeSearch = function(tetSearchGroup, program,trackedEntityType, orgUnit, pager){
+        var params = getSearchParams(tetSearchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.TET);
+        if(params){
+            return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+                var result = {data: response, callingScope: searchScopes.TET, resultScope: searchScopes.TET };
+                if(response && response.rows && response.rows.length > 0){
+                    if(params.uniqueSearch){
+                        result.status = "UNIQUE";
+                    }else{
+                        result.status = "MATCHES";
+                    }
+                }else{
+                    result.status = "NOMATCH";
+                }
+                return result;
             },function(error){
                 var d = $q.defer();
                 if(error && error.data && error.data.message === "maxteicountreached"){

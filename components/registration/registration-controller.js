@@ -147,7 +147,9 @@ trackerCapture.controller('RegistrationController',
     }
     var setSearchConfig = function(){
         var promise = null;
+        var programScope = true;
         if($scope.selectedProgram){
+            programScope = true;
             promise = SearchGroupService.getSearchConfigForProgram($scope.selectedProgram);
         }else if($scope.trackedEntityTypes && $scope.trackedEntityTypes.selected){
             promise = SearchGroupService.getSearchConfigForTrackedEntityType($scope.trackedEntityTypes.selected);
@@ -155,6 +157,11 @@ trackerCapture.controller('RegistrationController',
         if(promise){
             promise.then(function(searchConfig){
                 $scope.searchConfig = searchConfig;
+                if(programScope){
+                    SearchGroupService.getSearchConfigForTrackedEntityType($scope.selectedProgram.trackedEntityType).then(function(tetSearchConfig){
+                        $scope.tetSearchConfig = tetSearchConfig;
+                    });
+                }
                 if($scope.searchConfig){
                     for(var key in $scope.selectedTei){
                         if($scope.attributesById[key]){
@@ -625,7 +632,7 @@ trackerCapture.controller('RegistrationController',
     var getMatchingTeisCountBySearchGroup = function(searchGroup,field){
         return SearchGroupService.searchCount(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, true).then(function(count){
             if(searchGroup.unique && count > 0){
-                return SearchGroupService.search(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+                return SearchGroupService.programScopeSearch(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
                     return showDuplicateModal(res.data, field);
                 });
             }
@@ -636,7 +643,7 @@ trackerCapture.controller('RegistrationController',
     }
 
     var searchForExistingTeisBySearchGroup = function(searchGroup,field){
-        return SearchGroupService.search(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+        return SearchGroupService.programScopeSearch(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
             if(res.status === "NOMATCH"){
                 $scope.matchingTeis = [];
                 return;
