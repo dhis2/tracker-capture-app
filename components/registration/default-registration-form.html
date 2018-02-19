@@ -79,13 +79,13 @@
                     </span>
                     <span ng-switch-when="TIME">
                         <d2-time time-model="selectedTei"
-                                      time-model-id="attribute.id"
-                                      time-required="attribute.mandatory || mandatoryFields[attribute.id]"
-                                      time-save-methode="teiValueUpdated"
-                                      time-save-methode-parameter1="selectedTei"
-                                      time-save-methode-parameter2="attribute.id"
-                                      time-use-notification="false"
-                                      time-disabled="attributeFieldDisabled(attribute)">
+                                 time-model-id="attribute.id"
+                                 time-required="attribute.mandatory || mandatoryFields[attribute.id]"
+                                 time-save-methode="teiValueUpdated"
+                                 time-save-methode-parameter1="selectedTei"
+                                 time-save-methode-parameter2="attribute.id"
+                                 time-disabled="attributeFieldDisabled(attribute)"
+                                 time-format="timeFormat">
                         </d2-time>
                     </span>
                     <span ng-switch-when="TRUE_ONLY">
@@ -263,6 +263,22 @@
                                ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attribute.mandatory || mandatoryFields[attribute.id]"/>
+                    </span>
+                    <span ng-switch-when="IMAGE">
+                        <d2-image d2-display-open="true"
+                                  d2-can-edit="true"
+                                  d2-is-attribute="true"
+                                  d2-hide-image="selectedTei.trackedEntityInstance ? false : true"
+                                  d2-tei="selectedTei"
+                                  d2-event="selectedTei"
+                                  d2-data-element-id="attribute.id"
+                                  d2-file-names="fileNames"
+                                  d2-current-image-name="currentFileNames"
+                                  d2-delete-methode="deleteFile"
+                                  d2-download-methode="downloadFile"
+                                  d2-required="attribute.mandatory || mandatoryFields[attribute.id]"
+                                  d2-disabled="attributeFieldDisabled(attribute)">
+                        </d2-image>
                     </span>
                     <span ng-switch-when="LONG_TEXT">
                         <textarea row="3"

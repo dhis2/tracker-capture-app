@@ -70,7 +70,7 @@ trackerCapture.controller('ListsController',function(
                     savedGridColumns = savedGridColumns || {};
                     $scope.gridColumns = [];
                     angular.forEach($scope.programAttributes, function(attr){
-                        var gridColumn = {id: attr.id, displayName: attr.displayName, show: false};
+                        var gridColumn = {id: attr.id, displayName: attr.displayName, show: false, valueType: attr.valueType};
                         if(savedGridColumns[attr.id]){
                             gridColumn.show = savedGridColumns[attr.id].show;
                         }else if(attr.programTrackedEntityAttribute.displayInList){

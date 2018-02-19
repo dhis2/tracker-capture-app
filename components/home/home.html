@@ -33,10 +33,13 @@
     <input type="text" selected-org-unit ng-model="selectedOrgUnit.displayName" ng-hide=true>
     <!--- selected org unit ends  -->
         
-    <div ng-if="treeLoaded && !selectedOrgUnit" class="row col-sm-12">
+    <div ng-if="treeLoaded && !selectedOrgUnit && !loadFailed" id="loadingMetadata" class="row col-sm-12">
         <img src="../images/ajax-loader-bar.gif" alt="{{'in_progress'| translate}}"/><br>
         {{'loading_metadata'| translate}}
-    </div> 
+    </div>
+    <div style="display:none" id="metadataLoadFailed" class="alert alert-danger">
+        Failed to load metadata
+      </div>
 
     <div ng-show="selectedOrgUnit && selectedOrgUnit.id">
         
