@@ -2480,7 +2480,7 @@ i
         }else{
             var workingLists = workingListsByProgram[program.id];
             if(!workingLists){
-                workingLists = getDefaultWorkingLists(program);
+                workingLists = orderByKeyFilter(getDefaultWorkingLists(program), 'sortOrder', 'asc');
                 workingListsByProgram[program.id] = workingLists;
             } 
             def.resolve(workingLists);

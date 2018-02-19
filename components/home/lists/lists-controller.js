@@ -70,13 +70,16 @@ trackerCapture.controller('ListsController',function(
                     savedGridColumns = savedGridColumns || {};
                     $scope.gridColumns = [];
                     angular.forEach($scope.programAttributes, function(attr){
-                        var gridColumn = {id: attr.id, displayName: attr.displayName, show: false, valueType: attr.valueType};
-                        if(savedGridColumns[attr.id]){
-                            gridColumn.show = savedGridColumns[attr.id].show;
-                        }else if(attr.programTrackedEntityAttribute.displayInList){
-                            gridColumn.show = true;
+                        if(attr.displayInListNoProgram){
+                            var gridColumn = {id: attr.id, displayName: attr.displayName, show: false, valueType: attr.valueType};
+                            if(savedGridColumns[attr.id]){
+                                gridColumn.show = savedGridColumns[attr.id].show;
+                            }else if(attr.programTrackedEntityAttribute.displayInList){
+                                gridColumn.show = true;
+                            }
+                            $scope.gridColumns.push(gridColumn);
                         }
-                        $scope.gridColumns.push(gridColumn);
+
                     });
                 });
             }
