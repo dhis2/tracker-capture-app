@@ -2711,8 +2711,27 @@ i
         return def.promise;
     }
 
-    this.searchCount = function(searchGroup, program, trackedEntityType, orgUnit, pager){
-        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager);
+    this.programScopeSearchCount = function(searchGroup,tetSearchGroup, program, trackedEntityType, orgUnit, pager){
+        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.PROGRAM);
+        if(params){
+            return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+                if(response){
+                    return response;
+                }else{
+                    return tetScopeSearchCount(tetSearchGroup, program, trackedEntityType, orgUnit, pager);
+                }
+                return 0;
+            },function(error){
+                return 0;
+            });
+        }else{
+            var def = $q.defer();
+            def.resolve(0);
+            return def.promise;
+        }
+    }
+    var tetScopeSearchCount = this.tetScopeSearchCount = function(searchGroup,tetSearchGroup, program, trackedEntityType, orgUnit, pager){
+        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.TET);
         if(params){
             return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
                 if(response){
@@ -2727,6 +2746,37 @@ i
             def.resolve(0);
             return def.promise;
         }
+    }
+    this.findValidTetSearchGroup = function(programSeachGroup,tetSearchConfig, attributesById){
+        for(var sg = 0; sg < tetSearchConfig.searchGroups.length; sg++){
+            var searchGroup = tetSearchConfig.searchGroups[sg];
+            for(var a=0; a < tetSearchConfig.searchGroups[sg].attributes.length; a++){
+                var attr = tetSearchConfig.searchGroups[sg].attributes[a];
+                var value = programSeachGroup[attr.id];
+                if(value){
+                    searchGroup[attr.id] = value;
+                }
+            }
+            if(isValidSearchGroup(searchGroup, attributesById)){
+                return searchGroup;
+            }
+        }
+    }
+
+    this.isValidSearchGroup = function(searchGroup, attributesById){
+        var nrOfSetAttributes = 0;
+        for(var key in searchGroup){
+            var attr = attributesById[key];
+            if(attr){
+                if(attr.valueType === "TEXT" && searchGroup[key] && searchGroup[key].value !== "") nrOfSetAttributes++;
+                else if(attr.valueType !== "TEXT" && attr.valueType === "TRUE_ONLY") nrOfSetAttributes++;
+                else if(attr.valueType !== "TEXT" && attr.valueType !== "TRUE_ONLY" && searchGroup[key]) nrOfSetAttributes++;
+            }
+        }
+        if(searchGroup.minAttributesRequiredToSearch > nrOfSetAttributes){
+            return false;
+        }
+        return true;
     }
 
     this.programScopeSearch = function(programSearchGroup, tetSearchGroup, program, trackedEntityType, orgUnit, pager){

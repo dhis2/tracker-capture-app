@@ -630,9 +630,10 @@ trackerCapture.controller('RegistrationController',
     }
 
     var getMatchingTeisCountBySearchGroup = function(searchGroup,field){
-        return SearchGroupService.searchCount(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, true).then(function(count){
-            if(searchGroup.unique && count > 0){
-                return SearchGroupService.programScopeSearch(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+        var tetSearchGroup = SearchGroupService.findValidTetSearchGroup(searchGroup, $scope.tetSearchConfig, $scope.attributesById);
+        return SearchGroupService.programScopeSearchCount(searchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, true).then(function(count){
+            if(searchGroup.uniqueGroup && count > 0){
+                return SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
                     return showDuplicateModal(res.data, field);
                 });
             }
@@ -643,7 +644,8 @@ trackerCapture.controller('RegistrationController',
     }
 
     var searchForExistingTeisBySearchGroup = function(searchGroup,field){
-        return SearchGroupService.programScopeSearch(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+        var tetSearchGroup = SearchGroupService.findValidTetSearchGroup(searchGroup, $scope.tetSearchConfig, $scope.attributesById);
+        return SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
             if(res.status === "NOMATCH"){
                 $scope.matchingTeis = [];
                 return;
@@ -805,7 +807,8 @@ trackerCapture.controller('RegistrationController',
     };
 
     var getMatches = function(searchGroup){
-        return SearchGroupService.search(searchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+        var tetSearchGroup = SearchGroupService.findValidTetSearchGroup(searchGroup, $scope.tetSearchConfig, $scope.attributesById);
+        return SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
             var matches = [];
             if(res.status === "NOMATCH"){
                 return;
@@ -822,6 +825,7 @@ trackerCapture.controller('RegistrationController',
             allowRegistration: allowRegistration,
             translateWithTETName: $scope.translateWithTETName
         }
+        var tetSearchGroup = SearchGroupService.findValidTetSearchGroup($scope.matchingTeisSearchGroup, $scope.tetSearchConfig, $scope.attributesById);
         getMatches($scope.matchingTeisSearchGroup).then(function(matches){
             return $modal.open({
                 templateUrl: 'components/registration/matches-modal.html',
@@ -856,7 +860,7 @@ trackerCapture.controller('RegistrationController',
                         return matches;
                     },
                     refetchDataFn: function(){
-                        return function(pager, sortColumn){ return SearchGroupService.search($scope.matchingTeisSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);}
+                        return function(pager, sortColumn){ return SearchGroupService.programScopeSearch($scope.matchingTeisSearchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);}
                     },
                     modalData: function(){
                         return modalData;
