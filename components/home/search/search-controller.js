@@ -121,41 +121,10 @@ trackerCapture.controller('SearchController',function(
             });
         }
 
-        var findValidTetSearchGroup = function(programSeachGroup){
-            for(var sg = 0; sg < $scope.tetSearchConfig.searchGroups.length; sg++){
-                var searchGroup = $scope.tetSearchConfig.searchGroups[sg];
-                for(var a=0; a < $scope.tetSearchConfig.searchGroups[sg].attributes.length; a++){
-                    var attr = $scope.tetSearchConfig.searchGroups[sg].attributes[a];
-                    var value = programSeachGroup[attr.id];
-                    if(value){
-                        searchGroup[attr.id] = value;
-                    }
-                }
-                if(isValidSearchGroup(searchGroup)){
-                    return searchGroup;
-                }
-            }
-        }
-
-        var isValidSearchGroup = function(searchGroup){
-            var nrOfSetAttributes = 0;
-            for(var key in searchGroup){
-                var attr = $scope.base.attributesById[key];
-                if(attr){
-                    if(attr.valueType === "TEXT" && searchGroup[key] && searchGroup[key].value !== "") nrOfSetAttributes++;
-                    else if(attr.valueType !== "TEXT" && attr.valueType === "TRUE_ONLY") nrOfSetAttributes++;
-                    else if(attr.valueType !== "TEXT" && attr.valueType !== "TRUE_ONLY" && searchGroup[key]) nrOfSetAttributes++;
-                }
-            }
-            if(searchGroup.minAttributesRequiredToSearch > nrOfSetAttributes){
-                return false;
-            }
-            return true;
-        }
         $scope.search = function(searchGroup){
             if(!searching){
                 searching = true;
-                if(!isValidSearchGroup(searchGroup)){
+                if(!SearchGroupService.isValidSearchGroup(searchGroup, $scope.base.attributesById)){
                     searchGroup.error = true;
                     searching = false; 
                     return;
@@ -163,7 +132,7 @@ trackerCapture.controller('SearchController',function(
             }
             var promise;
             if(currentSearchScope === searchScopes.PROGRAM){
-                var tetSearchGroup = findValidTetSearchGroup(searchGroup);
+                var tetSearchGroup = SearchGroupService.findValidTetSearchGroup(searchGroup, $scope.tetSearchConfig, $scope.base.attributesById);
                 promise = SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit)
             }else{
                 promise = SearchGroupService.tetScopeSearch(searchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit);
@@ -173,7 +142,9 @@ trackerCapture.controller('SearchController',function(
                 //If only one tei found and in selectedOrgUnit, go straight to dashboard
                 if(res && res.data && res.data.rows && res.data.rows.length === 1){
                     var gridData = TEIGridService.format($scope.selectedOrgUnit.id, res.data, false, null, null);
-                    if(gridData.rows.own.length ===1 && res.callingScope === res.resultScope){
+
+                    //Open TEI if unique and in same search scope and in selected org unit
+                    if(gridData.rows.own.length ===1 && res.callingScope === res.resultScope && searchGroup.uniqueGroup){
                         searching = false;
                         openTei(gridData.rows.own[0]);
                         return;
