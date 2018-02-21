@@ -553,11 +553,12 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             sortColumn: "=?teiSortColumn",
             gridColumns: "=?teiGridColumns",
             refetchData: "&teiRefetchData",
-            onTeiClicked: "&onTeiClicked"
+            onTeiClicked: "&onTeiClicked",
         },
 
         
-        controller: function($scope, Paginator){
+        controller: function($scope, Paginator,TEIGridService, CurrentSelection){
+            var attributesById = CurrentSelection.getAttributesById();
             $scope.$watch("pager", function(){
                 if($scope.pager){
                     Paginator.setPage($scope.pager.page);
@@ -573,10 +574,16 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
 
             var setGridColumns = function(){
                 if($scope.data && !$scope.gridColumns){
-                    $scope.gridColumns = $scope.data.headers;
-                    angular.forEach($scope.gridColumns, function(g){
-                        g.show = true;
+                    var columnAttributes = [];
+                    angular.forEach($scope.data.headers, function(header){
+                        if(attributesById[header.id]){
+                            var attr = angular.copy(attributesById[header.id]);
+                            attr.displayInListNoProgram = true;
+                            columnAttributes.push(attr);
+                        }
                     });
+                    var gridColumnConfig = { showAll: true};
+                    $scope.gridColumns = TEIGridService.makeGridColumns(columnAttributes, gridColumnConfig);
                 }
             }
 

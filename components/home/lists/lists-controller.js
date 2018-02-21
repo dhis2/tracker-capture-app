@@ -67,7 +67,9 @@ trackerCapture.controller('ListsController',function(
         var loadGridColumns = function(){
             if($scope.base.selectedProgram){
                 return UserDataStoreService.get(gridColumnsContainer, $scope.base.selectedProgram.id).then(function(savedGridColumns){
-                    savedGridColumns = savedGridColumns || {};
+                    var gridColumnConfig = { defaultRange: {start: 3, end: 7}};
+                    $scope.gridColumns = TEIGridService.makeGridColumns($scope.programAttributes,gridColumnConfig, savedGridColumns);
+                    /*
                     $scope.gridColumns = [];
                     angular.forEach($scope.programAttributes, function(attr){
                         if(attr.displayInListNoProgram){
@@ -80,7 +82,7 @@ trackerCapture.controller('ListsController',function(
                             $scope.gridColumns.push(gridColumn);
                         }
 
-                    });
+                    });*/
                 });
             }
             return resolvedEmptyPromise();
@@ -96,7 +98,7 @@ trackerCapture.controller('ListsController',function(
 
         var loadAttributesByProgram = function(){
             return AttributesFactory.getByProgram($scope.base.selectedProgram).then(function(atts){
-                $scope.programAttributes = atts;
+                $scope.programAttributes = $scope.base.programAttributes = atts;
                 $scope.customWorkingListValues.attributes = AttributesFactory.generateAttributeFilters(angular.copy($scope.programAttributes));
             });
         }

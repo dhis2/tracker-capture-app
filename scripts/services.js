@@ -1729,7 +1729,20 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 .service('TEIGridService', function(OptionSetService, CommonUtils, CurrentSelection, DateUtils, $location, $translate, $filter){
-
+    var setShowGridColumn = function(column, columnIndex, config, savedGridColumnsKeyMap){
+        if(config.showAll){
+            column.show = true;
+        }
+        else if(savedGridColumnsKeyMap && savedGridColumnsKeyMap[column.id]){
+            column.show = savedGridColumnsKeyMap[column.id].show;
+        }else if(config.defaultRange && config.defaultRange.start && config.defaultRange.end){
+            if(columnIndex >= config.defaultRange.start && columnIndex <= config.defaultRange.end){
+                column.show = true;
+            }
+        }else{
+            column.show = false;
+        }
+    }
     return {
         format: function(selectedOrgUnitId, grid, map, optionSets, invalidTeis, isFollowUp){
             var ouId = ($location.search()).ou;
@@ -1859,6 +1872,28 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             });
             return {columns: columns, filterTypes: filterTypes, filterText: filterText};
+        },
+        makeGridColumns: function(attributes,config, savedGridColumnsKeyMap){
+            var gridColumns = [
+                {id: 'orgUnitName', displayName: $translate.instant('registering_unit'), show: false, valueType: 'TEXT'},
+                {id: 'created', displayName: $translate.instant('registration_date'), show: false, valueType: 'DATE'},
+                {id: 'inactive', displayName: $translate.instant('inactive'), show: false, valueType: 'BOOLEAN'}
+            ];
+            setShowGridColumn(gridColumns[0],0, config, savedGridColumnsKeyMap);
+            setShowGridColumn(gridColumns[1],1, config, savedGridColumnsKeyMap);
+            setShowGridColumn(gridColumns[2],2, config, savedGridColumnsKeyMap);
+
+            var gridColumnIndex = 2;
+            
+            angular.forEach(attributes, function(attr){
+                if(attr.displayInListNoProgram){
+                    gridColumnIndex++;
+                    var gridColumn = {id: attr.id, displayName: attr.displayName, show: false, valueType: attr.valueType};
+                    setShowGridColumn(gridColumn,gridColumnIndex, config, savedGridColumnsKeyMap);
+                    gridColumns.push(gridColumn);
+                }
+            });
+            return gridColumns;
         },
         generateGridColumnsForSearch: function(existedColumns, attributes, ouMode, nonConfidential){
             if( ouMode === null ){

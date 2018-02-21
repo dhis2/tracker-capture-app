@@ -2361,3 +2361,7 @@ button.list-group-item-danger.active:focus {
 .select2-drop{
     z-index: 10000;
 }
+
+.tei-list-scroll {
+    overflow-x: scroll;
+}
