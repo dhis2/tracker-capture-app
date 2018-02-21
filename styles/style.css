@@ -2359,5 +2359,5 @@ button.list-group-item-danger.active:focus {
 }
 
 .select2-drop{
-    z-index: 1000;
+    z-index: 10000;
 }
