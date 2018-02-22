@@ -2365,3 +2365,16 @@ button.list-group-item-danger.active:focus {
 .tei-list-scroll {
     overflow-x: scroll;
 }
+
+.search-ui-select{
+    height: 34px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: none;
+    width: 100%;
+}
+.control-label-search{
+    padding-top: 0px!important;
+    padding-bottom: 0px!important;
+    line-height: 44px;
+}

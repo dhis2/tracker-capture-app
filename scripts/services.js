@@ -2569,7 +2569,7 @@ i
                     searchConfig.searchGroupsByAttributeId[attr.id] = {};
                     if(attr.unique){
                         var uniqueAttr = attr.orgunitScope ? angular.copy(attr) : attr;
-                        uniqueAttr.operator = "Eq";
+                        uniqueAttr.operator = ["DATETIME", "NUMBER", "DATE"].includes(uniqueAttr.valueType) ? "Is" : "Eq";
                         var uniqueSearchGroup = {
                             id: dhis2.util.uid(),
                             uniqueGroup: true,
