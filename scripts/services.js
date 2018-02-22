@@ -2792,7 +2792,7 @@ i
                     searchGroup[attr.id] = value;
                 }
             }
-            if(isValidSearchGroup(searchGroup, attributesById)){
+            if(this.isValidSearchGroup(searchGroup, attributesById)){
                 return searchGroup;
             }
         }
