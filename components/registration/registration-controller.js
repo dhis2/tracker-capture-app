@@ -835,7 +835,7 @@ trackerCapture.controller('RegistrationController',
                     $scope.translateWithTETName = modalData.translateWithTETName;
                     $scope.gridData = TEIGridService.format(orgUnit.id, data, false, null, null);
                     $scope.pager = data && data.metaData ? data.metaData.pager : null;
-                    $scope.openTei = function(){
+                    $scope.openTei = function(tei){
                         $modalInstance.close({ action: "OPENTEI", tei: tei});
                     }
                     $scope.register = function(destination){
