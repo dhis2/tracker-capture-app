@@ -2569,7 +2569,8 @@ i
                             uniqueGroup: true,
                             orgunitUnique: uniqueAttr.orgunitScope,
                             attributes: [uniqueAttr],
-                            ouMode: {name: 'ACCESSIBLE'}
+                            ouMode: {name: 'ACCESSIBLE'},
+                            minAttributesRequiredToSearch: 1
                         }
                         if(uniqueAttr.orgunitScope) uniqueSearchGroup.ouMode = {name: 'SELECTED'};
                         searchConfig.searchGroups.push(uniqueSearchGroup);
