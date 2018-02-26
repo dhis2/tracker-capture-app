@@ -972,14 +972,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     }
                 }
                 if(paramsUrl.length >= 2 && paramsUrl.charAt(1) === "&") paramsUrl = paramsUrl.slice(0,1)+paramsUrl.slice(2);
-                return $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generateAndReserve'+paramsUrl).then(function (response) {
-                    if (response && response.data) {
-                        var value = null;
-                        angular.forEach(response.data, function(generated){
-                            if(generated.trackedEntityAttribute.id === attribute){
-                                value = generated.value;
-                            }
-                        })
+                return $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generate'+paramsUrl).then(function (response) {
+                    if (response && response.data && response.data.value) {
                         return value;
                     }
                     return null;
