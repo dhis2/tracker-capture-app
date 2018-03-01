@@ -100,9 +100,9 @@
         <div class="vertical-spacing hideInPrint btn-group" ng-if="registrationMode === 'REGISTRATION'">
             <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-primary" ng-if="matchingTeisCount && matchingTeisCount > 0" ng-click="showMatchesModal(true)">{{ 'continue' | translate}}</button>
             <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-primary" ng-if="!matchingTeisCount || matchingTeisCount === 0" ng-click="registerEntity('DASHBOARD')">{{'save_and_continue'| translate}}</button>
-            <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-success small-horizontal-spacing" ng-if="!matchingTeisCount || matchingTeisCount === 0" ng-click="registerEntity('SELF')">{{'save_and_add_new'| translate}}</button>
-            <button type="button" class="btn btn-info small-horizontal-spacing" onclick="javascript:window.print()">{{'print_form'| translate}}</button>
-            <button type="button"  ng-disabled="model.savingRegistration" class="btn btn-default small-horizontal-spacing" ng-click="setCurrentView(null)">{{'cancel'| translate}}</button>
+            <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-success" ng-if="!matchingTeisCount || matchingTeisCount === 0" ng-click="registerEntity('SELF')">{{'save_and_add_new'| translate}}</button>
+            <button type="button" class="btn btn-info" onclick="javascript:window.print()">{{'print_form'| translate}}</button>
+            <button type="button"  ng-disabled="model.savingRegistration" class="btn btn-default" ng-click="setCurrentView(null)">{{'cancel'| translate}}</button>
             <i ng-if="model.savingRegistration" class="fa fa-spinner fa-spin" style="font-size:28px;margin-left:15px"></i>
         </div>
 
