@@ -939,17 +939,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             }
             return def.promise;
-        },
+        }/*,
         getGeneratedAttributeValue: function(attribute, selectedTei, program, orgUnit) {
             var getValueUrl = function(valueToSet, selectedTei, program, orgUnit, required){
                 var valueUrlBase = valueToSet+"=";
                 var valueUrl = null;
                 switch(valueToSet){
-                    case "org_unit_code":
+                    case "ORG_UNIT_CODE":
                         if(orgUnit && orgUnit.code) valueUrl = valueUrlBase+orgUnit.code;
                         break;
                     default:
-                        throw "value not supported";
+                        return null;
                 }
                 if(required && !valueUrl) throw "value "+valueToSet+ "not found";
                 return valueUrl;
@@ -958,29 +958,23 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return $http.get(DHIS2URL + '/trackedEntityAttributes/'+attribute+'/requiredValues').then(function(response){
                 var paramsUrl = "?";
                 if(response && response.data){
-                    if(response.data.required){
-                        angular.forEach(response.data.required, function(requiredValue){
+                    if(response.data.REQUIRED){
+                        angular.forEach(response.data.REQUIRED, function(requiredValue){
                             var valueUrl = getValueUrl(requiredValue, selectedTei, program, orgUnit,true);
                             paramsUrl+="&"+valueUrl;
                         });
                     }
-                    if(response.data.optional){
-                        angular.forEach(response.data.optional, function(optionalValue){
+                    if(response.data.OPTIONAL){
+                        angular.forEach(response.data.OPTIONAL, function(optionalValue){
                             var valueUrl = getValueUrl(optionalValue, selectedTei, program, orgUnit,false);
                             if(valueUrl) paramsUrl += "&"+valueUrl;
                         });
                     }
                 }
                 if(paramsUrl.length >= 2 && paramsUrl.charAt(1) === "&") paramsUrl = paramsUrl.slice(0,1)+paramsUrl.slice(2);
-                return $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generateAndReserve'+paramsUrl).then(function (response) {
-                    if (response && response.data) {
-                        var value = null;
-                        angular.forEach(response.data, function(generated){
-                            if(generated.trackedEntityAttribute.id === attribute){
-                                value = generated.value;
-                            }
-                        })
-                        return value;
+                return $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generate'+paramsUrl).then(function (response) {
+                    if (response && response.data && response.data.value) {
+                        return response.data.value;
                     }
                     return null;
                 }, function (response) {
@@ -989,7 +983,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     return response.data;
                 });
             });
-        }
+        }*/
     };
 })
 
