@@ -43,7 +43,7 @@
                     </button>
                     
                     <div class="btn-group trim" ng-if="showManageTeiDropdown()">
-                        <button type="button" title="{{'manage' | translate}} {{trackedEntityType.displayName}}" class="btn btn-danger dropdown-toggle" ng-disabled="selectedOrgUnit.closedStatus" data-toggle="dropdown">
+                        <button type="button" title="{{'manage' | translate}} {{trackedEntityType.displayName}}" class="btn btn-danger dropdown-toggle" ng-disabled="selectedOrgUnit.closedStatus" data-toggle="dropdown" style="height: 35px;">
                             <i class="fa fa-exclamation-circle"></i>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">                            
@@ -53,7 +53,7 @@
                     </div>
                     
                     <div class="btn-group trim">
-                        <button type="button" title="{{settingsLabel}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <button type="button" title="{{settingsLabel}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height: 35px;">
                             <i class="fa fa-cog"></i>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
