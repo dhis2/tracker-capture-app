@@ -37,7 +37,8 @@
                             ng-show="(dashboardWidgets | filter: {parent: 'smallerWidget', show: true}).length > 0"
                             class="btn btn-default dashboard-info-btn-right-size"
                             ng-class="{true: 'stick', false: 'unstick'} [!model.stickyDisabled]"
-                            ng-click="model.stickyDisabled = !model.stickyDisabled">
+                            ng-click="model.stickyDisabled = !model.stickyDisabled"
+                            style="height: 35px;">
                         <i class="fa fa-thumb-tack"></i>
                     </button>
                     
