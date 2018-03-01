@@ -671,7 +671,7 @@ trackerCapture.controller('DashboardController',
 
     $scope.fetchTei = function (mode) {
         var current = $scope.sortedTeiIds.indexOf($scope.selectedTeiId);
-        var pr = $scope.selectedProgram ? $scope.program.id : ($location.search()).program;
+        var pr = $scope.selectedProgram ? $scope.selectedProgram.id : ($location.search()).program;
         var tei = null;
         if (mode === 'NEXT') {
             tei = $scope.sortedTeiIds[current + 1];

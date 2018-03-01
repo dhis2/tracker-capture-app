@@ -86,7 +86,7 @@
         <!-- data entry form ends -->
 
         <!-- registration buttons begin -->
-        <div ng-if="!editingDisabled && registrationMode === 'PROFILE' && hasTeiOrProgramWrite()" class="vertical-spacing btn-group">
+        <div ng-if="!editingDisabled && registrationMode === 'PROFILE' && hasTeiWrite()" class="vertical-spacing btn-group">
             <button type="button" class="btn btn-primary" ng-disabled="selectedOrgUnit.closedStatus" ng-click="registerEntity(null)">{{'save'| translate}}</button>
             <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="selectedOrgUnit.closedStatus" ng-click="cancelRegistrationWarning(cancel)" ng-if="!isInDashboard">{{'cancel'| translate}}</button>
             <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="selectedOrgUnit.closedStatus" ng-click="cancelRegistrationWarning(cancel, isInDashboard)" ng-if="isInDashboard">{{'cancel'| translate}}</button>

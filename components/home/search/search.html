@@ -2,23 +2,26 @@
     <div ng-if="base.selectedProgram">
         <h2>{{'search_for'| translate}} {{trackedEntityTypes.selected.displayName.toLowerCase()}}</h2>
     </div>
-    <div ng-if="!base.selectedProgram">
-            <h2>
-                {{'search_for'| translate}}
-                <select
-                style="height:30px;margin-left:10px;"
-                name="trackedEntityTypeSelect"
-                ng-model="trackedEntityTypes.selected"
-                ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.all | orderBy: 'displayName'"
-                ng-change="setTrackedEntityType()"
-                >
-                <option value="" disabled selected> </option>
-            </select> 
-            </h2>
-
-        
+    <div ng-if="!base.selectedProgram && trackedEntityTypes.readable.length > 0">
+        <h2>
+            {{'search_for'| translate}}
+            <select
+            style="height:30px;margin-left:10px;"
+            name="trackedEntityTypeSelect"
+            ng-model="trackedEntityTypes.selected"
+            ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.readable | orderBy: 'displayName'"
+            ng-change="setTrackedEntityType()"
+            >
+            <option value="" disabled selected> </option>
+        </select> 
+        </h2> 
     </div>
-
+    <div ng-if="!base.selectedProgram && trackedEntityTypes.readable.length === 0">
+        <br/>
+        <div class="alert alert-warning" >
+            {{ 'you_need_read_access_to_at_least_one_tracked_entity_type_to_be_able_to_search' | translate }}
+        </div>
+    </div>
 
     <form class="form-horizontal search-tei-form" ng-repeat="searchGroup in searchConfig.searchGroups | filter: {orgunitUnique: 'false'}">
         <div class="form-group" ng-repeat="attribute in searchGroup.attributes">

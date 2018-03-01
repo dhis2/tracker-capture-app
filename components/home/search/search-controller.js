@@ -72,6 +72,8 @@ trackerCapture.controller('SearchController',function(
             if(!$scope.trackedEntityTypes.all){
                 promise = TEService.getAll().then(function(trackedEntityTypes){
                     $scope.trackedEntityTypes.all = trackedEntityTypes;
+                    $scope.trackedEntityTypes.readable = trackedEntityTypes.filter(function(tet){ return tet.access.data.read;});
+                    var g = 1;
                 });
             }else{
                 promise = emptyPromise();
@@ -211,7 +213,7 @@ trackerCapture.controller('SearchController',function(
 
         var canOpenRegistration = function(){
             if($scope.base.selectedProgram){
-                return AccessUtils.isWritable($scope.base.selectedProgram);
+                return AccessUtils.isWritable($scope.base.selectedProgram) && AccessUtils.isWritable($scope.trackedEntityTypes.selected);
             }
             return false; 
         }

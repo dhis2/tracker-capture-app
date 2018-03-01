@@ -24,6 +24,7 @@ trackerCapture.controller('HomeController',function(
     orderByFilter,
     TEService,
     AccessUtils) {
+        $scope.trackedEntityTypesById ={};
         var previousProgram = null;
         $scope.base = {};
 
@@ -195,8 +196,20 @@ trackerCapture.controller('HomeController',function(
 
         }
         var loadCanRegister = function(){
-            if($scope.selectedProgram){
-                viewsByType.registration.disabled = !$scope.selectedProgram.access.data.write;
+            if($scope.selectedProgram && $scope.selectedProgram.access.data.write){
+                var tet = $scope.trackedEntityTypesById[$scope.selectedProgram.trackedEntityType.id];
+                var promise;
+                if(tet){
+                    var def = $q.defer();
+                    def.resolve(tet);
+                    promise = def.promise;
+                }else{
+                    promise = TEService.get($scope.selectedProgram.trackedEntityType.id);
+                }
+                promise.then(function(tet){
+                    $scope.trackedEntityTypesById[tet.id] = tet;
+                    viewsByType.registration.disabled = !tet.access.data.write;
+                });
             }            
         }
 
@@ -236,6 +249,16 @@ trackerCapture.controller('HomeController',function(
                 selectedProgram: $scope.selectedProgram,
                 selectedOrgUnit: $scope.selectedOrgUnit
             });
+        }
+
+        $scope.hasProgramTetAccess = function(){
+            if($scope.selectedProgram){
+                var tet = $scope.trackedEntityTypesById[$scope.selectedProgram.trackedEntityType.id];
+                if(tet){
+                    return tet.access.data.read;
+                }
+            }
+            return false;
         }
 
         $scope.base.setFrontPageData = $scope.setFrontPageData;

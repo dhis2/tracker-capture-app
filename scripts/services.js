@@ -904,12 +904,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             formattedTei.attributes = attributes;
             var promise = $http.post( DHIS2URL + '/trackedEntityInstances' , formattedTei ).then(function(response){
                 return response.data;
-            }, function(response) {
-                //Necessary now that import errors gives a 409 response from the server.
-                //The 409 response is treated as an error response.
-                var errorBody = $translate.instant('failed_to_register_tei');
-                NotificationService.showNotifcationDialog($translate.instant('register_error'), errorBody, response);
-                return null;
+            }, function(response){
+                return response.data;
             });
             return promise;
         },
