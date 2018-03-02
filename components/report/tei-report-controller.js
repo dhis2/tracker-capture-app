@@ -12,13 +12,13 @@ trackerCapture.controller('TeiReportController',
                 EventUtils,
                 TEIService,
                 EnrollmentService,
-                OrgUnitFactory) {
-    $scope.showProgramReportDetailsDiv = false;
+                OrgUnitFactory,
+                $q) {
+    $scope.showProgramReportDetailsDiv = {};
     $scope.enrollmentsByProgram = [];
     $scope.orgUnitLabel = $translate.instant('org_unit');
 
-    $scope.$on('dashboardWidgets', function(event, args) {
-        $scope.showProgramReportDetailsDiv = false;
+    $scope.$on('dashboardWidgets', function(event, args) {        
         var selections = CurrentSelection.get();
         OrgUnitFactory.getOrgUnit(($location.search()).ou).then(function (orgUnit) {
             $scope.selectedOrgUnit = orgUnit;
@@ -35,16 +35,27 @@ trackerCapture.controller('TeiReportController',
             });
 
             if ($scope.selectedTei) {
-                $scope.getEvents();
+                getEvents();
             }
         });
     });
     
-    $scope.$on('tei-report-widget', function(event, args) {
-        $scope.getEvents();        
+    $scope.$on('tei-report-widget', function(event, eventContainer) {
+
+        setEvents(eventContainer.events);
+        loadReportDetails($scope.selectedProgram);
     });
-    
-    $scope.getEvents = function(){
+
+    var getEvents = function() {
+        var eventList = angular.copy( CurrentSelection.getSelectedTeiEvents() );        
+        if($scope.selectedProgram && $scope.selectedProgram.id){
+            eventList = $filter('filter')(eventList, {program: $scope.selectedProgram.id});
+        }
+
+        setEvents(eventList);
+    }
+
+    var setEvents = function(eventList){
         
         $scope.dataFetched = false;
         $scope.dataExists = false;
@@ -53,11 +64,6 @@ trackerCapture.controller('TeiReportController',
         angular.forEach($scope.programs, function(pr){
             $scope.report[pr.id] = {};
         });
-        
-        var eventList = angular.copy( CurrentSelection.getSelectedTeiEvents() );        
-        if($scope.selectedProgram && $scope.selectedProgram.id){
-            eventList = $filter('filter')(eventList, {program: $scope.selectedProgram.id});
-        }
         
         angular.forEach(eventList, function(ev){
             if(ev.program && $scope.report[ev.program] && ev.orgUnit){       
@@ -90,20 +96,32 @@ trackerCapture.controller('TeiReportController',
                 if(!$scope.dataExists){
                     $scope.dataExists = true;
                 }
+            }
+
+            if(ev.dataValues){
+                ev.dataValues.forEach(dataValue => {
+                    if(angular.isUndefined(ev[dataValue.dataElement])){
+                        ev[dataValue.dataElement] = dataValue.value;
+                    }
+                });
             }                
         });
         
         $scope.dataFetched = true;
         
     };
+
+    $scope.toggleProgramReportDetails = function(pr){
+        $scope.showProgramReportDetailsDiv[pr.id] = !$scope.showProgramReportDetailsDiv[pr.id];
+        if($scope.showProgramReportDetailsDiv[pr.id]){
+            loadReportDetails(pr);
+        }
+    };
     
-    $scope.showProgramReportDetails = function(pr){
+    var loadReportDetails = function(pr){
         
         var selections = CurrentSelection.get();
         $scope.selectedTei = selections.tei;
-        
-        $scope.showProgramReportDetailsDiv = !$scope.showProgramReportDetailsDiv;
-        $scope.selectedProgram = pr;
         $scope.selectedReport = $scope.report[pr.id];
         
         //today as report date
@@ -137,7 +155,13 @@ trackerCapture.controller('TeiReportController',
         });        
 
         //program reports come grouped in enrollment, process for each enrollment
-        $scope.enrollments = [];
+        var enrollments = [];
+        var promises = [];
+        if(!$scope.selectedReport.enrollments){
+            $scope.enrollments = [];
+            return;
+        }
+        
         angular.forEach(Object.keys($scope.selectedReport.enrollments), function (enr) {
             //format report data values
             angular.forEach($scope.selectedReport.enrollments[enr], function (ev) {
@@ -145,28 +169,30 @@ trackerCapture.controller('TeiReportController',
                 angular.forEach(ev.notes, function (note) {
                     note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
                     //get enrollment details
-                    EnrollmentService.get(enr).then(function (enrollment) {
+                    promises.push(EnrollmentService.get(enr).then(function (enrollment) {
                         if (enrollment) {
                             angular.forEach(enrollment.notes, function (note) {
                                 note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
                             });
-                            $scope.enrollments.push(enrollment);
+                            enrollments.push(enrollment);
                         }
-                    });
+                    }));
 
                     if (ev.dataValues) {
                         ev = EventUtils.processEvent(ev, $scope.stagesById[ev.programStage], $scope.optionSets, $scope.prStDes);
                     }
                 });
-
-                //get enrollment details
-                EnrollmentService.get(enr).then(function (enrollment) {
-                    angular.forEach(enrollment.notes, function (note) {
-                        note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
-                    });
-                    $scope.enrollments.push(enrollment);
-                });
             });
+            //get enrollment details
+            promises.push(EnrollmentService.get(enr).then(function (enrollment) {
+                angular.forEach(enrollment.notes, function (note) {
+                    note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
+                });
+                enrollments.push(enrollment);
+            }));
+        });
+        $q.all(promises).then(function(){
+            $scope.enrollments = enrollments;
         });
     };
     

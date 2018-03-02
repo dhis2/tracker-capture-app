@@ -388,6 +388,7 @@ trackerCapture.controller('DataEntryController',
         });
         
         updateTabularEntryStages();
+        $rootScope.$broadcast('tei-report-widget', {events: $scope.allEventsSorted});
     };
     
     function updateTabularEntryStages() {
@@ -1032,7 +1033,6 @@ trackerCapture.controller('DataEntryController',
         //Have to make sure the event is preprocessed - this does not happen unless "Dashboardwidgets" is invoked.
         newEvent = EventUtils.processEvent(newEvent, $scope.stagesById[newEvent.programStage], $scope.optionSets, $scope.prStDes);
         if(setProgramStage) $scope.currentStage = $scope.stagesById[newEvent.programStage];
-        $scope.eventsByStage[newEvent.programStage].push(newEvent);
         sortEventsByStage('ADD', newEvent);
         broadcastDataEntryControllerData();
     };
@@ -1563,6 +1563,7 @@ trackerCapture.controller('DataEntryController',
 
                 $scope.currentStageEventsOriginal = angular.copy($scope.currentStageEvents);
 
+                $rootScope.$broadcast('tei-report-widget', {events: $scope.allEventsSorted});
                 //In some cases, the rules execution should be suppressed to avoid the 
                 //possibility of infinite loops(rules updating datavalues, that triggers a new 
                 //rule execution)
@@ -2346,7 +2347,7 @@ trackerCapture.controller('DataEntryController',
         
         if (operation) {
             if (operation === 'ADD' && newEvent && newEvent.event) {
-                var ev = EventUtils.reconstruct(newEvent, $scope.currentStage, $scope.optionSets);                
+                var ev = newEvent;               
                 ev.enrollment = newEvent.enrollment;
                 ev.visited = newEvent.visited;
                 ev.orgUnitName = newEvent.orgUnitName;
@@ -2354,6 +2355,7 @@ trackerCapture.controller('DataEntryController',
                 ev.sortingDate =newEvent.sortingDate;
                 
                 $scope.allEventsSorted.push(ev);
+                $scope.eventsByStage[newEvent.programStage].push(ev);
             }
             if (operation === 'UPDATE') {
                 var ev = EventUtils.reconstruct($scope.currentEvent, $scope.currentStage, $scope.optionSets);
@@ -2385,7 +2387,7 @@ trackerCapture.controller('DataEntryController',
             }
 
             $timeout(function () {
-                $rootScope.$broadcast('tei-report-widget', {});
+                $rootScope.$broadcast('tei-report-widget', {events: $scope.allEventsSorted});
             }, 200);
         }        
         $scope.allEventsSorted = orderByFilter($scope.allEventsSorted, '-sortingDate').reverse();         
@@ -3092,34 +3094,7 @@ trackerCapture.controller('DataEntryController',
             }
         }
     };
-    
-    $scope.categoryOptionComboFilter = function(){
-        
-        var modalInstance = $modal.open({
-            templateUrl: 'components/dataentry/modal-category-option.html',
-            controller: 'EventCategoryComboController',
-            resolve: {
-                selectedProgram: function () {
-                    return $scope.selectedProgram;
-                },
-                selectedCategories: function(){
-                    return $scope.selectedCategories;
-                },
-                selectedTeiId: function(){
-                    return $scope.selectedTei.trackedEntityInstance;
-                }
-            }
-        });
 
-        modalInstance.result.then(function (events) {
-            if (angular.isObject(events)) {
-                CurrentSelection.setSelectedTeiEvents( events );
-                $scope.getEvents();
-            }
-        }, function () {
-        });        
-    };
-    
     $scope.editAttributeCategoryOptions = function(){
         $scope.showAttributeCategoryOptions = !$scope.showAttributeCategoryOptions;
         
