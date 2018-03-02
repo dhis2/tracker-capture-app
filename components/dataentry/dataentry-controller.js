@@ -2193,8 +2193,8 @@ trackerCapture.controller('DataEntryController',
 
     $scope.eventEditable = function(){
         if(!$scope.currentStage || !$scope.currentStage.access.data.write) return false;
-        if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE' || $scope.currentEvent.editingNotAllowed) return false;
-        if($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff) return false;
+        if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE') return false;
+        if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff) return false;
         return true;
     }
 
