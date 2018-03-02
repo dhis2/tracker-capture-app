@@ -196,7 +196,7 @@ trackerCapture.controller('HomeController',function(
 
         }
         var loadCanRegister = function(){
-            if($scope.selectedProgram && $scope.selectedProgram.access.data.write){
+            if($scope.selectedProgram){
                 var tet = $scope.trackedEntityTypesById[$scope.selectedProgram.trackedEntityType.id];
                 var promise;
                 if(tet){
@@ -208,7 +208,7 @@ trackerCapture.controller('HomeController',function(
                 }
                 promise.then(function(tet){
                     $scope.trackedEntityTypesById[tet.id] = tet;
-                    viewsByType.registration.disabled = !tet.access.data.write;
+                    viewsByType.registration.disabled = !tet.access.data.write && $scope.selectedProgram.access.data.write;
                 });
             }            
         }
