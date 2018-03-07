@@ -1026,6 +1026,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             {
                                 att.searchable = pAttribute.searchable;
                             }
+                            att.allowFutureDate = pAttribute.allowFutureDate;
                             programAttributes.push(att);
                         }
                     });
