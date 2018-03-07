@@ -961,6 +961,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             if (pAttribute.displayInList) {
                                 att.displayInListNoProgram = true;
                             }
+                            att.allowFutureDate = pAttribute.allowFutureDate;
                             programAttributes.push(att);
                         }
                     });
