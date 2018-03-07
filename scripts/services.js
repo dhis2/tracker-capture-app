@@ -931,6 +931,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             if(pAttribute.renderOptionsAsRadio){
                                 att.renderOptionsAsRadio = pAttribute.renderOptionsAsRadio;
                             }
+                            att.allowFutureDate = pAttribute.allowFutureDate;
                             programAttributes.push(att);
                         }
                     });
