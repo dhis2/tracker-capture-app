@@ -58,7 +58,7 @@
                                class="form-control"
                                d2-date
                                d2-date-validator 
-                               max-date="attribute.programTrackedEntityAttribute.allowFutureDate ? '' : 0"
+                               max-date="attribute.allowFutureDate ? '' : 0"
                                ng-model="selectedTei[attribute.id]"                               
                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
                                d2-attribute-validator 
@@ -73,7 +73,7 @@
                         <d2-date-time datetime-model="selectedTei"
                                       datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                                       datetime-model-id="attribute.id"
-                                      datetime-max-date="attribute.programTrackedEntityAttribute.allowFutureDate ? '' : 0"
+                                      datetime-max-date="attribute.allowFutureDate ? '' : 0"
                                       datetime-required="attribute.mandatory || mandatoryFields[attribute.id]"
                                       datetime-save-methode="teiValueUpdated"
                                       datetime-save-methode-parameter1="selectedTei"
