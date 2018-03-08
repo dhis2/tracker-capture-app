@@ -1,6 +1,6 @@
 <div id='printSection'>
     <div class="modal-header">
-        <h1>{{selectedProgram.displayName}} {{'report'| translate}}</h1>
+        <h1>{{pr.displayName}} {{'report'| translate}}</h1>
         <span class="pull-right bold">
             {{'date'| translate}}: {{today}}
         </span>
@@ -8,7 +8,7 @@
     <div class="modal-body">
         <div class='row'>
             <div class="col-sm-6">
-                <h2>{{selectedProgram.trackedEntity.displayName}} {{'_details'| translate}}</h2>
+                <h2>{{pr.trackedEntityType.displayName}} {{'_details'| translate}}</h2>
                 <table class="table table-bordered table-compact">
                     <tr ng-repeat="attribute in selectedTei.attributes" ng-show="attribute.show">
                         <td class="bold">
@@ -35,10 +35,10 @@
         <div class="row" ng-repeat="enrollment in enrollments">
             <h2 class='col-sm-12'>{{'enrollment'| translate}} {{'_details'| translate}}</h2>
             <div class="col-sm-4">
-                <span class="bold">{{selectedProgram.enrollmentDateLabel}}:</span>  {{enrollment.enrollmentDate}}            
+                <span class="bold">{{pr.enrollmentDateLabel}}:</span>  {{enrollment.enrollmentDate}}            
             </div>
             <div class="col-sm-4">
-                <span class="bold">{{selectedProgram.incidentDateLabel}}:</span>    {{enrollment.incidentDate}}            
+                <span class="bold">{{pr.incidentDateLabel}}:</span>    {{enrollment.incidentDate}}            
             </div>
             <div class="col-sm-4">
                 <span class="bold">{{'status'| translate}}:</span>  {{enrollment.status}}
