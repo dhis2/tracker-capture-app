@@ -44,11 +44,11 @@ import '../components/home/search/search-controller.js';
 import '../components/topbar/topbar-controller.js';
 
 import L from 'leaflet';
-import 'leaflet-geocoder-mapzen';
 import 'leaflet-contextmenu';
 import 'd2-tracker/lib/Google.js';
-
 L.Icon.Default.imagePath = '../dhis-web-commons/leaflet/images';
+import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
+import 'leaflet-control-geocoder/dist/Control.Geocoder.js';
 
 /* App Module */
 angular.module('trackerCapture')
