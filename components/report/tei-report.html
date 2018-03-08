@@ -13,16 +13,18 @@
         <div>
             <div ng-if="!dataExists" class="alert alert-warning">{{noDataReportLabel}}</div>
             <div ng-if="dataExists" class="remove-default-padding hideInPrint">
-                <table class="table table-striped dhis2-table-hover">
-                    <tr ng-click="showProgramReportDetails(pr)" ng-repeat="pr in programs" ng-if="report[pr.id].enrollments" title="{{'details'| translate}}">                   
-                        <td>
-                            {{pr.displayName}}                        
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div ng-if="showProgramReportDetailsDiv">     
-                <div ng-class="printable" ng-include="'components/report/program-details.html'"></div>             
+                <div ng-repeat="pr in programs" ng-if="report[pr.id].enrollments">
+                    <table class="table table-striped dhis2-table-hover">
+                        <tr ng-click="toggleProgramReportDetails(pr)" title="{{'details'| translate}}">                   
+                            <td>
+                                {{pr.displayName}}                        
+                            </td>
+                        </tr>
+                    </table>
+                    <div ng-if="showProgramReportDetailsDiv[pr.id]">     
+                        <div ng-class="printable" ng-include="'components/report/program-details.html'"></div>             
+                    </div>
+                </div>
             </div>
         </div>
         
