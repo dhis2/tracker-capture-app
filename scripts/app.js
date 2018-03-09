@@ -44,11 +44,21 @@ import '../components/home/search/search-controller.js';
 import '../components/topbar/topbar-controller.js';
 
 import L from 'leaflet';
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 import 'leaflet-contextmenu';
 import 'd2-tracker/lib/Google.js';
-L.Icon.Default.imagePath = '../dhis-web-commons/leaflet/images';
+
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
 import 'leaflet-control-geocoder/dist/Control.Geocoder.js';
+
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 
 /* App Module */
 angular.module('trackerCapture')
