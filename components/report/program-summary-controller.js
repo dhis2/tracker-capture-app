@@ -18,12 +18,16 @@ trackerCapture.controller('ProgramSummaryController',
     $scope.report = {};
     $scope.model = {};
     
-    $scope.optionSets = CurrentSelection.getOptionSets();
+    $scope.optionSets = null;
     if(!$scope.optionSets){
         $scope.optionSets = [];
         MetaDataFactory.getAll('optionSets').then(function(optionSets){
             angular.forEach(optionSets, function(optionSet){  
                 $scope.optionSets[optionSet.id] = optionSet;
+                optionSet.optionsByCode = {};
+                angular.forEach(optionSet.options, function(option){
+                    optionSet.optionsByCode[option.code] = option;
+                });
             });
             CurrentSelection.setOptionSets($scope.optionSets);
         });
@@ -62,6 +66,12 @@ trackerCapture.controller('ProgramSummaryController',
             $scope.stagesById = [];
             angular.forEach($scope.programStages, function(stage){
                 $scope.stagesById[stage.id] = stage;
+                stage.dataElementsById = {};
+                if(stage.programStageDataElements){
+                    angular.forEach(stage.programStageDataElements, function(prStDe){
+                        stage.dataElementsById[prStDe.dataElement.id] = prStDe.dataElement;
+                    });
+                }
             });            
         }
     });
@@ -81,7 +91,11 @@ trackerCapture.controller('ProgramSummaryController',
         $scope.reportStarted = true;
         $scope.dataReady = false;
             
-        AttributesFactory.getByProgram($scope.model.selectedProgram).then(function(atts){            
+        AttributesFactory.getByProgram($scope.model.selectedProgram).then(function(atts){
+            $scope.model.selectedProgram.attributesById = {};
+            angular.forEach(atts, function(attr){
+                $scope.model.selectedProgram.attributesById[attr.id] = attr;
+            });
             var grid = TEIGridService.generateGridColumns(atts, $scope.selectedOuMode.name,true);   
             $scope.gridColumns = grid.columns;
         });  
@@ -100,18 +114,32 @@ trackerCapture.controller('ProgramSummaryController',
             if( data && data.eventRows ){
                 angular.forEach(data.eventRows, function(ev){
                     if(ev.trackedEntityInstance){
-                        ev.name = $scope.stagesById[ev.programStage].displayName;
+                        var stage = $scope.stagesById[ev.programStage];
+                        ev.name = stage.displayName;
                         ev.programName = $scope.model.selectedProgram.displayName;
                         ev.statusColor = EventUtils.getEventStatusColor(ev); 
                         ev.eventDate = DateUtils.formatFromApiToUser(ev.eventDate);
 
                         angular.forEach(ev.dataValues, function(dv){
-                            ev[dv.dataElement] = dv.value;
+                            var de = stage.dataElementsById[dv.dataElement];
+                            if(de.optionSetValue){
+                                var optionSet = $scope.optionSets[de.optionSet.id];
+                                ev[dv.dataElement] = optionSet.optionsByCode[dv.value].displayName;
+                            }else{
+                                ev[dv.dataElement] = dv.value;
+                            }
                             $scope.stagesById[ev.programStage].hasData = true;
                         });
 
                         angular.forEach(ev.attributes, function(att){
-                            ev[att.attribute] = att.value;
+                            var attr = $scope.model.selectedProgram.attributesById[att.attribute];
+                            if(attr.optionSetValue){
+                                var optionSet = $scope.optionSets[attr.optionSet.id];
+                                ev[att.attribute] = optionSet.optionsByCode[att.value].displayName;
+                            }else{
+                                ev[att.attribute] = att.value;
+                            }
+                            
                         });
 
                         if($scope.teiList.indexOf(ev.trackedEntityInstance) === -1){
