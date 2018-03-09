@@ -2138,6 +2138,13 @@ trackerCapture.controller('DataEntryController',
             }
         }
     };
+    
+    $scope.eventEditable = function(){
+        if(!$scope.currentStage) return false;
+        if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE') return false;
+        if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed) return false;
+        return true;
+    }
 
     $scope.deleteEvent = function () {
         
