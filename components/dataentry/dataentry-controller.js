@@ -366,15 +366,14 @@ trackerCapture.controller('DataEntryController',
                             processedValue = OptionSetService.getName(
                                     $scope.optionSets[$scope.prStDes[effect.dataElement.id].dataElement.optionSet.id].options, processedValue);
                         }
-
-                        processedValue = processedValue === "true" ? true : processedValue;
-                        processedValue = processedValue === "false" ? false : processedValue;
-
+                        var prStDe = $scope.prStDes[effect.dataElement.id];
+                        processedValue = CommonUtils.formatDataValue(affectedEvent.event, processedValue, prStDe.dataElement, $scope.optionSets, 'USER');
+                        
                         affectedEvent[effect.dataElement.id] = processedValue;
                         $scope.assignedFields[event][effect.dataElement.id] = true;
                         
                         if(callerId === $scope.instanceId) {
-                            $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
+                            $scope.saveDataValueForEvent(prStDe, null, affectedEvent, true);
                         }
                     }
                 }
