@@ -221,7 +221,7 @@ function($rootScope,
 
     //watch for changes in ou mode - mode could be selected without notifcation to grid column generator
     $scope.$watch('selectedOuMode.name', function() {
-        if( $scope.selectedOuMode.name && angular.isObject($scope.gridColumns)){
+        if($scope.selectedOuMode && $scope.selectedOuMode.name && angular.isObject($scope.gridColumns)){
             var continueLoop = true;
             for(var i=0; i<$scope.gridColumns.length && continueLoop; i++){
                 if($scope.gridColumns[i].id === 'orgUnitName' && $scope.selectedOuMode.name !== 'SELECTED'){
@@ -229,6 +229,8 @@ function($rootScope,
                     continueLoop = false;
                 }
             }
+        }else if(!$scope.selectedOuMode){
+            $scope.selectedOuMode = $scope.ouModes[2];
         }
     });
 

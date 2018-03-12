@@ -819,9 +819,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         update: function(tei, optionSets, attributesById){
             var formattedTei = angular.copy(tei);
+            var attributes = [];
             angular.forEach(formattedTei.attributes, function(att){
-                att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API');
+                attributes.push({attribute: att.attribute, value: CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API')});
             });
+            formattedTei.attributes = attributes;
             var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + formattedTei.trackedEntityInstance , formattedTei ).then(function(response){
                 return response.data;
             }, function(response){
