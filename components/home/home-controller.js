@@ -130,6 +130,8 @@ trackerCapture.controller('HomeController',function(
         }
 
         var loadOrgUnit = function(){
+            /*var currSelections = CurrentSelection.get();
+            currSelections.orgUnit = $scope.selectedOrgUnit;*/
             if($scope.selectedOrgUnit && !$scope.selectedOrgUnit.loaded){
                 return OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function(orgUnit){
                     $scope.selectedOrgUnit = orgUnit;
