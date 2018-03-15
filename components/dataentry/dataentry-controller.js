@@ -1106,7 +1106,7 @@ trackerCapture.controller('DataEntryController',
         if(stage){
             if(!stage.access.data.write){
                 var headerText = $translate.instant("stage_write_required");
-                var bodyText = $translate.instant("stage_write_required");
+                var bodyText = $translate.instant("you_need_write_to_program_stage_to_be_able_to_create_event");
                 NotificationService.showNotifcationDialog(headerText, bodyText);
                 return;
             }
