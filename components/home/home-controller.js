@@ -196,6 +196,8 @@ trackerCapture.controller('HomeController',function(
             if(!$scope.base.selectedProgram.displayFrontPageList) {
                 $scope.views[0].disabled = true;
                 defaultView = $scope.views[1];
+            } else {
+                $scope.views[0].disabled = false;
             }
             resetView(defaultView);
             loadCanRegister();      
