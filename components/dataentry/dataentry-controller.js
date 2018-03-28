@@ -2357,7 +2357,7 @@ trackerCapture.controller('DataEntryController',
                 $scope.eventsByStage[newEvent.programStage].push(ev);
             }
             if (operation === 'UPDATE') {
-                var ev = var ev = $scope.currentEvent;
+                var ev = $scope.currentEvent;
                 ev.enrollment = $scope.currentEvent.enrollment;
                 ev.visited = $scope.currentEvent.visited;
                 ev.orgUnitName = $scope.currentEvent.orgUnitName;
