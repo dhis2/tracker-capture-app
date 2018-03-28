@@ -114,7 +114,7 @@ trackerCapture.controller('HomeController',function(
         });
 
         var resetView = function(defaultView){
-            var viewToSet = defaultView ? defaultView : $scope.views[0];
+            var viewToSet = defaultView ? defaultView : $scope.views[0].disabled ? $scope.views[1] : $scope.views[0];
             viewsByType.registration.disabled = true;
             var loaded = $.grep($scope.views, function(v){ return !v.shouldReset && v.loaded;});
             angular.forEach(loaded, function(v){
@@ -193,6 +193,9 @@ trackerCapture.controller('HomeController',function(
         $scope.setProgram = function(selectedProgram, defaultView){
             previousProgram = $scope.base.selectedProgram;
             $scope.base.selectedProgram = $scope.selectedProgram = selectedProgram;
+            if(!$scope.base.selectedProgram.displayFrontPageList) {
+                $scope.views[0].disabled = true;
+            }
             resetView(defaultView);
             loadCanRegister();      
 
