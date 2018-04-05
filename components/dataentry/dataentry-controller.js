@@ -2139,10 +2139,14 @@ trackerCapture.controller('DataEntryController',
         }
     };
     
-    $scope.eventEditable = function(){
-        if(!$scope.currentStage) return false;
+    $scope.eventEditable = function(isButton){
+        if(!$scope.currentStage || !$scope.currentStage.access.data.write) return false;
         if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE') return false;
-        if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed) return false;
+        if(isButton) {
+            if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed && !$scope.userAuthority.canUncompleteEvent || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
+        } else {
+            if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
+        }
         return true;
     }
 
