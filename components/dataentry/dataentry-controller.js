@@ -2195,7 +2195,7 @@ trackerCapture.controller('DataEntryController',
         if(!$scope.currentStage || !$scope.currentStage.access.data.write) return false;
         if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE') return false;
         if(isButton) {
-            if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed && !$scope.userAuthority.ALL || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
+            if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed && !$scope.userAuthority.canUncompleteEvent || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
         } else {
             if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
         }
