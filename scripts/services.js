@@ -2747,7 +2747,7 @@ i
                 if(response){
                     return response;
                 }else{
-                    return tetScopeSearchCount(tetSearchGroup, program, trackedEntityType, orgUnit, pager);
+                    return tetScopeSearchCount(searchGroup, tetSearchGroup, program, trackedEntityType, orgUnit, pager);
                 }
                 return 0;
             },function(error){

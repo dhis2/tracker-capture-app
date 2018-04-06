@@ -671,7 +671,7 @@ trackerCapture.controller('RegistrationController',
                 $scope.teiPreviousValues[field.id] = context[field.id];
             });
         }
-        def.then(function()
+        def.promise.then(function()
         {
             return $scope.executeRules();
         }, function(){
@@ -1115,5 +1115,11 @@ trackerCapture.controller('RegistrationController',
         }
         
         $window.open('../api/trackedEntityInstances/' + tei.trackedEntityInstance + '/' + attributeId + '/image', '_blank', '');
+    };
+
+    $scope.setDateOnFocus = function(currentValue, date) {
+        if(!currentValue) {
+            $scope.currentEvent.eventDate = date;
+        }
     };
 });
