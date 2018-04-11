@@ -761,6 +761,10 @@ function($rootScope,
         }
         format = format.toLowerCase();
 
+        if($scope.enrollmentStatus ==='TODAY'){
+            $scope.programUrl = 'program=' + $scope.selectedProgram.id + '&programStatus=ACTIVE';
+        }
+
         angular.forEach($scope.gridColumns, function (item) {
             if (item.show && item.attribute) {
                 if (!attrIdList) {
