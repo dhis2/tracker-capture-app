@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/dhis2/tracker-capture-app#readme",
   "dependencies": {
-    "d2-tracker": "29.0.26",
+    "d2-tracker": "29.0.27",
     "leaflet": "^0.7.7",
     "leaflet-contextmenu": "^1.1.0",
     "leaflet-geocoder-mapzen": "1.4.1"
