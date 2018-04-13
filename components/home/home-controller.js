@@ -130,6 +130,8 @@ trackerCapture.controller('HomeController',function(
         }
 
         var loadOrgUnit = function(){
+            /*var currSelections = CurrentSelection.get();
+            currSelections.orgUnit = $scope.selectedOrgUnit;*/
             if($scope.selectedOrgUnit && !$scope.selectedOrgUnit.loaded){
                 return OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function(orgUnit){
                     $scope.selectedOrgUnit = orgUnit;
@@ -191,6 +193,12 @@ trackerCapture.controller('HomeController',function(
         $scope.setProgram = function(selectedProgram, defaultView){
             previousProgram = $scope.base.selectedProgram;
             $scope.base.selectedProgram = $scope.selectedProgram = selectedProgram;
+            if(!$scope.base.selectedProgram.displayFrontPageList) {
+                $scope.views[0].disabled = true;
+                defaultView = $scope.views[1];
+            } else {
+                $scope.views[0].disabled = false;
+            }
             resetView(defaultView);
             loadCanRegister();      
 

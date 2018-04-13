@@ -99,15 +99,6 @@ trackerCapture.controller('RegistrationController',
         return attribute.generated || $scope.assignedFields[attribute.id] || $scope.editingDisabled;
     };
 
-    var selectedOrgUnit = CurrentSelection.get()["orgUnit"];
-
-    if (selectedOrgUnit) {
-        $scope.selectedOrgUnit = selectedOrgUnit;
-        $scope.model.orgUnitId = $scope.selectedOrgUnit.id;
-    } else {
-        $scope.model.orgUnitId = ($location.search()).ou;
-    }
-
     $scope.selectedEnrollment = {
         enrollmentDate: $scope.today,
         incidentDate: $scope.today,
@@ -218,7 +209,7 @@ trackerCapture.controller('RegistrationController',
         $scope.orgUnitNames = CurrentSelection.getOrgUnitNames();
 
         if ($scope.registrationMode !== 'REGISTRATION') {
-            $scope.selectedTei = args.selectedTei;
+            $scope.selectedTei = args.selectedTei || {};
             $scope.tei = angular.copy(args.selectedTei);
 
             
@@ -680,7 +671,7 @@ trackerCapture.controller('RegistrationController',
                 $scope.teiPreviousValues[field.id] = context[field.id];
             });
         }
-        def.then(function()
+        def.promise.then(function()
         {
             return $scope.executeRules();
         }, function(){
@@ -1124,5 +1115,11 @@ trackerCapture.controller('RegistrationController',
         }
         
         $window.open('../api/trackedEntityInstances/' + tei.trackedEntityInstance + '/' + attributeId + '/image', '_blank', '');
+    };
+
+    $scope.setDateOnFocus = function(currentValue, date) {
+        if(!currentValue) {
+            $scope.currentEvent.eventDate = date;
+        }
     };
 });

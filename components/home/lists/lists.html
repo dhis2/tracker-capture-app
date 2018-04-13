@@ -1,4 +1,4 @@
-<div ng-controller="ListsController">
+<div ng-controller="ListsController" ng-if="selectedProgram && selectedProgram.displayFrontPageList">
     <div class="hideInPrint" ng-if="selectedProgram" ng-cloak>
         <div class="btn-group hideInPrint">
             <button type="button" ng-repeat="workingList in selectedProgram.workingLists | orderBy: 'order'" class="btn btn-default small-vertical-spacing" ng-class="getWorkingListButtonClass(workingList)" ng-click="setWorkingList(workingList)" title="{{workingList.description | translate}}">

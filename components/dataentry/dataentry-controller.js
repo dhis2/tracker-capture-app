@@ -360,15 +360,14 @@ trackerCapture.controller('DataEntryController',
                             processedValue = OptionSetService.getName(
                                     $scope.optionSets[$scope.prStDes[effect.dataElement.id].dataElement.optionSet.id].options, processedValue);
                         }
-
-                        processedValue = processedValue === "true" ? true : processedValue;
-                        processedValue = processedValue === "false" ? false : processedValue;
-
+                        var prStDe = $scope.prStDes[effect.dataElement.id];
+                        processedValue = CommonUtils.formatDataValue(affectedEvent.event, processedValue, prStDe.dataElement, $scope.optionSets, 'USER');
+                        
                         affectedEvent[effect.dataElement.id] = processedValue;
                         $scope.assignedFields[event][effect.dataElement.id] = true;
                         
                         if(callerId === $scope.instanceId) {
-                            $scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
+                            $scope.saveDataValueForEvent(prStDe, null, affectedEvent, true);
                         }
                     }
                 }
@@ -1107,7 +1106,7 @@ trackerCapture.controller('DataEntryController',
         if(stage){
             if(!stage.access.data.write){
                 var headerText = $translate.instant("stage_write_required");
-                var bodyText = $translate.instant("stage_write_required");
+                var bodyText = $translate.instant("you_need_write_to_program_stage_to_be_able_to_create_event");
                 NotificationService.showNotifcationDialog(headerText, bodyText);
                 return;
             }
@@ -2192,10 +2191,14 @@ trackerCapture.controller('DataEntryController',
         return false;
     }
 
-    $scope.eventEditable = function(){
+    $scope.eventEditable = function(isButton){
         if(!$scope.currentStage || !$scope.currentStage.access.data.write) return false;
         if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE') return false;
-        if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
+        if(isButton) {
+            if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed && !$scope.userAuthority.canUncompleteEvent || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
+        } else {
+            if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
+        }
         return true;
     }
 
@@ -2358,7 +2361,7 @@ trackerCapture.controller('DataEntryController',
                 $scope.eventsByStage[newEvent.programStage].push(ev);
             }
             if (operation === 'UPDATE') {
-                var ev = EventUtils.reconstruct($scope.currentEvent, $scope.currentStage, $scope.optionSets);
+                var ev = $scope.currentEvent;
                 ev.enrollment = $scope.currentEvent.enrollment;
                 ev.visited = $scope.currentEvent.visited;
                 ev.orgUnitName = $scope.currentEvent.orgUnitName;

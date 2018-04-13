@@ -32,7 +32,8 @@ trackerCapture.controller('EventCreationController',
                 PeriodService,
                 ModalService,
                 CurrentSelection,
-                $rootScope) {
+                $rootScope,
+                EnrollmentService) {
     $scope.selectedOrgUnit = orgUnit;
     $scope.selectedEnrollment = enrollment;      
     $scope.stages = stages;
@@ -394,19 +395,22 @@ trackerCapture.controller('EventCreationController',
            
             $scope.attributesById = CurrentSelection.getAttributesById();
             $scope.optionSets = CurrentSelection.getOptionSets();
-            $scope.tei = CurrentSelection.get().tei;
+            var currSelections = CurrentSelection.get();
+            $scope.tei = currSelections.tei;
 
             $scope.tei.orgUnit = dummyEvent.orgUnit;
 
             RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function (regResponse) {
-                //Ensures that when you go back to "TEI Search" screen that a new search is executed.
-                //Is necessary for updating the registring OrgUnit, because otherwise the system uses old cached data.
-                var advancedSearchOptions = CurrentSelection.getAdvancedSearchOptions() !== null ? 
-                    CurrentSelection.getAdvancedSearchOptions() : {};
-                advancedSearchOptions.refresh = true;
-                CurrentSelection.setAdvancedSearchOptions(advancedSearchOptions);
-                
-                $scope.save();
+                var enrollment = currSelections.selectedEnrollment;
+                enrollment.orgUnit = dummyEvent.orgUnit;
+                return EnrollmentService.update(enrollment).then(function(){
+                    var frontPageData = CurrentSelection.getFrontPageData();
+                    if(frontPageData && frontPageData.viewData && frontPageData.viewData.trackedEntityList){
+                        frontPageData.viewData.trackedEntityList.refresh = true;
+                        CurrentSelection.setFrontPageData(frontPageData);
+                    }
+                    $scope.save();
+                });
             });
         });
     };
