@@ -1149,8 +1149,8 @@ trackerCapture.controller('DataEntryController',
             }
             var writableStages = AccessUtils.toWritable(availableStages); 
             if(writableStages.length === 0) {
-                var headerText = $translate.instant("no_accessible_program_stages");
-                var bodyText = $translate.instant("no_accessible_program_stages");
+                var headerText = $translate.instant("stage_write_required");
+                var bodyText = $translate.instant("you_need_write_to_program_stage_to_be_able_to_create_event");
                 NotificationService.showNotifcationDialog(headerText, bodyText);
                 return;
             }
