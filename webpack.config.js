@@ -1,6 +1,6 @@
 'use strict';
-
 var webpack = require('webpack');
+
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 var colors = require('colors');
@@ -67,9 +67,14 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                loader: 'style-loader!css-loader',
+                loader: 'style-loader!css-loader'
+            },
+            {
+                test: /\.(gif|png|jpg)$/,
+                loader: 'file-loader'
             },
         ],
+        noParse: /node_modules\/leaflet-control-geocoder\/dist\/Control.Geocoder.js/,
     },
     plugins: [
         new webpack.optimize.DedupePlugin(),
