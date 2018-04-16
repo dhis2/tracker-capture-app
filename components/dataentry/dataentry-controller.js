@@ -1196,6 +1196,11 @@ trackerCapture.controller('DataEntryController',
         if (!stage) {
             return;
         }
+        if( !$scope.eventsByStage[stage.id] ||
+            $scope.eventsByStage[stage.id].length == 0 ) {
+            openDataEntry = false;
+        }
+        
         $scope.currentStage = stage;
         $scope.currentEvent = null;
         $scope.eventGridColumns = EventUtils.getGridColumns($scope.currentStage, $scope.prStDes);
