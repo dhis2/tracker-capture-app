@@ -247,14 +247,13 @@ trackerCapture.controller('DataEntryController',
         }
         else if(event === 'registration' || event === 'dataEntryInit') {
            //The data entry widget is associated with an event, 
-           //and therefore we do not want to process rule effects from the registration form
+           //and therefore we do not want to process rule effects from the registration form.
            return;
         }
 
         if (event !== affectedEvent.event) {
             //if the current event is not the same as the affected event, 
             //the effecs should be disregarded in the current events controller instance.
-            $log.warn("Event " + event + " was not found in the current scope.");
             return;
         }
 
