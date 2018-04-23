@@ -61,7 +61,7 @@ trackerCapture.controller('RegistrationController',
     
     //get ouLevels
     $scope.ouLevels = CurrentSelection.getOuLevels();
-    if(!$scope.ouLevels || $scope.ouLevels.length < 1){
+    if(!$scope.ouLevels){
         TCStorageService.currentStore.open().done(function(){
             TCStorageService.currentStore.getAll('ouLevels').done(function(response){
                 var ouLevels = angular.isObject(response) ? orderByFilter(response, '-level').reverse() : [];
