@@ -193,7 +193,7 @@ trackerCapture.controller('HomeController',function(
         $scope.setProgram = function(selectedProgram, defaultView){
             previousProgram = $scope.base.selectedProgram;
             $scope.base.selectedProgram = $scope.selectedProgram = selectedProgram;
-            if(!$scope.base.selectedProgram.displayFrontPageList) {
+            if(!$scope.base.selectedProgram || !$scope.base.selectedProgram.displayFrontPageList) {
                 $scope.views[0].disabled = true;
                 defaultView = $scope.views[1];
             } else {
