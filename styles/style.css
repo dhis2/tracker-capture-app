@@ -1939,10 +1939,6 @@ a.disable-link-effects:focus {
     display:inline-block;    
 }
 
-.btn.btn-default.dashboard-info-btn-left-back {
-    width: 63px;
-}
-
 .btn.btn-default.dashboard-info-btn-right-size {
     width: 35px;    
 }
