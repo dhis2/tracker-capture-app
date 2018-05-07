@@ -442,6 +442,9 @@ trackerCapture.controller('RegistrationController',
                 $scope.tei.relationships = result;
                 performRegistration(destination);
             });
+            var advancedSearchOptions = CurrentSelection.getAdvancedSearchOptions();
+            advancedSearchOptions.refresh = true;
+            CurrentSelection.setAdvancedSearchOptions(advancedSearchOptions);
         } else {
             performRegistration(destination);
         }
