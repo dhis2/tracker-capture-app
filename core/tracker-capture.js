@@ -5,6 +5,16 @@ dhis2.util.namespace('dhis2.tc');
 // whether current user has any organisation units
 dhis2.tc.emptyOrganisationUnits = false;
 
+dhis2.util.namespace('cachecleaner');
+
+cachecleaner.clean = function(){
+    indexedDB.deleteDatabase("dhis2tc");
+    indexedDB.deleteDatabase("dhis2ou");
+    localStorage.clear();
+    sessionStorage.clear();
+    return "cache cleaned";
+}
+
 var i18n_no_orgunits = 'No organisation unit attached to current user, no data entry possible';
 var i18n_offline_notification = 'You are offline';
 var i18n_online_notification = 'You are online';
