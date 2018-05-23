@@ -617,6 +617,10 @@ trackerCapture.controller('RegistrationController',
                 searchGroups.unique[field] = tei[field];
                 promises.push(getMatchingTeisCountBySearchGroup(searchGroups.unique, field));
             }
+        }else{
+            var def = $q.defer();
+            def.resolve();
+            promises.push(def.promise);
         }
         return $q.all(promises);
     }
@@ -653,25 +657,21 @@ trackerCapture.controller('RegistrationController',
     }
 
     $scope.saveDataValueForRadio = function(field, context, value){
-        var def = null;
+        var promise = null;
         if(field.dataElement) {
             //The saveDataValueForRadio was called from the dataentry template. Update dataelement og current event:
             context[field.dataElement.id] = value;
             def = $q.defer();
             def.resolve();
+            promise = def.promise;
         }
         else {
-            //The saveDataValueForRadio was called from the registration controller. Update the selected TEI:
-
             context[field.id] = value;
-            def = searchForExistingTeis(context, field.id).then(function()
-            {
-                $scope.teiPreviousValues[field.id] = context[field.id];
-            }, function(){
+            promise = getMatchingTeisCount(context,field).then(function(){
                 $scope.teiPreviousValues[field.id] = context[field.id];
             });
         }
-        def.promise.then(function()
+        promise.then(function()
         {
             return $scope.executeRules();
         }, function(){
