@@ -216,7 +216,7 @@ trackerCapture.controller('HomeController',function(
                 }
                 promise.then(function(tet){
                     $scope.trackedEntityTypesById[tet.id] = tet;
-                    viewsByType.registration.disabled = !tet.access.data.write && !$scope.selectedProgram.access.data.write;
+                    viewsByType.registration.disabled = !(tet.access.data.write && $scope.selectedProgram.access.data.write);
                 });
             }            
         }
