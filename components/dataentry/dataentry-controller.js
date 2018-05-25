@@ -1445,7 +1445,8 @@ trackerCapture.controller('DataEntryController',
         processRuleEffect($scope.currentEvent.event);
         
         //Execute rules for the first time, to make the initial page appear correctly.
-        //Subsequent calls will be made from the "saveDataValue" function.        
+        //Subsequent calls will be made from the "saveDataValue" function.
+        $rootScope.$broadcast("dataEntryEventChanged", {event: $scope.currentEvent.event});       
         $scope.executeRules();
     };
 
