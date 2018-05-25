@@ -126,7 +126,7 @@
         <!--- Error display for search ends -->        
         
         <!--registration form begins -->
-        <div class="row">
+        <div class="row" ng-if="selectedOrgUnit">
             <div class="col-sm-4 bordered-div container-min-width add-default-padding" ng-show="showRegistrationDiv" ng-include="'components/registration/registration.html'"></div>
         </div>        
         <!-- registration form ends -->
