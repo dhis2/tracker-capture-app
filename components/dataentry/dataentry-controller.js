@@ -238,14 +238,39 @@ trackerCapture.controller('DataEntryController',
         $scope.getDataEntryForm();
     };
 
+
+    //Adds support for HIDEPROGRAMSTAGE even if no event exists in enrollment
+    var processRegistrationRuleEffect = function(event, callerId){
+        angular.forEach($rootScope.ruleeffects[event], function(effect){
+            if (effect.action === "HIDEPROGRAMSTAGE") {
+                if (effect.programStage) {
+                    if($scope.stagesNotShowingInStageTasks[effect.programStage.id] !== effect.ineffect )
+                    {
+                        $scope.stagesNotShowingInStageTasks[effect.programStage.id] = effect.ineffect;
+                    }
+                    updateTabularEntryStages();
+                }
+                else {
+                    $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEPROGRAMSTAGE, bot does not have a stage defined");
+                }
+            }
+        });
+    }
+
     var processRuleEffect = function(event, callerId){
+
+        if(event ==='registration'){
+            //If the current event is registration, handle this in own method
+            processRegistrationRuleEffect(event,callerId);
+            return;
+        }
         //Establish which event was affected:
         var affectedEvent = $scope.currentEvent;
         if (!affectedEvent || !affectedEvent.event) {
             //The data entry widget does not have an event selected.
             return;
         }
-        else if(event === 'registration' || event === 'dataEntryInit') {
+        else if(event === 'dataEntryInit') {
            //The data entry widget is associated with an event, 
            //and therefore we do not want to process rule effects from the registration form.
            return;
@@ -1210,7 +1235,7 @@ trackerCapture.controller('DataEntryController',
         
         $scope.showAttributeCategoryOptions = false;
 
-        if( openDataEntry ){
+        if( $scope.currentEvent ){
             $scope.getDataEntryForm();
         }
     };
@@ -2267,6 +2292,15 @@ trackerCapture.controller('DataEntryController',
                 }
                 else {
                     $scope.deSelectCurrentEvent();                    
+                }
+                if($scope.isTabular){
+                    if($scope.currentStageEvents.length > 0){
+                        if(index === 0){
+                            $scope.showDataEntry($scope.currentStageEvents[0], false,false);
+                        }else{
+                            $scope.showDataEntry($scope.currentStageEvents[index-1],false,false);
+                        }
+                    }
                 }
                 
                 broadcastDataEntryControllerData();
