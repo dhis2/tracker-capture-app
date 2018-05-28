@@ -130,8 +130,6 @@ trackerCapture.controller('HomeController',function(
         }
 
         var loadOrgUnit = function(){
-            /*var currSelections = CurrentSelection.get();
-            currSelections.orgUnit = $scope.selectedOrgUnit;*/
             if($scope.selectedOrgUnit && !$scope.selectedOrgUnit.loaded){
                 return OrgUnitFactory.getFromStoreOrServer($scope.selectedOrgUnit.id).then(function(orgUnit){
                     $scope.selectedOrgUnit = orgUnit;
@@ -218,7 +216,9 @@ trackerCapture.controller('HomeController',function(
                     $scope.trackedEntityTypesById[tet.id] = tet;
                     viewsByType.registration.disabled = !(tet.access.data.write && $scope.selectedProgram.access.data.write);
                 });
-            }            
+            }else{
+                viewsByType.registration.disabled = false;
+            }        
         }
 
         $scope.setCurrentView = function(view)

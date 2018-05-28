@@ -113,7 +113,6 @@ trackerCapture.controller('RegistrationController',
             trackedEntityTypesById[entity.id] = entity;
         });
         $scope.trackedEntityTypes.available = AccessUtils.toWritable(entities);
-        $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.available[0];
         if($scope.selectedProgram){
             $scope.trackedEntityTypes.selected = trackedEntityTypesById[$scope.selectedProgram.trackedEntityType.id];
         }
@@ -139,9 +138,9 @@ trackerCapture.controller('RegistrationController',
     }
     var setSearchConfig = function(){
         var promise = null;
-        var programScope = true;
+        $scope.programSearchScope = false;
         if($scope.selectedProgram){
-            programScope = true;
+            $scope.programSearchScope = true;
             promise = SearchGroupService.getSearchConfigForProgram($scope.selectedProgram);
         }else if($scope.trackedEntityTypes && $scope.trackedEntityTypes.selected){
             promise = SearchGroupService.getSearchConfigForTrackedEntityType($scope.trackedEntityTypes.selected);
@@ -149,11 +148,10 @@ trackerCapture.controller('RegistrationController',
         if(promise){
             promise.then(function(searchConfig){
                 $scope.searchConfig = searchConfig;
-                if(programScope){
-                    SearchGroupService.getSearchConfigForTrackedEntityType($scope.selectedProgram.trackedEntityType).then(function(tetSearchConfig){
-                        $scope.tetSearchConfig = tetSearchConfig;
-                    });
-                }
+                var trackedEntityType = $scope.programSearchScope? $scope.selectedProgram.trackedEntityType : $scope.trackedEntityTypes.selected;
+                SearchGroupService.getSearchConfigForTrackedEntityType(trackedEntityType).then(function(tetSearchConfig){
+                    $scope.tetSearchConfig = tetSearchConfig;
+                });
                 if($scope.searchConfig){
                     for(var key in $scope.selectedTei){
                         if($scope.attributesById[key]){
@@ -269,54 +267,64 @@ trackerCapture.controller('RegistrationController',
             $scope.selectedEnrollment.coordinate = $scope.selectedEnrollment.coordinate ? $scope.selectedEnrollment.coordinate : {};
         }
 
-        AttributesFactory.getByProgram($scope.selectedProgram).then(function (atts) {
-            $scope.attributes = TEIGridService.generateGridColumns(atts, null, false).columns;
-            fetchGeneratedAttributes();
-            if ($scope.selectedProgram && $scope.selectedProgram.id) {
-                if ($scope.selectedProgram.dataEntryForm && $scope.selectedProgram.dataEntryForm.htmlCode) {
-                    $scope.customRegistrationFormExists = true;
-                    $scope.trackedEntityForm = $scope.selectedProgram.dataEntryForm;
-                    $scope.trackedEntityForm.attributes = $scope.attributes;
-                    $scope.trackedEntityForm.selectIncidentDatesInFuture = $scope.selectedProgram.selectIncidentDatesInFuture;
-                    $scope.trackedEntityForm.selectEnrollmentDatesInFuture = $scope.selectedProgram.selectEnrollmentDatesInFuture;
-                    $scope.trackedEntityForm.displayIncidentDate = $scope.selectedProgram.displayIncidentDate;
-                    $scope.customRegistrationForm = CustomFormService.getForTrackedEntity($scope.trackedEntityForm, mode);
-                }
-
-                if ($scope.selectedProgram.programStages 
-                    && $scope.selectedProgram.programStages[0] 
-                    && $scope.selectedProgram.useFirstStageDuringRegistration
-                    && $scope.selectedProgram.programStages[0].access.data.write
-                    && $scope.registrationMode === 'REGISTRATION') {
-                    $scope.currentEvent = {};
-                    $scope.registrationAndDataEntry = true;
-                    $scope.prStDes = [];
-                    $scope.currentStage = $scope.selectedProgram.programStages[0];
-                    $scope.currentEvent.event = 'SINGLE_EVENT';
-                    $scope.currentEvent.providedElsewhere = {};
-                    $scope.currentEvent.orgUnit = $scope.selectedOrgUnit.id;
-                    $scope.currentEvent.program = $scope.selectedProgram.id;
-                    $scope.currentEvent.programStage = $scope.currentStage.id;
-                    $scope.currentEvent.enrollmentStatus = $scope.currentEvent.status = 'ACTIVE';
-                    $scope.currentEvent.executionDateLabel = $scope.currentStage.executionDateLabel;
-                    $rootScope.ruleeffects[$scope.currentEvent.event] = {};
-                    $scope.selectedEnrollment.status = 'ACTIVE';
-
-                    if( $scope.currentStage.captureCoordinates ){                            
-                        $scope.currentEvent.coordinate = {};
+        if($scope.selectedProgram){
+            AttributesFactory.getByProgram($scope.selectedProgram).then(function (atts) {
+                $scope.attributes = TEIGridService.generateGridColumns(atts, null, false).columns;
+                fetchGeneratedAttributes();
+                if ($scope.selectedProgram && $scope.selectedProgram.id) {
+                    if ($scope.selectedProgram.dataEntryForm && $scope.selectedProgram.dataEntryForm.htmlCode) {
+                        $scope.customRegistrationFormExists = true;
+                        $scope.trackedEntityForm = $scope.selectedProgram.dataEntryForm;
+                        $scope.trackedEntityForm.attributes = $scope.attributes;
+                        $scope.trackedEntityForm.selectIncidentDatesInFuture = $scope.selectedProgram.selectIncidentDatesInFuture;
+                        $scope.trackedEntityForm.selectEnrollmentDatesInFuture = $scope.selectedProgram.selectEnrollmentDatesInFuture;
+                        $scope.trackedEntityForm.displayIncidentDate = $scope.selectedProgram.displayIncidentDate;
+                        $scope.customRegistrationForm = CustomFormService.getForTrackedEntity($scope.trackedEntityForm, mode);
                     }
-
-                    angular.forEach($scope.currentStage.programStageDataElements, function (prStDe) {                            
-                        $scope.prStDes[prStDe.dataElement.id] = prStDe;
-                        if (prStDe.allowProvidedElsewhere) {
-                            $scope.allowProvidedElsewhereExists[$scope.currentStage.id] = true;
+    
+                    if ($scope.selectedProgram.programStages 
+                        && $scope.selectedProgram.programStages[0] 
+                        && $scope.selectedProgram.useFirstStageDuringRegistration
+                        && $scope.selectedProgram.programStages[0].access.data.write
+                        && $scope.registrationMode === 'REGISTRATION') {
+                        $scope.currentEvent = {};
+                        $scope.registrationAndDataEntry = true;
+                        $scope.prStDes = [];
+                        $scope.currentStage = $scope.selectedProgram.programStages[0];
+                        $scope.currentEvent.event = 'SINGLE_EVENT';
+                        $scope.currentEvent.providedElsewhere = {};
+                        $scope.currentEvent.orgUnit = $scope.selectedOrgUnit.id;
+                        $scope.currentEvent.program = $scope.selectedProgram.id;
+                        $scope.currentEvent.programStage = $scope.currentStage.id;
+                        $scope.currentEvent.enrollmentStatus = $scope.currentEvent.status = 'ACTIVE';
+                        $scope.currentEvent.executionDateLabel = $scope.currentStage.executionDateLabel;
+                        $rootScope.ruleeffects[$scope.currentEvent.event] = {};
+                        $scope.selectedEnrollment.status = 'ACTIVE';
+    
+                        if( $scope.currentStage.captureCoordinates ){                            
+                            $scope.currentEvent.coordinate = {};
                         }
-                    });
-                    $scope.currentEventOriginal = angular.copy($scope.currentEvent);
-                    $scope.customDataEntryForm = CustomFormService.getForProgramStage($scope.currentStage, $scope.prStDes);
+    
+                        angular.forEach($scope.currentStage.programStageDataElements, function (prStDe) {                            
+                            $scope.prStDes[prStDe.dataElement.id] = prStDe;
+                            if (prStDe.allowProvidedElsewhere) {
+                                $scope.allowProvidedElsewhereExists[$scope.currentStage.id] = true;
+                            }
+                        });
+                        $scope.currentEventOriginal = angular.copy($scope.currentEvent);
+                        $scope.customDataEntryForm = CustomFormService.getForProgramStage($scope.currentStage, $scope.prStDes);
+                    }
                 }
-            }
-        });
+            });
+        }
+        else if($scope.trackedEntityTypes.selected){
+            AttributesFactory.getByTrackedEntityType($scope.trackedEntityTypes.selected).then(function (atts) {
+                $scope.attributes = TEIGridService.generateGridColumns(atts, null, false).columns;
+                fetchGeneratedAttributes();
+            });
+        }
+
+
     };
 
     var fetchGeneratedAttributes = function() {
@@ -627,16 +635,29 @@ trackerCapture.controller('RegistrationController',
 
     var getMatchingTeisCountBySearchGroup = function(searchGroup,field){
         var tetSearchGroup = SearchGroupService.findValidTetSearchGroup(searchGroup, $scope.tetSearchConfig, $scope.attributesById);
-        return SearchGroupService.programScopeSearchCount(searchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, true).then(function(count){
-            if(searchGroup.uniqueGroup && count > 0){
-                return SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
-                    return showDuplicateModal(res.data, field);
-                });
-            }
-            $scope.matchingTeisCount = count;
-            $scope.matchingTeisSearchGroup = searchGroup;
-            
-        });
+        var promise;
+        if($scope.programSearchScope){
+            promise = SearchGroupService.programScopeSearchCount(searchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, true).then(function(count){
+                if(searchGroup.uniqueGroup && count > 0){
+                    return SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+                        return showDuplicateModal(res.data, field);
+                    });
+                }
+                $scope.matchingTeisCount = count;
+                $scope.matchingTeisSearchGroup = searchGroup;
+                
+            });
+        }else{
+            promise = SearchGroupService.tetScopeSearchCount(searchGroup, tetSearchGroup, $scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(count){
+                if(searchGroup.uniqueGroup && count > 0){
+                    return SearchGroupService.tetScopeSearch(searchGroup,tetSearchGroup, $scope.trackedEntityTypes.selected, $scope.selectedOrgUnit).then(function(res){
+                        return showDuplicateModal(res.data, field);
+                    });
+                }
+                $scope.matchingTeisCount = count;
+                $scope.matchingTeisSearchGroup = searchGroup;
+            });
+        }
     }
 
     var searchForExistingTeisBySearchGroup = function(searchGroup,field){
@@ -1122,4 +1143,23 @@ trackerCapture.controller('RegistrationController',
             $scope.currentEvent.eventDate = date;
         }
     };
+
+    $scope.setTrackedEntityType = function(){
+        if ($scope.registrationMode === 'REGISTRATION') {
+            $scope.getAttributes($scope.registrationMode);
+        }
+        setSearchConfig();
+    }
+
+    $scope.showRegistrationButtons = function(){
+        return $scope.registrationMode === 'REGISTRATION' && ($scope.selectedProgram || showTetRegistrationButtons());
+    }
+
+    $scope.showTetRegistrationWarning =  function(){
+        return $scope.registrationMode === 'REGISTRATION' && (!$scope.selectedProgram && $scope.trackedEntityTypes.selected && !showTetRegistrationButtons());
+    }
+
+    var showTetRegistrationButtons = function(){
+        return $scope.trackedEntityTypes.selected && $scope.attributes && $scope.attributes.length > 3;
+    }
 });
