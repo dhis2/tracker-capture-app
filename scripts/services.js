@@ -2747,7 +2747,7 @@ i
                 if(response){
                     return response;
                 }else{
-                    return tetScopeSearchCount(searchGroup, tetSearchGroup, trackedEntityType, orgUnit, pager);
+                    return tetScopeSearchCount(tetSearchGroup, trackedEntityType, orgUnit, pager);
                 }
                 return 0;
             },function(error){
@@ -2759,8 +2759,8 @@ i
             return def.promise;
         }
     }
-    var tetScopeSearchCount = this.tetScopeSearchCount = function(searchGroup,tetSearchGroup, trackedEntityType, orgUnit, pager){
-        var params = getSearchParams(searchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET);
+    var tetScopeSearchCount = this.tetScopeSearchCount = function(tetSearchGroup, trackedEntityType, orgUnit, pager){
+        var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET);
         if(params){
             return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
                 if(response){
