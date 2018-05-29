@@ -113,6 +113,7 @@ trackerCapture.controller('RegistrationController',
             trackedEntityTypesById[entity.id] = entity;
         });
         $scope.trackedEntityTypes.available = AccessUtils.toWritable(entities);
+        $scope.trackedEntityTypes.writable = $scope.trackedEntityTypes.available.filter(t => t.access && t.access.data.write);
         if($scope.selectedProgram){
             $scope.trackedEntityTypes.selected = trackedEntityTypesById[$scope.selectedProgram.trackedEntityType.id];
         }

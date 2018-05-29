@@ -27,32 +27,23 @@
             </tr>
         </table>
     </script>
+    <div ng-if="!selectedProgram && registrationMode === 'REGISTRATION'">
+        <h2>
+            {{'register'| translate}}
+            <select
+            style="height:30px;margin-left:10px;"
+            name="trackedEntityTypeSelect"
+            ng-model="trackedEntityTypes.selected"
+            ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.writable | orderBy: 'displayName'"                               
+            ng-change="setTrackedEntityType()"
+            >
+            <option value="" disabled selected> </option>
+        </select> 
+        </h2> 
+    </div>
     <!--registration form starts -->
     <div ng-class="registrationMode === 'REGISTRATION' ? 'col-sm-7' : 'col-sm'">    
-        <form name="outerForm" novalidate>
-            <!-- Entity type begins -->
-            <div ng-if="!selectedProgram && registrationMode === 'REGISTRATION'">
-                <div class="section-label section-spacing vertical-spacing">
-                    {{'type'| translate}}
-                </div>
-                <table class="dhis2-list-table-striped dhis2-table-hover ">
-                    <tr>
-                        <td>
-                            {{'tracked_entity_type'| translate}}
-                        </td>
-                        <td>
-                            <select class="form-control"
-                                    ng-change="setTrackedEntityType()"
-                                    ng-model="trackedEntityTypes.selected"
-                                    ng-disabled="selectedOrgUnit.closedStatus"
-                                    ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.available | orderBy: 'displayName'">                                
-                            </select>                            
-                        </td>
-                    </tr>                   
-                </table>
-                <hr>
-            </div>
-            <!-- Entity type ends -->        
+        <form name="outerForm" novalidate> 
 
             <!--custom registration form begins -->
             <div class="vertical-spacing" ng-if="customRegistrationFormExists">
