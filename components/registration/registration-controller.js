@@ -34,6 +34,7 @@ trackerCapture.controller('RegistrationController',
                 AuthorityService,
                 SessionStorageService,
                 AttributeUtils) {
+    var prefilledTet = null;
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
     $scope.customRegistrationForm = null;    
@@ -109,6 +110,7 @@ trackerCapture.controller('RegistrationController',
     $scope.trackedEntityTypes = {available: []};
     var trackedEntityTypesById = {};
     TEService.getAll().then(function (entities) {
+        var currentTet = prefilledTet || ($scope.selectedTei && $scope.selectedTei.trackedEntityType);
         angular.forEach(entities, function(entity){
             trackedEntityTypesById[entity.id] = entity;
         });
@@ -116,6 +118,9 @@ trackerCapture.controller('RegistrationController',
         $scope.trackedEntityTypes.writable = $scope.trackedEntityTypes.available.filter(t => t.access && t.access.data.write);
         if($scope.selectedProgram){
             $scope.trackedEntityTypes.selected = trackedEntityTypesById[$scope.selectedProgram.trackedEntityType.id];
+        }else if(currentTet){
+            $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.writable.find(t => t.id === currentTet);
+            $scope.setTrackedEntityType();
         }
     });
 
@@ -216,6 +221,12 @@ trackerCapture.controller('RegistrationController',
 
         if($scope.registrationMode === 'REGISTRATION'){
             if($scope.registrationPrefill && !$scope.registrationPrefill.finished){
+                if(!$scope.selectedProgram){
+                    prefilledTet = $scope.registrationPrefill["tet"];
+                    if($scope.trackedEntityTypes.writable){
+                        $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.writable.find(t => t.id === prefilledTet);
+                    }
+                }
                 for(var key in $scope.registrationPrefill){
                     if($scope.attributesById[key]){
                         $scope.tei[key] = $scope.selectedTei[key] = $scope.registrationPrefill[key];
@@ -1174,9 +1185,7 @@ trackerCapture.controller('RegistrationController',
     };
 
     $scope.setTrackedEntityType = function(){
-        if ($scope.registrationMode === 'REGISTRATION') {
-            $scope.getAttributes($scope.registrationMode);
-        }
+        $scope.getAttributes($scope.registrationMode);
         setSearchConfig();
     }
 

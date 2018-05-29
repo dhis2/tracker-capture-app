@@ -214,6 +214,8 @@ trackerCapture.controller('SearchController',function(
         var canOpenRegistration = function(){
             if($scope.base.selectedProgram){
                 return AccessUtils.isWritable($scope.base.selectedProgram) && AccessUtils.isWritable($scope.trackedEntityTypes.selected);
+            }else if($scope.trackedEntityTypes.selected){
+                return AccessUtils.isWritable($scope.trackedEntityTypes.selected);
             }
             return false; 
         }
@@ -360,6 +362,9 @@ trackerCapture.controller('SearchController',function(
                     }
 
                 }
+            }
+            if(!$scope.selectedProgram){
+                prefill["tet"] = $scope.trackedEntityTypes.selected.id;
             }
             return prefill;
 
