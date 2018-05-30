@@ -59,6 +59,7 @@ trackerCapture.controller('DataEntryController',
     $scope.errorMessages = {};
     $scope.warningMessages = {};
     $scope.hiddenSections = {};
+    $scope.optionVisibility = {};
     $scope.stagesNotShowingInStageTasks = {};
     $scope.tabularEntryStages = [];
     $scope.tableMaxNumberOfDataElements = 15;
@@ -88,6 +89,7 @@ trackerCapture.controller('DataEntryController',
     $rootScope.$broadcast('DataEntryMainMenuVisibilitySet', {visible: $scope.useMainMenu, visibleItems: $scope.visibleWidgetsInMainMenu});
     
     $scope.attributesById = CurrentSelection.getAttributesById();
+    $scope.optionGroupsById = CurrentSelection.getOptionGroupsById();
 
     $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
     if(!$scope.attributesById){
@@ -289,6 +291,7 @@ trackerCapture.controller('DataEntryController',
         $scope.errorMessages[event] = [];
         $scope.hiddenFields[event] = [];
         $scope.mandatoryFields[event] = [];
+        $scope.optionVisibility = { showOnly: null, hidden: {}};
         
         angular.forEach($rootScope.ruleeffects[event], function (effect) {
             //in the data entry controller we only care about the "hidefield", showerror and showwarning actions
@@ -395,9 +398,11 @@ trackerCapture.controller('DataEntryController',
                         }
                     }
                 }
-            }else if (effect.action === "SETMANDATORYFIELD"){                    
+            }
+            else if (effect.action === "SETMANDATORYFIELD"){                    
                 $scope.mandatoryFields[event][effect.dataElement.id] = effect.ineffect;
-            }else if (effect.action === "HIDEPROGRAMSTAGE") {
+            }
+            else if (effect.action === "HIDEPROGRAMSTAGE") {
                 if (effect.programStage) {
                     if($scope.stagesNotShowingInStageTasks[effect.programStage.id] !== effect.ineffect )
                     {
@@ -408,6 +413,33 @@ trackerCapture.controller('DataEntryController',
                     $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEPROGRAMSTAGE, bot does not have a stage defined");
                 }
             }
+            else if(effect.action === "HIDEOPTION"){
+                if(effect.option){
+
+                    $scope.optionSetVisibility[effect.optionSet][effect.option] = false;
+                    $scope.optionSetVisibility
+                    $scope.optionVisibility.hidden[effect.option] = effect.ineffect;
+                }
+            }
+            else if(effect.action === "SHOWOPTIONGROUP"){
+                if(effect.optionGroup){
+
+                    var optionGroup = $scope.optionGroupsById[effect.optionGroup];
+
+                    optiongroup.options.forEach(option => {
+                        
+                    });
+
+
+                    if(!$scope.optionVisibility.showOnly){
+                        $scope.optionVisibility.showOnly = {};
+                    }
+                    $scope.optionGroupsById.options.forEach(option => {
+                        $scope.optionVisibility.showOnly[option.id] = effect.ineffect;
+                    });
+                }
+            }
+
         });
         
         updateTabularEntryStages();
@@ -716,7 +748,7 @@ trackerCapture.controller('DataEntryController',
             $rootScope.$broadcast('BeforeOpenEnrollment', $scope.showSelf);
             $scope.dashBoardWidgetFirstRun = false;
         
-    	    $scope.optionSets = selections.optionSets;
+            $scope.optionSets = selections.optionSets;
 
     	    $scope.stagesById = [];    	    
     	    if ($scope.selectedOrgUnit && $scope.selectedProgram && $scope.selectedProgram.id && $scope.selectedEntity ){
