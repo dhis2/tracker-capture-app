@@ -1362,9 +1362,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
     var defaultOperators = [$translate.instant('IS'), $translate.instant('RANGE') ];
     var boolOperators = [$translate.instant('yes'), $translate.instant('no')];
+    var textOperators = [$translate.instant('EQ')];
     return{
         defaultOperators: defaultOperators,
-        boolOperators: boolOperators
+        boolOperators: boolOperators,
+        textOperators: textOperators
     };
 })
 
@@ -2549,6 +2551,7 @@ i
     var programSearchConfigsById = {};
     var trackedEntityTypeSearchConfigsById = {};
     var defaultOperators = OperatorFactory.defaultOperators;
+    var textOperators = OperatorFactory.textOperators;
     var searchScopes = { PROGRAM: "PROGRAM", TET: "TET"};
 
     this.getSearchScopes = function(){ return searchScopes;}
@@ -2562,7 +2565,7 @@ i
                     searchConfig.searchGroupsByAttributeId[attr.id] = {};
                     if(attr.unique){
                         var uniqueAttr = attr.orgunitScope ? angular.copy(attr) : attr;
-                        uniqueAttr.operator = ["DATETIME", "NUMBER", "DATE"].includes(uniqueAttr.valueType) ? "Is" : "Eq";
+                        uniqueAttr.operator = ["DATETIME", "NUMBER", "DATE"].includes(uniqueAttr.valueType) ? defaultOperators[0] : textOperators[0];
                         var uniqueSearchGroup = {
                             id: dhis2.util.uid(),
                             uniqueGroup: true,
@@ -2576,7 +2579,7 @@ i
                         searchConfig.searchGroupsByAttributeId[uniqueAttr.id].unique = uniqueSearchGroup;
                     }
                     if(!attr.unique || attr.orgunitScope){
-                        if(attr.optionSetValue && attr.valueType === "TEXT") attr.operator = "Eq";
+                        if(attr.optionSetValue && attr.valueType === "TEXT") attr.operator = textOperators[0];
                         defaultSearchGroup.attributes.push(attr);
                         searchConfig.searchGroupsByAttributeId[attr.id].default = defaultSearchGroup;
                     }
