@@ -33,8 +33,7 @@ trackerCapture.controller('RegistrationController',
                 AccessUtils,
                 AuthorityService,
                 SessionStorageService,
-                AttributeUtils,
-                OptionSetService) {
+                AttributeUtils) {
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
     $scope.customRegistrationForm = null;    

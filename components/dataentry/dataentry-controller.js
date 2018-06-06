@@ -291,7 +291,7 @@ trackerCapture.controller('DataEntryController',
         $scope.errorMessages[event] = [];
         $scope.hiddenFields[event] = [];
         $scope.mandatoryFields[event] = [];
-        $scope.optionVisibility[event] = {};
+        $scope.optionVisibility[event] = { showOnly: null, hidden: {}};;
         
         var dataElementOptionsChanged = [];
         angular.forEach($rootScope.ruleeffects[event], function (effect) {
