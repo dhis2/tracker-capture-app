@@ -294,6 +294,7 @@ trackerCapture.controller('DataEntryController',
         $scope.optionVisibility[event] = { showOnly: null, hidden: {}};;
         
         var dataElementOptionsChanged = [];
+
         angular.forEach($rootScope.ruleeffects[event], function (effect) {
             //in the data entry controller we only care about the "hidefield", showerror and showwarning actions
             if (effect.action === "HIDEFIELD") {                    
@@ -425,10 +426,15 @@ trackerCapture.controller('DataEntryController',
             else if(effect.action === "SHOWOPTIONGROUP"){
                 if(effect.ineffect && effect.dataElement && effect.optionGroup){
                     if(!$scope.optionVisibility[event][effect.dataElement.id]) $scope.optionVisibility[event][effect.dataElement.id] = { hidden: {}};
-                    if(!$scope.optionVisibility[event][effect.dataElement.id].showOnly) $scope.optionVisibility[event][effect.dataElement.id].showOnly = {};
                     var optionGroup = $scope.optionGroupsById[effect.optionGroup.id];
-                    angular.extend($scope.optionVisibility[event][effect.dataElement.id].showOnly, optionGroup.optionsById);
-                    if(dataElementOptionsChanged.indexOf(effect.dataElement.id) === -1) dataElementOptionsChanged.push(effect.dataElement.id);
+                    if(optionGroup){
+                        if(!$scope.optionVisibility[event][effect.dataElement.id].showOnly) $scope.optionVisibility[event][effect.dataElement.id].showOnly = {};
+                        angular.extend($scope.optionVisibility[event][effect.dataElement.id].showOnly, optionGroup.optionsById);
+                        if(dataElementOptionsChanged.indexOf(effect.dataElement.id) === -1) dataElementOptionsChanged.push(effect.dataElement.id);
+                    }else{
+                        $log.warn("OptionGroup "+effect.optionGroup.id+" was not found");
+                    }
+
                 }
             }
 
