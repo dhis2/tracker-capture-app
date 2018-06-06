@@ -109,6 +109,18 @@ angular.module('trackerCapture')
 })
 
 .run(function($templateCache, $http, $rootScope){
+    Array.prototype.toHashMap = function(key, objFunc){
+        var hashmap = this.reduce((map, obj)  => {
+            if(objFunc) objFunc(map,obj,key);
+            if(obj[key] ==='jYDntjPUD5C'){
+                var g = 1;
+            }
+            map[obj[key]] = obj;
+            return map;
+        },{});
+        return hashmap;
+    }
+
     $http.get('components/dataentry/inner-form.html').then(function(page){
         $templateCache.put('components/dataentry/inner-form.html', page.data);
     });

@@ -291,8 +291,9 @@ trackerCapture.controller('DataEntryController',
         $scope.errorMessages[event] = [];
         $scope.hiddenFields[event] = [];
         $scope.mandatoryFields[event] = [];
-        $scope.optionVisibility = { showOnly: null, hidden: {}};
+        $scope.optionVisibility[event] = {};
         
+        var dataElementOptionsChanged = [];
         angular.forEach($rootScope.ruleeffects[event], function (effect) {
             //in the data entry controller we only care about the "hidefield", showerror and showwarning actions
             if (effect.action === "HIDEFIELD") {                    
@@ -414,37 +415,59 @@ trackerCapture.controller('DataEntryController',
                 }
             }
             else if(effect.action === "HIDEOPTION"){
-                if(effect.option){
-
-                    $scope.optionSetVisibility[effect.optionSet][effect.option] = false;
-                    $scope.optionSetVisibility
-                    $scope.optionVisibility.hidden[effect.option] = effect.ineffect;
+                if(effect.ineffect && effect.dataElement && effect.option){
+                    if(!$scope.optionVisibility[event][effect.dataElement.id]) $scope.optionVisibility[event][effect.dataElement.id] = { hidden: {}};
+                    if(!$scope.optionVisibility[event][effect.dataElement.id].hidden) $scope.optionVisibility[event][effect.dataElement.id].hidden = {};
+                    $scope.optionVisibility[event][effect.dataElement.id].hidden[effect.option.id] = effect.ineffect;
+                    if(dataElementOptionsChanged.indexOf(effect.dataElement.id) === -1) dataElementOptionsChanged.push(effect.dataElement.id);
                 }
             }
             else if(effect.action === "SHOWOPTIONGROUP"){
-                if(effect.optionGroup){
-
-                    var optionGroup = $scope.optionGroupsById[effect.optionGroup];
-
-                    optiongroup.options.forEach(option => {
-                        
-                    });
-
-
-                    if(!$scope.optionVisibility.showOnly){
-                        $scope.optionVisibility.showOnly = {};
-                    }
-                    $scope.optionGroupsById.options.forEach(option => {
-                        $scope.optionVisibility.showOnly[option.id] = effect.ineffect;
-                    });
+                if(effect.ineffect && effect.dataElement && effect.optionGroup){
+                    if(!$scope.optionVisibility[event][effect.dataElement.id]) $scope.optionVisibility[event][effect.dataElement.id] = { hidden: {}};
+                    if(!$scope.optionVisibility[event][effect.dataElement.id].showOnly) $scope.optionVisibility[event][effect.dataElement.id].showOnly = {};
+                    var optionGroup = $scope.optionGroupsById[effect.optionGroup.id];
+                    angular.extend($scope.optionVisibility[event][effect.dataElement.id].showOnly, optionGroup.optionsById);
+                    if(dataElementOptionsChanged.indexOf(effect.dataElement.id) === -1) dataElementOptionsChanged.push(effect.dataElement.id);
                 }
             }
 
         });
-        
+
+        //Run after effects are applied. Makes it possible to use multiple showOptionGroup effects.
+        clearValueForShowHideOptionActions(dataElementOptionsChanged, affectedEvent);
+
         updateTabularEntryStages();
         $rootScope.$broadcast('tei-report-widget', {events: $scope.allEventsSorted});
     };
+
+    var clearValueForShowHideOptionActions = function(dataElements, affectedEvent){
+        //Dont process if editing not allowed
+        if(['SCHEDULE','SKIPPED'].indexOf(affectedEvent.status) === -1 && !affectedEvent.editingNotAllowed){
+            dataElements.forEach(de => {
+                var value = affectedEvent[de];
+                //Only process if has selected value
+                if(angular.isDefined(value) && value !== "") {
+                    var optionSet = $scope.optionSets[$scope.prStDes[de].dataElement.optionSet.id];
+                    //Find selectedOption by displayName
+                    var selectedOption = optionSet.options.find(o => o.displayName === value);
+                    var shouldClear = !selectedOption;
+                    
+                    //If has selected option and a option is not in showOnly or is in hidden, field should be cleared.
+                    if(selectedOption){
+                        shouldClear = ($scope.optionVisibility[affectedEvent.event][de].showOnly && !$scope.optionVisibility[affectedEvent.event][de].showOnly[selectedOption.id]) || $scope.optionVisibility[affectedEvent.event][de].hidden[selectedOption.id];
+                    }
+        
+                    if(shouldClear){
+                        var message = ($scope.prStDes[de].dataElement.displayFormName + ' was blanked out because the option "'+value+'" got hidden by your last action');
+                        alert(message);
+                        affectedEvent[de] = "";
+                        $scope.saveDataValueForEvent($scope.prStDes[de], null, affectedEvent, true);
+                    }
+                }
+            });
+        }
+    }
     
     function updateTabularEntryStages() {
         $scope.tabularEntryStages = [];

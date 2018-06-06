@@ -790,7 +790,7 @@ trackerCapture.controller('TEIAddController',
     //listen for rule effect changes
     $scope.$on('ruleeffectsupdated', function(){
         $scope.warningMessages = [];
-        var effectResult = TrackerRulesExecutionService.processRuleEffectAttribute('registration', $scope.selectedTei, $scope.tei, $scope.attributesById, $scope.hiddenFields, $scope.warningMessages);
+        var effectResult = TrackerRulesExecutionService.processRuleEffectAttribute('registration', $scope.selectedTei, $scope.tei,null,null,null, $scope.attributesById, null, $scope.optionSets,$scope.optionGroupsById);
         $scope.selectedTei = effectResult.selectedTei;
         $scope.hiddenFields = effectResult.hiddenFields;
         $scope.warningMessages = effectResult.warningMessages;

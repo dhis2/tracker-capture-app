@@ -256,6 +256,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 /* Factory to fetch optionSets */
 .factory('OptionSetService', function($q, $rootScope, TCStorageService) {
+
     return {
         getAll: function(){
 
@@ -1367,10 +1368,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         boolOperators: boolOperators
     };
 })
-
 /* factory to fetch and process metadata */
 .factory('MetaDataFactory', function($q, $rootScope, TCStorageService) {
-
+    var cachedHashmaps = {};
     return {
         get: function(store, uid){
 

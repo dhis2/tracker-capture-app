@@ -128,15 +128,7 @@ trackerCapture.controller('DashboardController',
                 //get option sets
                 $scope.optionSets = [];
                 MetaDataFactory.getAll('optionGroups').then(function(optionGroups){
-                    var optionGroupsById = optionGroups.reduce((groupMap, optionGroup) => {
-                        optionGroup.optionsById = optionGroup.options.reduce((optionMap, option) => {
-                            optionMap[option.id] = option;
-                            return optionMap;                            
-                        },{});
-                        groupMap[optionGroup.id] = optionGroup;
-                        return groupMap;
-                    },{});
-                    
+                    var optionGroupsById = optionGroups.toHashMap('id', (map,obj,key) => { obj.optionsById = obj.options.toHashMap('id'); });
                     CurrentSelection.setOptionGroupsById(optionGroupsById);
 
                     MetaDataFactory.getAll('optionSets').then(function (optionSets) {

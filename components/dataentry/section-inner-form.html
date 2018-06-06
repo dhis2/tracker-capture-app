@@ -6,10 +6,9 @@
                                  d2-model-id="de.id"
                                  d2-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
                                  d2-disabled="!dataElementEditable(prStDes[de.id])"
-                                 d2-save-methode="saveDatavalue"
-                                 d2-save-methode-parameter1="prStDes[de.id]"
-                                 d2-save-methode-parameter2="innerForm.foo"
+                                 d2-change="saveDatavalue(prStDes[de.id],innerForm.foo)"
                                  d2-max-option-size="maxOptionSize"
+                                 d2-option-filter="optionVisibility[currentEvent.event]"
                                  d2-all-options="optionSets[prStDes[de.id].dataElement.optionSet.id].options"
                                  d2-use-notification="true"
                                  d2-element="currentElement">
