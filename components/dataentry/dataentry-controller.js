@@ -418,8 +418,7 @@ trackerCapture.controller('DataEntryController',
             else if(effect.action === "HIDEOPTION"){
                 if(effect.ineffect && effect.dataElement && effect.option){
                     if(!$scope.optionVisibility[event][effect.dataElement.id]) $scope.optionVisibility[event][effect.dataElement.id] = { hidden: {}};
-                    if(!$scope.optionVisibility[event][effect.dataElement.id].hidden) $scope.optionVisibility[event][effect.dataElement.id].hidden = {};
-                    $scope.optionVisibility[event][effect.dataElement.id].hidden[effect.option.id] = effect.ineffect;
+                    $scope.optionVisibility[event][effect.dataElement.id].hidden[effect.option.id] = { id: effect.option.id };
                     if(dataElementOptionsChanged.indexOf(effect.dataElement.id) === -1) dataElementOptionsChanged.push(effect.dataElement.id);
                 }
             }
@@ -430,6 +429,19 @@ trackerCapture.controller('DataEntryController',
                     if(optionGroup){
                         if(!$scope.optionVisibility[event][effect.dataElement.id].showOnly) $scope.optionVisibility[event][effect.dataElement.id].showOnly = {};
                         angular.extend($scope.optionVisibility[event][effect.dataElement.id].showOnly, optionGroup.optionsById);
+                        if(dataElementOptionsChanged.indexOf(effect.dataElement.id) === -1) dataElementOptionsChanged.push(effect.dataElement.id);
+                    }else{
+                        $log.warn("OptionGroup "+effect.optionGroup.id+" was not found");
+                    }
+
+                }
+            }
+            else if(effect.action === "HIDEOPTIONGROUP"){
+                if(effect.ineffect && effect.dataElement && effect.optionGroup){
+                    if(!$scope.optionVisibility[event][effect.dataElement.id]) $scope.optionVisibility[event][effect.dataElement.id] = { hidden: {}};
+                    var optionGroup = $scope.optionGroupsById[effect.optionGroup.id];
+                    if(optionGroup){
+                        angular.extend($scope.optionVisibility[event][effect.dataElement.id].hidden, optionGroup.optionsById);
                         if(dataElementOptionsChanged.indexOf(effect.dataElement.id) === -1) dataElementOptionsChanged.push(effect.dataElement.id);
                     }else{
                         $log.warn("OptionGroup "+effect.optionGroup.id+" was not found");
