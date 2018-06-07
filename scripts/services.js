@@ -643,6 +643,58 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     }
 })
 
+
+.factory('TeiDataApiService', function($http,$q){
+    var needAuditErrorCode = 222;
+    var handleSuccess = function(response){
+        return response;
+    }
+    var handleError = function(error,tei,program, postAuditApiFn){
+        if(error.code === needAuditErrorCode){
+            return handleAudit(tei,program,postAuditApiFn);
+        }else{
+            var def = $q.defer();
+            def.reject(error);
+            return def.promise;
+        }
+    }
+
+    var handleAudit = function(tei,program, postAuditApiFn){
+        AuditService.audit(tei,program).then(function(response){
+            return callApi(postAuditApiFn,tei,program);
+        }, function(error){
+            var def = $q.defer();
+            def.reject(error);
+            return def.promise;
+        });
+    }
+    var service = {};
+
+    var callApi = function(apiFn,tei,program){
+        return apiFn().then(function(response){
+            return response;
+        },function(error){
+            return handleError(error,tei,program, apiFn);
+        });
+    }
+
+    service.get = function(tei, program, url){
+        return callApi(() => $http.get(url), tei, program);
+    }
+
+    service.post = function(tei,program,url, data){
+        return callApi(() => $http.post(url,data), tei, program);
+    }
+
+    service.put = function(tei,program,url, data){
+        return callApi(() => $http.put(url,data), tei, program);
+    }
+
+    service.delete = function(tei,program,url, data){
+        return callApi(() => $http.delete(url,data), tei, program);
+    }
+    return service;
+})
 /* Service for getting tracked entity */
 .factory('TEService', function(TCStorageService, $q, $rootScope, AttributesFactory) {
     var allAccesses = null;
