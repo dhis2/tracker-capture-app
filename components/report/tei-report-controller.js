@@ -42,7 +42,7 @@ trackerCapture.controller('TeiReportController',
     
     $scope.$on('tei-report-widget', function(event, eventContainer) {
 
-        setEvents(eventContainer.events);
+        setEvents(angular.copy(eventContainer.events));
         loadReportDetails($scope.selectedProgram);
     });
 
@@ -153,7 +153,7 @@ trackerCapture.controller('TeiReportController',
 
             $scope.stagesById[stage.id] = stage;
         });        
-
+        var allEnrollments = selections.enrollments;
         //program reports come grouped in enrollment, process for each enrollment
         var enrollments = [];
         var promises = [];
@@ -161,39 +161,24 @@ trackerCapture.controller('TeiReportController',
             $scope.enrollments = [];
             return;
         }
-        
-        angular.forEach(Object.keys($scope.selectedReport.enrollments), function (enr) {
-            //format report data values
-            angular.forEach($scope.selectedReport.enrollments[enr], function (ev) {
-
-                angular.forEach(ev.notes, function (note) {
-                    note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
-                    //get enrollment details
-                    promises.push(EnrollmentService.get(enr).then(function (enrollment) {
-                        if (enrollment) {
-                            angular.forEach(enrollment.notes, function (note) {
-                                note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
-                            });
-                            enrollments.push(enrollment);
-                        }
-                    }));
-
-                    if (ev.dataValues) {
-                        ev = EventUtils.processEvent(ev, $scope.stagesById[ev.programStage], $scope.optionSets, $scope.prStDes);
-                    }
-                });
+        Object.keys($scope.selectedReport.enrollments).forEach(enr => {
+            $scope.selectedReport.enrollments[enr].forEach(ev => {
+                if(ev.notes){
+                    ev.notes.forEach(note => {
+                        note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
+                    });
+                }
             });
-            //get enrollment details
-            promises.push(EnrollmentService.get(enr).then(function (enrollment) {
-                angular.forEach(enrollment.notes, function (note) {
+            var foundEnrollment = allEnrollments.find(e => e.enrollment === enr);
+            var enrollment = angular.copy(foundEnrollment);
+            if(enrollment.notes){
+                enrollment.notes.forEach(note => {
                     note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
                 });
-                enrollments.push(enrollment);
-            }));
+            }
+            enrollments.push(enrollment);
         });
-        $q.all(promises).then(function(){
-            $scope.enrollments = enrollments;
-        });
+        $scope.enrollments = enrollments;
     };
     
     $scope.close = function(){

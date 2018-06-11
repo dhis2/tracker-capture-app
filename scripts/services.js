@@ -458,17 +458,23 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 /* service to deal with TEI registration and update */
 .service('RegistrationService', function(TEIService, $q){
+    var convertFromUserToApi = function(tei){
+        delete tei.enrollment;
+        return tei;
+    };
+
     return {
         registerOrUpdate: function(tei, optionSets, attributesById){
-            if(tei){
+            var apiTei = convertFromUserToApi(angular.copy(tei));
+            if(apiTei){
                 var def = $q.defer();
-                if(tei.trackedEntityInstance){
-                    TEIService.update(tei, optionSets, attributesById).then(function(response){
+                if(apiTei.trackedEntityInstance){
+                    TEIService.update(apiTei, optionSets, attributesById).then(function(response){
                         def.resolve(response);
                     });
                 }
                 else{
-                    TEIService.register(tei, optionSets, attributesById).then(function(response){
+                    TEIService.register(apiTei, optionSets, attributesById).then(function(response){
                         def.resolve(response);
                     });
                 }
@@ -518,7 +524,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service to deal with enrollment */
-.service('EnrollmentService', function($http, DHIS2URL, DateUtils, NotificationService, $translate) {
+.service('EnrollmentService', function($http, DHIS2URL, DateUtils, NotificationService, $translate, TeiAccessApiService) {
 
     var convertFromApiToUser = function(enrollment){
         if(enrollment.enrollments){
@@ -538,14 +544,16 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         enrollment.incidentDate = DateUtils.formatFromUserToApi(enrollment.incidentDate);
         enrollment.enrollmentDate = DateUtils.formatFromUserToApi(enrollment.enrollmentDate);
         delete enrollment.orgUnitName;
+        delete enrollment.events;
         return enrollment;
     };
     var errorHeader = $translate.instant("error");
     return {
-        get: function( enrollmentUid ){
-            var promise = $http.get(  DHIS2URL + '/enrollments/' + enrollmentUid ).then(function(response){
+        get: function( enrollmentUid,teiUid, programUid){
+            var url = DHIS2URL + '/enrollments/' + enrollmentUid;
+            return TeiAccessApiService.get(teiUid, programUid, url).then(function(response){
                 return convertFromApiToUser(response.data);
-            },function(response){
+            }, function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
                 if (response && response.data && response.data.status === 'ERROR') {
                     if (response.data.message) {
@@ -555,7 +563,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 NotificationService.showNotifcationDialog(errorHeader, errorBody);
                 return null;
             });
-            return promise;
         },
         getByEntity: function( entity ){
             var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&fields=:all&paging=false').then(function(response){
@@ -568,7 +575,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getByEntityAndProgram: function( entity, program ){
-            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&program=' + program + '&fields=:all&paging=false').then(function(response){
+            var url = DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&program=' + program + '&fields=:all&paging=false';
+            var promise = TeiAccessApiService.get(entity,program,url).then(function(response){
                 return convertFromApiToUser(response.data);
             }, function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
@@ -589,7 +597,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         enroll: function( enrollment ){
             var en = convertFromUserToApi(angular.copy(enrollment));
-            var promise = $http.post(  DHIS2URL + '/enrollments', en ).then(function(response){
+            var promise = TeiAccessApiService.post(enrollment.trackedEntityInstance, enrollment.program,  DHIS2URL + '/enrollments', en ).then(function(response){
                 return response.data;
             }, function(response){
                 var errorBody = $translate.instant('failed_to_save_enrollment');
@@ -601,7 +609,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         update: function( enrollment ){
             var en = convertFromUserToApi(angular.copy(enrollment));
             delete en.notes;
-            var promise = $http.put( DHIS2URL + '/enrollments/' + en.enrollment , en ).then(function(response){
+            var promise = TeiAccessApiService.put(enrollment.trackedEntityInstance, enrollment.program, DHIS2URL + '/enrollments/' + en.enrollment , en ).then(function(response){
                 return response.data;
             }, function(response){
                 var errorBody = $translate.instant('failed_to_update_enrollment');
@@ -610,8 +618,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        delete: function( enrollmentUid ){
-            var promise = $http.delete(DHIS2URL + '/enrollments/' + enrollmentUid).then(function(response){
+        delete: function(enrollment){
+            var promise = TeiAccessApiService.delete(enrollment.trackedEntityInstance, enrollment.program, DHIS2URL + '/enrollments/' + enrollment.enrollment).then(function(response){
                 return response.data;
             }, function (response) {
                 if (response && response.data && response.data.status === 'ERROR') {
@@ -624,7 +632,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         updateForNote: function( enrollment ){
-            var promise = $http.post(DHIS2URL + '/enrollments/' + enrollment.enrollment + '/note', enrollment).then(function(response){
+            var promise = TeiAccessApiService.post(enrollment.trackedEntityInstance, enrollment.program, DHIS2URL + '/enrollments/' + enrollment.enrollment + '/note', enrollment).then(function(response){
                 return response.data;
             }, function(response){
                 var errorBody = $translate.instant('failed_to_update_enrollment');
@@ -644,8 +652,27 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 
-.factory('TeiAccessApiService', function($http,$q){
+.factory('TeiAccessApiService', function($http,$q,$modal){
     var needAuditErrorCode = 222;
+    var modalDefaultSettings = {
+        templateUrl: 'components/teiAudit/tei-audit.html',
+        controller: 'TeiAuditController'
+    }
+    var getModalSettings = function(tei,program){
+        return {
+            templateUrl: 'components/teiAudit/tei-audit.html',
+            controller: 'TeiAuditController',
+            resolve: {
+                tei: function(){
+                    return tei;
+                },
+                program: function(){
+                    return program;
+                }
+            }
+        }
+    }
+
     var handleSuccess = function(response){
         return response;
     }
@@ -659,23 +686,46 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         }
     }
 
+    var saveAuditMessage = function(tei,program,auditMessage){
+        var def = $q.defer();
+        def.resolve();
+        return def.promise;
+        //return $http.post(DHIS2URL+'/teiAudit?trackedEntityInstance='+tei+'&program='+program+'&auditMessage='+auditMessage);
+    }
+
     var handleAudit = function(tei,program, postAuditApiFn){
-        AuditService.audit(tei,program).then(function(response){
-            return callApi(postAuditApiFn,tei,program);
+        return $modal.open(getModalSettings(tei,program)).result.then(function(result){
+            return saveAuditMessage(tei,program,result.auditMessage).then(function(result){
+                return callApi(postAuditApiFn, tei,program);
+            }, function(error){
+                var def = $q.defer();
+                def.reject(error);
+                return def.promise;
+            });
         }, function(error){
             var def = $q.defer();
             def.reject(error);
             return def.promise;
         });
     }
+
     var service = {};
 
     var callApi = function(apiFn,tei,program){
-        return apiFn().then(function(response){
+        var def = $q.defer();
+        def.reject({code: 222});
+
+        return def.promise.then(function(response){
             return response;
         },function(error){
             return handleError(error,tei,program, apiFn);
         });
+        /*
+        return apiFn().then(function(response){
+            return response;
+        },function(error){
+            return handleError(error,tei,program, apiFn);
+        });*/
     }
 
     service.get = function(tei, program, url){
@@ -782,24 +832,35 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         return url;
     }
     var setTeiAttributeValues = function(teiAttributes, optionSets, attributesById){
-        teiAttributes.forEach(attr => {
+        teiAttributes.forEach(att => {
             if(attributesById[att.attribute]){
                 att.displayName = attributesById[att.attribute].displayName;
                 att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');
             }
         });
     }
+
+    var convertFromUserToApi = function(tei){
+        delete tei.enrollments;
+        return tei;
+    }
     return {
-        getWithProgramData: function(teiUid,programUid,optionSets, attributesById){
-            return TeiAccessApiService(DHIS2URL+'/trackedEntityInstances/'+entityUid+'.json?program='+programUid+'&fields=enrollments[*]').then(response){
+        getWithProgramData: function(entityUid,programUid, optionSets, attributesById){
+            return TeiAccessApiService.get(entityUid, programUid, DHIS2URL+'/trackedEntityInstances/'+entityUid+'.json?program='+programUid+'&fields=*').then(function(response){
                 var tei = response.data;
-                setTeiAttributeValues(response.tei.attributes, optionSets, attributesById);
+                setTeiAttributeValues(tei.attributes, optionSets, attributesById);
+                if(tei.enrollments){
+                    tei.enrollments.forEach(e => {
+                        e.incidentDate = DateUtils.formatFromApiToUser(e.incidentDate);
+                        e.enrollmentDate = DateUtils.formatFromApiToUser(e.enrollmentDate);
+                    });
+                }
+
                 return tei;
             }, function(error){
                 
             });
         },
-
         get: function(entityUid, optionSets, attributesById){
             var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
                 var tei = response.data;
@@ -945,7 +1006,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return deferred.promise;
         },
         update: function(tei, optionSets, attributesById){
-            var formattedTei = angular.copy(tei);
+            var formattedTei = convertFromUserToApi(angular.copy(tei));
             var attributes = [];
             angular.forEach(formattedTei.attributes, function(att){
                 attributes.push({attribute: att.attribute, value: CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API')});
@@ -960,7 +1021,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         register: function(tei, optionSets, attributesById){
-            var formattedTei = angular.copy(tei);
+            var formattedTei = convertFromUserToApi(angular.copy(tei));
             var attributes = [];
             angular.forEach(formattedTei.attributes, function(att){
                 attributes.push({attribute: att.attribute, value: CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API')});
@@ -1235,14 +1296,22 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* factory for handling events */
-.factory('DHIS2EventFactory', function($http, DHIS2URL, NotificationService, $translate) {
+.factory('DHIS2EventFactory', function($http, DHIS2URL, NotificationService, $translate, TeiAccessApiService) {
 
     var skipPaging = "&skipPaging=true";
     var errorHeader = $translate.instant("error");
+
+    var getContextEvent = function(dhis2Event){
+        if(Array.isArray(dhis2Event)){
+            return dhis2Event[0];
+        }
+        return dhis2Event;
+    }
+
     return {
 
         getEventsByStatus: function(entity, orgUnit, program, programStatus){
-            var promise = $http.get( DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + '&orgUnit=' + orgUnit + '&program=' + program + '&programStatus=' + programStatus  + skipPaging).then(function(response){
+            var promise = TeiAccessApiService.get(entity,program, DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + '&orgUnit=' + orgUnit + '&program=' + program + '&programStatus=' + programStatus  + skipPaging).then(function(response){
                 return response.data.events;
             }, function (response) {
 
@@ -1255,15 +1324,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         getEventsByProgram: function(entity, program, attributeCategory){
             var url = DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging;
 
-            if(program){
-                url = url + '&program=' + program;
-            }
+            url = url + '&program=' + program;
 
             if( attributeCategory && !attributeCategory.default){
                 url = url + '&attributeCc=' + attributeCategory.cc + '&attributeCos=' + attributeCategory.cp;
             }
 
-            var promise = $http.get( url ).then(function(response){
+            var promise = TeiAccessApiService.get(entity,program, url ).then(function(response){
                 return response.data.events;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_fetch_events');
@@ -1272,12 +1339,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        getEventsByProgramStage: function(entity, programStage){
+        getEventsByProgramStage: function(entity, program, programStage){
             var url = DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging;
             if(programStage){
                 url += '&programStage='+programStage;
             }
-            var promise = $http.get(url).then(function(response){
+            var promise = TeiAccessApiService.get(entity,program, url).then(function(response){
                 return response.data.events;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_fetch_events');
@@ -1304,8 +1371,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        get: function(eventUid){
-            var promise = $http.get(DHIS2URL + '/events/' + eventUid + '.json').then(function(response){
+        get: function(teiUid, programUid, eventUid){
+            var promise = TeiAccessApiService.get(teiUid, programUid, DHIS2URL + '/events/' + eventUid + '.json').then(function(response){
                 return response.data;
             }, function (response) {
                 if (response && response.data && response.data.status === 'ERROR') {
@@ -1316,7 +1383,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         create: function(dhis2Event){
-            var promise = $http.post(DHIS2URL + '/events.json', dhis2Event).then(function(response){
+            var contextEvent = getContextEvent(dhis2Event);
+            var promise = TeiAccessApiService.post(contextEvent.trackedEntityInstance, contextEvent.program, DHIS2URL + '/events.json', dhis2Event).then(function(response){
                 return response.data;
             }, function (response) {
                 if (response && response.data && (response.data.status === 'ERROR' || response.data.status === 'WARNING')) {
@@ -1328,7 +1396,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         delete: function(dhis2Event){
-            var promise = $http.delete(DHIS2URL + '/events/' + dhis2Event.event).then(function(response){
+            var contextEvent = getContextEvent(dhis2Event);
+            var promise = TeiAccessApiService.delete(contextEvent.trackedEntityInstance, contextEvent.program, DHIS2URL + '/events/' + dhis2Event.event).then(function(response){
                 return response.data;
             }, function (response) {
                 if (response && response.data && response.data.status === 'ERROR') {
@@ -1339,7 +1408,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         update: function(dhis2Event){
-            var promise = $http.put(DHIS2URL + '/events/' + dhis2Event.event, dhis2Event).then(function(response){
+            var contextEvent = getContextEvent(dhis2Event);
+            var promise = TeiAccessApiService.put(contextEvent.trackedEntityInstance, contextEvent.program, DHIS2URL + '/events/' + dhis2Event.event, dhis2Event).then(function(response){
                 return response.data;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_update_event');
@@ -1348,7 +1418,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         updateForSingleValue: function(singleValue){
-            var promise = $http.put(DHIS2URL + '/events/' + singleValue.event + '/' + singleValue.dataValues[0].dataElement, singleValue ).then(function(response){
+            var promise = TeiAccessApiService.put(singleValue.trackedEntityInstance, singleValue.program, DHIS2URL + '/events/' + singleValue.event + '/' + singleValue.dataValues[0].dataElement, singleValue ).then(function(response){
                 return response.data;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_update_event');
@@ -1358,7 +1428,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         updateForNote: function(dhis2Event){
-            var promise = $http.post(DHIS2URL + '/events/' + dhis2Event.event + '/note', dhis2Event).then(function(response){
+            var contextEvent = getContextEvent(dhis2Event);
+            var promise = TeiAccessApiService.post(contextEvent.trackedEntityInstance, contextEvent.program, DHIS2URL + '/events/' + dhis2Event.event + '/note', dhis2Event).then(function(response){
                 return response.data;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_update_event');
@@ -1368,7 +1439,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         updateForEventDate: function(dhis2Event){
-            var promise = $http.put(DHIS2URL + '/events/' + dhis2Event.event + '/eventDate', dhis2Event).then(function(response){
+            var contextEvent = getContextEvent(dhis2Event);
+            var promise = TeiAccessApiService.put(contextEvent.trackedEntityInstance, contextEvent.program, DHIS2URL + '/events/' + dhis2Event.event + '/eventDate', dhis2Event).then(function(response){
                 return response.data;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_update_event');
