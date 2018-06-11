@@ -644,7 +644,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 
-.factory('TeiDataApiService', function($http,$q){
+.factory('TeiAccessApiService', function($http,$q){
     var needAuditErrorCode = 222;
     var handleSuccess = function(response){
         return response;
@@ -745,7 +745,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service for getting tracked entity instances */
-.factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService ) {
+.factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService, TeiAccessApiService) {
     var errorHeader = $translate.instant("error");
     var getSearchUrl = function(type,ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
         var baseUrl = DHIS2URL + '/trackedEntityInstances/'+type;
@@ -781,20 +781,31 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         }
         return url;
     }
-    var getFormatUrl = function(){
-
+    var setTeiAttributeValues = function(teiAttributes, optionSets, attributesById){
+        teiAttributes.forEach(attr => {
+            if(attributesById[att.attribute]){
+                att.displayName = attributesById[att.attribute].displayName;
+                att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');
+            }
+        });
     }
     return {
+        getWithProgramData: function(teiUid,programUid,optionSets, attributesById){
+            return TeiAccessApiService(DHIS2URL+'/trackedEntityInstances/'+entityUid+'.json?program='+programUid+'&fields=enrollments[*]').then(response){
+                var tei = response.data;
+                setTeiAttributeValues(response.tei.attributes, optionSets, attributesById);
+                return tei;
+            }, function(error){
+                
+            });
+        },
+
         get: function(entityUid, optionSets, attributesById){
             var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
                 var tei = response.data;
-                angular.forEach(tei.attributes, function(att){
-                    if(attributesById[att.attribute]){
-                        att.displayName = attributesById[att.attribute].displayName;
-                        att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');
-                    }
-                });
+                setTeiAttributeValues(tei.attributes, optionSets, attributesById);
                 return tei;
+
             }, function(error){
                 if(error){
                     var headerText = errorHeader;
