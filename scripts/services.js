@@ -39,7 +39,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     var store = new dhis2.storage.Store({
         name: "dhis2tc",
         adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],
-        objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements', 'programAccess','programStageAccess','trackedEntityTypeAccess']
+        objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements', 'programAccess','programStageAccess','trackedEntityTypeAccess','optionGroups']
     });
     return{
         currentStore: store
@@ -1362,15 +1362,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
     var defaultOperators = [$translate.instant('IS'), $translate.instant('RANGE') ];
     var boolOperators = [$translate.instant('yes'), $translate.instant('no')];
+    var textOperators = [$translate.instant('EQ')];
     return{
         defaultOperators: defaultOperators,
-        boolOperators: boolOperators
+        boolOperators: boolOperators,
+        textOperators: textOperators
     };
 })
-
 /* factory to fetch and process metadata */
 .factory('MetaDataFactory', function($q, $rootScope, TCStorageService) {
-
     return {
         get: function(store, uid){
 
@@ -2549,6 +2549,7 @@ i
     var programSearchConfigsById = {};
     var trackedEntityTypeSearchConfigsById = {};
     var defaultOperators = OperatorFactory.defaultOperators;
+    var textOperators = OperatorFactory.textOperators;
     var searchScopes = { PROGRAM: "PROGRAM", TET: "TET"};
 
     this.getSearchScopes = function(){ return searchScopes;}
@@ -2562,7 +2563,7 @@ i
                     searchConfig.searchGroupsByAttributeId[attr.id] = {};
                     if(attr.unique){
                         var uniqueAttr = attr.orgunitScope ? angular.copy(attr) : attr;
-                        uniqueAttr.operator = ["DATETIME", "NUMBER", "DATE"].includes(uniqueAttr.valueType) ? "Is" : "Eq";
+                        uniqueAttr.operator = ["DATETIME", "NUMBER", "DATE"].includes(uniqueAttr.valueType) ? defaultOperators[0] : textOperators[0];
                         var uniqueSearchGroup = {
                             id: dhis2.util.uid(),
                             uniqueGroup: true,
@@ -2576,7 +2577,7 @@ i
                         searchConfig.searchGroupsByAttributeId[uniqueAttr.id].unique = uniqueSearchGroup;
                     }
                     if(!attr.unique || attr.orgunitScope){
-                        if(attr.optionSetValue && attr.valueType === "TEXT") attr.operator = "Eq";
+                        if(attr.optionSetValue && attr.valueType === "TEXT") attr.operator = textOperators[0];
                         defaultSearchGroup.attributes.push(attr);
                         searchConfig.searchGroupsByAttributeId[attr.id].default = defaultSearchGroup;
                     }

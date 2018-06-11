@@ -46,16 +46,50 @@
                                         <td>
                                             {{selectedProgram.enrollmentDateLabel}}
                                         </td>
-                                        <td class="absorbing-column">
+                                        <td class="absorbing-column" ng-if="!enrollmentDateState.editable">
                                             <input type="text" placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.enrollmentDate" ng-disabled="true"/>
+                                        </td>
+                                        <td class="absorbing-column" ng-if="enrollmentDateState.editable">
+                                            <form name="enrollmentDateForm" novalidate>
+                                                <input type="text"
+                                                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
+                                                    name="enrollmentDate" 
+                                                    class="form-control hideInPrint" 
+                                                    d2-date 
+                                                    ng-class="getReportDateNotificationClass('enrollmentdate')"
+                                                    ng-model="enrollmentDateState.date"
+                                                    min-date="enrollmentDateState.minDate"
+                                                    max-date="enrollmentDateState.maxDate"
+                                                    blur-or-change="updateEnrollmentDate()"
+                                                    ng-disabled="selectedOrgUnit.closedStatus"
+                                                    ng-required="true"/>
+                                            </form>
+
                                         </td>
                                     </tr>
                                     <tr ng-if="selectedProgram.displayIncidentDate">                    
                                         <td>
                                             {{selectedProgram.incidentDateLabel}}
                                         </td>
-                                        <td class="absorbing-column">
+                                        <td class="absorbing-column" ng-if="!incidentDateState.editable">
                                             <input type="text" placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.incidentDate" ng-disabled="true"/>
+                                        </td>
+                                        <td class="absorbing-column" ng-if="incidentDateState.editable">
+                                            <ng-form name="incidentDateForm" novalidate>
+                                                <input type="text"
+                                                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
+                                                    name="enrollmentDate" 
+                                                    class="form-control hideInPrint" 
+                                                    d2-date 
+                                                    ng-class="getReportDateNotificationClass('incidentdate')"
+                                                    ng-model="incidentDateState.date"
+                                                    min-date="incidentDateState.minDate"
+                                                    max-date="incidentDateState.maxDate"
+                                                    blur-or-change="updateIncidentDate()"
+                                                    ng-disabled="selectedOrgUnit.closedStatus"
+                                                    ng-required="true"/>
+                                            </form>
+
                                         </td>
                                     </tr>
                                     <tr ng-if="selectedProgram.captureCoordinates">

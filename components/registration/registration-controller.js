@@ -56,6 +56,7 @@ trackerCapture.controller('RegistrationController',
     $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
 
     $scope.attributesById = CurrentSelection.getAttributesById();
+    $scope.optionGroupsById = CurrentSelection.getOptionGroupsById();
     $scope.fileNames = CurrentSelection.getFileNames();
     $scope.currentFileNames = $scope.fileNames;
 
@@ -70,6 +71,13 @@ trackerCapture.controller('RegistrationController',
             });
             
             CurrentSelection.setAttributesById($scope.attributesById);
+        });
+    }
+
+    if(!$scope.optionGroupsById){
+        MetaDataFactory.getAll('optionGroups').then(function(optionGroups){
+            $scope.optionGroupsById = optionGroups.toHashMap('id', (map,obj,key) => { obj.optionsById = obj.options.toHashMap('id'); });
+            CurrentSelection.setOptionGroupsById($scope.optionGroupsById);
         });
     }
     
@@ -730,7 +738,7 @@ trackerCapture.controller('RegistrationController',
             $scope.errorMessages = {};
             $scope.hiddenSections = [];
 
-            var effectResult = TrackerRulesExecutionService.processRuleEffectAttribute(args.event, $scope.selectedTei, $scope.tei, $scope.currentEvent, {}, $scope.currentEvent, $scope.attributesById, $scope.prStDes, $scope.hiddenFields, $scope.hiddenSections, $scope.warningMessages, $scope.assignedFields, $scope.optionSets);
+            var effectResult = TrackerRulesExecutionService.processRuleEffectAttribute(args.event, $scope.selectedTei, $scope.tei, $scope.currentEvent, {}, $scope.currentEvent, $scope.attributesById, $scope.prStDes,$scope.optionSets, $scope.optionGroupsById);
             $scope.selectedTei = effectResult.selectedTei;
             $scope.currentEvent = effectResult.currentEvent;
             $scope.hiddenFields = effectResult.hiddenFields;
@@ -738,6 +746,7 @@ trackerCapture.controller('RegistrationController',
             $scope.assignedFields = effectResult.assignedFields;
             $scope.warningMessages = effectResult.warningMessages;
             $scope.mandatoryFields = effectResult.mandatoryFields;
+            $scope.optionVisibility = effectResult.optionVisibility;
             if($scope.assignedFields){
                 var searchedGroups = {};
                 angular.forEach($scope.assignedFields, function(field){

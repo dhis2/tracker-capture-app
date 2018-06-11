@@ -59,6 +59,7 @@ trackerCapture.controller('DataEntryController',
     $scope.errorMessages = {};
     $scope.warningMessages = {};
     $scope.hiddenSections = {};
+    $scope.optionVisibility = {};
     $scope.stagesNotShowingInStageTasks = {};
     $scope.tabularEntryStages = [];
     $scope.tableMaxNumberOfDataElements = 15;
@@ -88,6 +89,7 @@ trackerCapture.controller('DataEntryController',
     $rootScope.$broadcast('DataEntryMainMenuVisibilitySet', {visible: $scope.useMainMenu, visibleItems: $scope.visibleWidgetsInMainMenu});
     
     $scope.attributesById = CurrentSelection.getAttributesById();
+    $scope.optionGroupsById = CurrentSelection.getOptionGroupsById();
 
     $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
     if(!$scope.attributesById){
@@ -289,7 +291,10 @@ trackerCapture.controller('DataEntryController',
         $scope.errorMessages[event] = [];
         $scope.hiddenFields[event] = [];
         $scope.mandatoryFields[event] = [];
+        $scope.optionVisibility[event] = { showOnly: null, hidden: {}};;
         
+        var dataElementOptionsChanged = [];
+
         angular.forEach($rootScope.ruleeffects[event], function (effect) {
             //in the data entry controller we only care about the "hidefield", showerror and showwarning actions
             if (effect.action === "HIDEFIELD") {                    
@@ -395,9 +400,11 @@ trackerCapture.controller('DataEntryController',
                         }
                     }
                 }
-            }else if (effect.action === "SETMANDATORYFIELD"){                    
+            }
+            else if (effect.action === "SETMANDATORYFIELD"){                    
                 $scope.mandatoryFields[event][effect.dataElement.id] = effect.ineffect;
-            }else if (effect.action === "HIDEPROGRAMSTAGE") {
+            }
+            else if (effect.action === "HIDEPROGRAMSTAGE") {
                 if (effect.programStage) {
                     if($scope.stagesNotShowingInStageTasks[effect.programStage.id] !== effect.ineffect )
                     {
@@ -408,11 +415,77 @@ trackerCapture.controller('DataEntryController',
                     $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEPROGRAMSTAGE, bot does not have a stage defined");
                 }
             }
+            else if(effect.action === "HIDEOPTION"){
+                if(effect.ineffect && effect.dataElement && effect.option){
+                    if(!$scope.optionVisibility[event][effect.dataElement.id]) $scope.optionVisibility[event][effect.dataElement.id] = { hidden: {}};
+                    $scope.optionVisibility[event][effect.dataElement.id].hidden[effect.option.id] = { id: effect.option.id };
+                    if(dataElementOptionsChanged.indexOf(effect.dataElement.id) === -1) dataElementOptionsChanged.push(effect.dataElement.id);
+                }
+            }
+            else if(effect.action === "SHOWOPTIONGROUP"){
+                if(effect.ineffect && effect.dataElement && effect.optionGroup){
+                    if(!$scope.optionVisibility[event][effect.dataElement.id]) $scope.optionVisibility[event][effect.dataElement.id] = { hidden: {}};
+                    var optionGroup = $scope.optionGroupsById[effect.optionGroup.id];
+                    if(optionGroup){
+                        if(!$scope.optionVisibility[event][effect.dataElement.id].showOnly) $scope.optionVisibility[event][effect.dataElement.id].showOnly = {};
+                        angular.extend($scope.optionVisibility[event][effect.dataElement.id].showOnly, optionGroup.optionsById);
+                        if(dataElementOptionsChanged.indexOf(effect.dataElement.id) === -1) dataElementOptionsChanged.push(effect.dataElement.id);
+                    }else{
+                        $log.warn("OptionGroup "+effect.optionGroup.id+" was not found");
+                    }
+
+                }
+            }
+            else if(effect.action === "HIDEOPTIONGROUP"){
+                if(effect.ineffect && effect.dataElement && effect.optionGroup){
+                    if(!$scope.optionVisibility[event][effect.dataElement.id]) $scope.optionVisibility[event][effect.dataElement.id] = { hidden: {}};
+                    var optionGroup = $scope.optionGroupsById[effect.optionGroup.id];
+                    if(optionGroup){
+                        angular.extend($scope.optionVisibility[event][effect.dataElement.id].hidden, optionGroup.optionsById);
+                        if(dataElementOptionsChanged.indexOf(effect.dataElement.id) === -1) dataElementOptionsChanged.push(effect.dataElement.id);
+                    }else{
+                        $log.warn("OptionGroup "+effect.optionGroup.id+" was not found");
+                    }
+
+                }
+            }
+
         });
-        
+
+        //Run after effects are applied. Makes it possible to use multiple showOptionGroup effects.
+        clearValueForShowHideOptionActions(dataElementOptionsChanged, affectedEvent);
+
         updateTabularEntryStages();
         $rootScope.$broadcast('tei-report-widget', {events: $scope.allEventsSorted});
     };
+
+    var clearValueForShowHideOptionActions = function(dataElements, affectedEvent){
+        //Dont process if editing not allowed
+        if(['SCHEDULE','SKIPPED'].indexOf(affectedEvent.status) === -1 && !affectedEvent.editingNotAllowed){
+            dataElements.forEach(de => {
+                var value = affectedEvent[de];
+                //Only process if has selected value
+                if(angular.isDefined(value) && value !== "") {
+                    var optionSet = $scope.optionSets[$scope.prStDes[de].dataElement.optionSet.id];
+                    //Find selectedOption by displayName
+                    var selectedOption = optionSet.options.find(o => o.displayName === value);
+                    var shouldClear = !selectedOption;
+                    
+                    //If has selected option and a option is not in showOnly or is in hidden, field should be cleared.
+                    if(selectedOption){
+                        shouldClear = ($scope.optionVisibility[affectedEvent.event][de].showOnly && !$scope.optionVisibility[affectedEvent.event][de].showOnly[selectedOption.id]) || $scope.optionVisibility[affectedEvent.event][de].hidden[selectedOption.id];
+                    }
+        
+                    if(shouldClear){
+                        var message = ($scope.prStDes[de].dataElement.displayFormName + ' was blanked out because the option "'+value+'" got hidden by your last action');
+                        alert(message);
+                        affectedEvent[de] = "";
+                        $scope.saveDataValueForEvent($scope.prStDes[de], null, affectedEvent, true);
+                    }
+                }
+            });
+        }
+    }
     
     function updateTabularEntryStages() {
         $scope.tabularEntryStages = [];
@@ -716,7 +789,7 @@ trackerCapture.controller('DataEntryController',
             $rootScope.$broadcast('BeforeOpenEnrollment', $scope.showSelf);
             $scope.dashBoardWidgetFirstRun = false;
         
-    	    $scope.optionSets = selections.optionSets;
+            $scope.optionSets = selections.optionSets;
 
     	    $scope.stagesById = [];    	    
     	    if ($scope.selectedOrgUnit && $scope.selectedProgram && $scope.selectedProgram.id && $scope.selectedEntity ){
