@@ -2,7 +2,7 @@
     {{'profile'| translate}}
 </div>
 <table class="dhis2-list-table-striped default-form-table">
-    <tr ng-if="trackedEntityTypes.selected" ng-repeat="attribute in attributes | filter: {attribute: 'true'} " ng-if="!hiddenFields[attribute.id] && ((editingDisabled  && attribute.show) || !editingDisabled)">
+    <tr ng-if="trackedEntityTypes.selected && !hiddenFields[attribute.id] && ((editingDisabled  && attribute.show) || !editingDisabled)" ng-repeat="attribute in attributes | filter: {attribute: 'true'} ">
         <td>
             <span d2-pop-over
                 details="{{'details'| translate}}"

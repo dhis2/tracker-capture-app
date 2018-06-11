@@ -117,20 +117,36 @@ trackerCapture.controller('RegistrationController',
 
     $scope.trackedEntityTypes = {available: []};
     var trackedEntityTypesById = {};
-    TEService.getAll().then(function (entities) {
-        var currentTet = prefilledTet || ($scope.selectedTei && $scope.selectedTei.trackedEntityType);
-        angular.forEach(entities, function(entity){
-            trackedEntityTypesById[entity.id] = entity;
-        });
-        $scope.trackedEntityTypes.available = AccessUtils.toWritable(entities);
-        $scope.trackedEntityTypes.writable = $scope.trackedEntityTypes.available.filter(t => t.access && t.access.data.write);
+
+    var loadTrackedEntityTypes = function(){
+        if(!$scope.trackedEntityTypes || $scope.trackedEntityTypes.available.length === 0){
+            return TEService.getAll().then(function (entities) {
+                var currentTet = prefilledTet || ($scope.selectedTei && $scope.selectedTei.trackedEntityType);
+                angular.forEach(entities, function(entity){
+                    trackedEntityTypesById[entity.id] = entity;
+                });
+                $scope.trackedEntityTypes.available = AccessUtils.toWritable(entities);
+                $scope.trackedEntityTypes.writable = $scope.trackedEntityTypes.available.filter(t => t.access && t.access.data.write);
+                setSelectedTrackedEntityType(currentTet);
+            });
+        }else{
+            var def = $q.defer();
+            def.resolve();
+            setSelectedTrackedEntityType();
+            return def.promise;
+        }
+
+    }
+
+    var setSelectedTrackedEntityType = function(currentTet){
         if($scope.selectedProgram){
             $scope.trackedEntityTypes.selected = trackedEntityTypesById[$scope.selectedProgram.trackedEntityType.id];
         }else if(currentTet){
             $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.writable.find(t => t.id === currentTet);
             $scope.setTrackedEntityType();
         }
-    });
+    }
+
 
     var getProgramRules = function () {
         $scope.trackedEntityForm = null;
@@ -162,8 +178,7 @@ trackerCapture.controller('RegistrationController',
         if(promise){
             promise.then(function(searchConfig){
                 $scope.searchConfig = searchConfig;
-                var trackedEntityType = $scope.programSearchScope? $scope.selectedProgram.trackedEntityType : $scope.trackedEntityTypes.selected;
-                SearchGroupService.getSearchConfigForTrackedEntityType(trackedEntityType).then(function(tetSearchConfig){
+                SearchGroupService.getSearchConfigForTrackedEntityType($scope.trackedEntityTypes.selected).then(function(tetSearchConfig){
                     $scope.tetSearchConfig = tetSearchConfig;
                 });
                 if($scope.searchConfig){
@@ -193,11 +208,11 @@ trackerCapture.controller('RegistrationController',
             if ($scope.registrationMode === 'REGISTRATION') {
                 $scope.getAttributes($scope.registrationMode);
             }
-            if(newValue){
-                $scope.trackedEntityTypes.selected = trackedEntityTypesById[newValue.trackedEntityType.id];
-            }
         }
-        setSearchConfig();
+        loadTrackedEntityTypes().then(function(){
+            setSearchConfig();
+        });
+        
 
         $scope.model.minEnrollmentDate = "";
         $scope.model.maxEnrollmentDate =  ($scope.selectedProgram && $scope.selectedProgram.selectEnrollmentDatesInFuture) ? '' : "0";
