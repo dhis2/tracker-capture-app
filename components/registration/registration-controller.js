@@ -27,7 +27,7 @@ trackerCapture.controller('RegistrationController',
                 TrackerRulesExecutionService,
                 TCStorageService,
                 ModalService) {
-    var flag = {debug: true, verbose: false};
+    var flag = {debug: true, verbose: $location.search().verbose ? true : false};
     var initValues = function(){
         $scope.today = DateUtils.getToday();
         $scope.trackedEntityForm = null;
