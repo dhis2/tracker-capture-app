@@ -659,7 +659,7 @@ trackerCapture.controller('DataEntryController',
         
         var evs = {all: allSorted, byStage: $scope.eventsByStage};
         
-        var flag = {debug: true, verbose: false, callerId: $scope.instanceId};
+        var flag = {debug: true, verbose: $location.search().verbose ? true : false, callerId: $scope.instanceId};
         
         //If the events is displayed in a table, it is necessary to run the rules for all visible events.        
         if ($scope.currentStage && $scope.currentStage.displayEventsInTable && angular.isUndefined($scope.currentStage.rulesExecuted)) {
