@@ -2051,7 +2051,8 @@ i
             orgUnit: dhis2Event.orgUnit,
             trackedEntityInstance: dhis2Event.trackedEntityInstance,
             status: dhis2Event.status,
-            dueDate: DateUtils.formatFromUserToApi(dhis2Event.dueDate)
+            dueDate: DateUtils.formatFromUserToApi(dhis2Event.dueDate),
+            geometry: dhis2Event.geometry
         };
 
         angular.forEach(programStage.programStageDataElements, function(prStDe){
@@ -2064,11 +2065,6 @@ i
                 e.dataValues.push(val);
             }
         });
-
-        if(programStage.captureCoordinates){
-            e.coordinate = {latitude: dhis2Event.coordinate.latitude ? dhis2Event.coordinate.latitude : 0,
-                longitude: dhis2Event.coordinate.longitude ? dhis2Event.coordinate.longitude : 0};
-        }
 
         if(dhis2Event.eventDate){
             e.eventDate = DateUtils.formatFromUserToApi(dhis2Event.eventDate);
