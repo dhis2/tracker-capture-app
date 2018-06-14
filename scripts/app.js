@@ -58,6 +58,9 @@ import 'd2-tracker/lib/Google.js';
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
 import 'leaflet-control-geocoder/dist/Control.Geocoder.js';
 
+import 'leaflet-draw/dist/leaflet.draw.js';
+import 'leaflet-draw/dist/leaflet.draw.css';
+
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 
