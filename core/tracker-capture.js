@@ -5,6 +5,16 @@ dhis2.util.namespace('dhis2.tc');
 // whether current user has any organisation units
 dhis2.tc.emptyOrganisationUnits = false;
 
+dhis2.util.namespace('cachecleaner');
+
+cachecleaner.clean = function(){
+    indexedDB.deleteDatabase("dhis2tc");
+    indexedDB.deleteDatabase("dhis2ou");
+    localStorage.clear();
+    sessionStorage.clear();
+    return "cache cleaned";
+}
+
 var i18n_no_orgunits = 'No organisation unit attached to current user, no data entry possible';
 var i18n_offline_notification = 'You are offline';
 var i18n_online_notification = 'You are online';
@@ -30,7 +40,7 @@ if( dhis2.tc.memoryOnly ) {
 dhis2.tc.store = new dhis2.storage.Store({
     name: 'dhis2tc',
     adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],
-    objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'programAccess','programStageAccess', 'trackedEntityTypeAccess']
+    objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'programAccess','programStageAccess', 'trackedEntityTypeAccess','optionGroups']
 });
 
 
@@ -152,6 +162,7 @@ function downloadMetaData()
     promise = promise.then( getOptionSetsForAttributes );
     promise = promise.then( getOptionSetsForDataElements );
     promise = promise.then( getOptionSets );
+    promise = promise.then( getOptionGroups);
     promise = promise.then(getProgramAccess);
     promise.done(function() {
         //Enable ou selection after meta-data has downloaded
@@ -562,25 +573,31 @@ function getOptionSets()
     return dhis2.tracker.getBatches( optionSetIds, batchSize, null, 'optionSets', 'optionSets', DHIS2URL + '/optionSets.json', 'paging=false&fields=id,displayName,version,options[id,displayName,code]', 'idb', dhis2.tc.store );
 }
 
+function getObjectIds(data){
+    return data && Array.isArray(data.self) ? data.self.map(obj => obj.id) : [];
+}
+
 function getMetaProgramIndicators( programs, programIds )
 {   
     programs.programIds = programIds;
     return dhis2.tracker.getTrackerMetaObjects(programs, 'programIndicators', DHIS2URL + '/programIndicators.json', 'paging=false&fields=id&filter=program.id:in:');
 }
 
-function getProgramIndicators( programIndicators )
+function getProgramIndicators(data)
 {
-    return dhis2.tracker.checkAndGetTrackerObjects( programIndicators, 'programIndicators', DHIS2URL + '/programIndicators', 'fields=id,displayName,code,shortName,displayInForm,expression,displayDescription,description,filter,program[id]', dhis2.tc.store);
+    var ids = getObjectIds(data);
+    return dhis2.tracker.getBatches(ids, batchSize, data.programs, 'programIndicators','programIndicators',DHIS2URL + '/programIndicators', 'fields=id,displayName,code,shortName,displayInForm,expression,displayDescription,description,filter,program[id]','idb', dhis2.tc.store);
 }
 
 function getMetaProgramRules( programs )
-{    
+{ 
     return dhis2.tracker.getTrackerMetaObjects(programs, 'programRules', DHIS2URL + '/programRules.json', 'paging=false&fields=id&filter=program.id:in:');
 }
 
-function getProgramRules( programRules )
+function getProgramRules( data )
 {
-    return dhis2.tracker.checkAndGetTrackerObjects( programRules, 'programRules', DHIS2URL + '/programRules', 'fields=id,displayName,condition,description,program[id],programStage[id],priority,programRuleActions[id,content,location,data,programRuleActionType,programStageSection[id],dataElement[id],trackedEntityAttribute[id],programIndicator[id],programStage[id]]', dhis2.tc.store);
+    var ids = getObjectIds(data);
+    return dhis2.tracker.getBatches(ids, batchSize, data.programs, 'programRules','programRules',DHIS2URL + '/programRules', 'fields=id,displayName,condition,description,program[id],programStage[id],priority,programRuleActions[id,content,location,data,programRuleActionType,programStageSection[id],dataElement[id],trackedEntityAttribute[id],programIndicator[id],programStage[id]]','idb', dhis2.tc.store);
 }
 
 function getMetaProgramRuleVariables( programs )
@@ -588,9 +605,10 @@ function getMetaProgramRuleVariables( programs )
     return dhis2.tracker.getTrackerMetaObjects(programs, 'programRuleVariables', DHIS2URL + '/programRuleVariables.json', 'paging=false&fields=id&filter=program.id:in:');
 }
 
-function getProgramRuleVariables( programRuleVariables )
+function getProgramRuleVariables( data )
 {
-    return dhis2.tracker.checkAndGetTrackerObjects( programRuleVariables, 'programRuleVariables', DHIS2URL + '/programRuleVariables', 'fields=id,displayName,programRuleVariableSourceType,program[id],programStage[id],dataElement[id],trackedEntityAttribute[id],useCodeForOptionSet', dhis2.tc.store);
+    var ids = getObjectIds(data);
+    return dhis2.tracker.getBatches(ids, batchSize, data.programs, 'programRuleVariables','programRuleVariables',DHIS2URL + '/programRuleVariables', 'fields=id,displayName,programRuleVariableSourceType,program[id],programStage[id],dataElement[id],trackedEntityAttribute[id],useCodeForOptionSet','idb',dhis2.tc.store);
 }
 
 //ACCESS
@@ -640,4 +658,7 @@ function getProgramAccess(){
         });
 
     });
+}
+function getOptionGroups(){
+    return dhis2.tracker.getTrackerObjects('optionGroups','optionGroups', DHIS2URL+'/optionGroups.json', 'paging=false&fields=id,name,shortName,displayName,options[id]','idb',dhis2.tc.store);
 }

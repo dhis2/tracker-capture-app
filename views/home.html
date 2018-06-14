@@ -91,8 +91,8 @@
         
         <!--registration form begins -->
         <div class="row">
-            <div class="col-sm-4 bordered-div container-min-width add-default-padding" ng-if="showRegistration" ng-include="'components/registration/registration.html'"></div>
-            <div class="col-sm-12" ng-if="!showRegistration" ng-include="'views/tei-home.html'"></div>
+            <div class="col-sm-4 bordered-div container-min-width add-default-padding" ng-show="showRegistration" ng-include="'components/registration/registration.html'"></div>
+            <div class="col-sm-12" ng-show="!showRegistration" ng-include="'views/tei-home.html'"></div>
         </div>        
         <!-- registration form ends -->
 

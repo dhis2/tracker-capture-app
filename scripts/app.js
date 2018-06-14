@@ -1,6 +1,7 @@
 import './trackerCaptureModule';
 
 // Tracker core
+import 'd2-tracker/lib/dhis2.tracker-metadata.js';
 import 'd2-tracker/lib/dhis2.angular.services.js';
 import 'd2-tracker/lib/dhis2.angular.directives.js';
 import 'd2-tracker/lib/dhis2.angular.validations.js';
@@ -111,6 +112,18 @@ angular.module('trackerCapture')
 })
 
 .run(function($templateCache, $http, $rootScope){
+    Array.prototype.toHashMap = function(key, objFunc){
+        var hashmap = this.reduce((map, obj)  => {
+            if(objFunc) objFunc(map,obj,key);
+            if(obj[key] ==='jYDntjPUD5C'){
+                var g = 1;
+            }
+            map[obj[key]] = obj;
+            return map;
+        },{});
+        return hashmap;
+    }
+
     $http.get('components/dataentry/inner-form.html').then(function(page){
         $templateCache.put('components/dataentry/inner-form.html', page.data);
     });

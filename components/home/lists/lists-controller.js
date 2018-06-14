@@ -341,10 +341,11 @@ trackerCapture.controller('ListsController',function(
                 
                 var config = $scope.currentTrackedEntityList.config;
                 var promise;
+                var program = "program=" + $scope.currentTrackedEntityList.config.program.id;
                 if($scope.currentTrackedEntityList.type === $scope.trackedEntityListTypes.CUSTOM){
                     promise = TEIService.search($scope.selectedOrgUnit.id, config.ouMode.name, config.queryAndSortUrl, config.programUrl, attrIdList, false, false, format, attrNamesList, attrNamesIdMap, $scope.base.optionSets);
                 }else{
-                    promise = TEIService.search($scope.selectedOrgUnit.id, ouModes[0].name, config.url,null, attrIdList, false, false,format, attrNamesList, attrNamesIdMap,$scope.base.optionSets);
+                    promise = TEIService.search($scope.selectedOrgUnit.id, ouModes[0].name, config.url,program, attrIdList, false, false,format, attrNamesList, attrNamesIdMap,$scope.base.optionSets);
                 }
                 promise.then(function(data){
                     if (data && data.metaData && data.metaData.pager) setPager(data.metaData.pager);

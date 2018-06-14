@@ -184,32 +184,36 @@ trackerCapture.controller('TopBarController',
             tei[attr.attribute] = attr.value;
         });
         var selectedProgram = selections.pr;
-
-        AttributesFactory.getByProgram(selectedProgram).then(function (atts) 
-        {
-            programAttributes = atts;
-            setAttributes(tei);
-        });
-
-        MetaDataFactory.getByProgram("programRules", selectedProgram.id).then(function(rules){
-            var feedBackFields = {};
-            var inidicatorFields = {};
-            angular.forEach(rules, function(rule){
-                if(rule.programRuleActions){
-                    angular.forEach(rule.programRuleActions, function(action){
-                        if(action.location && (action.programRuleActionType === 'DISPLAYTEXT' || action.programRuleActionType === 'DISPLAYKEYVALUEPAIR')){
-                            if(action.location ==='feedback'){
-                                feedBackFields[action.id] = action.content;
-                            }else if(action.location ==='indicators'){
-                                inidicatorFields[action.id] = action.content;
-                            }
-                        }
-                    });
-                }
+        if(selectedProgram){
+            AttributesFactory.getByProgram(selectedProgram).then(function (atts) 
+            {
+                programAttributes = atts;
+                setAttributes(tei);
             });
-            feedbackFieldSelection = feedBackFields;
-            indicatorsFieldSelection = inidicatorFields;
-        });
+
+            MetaDataFactory.getByProgram("programRules", selectedProgram.id).then(function(rules){
+                var feedBackFields = {};
+                var inidicatorFields = {};
+                angular.forEach(rules, function(rule){
+                    if(rule.programRuleActions){
+                        angular.forEach(rule.programRuleActions, function(action){
+                            if(action.location && (action.programRuleActionType === 'DISPLAYTEXT' || action.programRuleActionType === 'DISPLAYKEYVALUEPAIR')){
+                                if(action.location ==='feedback'){
+                                    feedBackFields[action.id] = action.content;
+                                }else if(action.location ==='indicators'){
+                                    inidicatorFields[action.id] = action.content;
+                                }
+                            }
+                        });
+                    }
+                });
+                feedbackFieldSelection = feedBackFields;
+                indicatorsFieldSelection = inidicatorFields;
+            });
+        }
+
+
+        
     });
 
 });

@@ -27,6 +27,8 @@ trackerCapture.controller('RuleBoundController',
     
     $scope.displayTextEffects = {};
     $scope.displayKeyDataEffects = {};
+    
+    var currentEventId = null;
 
     var selections = {};
 
@@ -53,5 +55,13 @@ trackerCapture.controller('RuleBoundController',
         if( args.event !== 'registration' ) {
             $scope.data = RuleBoundFactory.getDisplayEffects($scope.data, args.event, $rootScope.ruleeffects, $scope.widgetTitle);
         }
-    }); 
+    });
+
+    $scope.$on('dataEntryEventChanged', function(event,args){
+        if(currentEventId !== args.event){
+            currentEventId = args.event;
+            $scope.data = RuleBoundFactory.getDisplayEffects($scope.data,currentEventId, $rootScope.ruleeffects, $scope.widgetTitle);
+        }
+        
+    });
 });
