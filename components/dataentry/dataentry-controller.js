@@ -732,7 +732,7 @@ trackerCapture.controller('DataEntryController',
         
         var evs = {all: allSorted, byStage: $scope.eventsByStage};
         
-        var flag = {debug: true, verbose: false, callerId: $scope.instanceId};
+        var flag = {debug: true, verbose: $location.search().verbose ? true : false, callerId: $scope.instanceId};
         
         //If the events is displayed in a table, it is necessary to run the rules for all visible events.        
         if ($scope.currentStage && $scope.currentStage.displayEventsInTable && angular.isUndefined($scope.currentStage.rulesExecuted)) {
@@ -1794,19 +1794,7 @@ trackerCapture.controller('DataEntryController',
         
     };
 
-    $scope.saveCoordinate = function (type) {
-        
-        if (type === 'LAT' || type === 'LATLNG') {
-            $scope.latitudeSaved = false;
-        }
-        if (type === 'LNG' || type === 'LATLNG') {
-            $scope.longitudeSaved = false;
-        }
-
-        if ($scope.currentEvent.coordinate.latitude === $scope.currentEventOriginal.coordinate.latitude 
-                && $scope.currentEvent.coordinate.longitude === $scope.currentEventOriginal.coordinate.longitude) {//no change
-            return;
-        }
+    $scope.saveGeometry = function () {
 
         //valid coordinate(s), proceed with the saving
         var dhis2Event = $scope.makeDhis2EventToUpdate();

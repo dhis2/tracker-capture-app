@@ -2186,7 +2186,8 @@ i
             orgUnit: dhis2Event.orgUnit,
             trackedEntityInstance: dhis2Event.trackedEntityInstance,
             status: dhis2Event.status,
-            dueDate: DateUtils.formatFromUserToApi(dhis2Event.dueDate)
+            dueDate: DateUtils.formatFromUserToApi(dhis2Event.dueDate),
+            geometry: dhis2Event.geometry
         };
 
         angular.forEach(programStage.programStageDataElements, function(prStDe){
@@ -2199,11 +2200,6 @@ i
                 e.dataValues.push(val);
             }
         });
-
-        if(programStage.captureCoordinates){
-            e.coordinate = {latitude: dhis2Event.coordinate.latitude ? dhis2Event.coordinate.latitude : 0,
-                longitude: dhis2Event.coordinate.longitude ? dhis2Event.coordinate.longitude : 0};
-        }
 
         if(dhis2Event.eventDate){
             e.eventDate = DateUtils.formatFromUserToApi(dhis2Event.eventDate);
@@ -2883,7 +2879,7 @@ i
                 if(response){
                     return response;
                 }else{
-                    return tetScopeSearchCount(searchGroup, tetSearchGroup, program, trackedEntityType, orgUnit, pager);
+                    return tetScopeSearchCount(tetSearchGroup, trackedEntityType, orgUnit, pager);
                 }
                 return 0;
             },function(error){
@@ -2895,8 +2891,8 @@ i
             return def.promise;
         }
     }
-    var tetScopeSearchCount = this.tetScopeSearchCount = function(searchGroup,tetSearchGroup, program, trackedEntityType, orgUnit, pager){
-        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.TET);
+    var tetScopeSearchCount = this.tetScopeSearchCount = function(tetSearchGroup, trackedEntityType, orgUnit, pager){
+        var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET);
         if(params){
             return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
                 if(response){
@@ -2962,7 +2958,7 @@ i
                     return def.promise;
                 }else{
                     if(tetSearchGroup){
-                        return tetScopeSearch(tetSearchGroup, program, trackedEntityType, orgUnit, pager).then(function(result){
+                        return tetScopeSearch(tetSearchGroup, trackedEntityType, orgUnit, pager).then(function(result){
                             result.callingScope = searchScopes.PROGRAM;
                             return result;
                         },function(){
@@ -2987,8 +2983,8 @@ i
             });
 
     }
-    var tetScopeSearch = this.tetScopeSearch = function(tetSearchGroup, program,trackedEntityType, orgUnit, pager){
-        var params = getSearchParams(tetSearchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.TET);
+    var tetScopeSearch = this.tetScopeSearch = function(tetSearchGroup,trackedEntityType, orgUnit, pager){
+        var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET);
         if(params){
             return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
                 var result = {data: response, callingScope: searchScopes.TET, resultScope: searchScopes.TET };

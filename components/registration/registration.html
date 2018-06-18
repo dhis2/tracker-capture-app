@@ -27,29 +27,23 @@
             </tr>
         </table>
     </script>
+    <div ng-if="!selectedProgram && registrationMode === 'REGISTRATION'">
+        <h2>
+            {{'register'| translate}}
+            <select
+            style="height:30px;margin-left:10px;"
+            name="trackedEntityTypeSelect"
+            ng-model="trackedEntityTypes.selected"
+            ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.writable | orderBy: 'displayName'"                               
+            ng-change="setTrackedEntityType()"
+            >
+            <option value="" disabled selected> </option>
+        </select> 
+        </h2> 
+    </div>
     <!--registration form starts -->
     <div ng-class="registrationMode === 'REGISTRATION' ? 'col-sm-7' : 'col-sm'">    
-        <form name="outerForm" novalidate>
-            <!-- Entity type begins -->
-            <div ng-if="!selectedProgram && registrationMode === 'REGISTRATION'">
-                <h3>{{'category'| translate}}</h3>
-                <table class="dhis2-list-table-striped dhis2-table-hover ">
-                    <tr>
-                        <td>
-                            {{'entity_type'| translate}}
-                        </td>
-                        <td>
-                            <select class="form-control" 
-                                    ng-model="trackedEntityTypes.selected"
-                                    ng-disabled="selectedOrgUnit.closedStatus"
-                                    ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.available | orderBy: 'displayName'">                                
-                            </select>                            
-                        </td>
-                    </tr>                   
-                </table>
-                <hr>
-            </div>
-            <!-- Entity type ends -->        
+        <form name="outerForm" novalidate> 
 
             <!--custom registration form begins -->
             <div class="vertical-spacing" ng-if="customRegistrationFormExists">
@@ -97,13 +91,17 @@
             <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="selectedOrgUnit.closedStatus" ng-click="cancelRegistrationWarning(showNewEnrollment)">{{'cancel'| translate}}</button>
         </div>
 
-        <div class="vertical-spacing hideInPrint btn-group" ng-if="registrationMode === 'REGISTRATION'">
+        <div class="vertical-spacing hideInPrint btn-group" ng-if="showRegistrationButtons()">
             <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-primary" ng-if="matchingTeisCount && matchingTeisCount > 0" ng-click="showMatchesModal(true)">{{ 'continue' | translate}}</button>
             <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-primary" ng-if="!matchingTeisCount || matchingTeisCount === 0" ng-click="registerEntity('DASHBOARD')">{{'save_and_continue'| translate}}</button>
             <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-success" ng-if="!matchingTeisCount || matchingTeisCount === 0" ng-click="registerEntity('SELF')">{{'save_and_add_new'| translate}}</button>
             <button type="button" class="btn btn-info" onclick="javascript:window.print()">{{'print_form'| translate}}</button>
             <button type="button"  ng-disabled="model.savingRegistration" class="btn btn-default" ng-click="setCurrentView(null)">{{'cancel'| translate}}</button>
             <i ng-if="model.savingRegistration" class="fa fa-spinner fa-spin" style="font-size:28px;margin-left:15px"></i>
+        </div>
+
+        <div class="vertical-spacing hideInPrint" ng-if="showTetRegistrationWarning()">
+            <div class="alert alert-warning">{{"tracked_entity_type_has_no_attributes" | translate}}</div>
         </div>
 
         <!-- registration buttons end -->

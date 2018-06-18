@@ -2374,3 +2374,13 @@ button.list-group-item-danger.active:focus {
     padding-bottom: 0px!important;
     line-height: 44px;
 }
+
+.geometry-polygon-indicator{
+    height: 34px!important;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+    border-radius: 4px 0px 0px 4px;
+    margin-top: 5px;
+    text-align: center;
+    line-height: 34px;
+}

@@ -70,7 +70,7 @@ module.exports = {
                 loader: 'style-loader!css-loader'
             },
             {
-                test: /\.(gif|png|jpg)$/,
+                test: /\.(gif|png|jpg|svg)$/,
                 loader: 'file-loader'
             },
         ],
