@@ -11,6 +11,7 @@ trackerCapture.controller('DashboardController',
             $filter,
             $translate,
             $q,
+            $route,
             $templateCache,
             TCStorageService,
             orderByFilter,
@@ -27,10 +28,31 @@ trackerCapture.controller('DashboardController',
             ModalService,
             AuthorityService,
             OrgUnitFactory,
-            NotificationService) {
-    
+            NotificationService,
+            TeiAccessApiService) {
+
+
+    var preAuditCancelled = function(){
+        var modalOptions = {
+            closeButtonText: "Cancel",
+            actionButtonText: 'OK',
+            headerText: 'Cancel audit',
+            bodyText: 'Cancelling audit will redirect you back to home. Any changes that are not saved will be lost'
+        };
+        return ModalService.showModal({},modalOptions);
+
+    }
+    TeiAccessApiService.setAuditCancelledSettings({
+        preAuditCancelled: preAuditCancelled,
+        postAuditCancelled: function(){
+            window.location.hash = '#/';
+            window.location.reload();
+        }
+    });
+    $rootScope.hasAccess = false;
     //selections
     var orgUnitUrl = ($location.search()).ou;
+    var fromAudit = ($location.search()).fromAudit;
     $scope.topBarConfig = {};
     $scope.displayEnrollment = false;
     $scope.dataEntryMainMenuItemSelected = false;    
@@ -53,7 +75,7 @@ trackerCapture.controller('DashboardController',
         } else {
             OrgUnitFactory.getFromStoreOrServer(orgUnitUrl).then(function(ou){
                 def.resolve(ou);
-            })
+            });
         }
         return def.promise;
     }
@@ -146,7 +168,8 @@ trackerCapture.controller('DashboardController',
                             CurrentSelection.setAttributesById($scope.attributesById);
     
                             //Fetch the selected entity
-                            TEIService.getWithProgramData($scope.selectedTeiId, $scope.selectedProgramId, $scope.optionSets, $scope.attributesById).then(function (response) {
+                            TEIService.getWithProgramData($scope.selectedTeiId, $scope.selectedProgramId, $scope.optionSets, $scope.attributesById, fromAudit).then(function (response) {
+                                $rootScope.hasAccess = true;
                                 if (response) {
                                     $scope.selectedTei = response;
     
@@ -221,6 +244,10 @@ trackerCapture.controller('DashboardController',
                                             getDashboardLayout();
                                         });
                                     });
+                                }
+                            }, function(error){
+                                if(error && error.auditDismissed){
+                                    $rootScope.hasAccess = false;
                                 }
                             });
                         });

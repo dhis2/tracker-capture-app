@@ -14,7 +14,6 @@ trackerCapture.controller('EventCreationController',
                 OrgUnitFactory,
                 NotificationService,
                 EventCreationService,
-                RegistrationService,
                 eventsByStage,
                 stage,
                 stages,
@@ -32,8 +31,7 @@ trackerCapture.controller('EventCreationController',
                 PeriodService,
                 ModalService,
                 CurrentSelection,
-                $rootScope,
-                EnrollmentService) {
+                TEIService) {
     $scope.selectedOrgUnit = orgUnit;
     $scope.selectedEnrollment = enrollment;      
     $scope.stages = stages;
@@ -390,17 +388,17 @@ trackerCapture.controller('EventCreationController',
             headerText: 'move_permanently',
             bodyText: 'are_you_sure_you_want_to_move_permanently'
         };             
-        ModalService.showModal({},modalOptions).then(function(){
-            $rootScope.$broadcast('changeOrgUnit', {orgUnit: dummyEvent.orgUnit});
-           
+
+        ModalService.showModal({},modalOptions).then(function(){           
             $scope.attributesById = CurrentSelection.getAttributesById();
             $scope.optionSets = CurrentSelection.getOptionSets();
             var currSelections = CurrentSelection.get();
             $scope.tei = currSelections.tei;
 
-            $scope.tei.orgUnit = dummyEvent.orgUnit;
-
-            RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function (regResponse) {
+            TEIService.changeTeiProgramOwner($scope.tei.trackedEntityInstance, $scope.selectedProgram.id, dummyEvent.orgUnit).then(function(response){
+                $scope.save();
+            });
+            /*RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function (regResponse) {
                 var enrollment = currSelections.selectedEnrollment;
                 enrollment.orgUnit = dummyEvent.orgUnit;
                 return EnrollmentService.update(enrollment).then(function(){
@@ -411,7 +409,7 @@ trackerCapture.controller('EventCreationController',
                     }
                     $scope.save();
                 });
-            });
+            });*/
         });
     };
 

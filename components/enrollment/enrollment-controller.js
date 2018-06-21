@@ -63,6 +63,9 @@ trackerCapture.controller('EnrollmentController',
                 });
             }
             if($scope.selectedEnrollment){
+                if($scope.selectedEnrollment.orgUnit != $scope.selectedOrgUnit.id){
+                    $scope.incidentDateState.editable = $scope.enrollmentDateState.editable = false;
+                }
                 $scope.incidentDateState.date = $scope.selectedEnrollment.incidentDate;
                 $scope.enrollmentDateState.date = $scope.selectedEnrollment.enrollmentDate;
             }
@@ -426,6 +429,9 @@ trackerCapture.controller('EnrollmentController',
                 if ($scope.currentEnrollment.status === 'ACTIVE') {
                     return false;
                 }
+            }
+            if($scope.selectedEnrollment.orgUnit !== $scope.selectedOrgUnit.id){
+                return false;
             }
             return true;
         };

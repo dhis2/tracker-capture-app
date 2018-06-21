@@ -653,7 +653,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 
 .factory('TeiAccessApiService', function($http,$q,$modal){
-    var needAuditErrorCode = 222;
+    var auditCancelledSettings = {};
+    var needAuditError = {
+        code: 401,
+        message: "OWNERSHIP_ACCESS_DENIED"
+    }
     var modalDefaultSettings = {
         templateUrl: 'components/teiAudit/tei-audit.html',
         controller: 'TeiAuditController'
@@ -668,6 +672,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 },
                 program: function(){
                     return program;
+                },
+                auditCancelledSettings: function(){
+                    return auditCancelledSettings
                 }
             }
         }
@@ -677,7 +684,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         return response;
     }
     var handleError = function(error,tei,program, postAuditApiFn){
-        if(error.code === needAuditErrorCode){
+        if(error && error.data && error.data.httpStatusCode === needAuditError.code && error.data.message === needAuditError.message){
             return handleAudit(tei,program,postAuditApiFn);
         }else{
             var def = $q.defer();
@@ -687,10 +694,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     }
 
     var saveAuditMessage = function(tei,program,auditMessage){
-        var def = $q.defer();
-        def.resolve();
-        return def.promise;
-        //return $http.post(DHIS2URL+'/teiAudit?trackedEntityInstance='+tei+'&program='+program+'&auditMessage='+auditMessage);
+        var obj = {}; /*{
+            tei: tei,
+            program: program,
+            reason: auditMessage
+        }*/
+        return $http.post(DHIS2URL+'/tracker/ownership/override?trackedEntityInstance='+tei+'&program='+program+'&reason='+auditMessage, obj);
     }
 
     var handleAudit = function(tei,program, postAuditApiFn){
@@ -711,23 +720,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
     var service = {};
 
-    var callApi = function(apiFn,tei,program){
-        var def = $q.defer();
-        def.reject({code: 222});
-
-        return def.promise.then(function(response){
-            return response;
-        },function(error){
-            return handleError(error,tei,program, apiFn);
-        });
-        /*
+    var callApi = function(apiFn,tei,program){        
         return apiFn().then(function(response){
             return response;
         },function(error){
             return handleError(error,tei,program, apiFn);
-        });*/
+        });
     }
 
+    service.setAuditCancelledSettings = function(settings){
+        auditCancelledSettings = settings;
+    }
     service.get = function(tei, program, url){
         return callApi(() => $http.get(url), tei, program);
     }
@@ -796,6 +799,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 /* Service for getting tracked entity instances */
 .factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService, TeiAccessApiService) {
+    var cachedTeiWithProgramData = null;
     var errorHeader = $translate.instant("error");
     var getSearchUrl = function(type,ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
         var baseUrl = DHIS2URL + '/trackedEntityInstances/'+type;
@@ -845,7 +849,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         return tei;
     }
     return {
-        getWithProgramData: function(entityUid,programUid, optionSets, attributesById){
+        getWithProgramData: function(entityUid,programUid, optionSets, attributesById, useCached){
+            if(useCached && cachedTeiWithProgramData && cachedTeiWithProgramData.entityUid === entityUid && cachedTeiWithProgramData.programUid === programUid){
+                var def = $q.defer();
+                def.resolve(cachedTeiWithProgramData.data);
+                return def.promise;
+            }
             return TeiAccessApiService.get(entityUid, programUid, DHIS2URL+'/trackedEntityInstances/'+entityUid+'.json?program='+programUid+'&fields=*').then(function(response){
                 var tei = response.data;
                 setTeiAttributeValues(tei.attributes, optionSets, attributesById);
@@ -855,10 +864,23 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         e.enrollmentDate = DateUtils.formatFromApiToUser(e.enrollmentDate);
                     });
                 }
+                if(tei.programOwners){
+                    tei.programOwnersById = tei.programOwners.reduce((map,po) => {
+                        map[po.program.id] = po;
+                    }, {});
+                }
+
+                cachedTeiWithProgramData = {
+                    entityUid: entityUid,
+                    programUid: programUid,
+                    data: tei
+                }
 
                 return tei;
             }, function(error){
-                
+                var def = $q.defer();
+                def.reject(error);
+                return def.promise;
             });
         },
         get: function(entityUid, optionSets, attributesById){
@@ -1061,6 +1083,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             }
             return def.promise;
+        },
+        changeTeiProgramOwner: function(tei, program,ou){
+            var url =  DHIS2URL+'/tracker/ownership/transfer?trackedEntityInstance='+tei+'&program='+program+'&ou='+ou;
+            return $http.put(url,{});
         }/*,
         getGeneratedAttributeValue: function(attribute, selectedTei, program, orgUnit) {
             var getValueUrl = function(valueToSet, selectedTei, program, orgUnit, required){
