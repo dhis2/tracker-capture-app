@@ -62,8 +62,8 @@ trackerCapture.controller('EnrollmentController',
                     }
                 });
             }
-            if($scope.selectedEnrollment){
-                if($scope.selectedEnrollment.orgUnit != $scope.selectedOrgUnit.id){
+            if($scope.selectedEnrollment && $scope.selectedTei && $scope.selectedProgram){
+                if($scope.selectedTei.programOwnerById[$scope.selectedProgram.id] != $scope.selectedOrgUnit.id){
                     $scope.incidentDateState.editable = $scope.enrollmentDateState.editable = false;
                 }
                 $scope.incidentDateState.date = $scope.selectedEnrollment.incidentDate;
@@ -430,7 +430,7 @@ trackerCapture.controller('EnrollmentController',
                     return false;
                 }
             }
-            if($scope.selectedEnrollment.orgUnit !== $scope.selectedOrgUnit.id){
+            if($scope.selectedTei.programOwnerById[$scope.selectedProgram.id] !== $scope.selectedOrgUnit.id){
                 return false;
             }
             return true;
