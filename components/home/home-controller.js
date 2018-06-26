@@ -23,7 +23,9 @@ trackerCapture.controller('HomeController',function(
     TCStorageService,
     orderByFilter,
     TEService,
-    AccessUtils) {
+    AccessUtils,
+    TeiAccessApiService) {
+        TeiAccessApiService.setAuditCancelledSettings(null);
         $scope.trackedEntityTypesById ={};
         var previousProgram = null;
         $scope.base = {};

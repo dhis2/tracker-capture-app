@@ -18,10 +18,12 @@
         </select>
     </div>
 </script>
-<div class="container-1-1">
+<div class="audit-overlay" style="position: fixed;background-color: white;width:100%;height: 100%;" ng-hide="hasAccess">
+</div>
+<div class="container-1-1" ng-show="hasAccess">
 
     <!-- dashboard widgets begin -->
-    <div class="col-sm-12" ng-if="metaDataCached">
+    <div class="col-sm-12" ng-if="metaDataCached" ng-show="hasAccess">
         <div class="row" ng-class="{'dashboard-top-bar-sticky' : topBarConfig.settings && topBarConfig.settings.active}" height-change-source>
             <div style="display:flex;margin-left:15px;" class="vertical-spacing">
                 <div><button type="button" class="btn btn-default remove-focus-effects" ng-click="back()">

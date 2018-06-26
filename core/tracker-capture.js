@@ -20,7 +20,7 @@ var i18n_offline_notification = 'You are offline';
 var i18n_online_notification = 'You are online';
 var i18n_ajax_login_failed = 'Login failed, check your username and password and try again';
 
-var DHIS2URL = '../api/28';
+var DHIS2URL = '../api';
 var optionSetIds = [];
 var trackedEntityAttributeIds = [];
 var batchSize = 50;

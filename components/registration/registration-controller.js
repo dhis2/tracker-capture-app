@@ -1150,6 +1150,7 @@ trackerCapture.controller('RegistrationController',
     }
 
     $scope.attributeFieldDisabled = function(attribute){
+        if($scope.selectedTei && $scope.selectedTei.programOwnersById && $scope.selectedProgram && $scope.selectedTei.programOwnersById[$scope.selectedProgram.id] != $scope.selectedOrgUnit.id) return true;
         if($scope.isDisabled(attribute)) return true;
         if($scope.selectedOrgUnit.closedStatus) return true;
         if(!$scope.hasTeiWrite()) return true;
@@ -1167,6 +1168,7 @@ trackerCapture.controller('RegistrationController',
     }
 
     $scope.eventEditable = function(){
+        if($scope.selectedProgram && $scope.selectedTei && $scope.selectedTei.programOwnersById && $scope.selectedTei.programOwnersById[$scope.selectedProgram.id] != $scope.selectedOrgUnit.id) return false;
         if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE' || $scope.currentEvent.editingNotAllowed) return false;
         if($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff) return false;
         return true;

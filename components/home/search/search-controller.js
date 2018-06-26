@@ -28,7 +28,9 @@ trackerCapture.controller('SearchController',function(
         $scope.tetSearchConfig = {};
         $scope.searchConfig = {};
         $scope.defaultOperators = OperatorFactory.defaultOperators;
-        $scope.selectedProgramTET
+        $scope.selectedProgramTET;
+
+        $scope.auditDescription = 
 
 
         $scope.$watch('base.selectedProgram', function() {
@@ -157,10 +159,11 @@ trackerCapture.controller('SearchController',function(
 
         }
 
-        var openTei = function(tei){
+        var openTei = function(tei, fromAudit){
             $location.path('/dashboard').search({tei: tei.id,
                 program: $scope.base.selectedProgram ? $scope.base.selectedProgram.id: null,
-                ou: $scope.selectedOrgUnit.id});
+                ou: $scope.selectedOrgUnit.id, 
+                fromAudit: fromAudit});
         }
 
         var translateWithTETName = function(text, nameToLower){
@@ -229,7 +232,7 @@ trackerCapture.controller('SearchController',function(
 
             return $modal.open({
                 templateUrl: 'components/home/search/result-modal.html',
-                controller: function($scope,$modalInstance, TEIGridService,OrgUnitFactory, orgUnit, res, refetchDataFn, internalService, canOpenRegistration)
+                controller: function($scope,$modalInstance, TEIGridService,OrgUnitFactory, orgUnit, res, refetchDataFn, internalService, canOpenRegistration, TEIService,NotificationService)
                 {
                     $scope.gridData = null;
                     $scope.isUnique = false;
@@ -265,7 +268,20 @@ trackerCapture.controller('SearchController',function(
                     }
 
                     $scope.openTei = function(tei){
-                        $modalInstance.close({ action: "OPENTEI", tei: tei});
+                        if(internalService.base.selectedProgram && internalService.base.selectedProgram.id){
+                            TEIService.getWithProgramData(tei.id, internalService.base.selectedProgram.id, internalService.base.optionSets, internalService.base.attributesById).then(function(resultTei){
+                                $modalInstance.close({ action: "OPENTEI", tei: tei, fromAudit: true});
+                            }, function(error){
+                                if(error && !error.auditDismissed && error.data && error.data.message){
+                                    var headerText = $translate.instant('open_tei_error');
+                                    var bodyText = error.data.message;
+                                    NotificationService.showNotifcationDialog(headerText, bodyText);
+                                }
+                            });
+                        }else{
+                            $modalInstance.close({ action: "OPENTEI", tei: tei, fromAudit: false});
+                        }
+                        
                     }
                     $scope.cancel = function(){
                         $modalInstance.close({ action: "CANCEL"});
@@ -301,7 +317,7 @@ trackerCapture.controller('SearchController',function(
                 var def = $q.defer();
                 def.resolve();
                 if(res.action === "OPENTEI"){
-                    openTei(res.tei);
+                    openTei(res.tei, res.fromAudit);
                 }else if(res.action === "OPENREGISTRATION")
                 {
                     var registrationPrefill = getRegistrationPrefill(searchGroup);

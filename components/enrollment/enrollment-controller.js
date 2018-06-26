@@ -62,7 +62,10 @@ trackerCapture.controller('EnrollmentController',
                     }
                 });
             }
-            if($scope.selectedEnrollment){
+            if($scope.selectedEnrollment && $scope.selectedTei && $scope.selectedProgram){
+                if($scope.selectedTei.programOwnersById[$scope.selectedProgram.id] != $scope.selectedOrgUnit.id){
+                    $scope.incidentDateState.editable = $scope.enrollmentDateState.editable = false;
+                }
                 $scope.incidentDateState.date = $scope.selectedEnrollment.incidentDate;
                 $scope.enrollmentDateState.date = $scope.selectedEnrollment.enrollmentDate;
             }
@@ -348,7 +351,7 @@ trackerCapture.controller('EnrollmentController',
             };
 
             ModalService.showModal({}, modalOptions).then(function (result) {                
-                EnrollmentService.delete( $scope.selectedEnrollment.enrollment ).then(function (data) {
+                EnrollmentService.delete( $scope.selectedEnrollment ).then(function (data) {
                     $scope.selectedEnrollment = null;
                     var advancedSearchOptions = CurrentSelection.getAdvancedSearchOptions();
                     advancedSearchOptions.refresh = true;
@@ -426,6 +429,9 @@ trackerCapture.controller('EnrollmentController',
                 if ($scope.currentEnrollment.status === 'ACTIVE') {
                     return false;
                 }
+            }
+            if($scope.selectedTei.programOwnersById[$scope.selectedProgram.id] !== $scope.selectedOrgUnit.id){
+                return false;
             }
             return true;
         };
