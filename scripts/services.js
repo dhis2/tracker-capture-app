@@ -460,6 +460,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 .service('RegistrationService', function(TEIService, $q){
     var convertFromUserToApi = function(tei){
         delete tei.enrollment;
+        delete tei.programOwnersById;
         return tei;
     };
 
@@ -866,7 +867,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
                 if(tei.programOwners){
                     tei.programOwnersById = tei.programOwners.reduce((map,po) => {
-                        map[po.program.id] = po.organisationUnit.id;
+                        map[po.program] = po.ownerOrgUnit;
+                        return map;
                     }, {});
                 }
 
@@ -2418,7 +2420,7 @@ i
             return {partial: partial, all: allColumns};
         },
         getEditingStatus: function(dhis2Event, stage, orgUnit, tei, enrollment,program){
-            return (tei.programOwnerById[program.id] !== orgUnit.id && DateUtils.isValid(dhis2Event.eventDate)) || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || tei.inactive || enrollment.status !== 'ACTIVE';
+            return dhis2Event.orgUnit !== orgUnit.id || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || tei.inactive || enrollment.status !== 'ACTIVE';
         },
         isExpired: function(program, event){
             var expired = !DateUtils.verifyExpiryDate(event.eventDate, program.expiryPeriodType, program.expiryDays, false);
