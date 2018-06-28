@@ -98,6 +98,10 @@ trackerCapture.controller('TEIAddController',
                 $scope.relatedPredefinedProgram = true;
                 $scope.base.selectedProgramForRelative = program;
                 $scope.onSelectedProgram(program);
+            }else{
+                $scope.relatedPredefinedProgram = false;
+                $scope.base.selectedProgramForRelative = null;
+                $scope.onSelectedProgram($scope.base.selectedProgramForRelative);
             }
         }
     }
@@ -222,10 +226,9 @@ trackerCapture.controller('TEIAddController',
         //watch for selection of relationship
         $scope.$watch('relationship.selected', function () {
             if (angular.isObject($scope.relationship.selected)) {
-                $scope.selectedRelationship = {
-                    aIsToB: $scope.relationship.selected.aIsToB,
-                    bIsToA: $scope.relationship.selected.bIsToA
-                };
+                $scope.selectedConstraints.currentTei = null;
+                $scope.selectedConstraints.related = null;
+                $scope.updateCurrentTeiConstraint();
             }
         });
 
@@ -382,8 +385,6 @@ trackerCapture.controller('TEIAddController',
             $scope.setAttributesForSearch(program);
             TEService.get(selectedProgram.trackedEntityType.id).then(function(te){
                 $scope.canRegister = AccessUtils.isWritable(te) && AccessUtils.isWritable(selectedProgram);
-                var g = 1;
-                var u  = 2;
 
             });
 
