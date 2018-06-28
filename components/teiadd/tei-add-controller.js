@@ -33,7 +33,8 @@ trackerCapture.controller('TEIAddController',
     var selection = CurrentSelection.get();
    
     $scope.base = {};
-    $scope.direction = {};
+    $scope.selectedConstraints = { currentTei: null, related: null};
+    $scope.tempSelectedConstraints = { currentTei: null, related: null};
     $scope.attributesById = CurrentSelection.getAttributesById();
     if(!$scope.attributesById){
         $scope.attributesById = [];
@@ -59,20 +60,49 @@ trackerCapture.controller('TEIAddController',
     }
 
     var isValidCurrentTeiConstraint = function(constraint){
-        constraint.trackedEntityType.id === $scope.trackedEntityType.id && (!constraint.program || constraint.program.id === $scope.selectedProgram.id);
-
+        var tetTypeValid = constraint.trackedEntityType.id === $scope.mainTei.trackedEntityType;
+        var programValid = (!constraint.program || constraint.program.id === $scope.selectedProgram.id);
+        return (tetTypeValid && programValid);
     }
 
-    $scope.updateRelationshipSides = function(){
-        var currentTeiConstraint = $scope.direction.currentTei && $scope.relationship.selected[$scope.direction.currentTei];
+    $scope.updateCurrentTeiConstraint = function(){
+        var currentTeiConstraint = $scope.tempSelectedConstraints.currentTei && $scope.relationship.selected[$scope.tempSelectedConstraints.currentTei];
         if(currentTeiConstraint){
-            if(isValidCurrentTeiConstraint(constraint)){
+            if(!isValidCurrentTeiConstraint(currentTeiConstraint)){
+                NotificationService.showNotifcationDialog("current tei constraint not valid", "current tei constraint not valid");
+                $scope.tempSelectedConstraints.currentTei = $scope.selectedConstraints.currentTei;
+                return;
+            }
+            $scope.selectedConstraints.currentTei = $scope.tempSelectedConstraints.currentTei;
+            $scope.tempSelectedConstraints.related = $scope.selectedConstraints.related = ($scope.selectedConstraints.currentTei === "fromConstraint" ? "toConstraint" : "fromConstraint");
+            $scope.resetRelatedView();
+        }
+    }
 
+    $scope.updateRelatedConstraint = function(){
+        $scope.tempSelectedConstraints.currentTei = $scope.selectedConstraints.related === "fromConstraint" ? "toConstraint" : "fromConstraint";
+        $scope.updateCurrentTeiConstraint();
+    }
+
+
+
+    $scope.resetRelatedView = function(){
+        $scope.relatedPredefinedProgram = false;
+        
+        var relatedConstraint = $scope.selectedConstraints.related && $scope.relationship.selected[$scope.selectedConstraints.related];
+        if(relatedConstraint){
+            if(relatedConstraint.program && relatedConstraint.program.id){
+                var program = $scope.programs.find(function(p){
+                    return p.id === relatedConstraint.program.id;
+                });
+                $scope.relatedPredefinedProgram = true;
+                $scope.base.selectedProgramForRelative = program;
+                $scope.onSelectedProgram(program);
             }
         }
-        var g = $scope.direction;
-        var s = 1;
     }
+
+
     
     $scope.today = DateUtils.getToday();
     $scope.relationshipTypes = relationshipTypes;

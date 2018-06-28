@@ -22,10 +22,10 @@
         </h3>
         <div class="col-xs-3" ng-if="addingRelationship || selectedTeiForDisplay">
             <select name="foo" 
-                    ng-model="selectedConstraints.currentTei" 
+                    ng-model="tempSelectedConstraints.currentTei" 
                     class="form-control" 
                     ng-if="addingRelationship"
-                    ng-change="updateRelationshipSides()"
+                    ng-change="updateCurrentTeiConstraint()"
                     ng-disabled="base.selectedProgramForRelative && selectedProgram.relatedProgram && relatedProgramRelationship || !relationship.selected">
                 <option value="fromConstraint">{{"from" | translate}}</option>
                 <option value="toConstraint">{{ "to" | translate}}</option>
@@ -47,10 +47,10 @@
         <div ng-class="{true: 'col-xs-9 pull-right', false: 'col-xs-12'} [addingRelationship || selectedTeiForDisplay]">            
             <div ng-if="addingRelationship">
                 <select name="foo" 
-                        ng-model="selectedConstraints.related" 
+                        ng-model="tempSelectedConstraints.related" 
                         class="form-control" 
                         ng-if="addingRelationship"
-                        ng-change="updateRelationshipSides()"
+                        ng-change="updateRelatedConstraint()"
                         ng-disabled="base.selectedProgramForRelative && selectedProgram.relatedProgram && relatedProgramRelationship || !relationship.selected">
                     <option value="fromConstraint">{{"from" | translate}}</option>
                     <option value="toConstraint">{{ "to" | translate}}</option>
@@ -73,8 +73,8 @@
             
             <div class='relationship-container' ng-if="!teiForRelationship">
                 <div class="row">                    
-                    <div ng-controller="ListsController" style="padding:20px;padding-top:0px;">
-                        <div class="btn-group">
+                    <div ng-controller="ListsController" style="padding:20px;padding-top:0px;" ng-if="selectedConstraints.related">
+                        <div class="btn-group" ng-if="!relatedPredefinedProgram">
                                 <select ng-model="base.selectedProgramForRelative"
                                         class="form-control"
                                         style="margin-top:6px;"
