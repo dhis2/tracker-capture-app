@@ -17,6 +17,7 @@ trackerCapture.controller('RelationshipController',
                 CommonUtils) {
     $rootScope.showAddRelationshipDiv = false;
     $scope.relatedProgramRelationship = false;
+    var ENTITYNAME = "TRACKED_ENTITY_INSTANCE";
     
     //listen for the selected entity       
     $scope.$on('dashboardWidgets', function(event, args) { 
@@ -46,9 +47,14 @@ trackerCapture.controller('RelationshipController',
             $scope.programsById[program.id] = program;
         });
         
-        RelationshipFactory.getAll().then(function(rels){
-            $scope.relationshipTypes = rels;    
-            angular.forEach(rels, function(rel){
+        RelationshipFactory.getAll().then(function(relTypes){
+            //Supports only TEI-TEI of same type. Filter away constraint from other programs
+            $scope.relationshipTypes = relTypes.filter(function(relType){
+                return relType.fromConstraint.relationshipEntity === ENTITYNAME
+                    && relType.toConstraint.relationshipEntity === ENTITYNAME;                
+            });
+
+            angular.forEach($scope.relationshipTypes, function(rel){
                 $scope.relationships[rel.id] = rel;
             });
 

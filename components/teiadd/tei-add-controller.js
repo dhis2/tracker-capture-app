@@ -33,6 +33,7 @@ trackerCapture.controller('TEIAddController',
     var selection = CurrentSelection.get();
    
     $scope.base = {};
+    $scope.direction = {};
     $scope.attributesById = CurrentSelection.getAttributesById();
     if(!$scope.attributesById){
         $scope.attributesById = [];
@@ -55,6 +56,22 @@ trackerCapture.controller('TEIAddController',
 
             CurrentSelection.setOptionSets($scope.optionSets);
         });
+    }
+
+    var isValidCurrentTeiConstraint = function(constraint){
+        constraint.trackedEntityType.id === $scope.trackedEntityType.id && (!constraint.program || constraint.program.id === $scope.selectedProgram.id);
+
+    }
+
+    $scope.updateRelationshipSides = function(){
+        var currentTeiConstraint = $scope.direction.currentTei && $scope.relationship.selected[$scope.direction.currentTei];
+        if(currentTeiConstraint){
+            if(isValidCurrentTeiConstraint(constraint)){
+
+            }
+        }
+        var g = $scope.direction;
+        var s = 1;
     }
     
     $scope.today = DateUtils.getToday();
