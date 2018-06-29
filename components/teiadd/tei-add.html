@@ -21,15 +21,6 @@
             </span>            
         </h3>
         <div class="col-xs-3" ng-if="addingRelationship || selectedTeiForDisplay">
-            <select name="foo" 
-                    ng-model="tempSelectedConstraints.currentTei" 
-                    class="form-control" 
-                    ng-if="addingRelationship"
-                    ng-change="updateCurrentTeiConstraint()"
-                    ng-disabled="base.selectedProgramForRelative && selectedProgram.relatedProgram && relatedProgramRelationship || !relationship.selected">
-                <option value="fromConstraint">{{"from" | translate}}</option>
-                <option value="toConstraint">{{ "to" | translate}}</option>
-            </select>
             <div class='relationship-container'>
                 <table class="table table-striped table-compact table-borderless">
                     <tr ng-repeat="attribute in selectedTeiForDisplay.attributes">
@@ -44,19 +35,7 @@
             </div>
         </div>
         
-        <div ng-class="{true: 'col-xs-9 pull-right', false: 'col-xs-12'} [addingRelationship || selectedTeiForDisplay]">            
-            <div ng-if="addingRelationship">
-                <select name="foo" 
-                        ng-model="tempSelectedConstraints.related" 
-                        class="form-control" 
-                        ng-if="addingRelationship"
-                        ng-change="updateRelatedConstraint()"
-                        ng-disabled="base.selectedProgramForRelative && selectedProgram.relatedProgram && relatedProgramRelationship || !relationship.selected">
-                    <option value="fromConstraint">{{"from" | translate}}</option>
-                    <option value="toConstraint">{{ "to" | translate}}</option>
-                </select>            
-            </div>            
-            
+        <div ng-class="{true: 'col-xs-9 pull-right', false: 'col-xs-12'} [addingRelationship || selectedTeiForDisplay]">  
             <div class='relationship-container' ng-class="{true: '', false: 'col-xs-6'} [addingRelationship]" ng-if="teiForRelationship">
                 <button class="btn btn-warning" type="button" ng-click="back()">{{'back' | translate}}</button>
                 <table class="table table-striped table-compact table-borderless">
@@ -73,28 +52,33 @@
             
             <div class='relationship-container' ng-if="!teiForRelationship">
                 <div class="row">                    
-                    <div ng-controller="ListsController" style="padding:20px;padding-top:0px;" ng-if="selectedConstraints.related">
-                        <div class="btn-group" ng-if="!relatedPredefinedProgram">
-                                <select ng-model="base.selectedProgramForRelative"
-                                        class="form-control"
-                                        style="margin-top:6px;"
-                                        ng-disabled="programs.length < 1 || (base.selectedProgramForRelative && selectedProgram.relatedProgram && relatedProgramRelationship)"
-                                        ng-options="program as program.displayName for program in programs | orderBy: 'displayName'" 
-                                        ng-change="onSelectedProgram(base.selectedProgramForRelative)">
-                                    <option value="">{{'please_select_a_program'| translate}}</option>
-                                </select>                
+                    <div ng-controller="ListsController" style="padding:20px;padding-top:0px;">
+                        <div class="row no-margin">
+                            <div class="btn-group" ng-if="!relatedPredefinedProgram">
+                                    <select ng-model="base.selectedProgramForRelative"
+                                            class="form-control"
+                                            style="margin-top:6px;"
+                                            ng-disabled="programs.length < 1 || (base.selectedProgramForRelative && selectedProgram.relatedProgram && relatedProgramRelationship)"
+                                            ng-options="program as program.displayName for program in programs | orderBy: 'displayName'" 
+                                            ng-change="onSelectedProgram(base.selectedProgramForRelative)">
+                                        <option value="">{{'please_select_a_program'| translate}}</option>
+                                    </select>                
+                                </div>
+                            <div style="margin-bottom:5px;display: inline-block;">
+                                <div class="btn-group" ng-if="base.selectedProgramForRelative">
+                                    <button type="button" ng-repeat="workingList in base.selectedProgramForRelative.workingLists | orderBy: 'order'" class="btn btn-default" ng-class="getWorkingListButtonClass(workingList)" ng-click="setWorkingList(workingList);hideRegistration();" title="{{workingList.description | translate}}">
+                                        <span ng-class="workingList.style.icon"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group" ng-if="base.selectedProgramForRelative">
+                                    <button type="button" class="btn btn-default" ng-if="base.selectedProgramForRelative" ng-class="getWorkingListButtonClass({ name: 'custom'})" ng-click="toggleShowCustomWorkingListInline()"><span class="fa fa-search"></span><span style="margin-left:12px" class="fa fa-caret-down"></span></button>
+                                </div>
+                                <div class="btn-group" ng-if="base.selectedProgramForRelative">
+                                    <button class="btn btn-success" type="button" title="{{'register'| translate}}" ng-click="showRegistration();currentTrackedEntityList = null;showCustomWorkingListInline = false;" ng-if="canRegister">{{'register' | translate}}</button>
+                                </div>
                             </div>
-                        <div class="btn-group" ng-if="base.selectedProgramForRelative">
-                            <button type="button" ng-repeat="workingList in base.selectedProgramForRelative.workingLists | orderBy: 'order'" class="btn btn-default" ng-class="getWorkingListButtonClass(workingList)" ng-click="setWorkingList(workingList);hideRegistration();" title="{{workingList.description | translate}}">
-                                <span ng-class="workingList.style.icon"></span>
-                            </button>
                         </div>
-                        <div class="btn-group" ng-if="base.selectedProgramForRelative">
-                            <button type="button" class="btn btn-default" ng-if="base.selectedProgramForRelative" ng-class="getWorkingListButtonClass({ name: 'custom'})" ng-click="toggleShowCustomWorkingListInline()"><span class="fa fa-search"></span><span style="margin-left:12px" class="fa fa-caret-down"></span></button>
-                        </div>
-                        <div class="btn-group pull-right" ng-if="base.selectedProgramForRelative">
-                            <button class="btn btn-success" type="button" title="{{'register'| translate}}" ng-click="showRegistration();currentTrackedEntityList = null;showCustomWorkingListInline = false;" style="margin-top:6px;" ng-if="canRegister">{{'register' | translate}}</button>
-                        </div>
+                        
                         <div ng-if="base.selectedProgramForRelative">
                             <div ng-include="'components/home/lists/custom-workinglist.html'" ng-if="showCustomWorkingListInline" style="padding:10px;margin-bottom:10px;border-bottom:1px solid lightgray;"></div>
 

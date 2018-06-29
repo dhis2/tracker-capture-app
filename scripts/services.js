@@ -847,6 +847,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
     var convertFromUserToApi = function(tei){
         delete tei.enrollments;
+        delete tei.programOwnersById;
         return tei;
     }
     return {
