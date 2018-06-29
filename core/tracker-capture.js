@@ -237,7 +237,7 @@ function getRelationships()
         if(res.length > 0){
             return;
         }
-        return dhis2.tracker.getTrackerObjects('relationshipTypes', 'relationshipTypes', DHIS2URL + '/relationshipTypes.json', 'paging=false&fields=id,displayName,aIsToB,bIsToA,displayName', 'idb', dhis2.tc.store);
+        return dhis2.tracker.getTrackerObjects('relationshipTypes', 'relationshipTypes', DHIS2URL + '/relationshipTypes.json', 'paging=false&fields=id,code,displayName,fromConstraint[*],toConstraint[*]', 'idb', dhis2.tc.store);
     });    
 }
 
