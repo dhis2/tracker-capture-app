@@ -50,7 +50,7 @@ trackerCapture.controller('RelationshipController',
         RelationshipFactory.getAll().then(function(relTypes){
             //Supports only TEI-TEI of same type. Filter away fromConstraint from other programs
             $scope.relationshipTypes = relTypes.filter(function(relType){
-                return relType.fromConstraint.relationshipEntity === ENTITYNAME
+                return relType.fromConstraint && relType.fromConstraint.relationshipEntity === ENTITYNAME
                     && relType.toConstraint.relationshipEntity === ENTITYNAME
                     && (!relType.fromConstraint.program || relType.fromConstraint.program.id === $scope.selectedProgram.id);                
             });
