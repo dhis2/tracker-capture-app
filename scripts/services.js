@@ -1533,7 +1533,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     };
 })
 /* factory to fetch and process metadata */
-.factory('MetaDataFactory', function($q, $timeout, $rootScope, TCStorageService) {
+.factory('MetaDataFactory', function($q, $rootScope, TCStorageService) {
     return {
         get: function(store, uid){
 
@@ -1560,9 +1560,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         }
                     });
 
-                    $timeout(function(){
-                            def.resolve(obj);
-                    },0);
+                    $rootScope.$apply(function(){
+                        def.resolve(obj);
+                    });
                 });
             });
             return def.promise;
