@@ -3187,15 +3187,15 @@ trackerCapture.controller('DataEntryController',
         });
     };
     
-    $scope.updateFileNames = function(){        
-        for(var dataElement in $scope.currentFileNames){
+    $scope.updateFileNames = function(){
+        Object.keys($scope.currentFileNames).forEach(function(dataElement) {
             if($scope.currentFileNames[dataElement]){
                 if(!$scope.fileNames[$scope.currentEvent.event]){
                     $scope.fileNames[$scope.currentEvent.event] = [];
                 }                 
                 $scope.fileNames[$scope.currentEvent.event][dataElement] = $scope.currentFileNames[dataElement];
             }
-        }
+        });
     };
 
     $scope.editAttributeCategoryOptions = function(){

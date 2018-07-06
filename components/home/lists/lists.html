@@ -1,7 +1,7 @@
 <div ng-controller="ListsController" ng-if="selectedProgram && selectedProgram.displayFrontPageList">
     <div class="hideInPrint" ng-if="selectedProgram" ng-cloak>
         <div class="btn-group hideInPrint">
-            <button type="button" ng-repeat="workingList in selectedProgram.workingLists | orderBy: 'order'" class="btn btn-default small-vertical-spacing" ng-class="getWorkingListButtonClass(workingList)" ng-click="setWorkingList(workingList)" title="{{workingList.description | translate}}">
+            <button type="button" ng-repeat="workingList in selectedProgram.workingLists | orderBy: 'order'" class="btn btn-default small-vertical-spacing" ng-class="getWorkingListButtonClass(workingList)" ng-click="setWorkingList(workingList)" ng-attr-title="{{workingList.description | translate}}">
                 <span ng-class="workingList.style.icon"></span>
             </button>
         </div>
@@ -30,8 +30,8 @@
                     <li ng-repeat="format in listExportFormats"><a href ng-click="getExportList(format)">{{format}}</a></li>
                 </ul>
             </span>
-            <button type="button" class="btn btn-default" onclick="javascript:window.print()" title="{{'print' | translate}}"><span class="fa fa-print"></span></button>
-            <button class="btn btn-default"ng-click="showHideListColumns()" title="{{'show_hide_columns'| translate}}"><span class="fa fa-table"></span></button>
+            <button type="button" class="btn btn-default" onclick="javascript:window.print()" ng-attr-title="{{'print' | translate}}"><span class="fa fa-print"></span></button>
+            <button class="btn btn-default"ng-click="showHideListColumns()" ng-attr-title="{{'show_hide_columns'| translate}}"><span class="fa fa-table"></span></button>
         </div>
     
         <span ng-if="currentTrackedEntityList.data && pager.total">

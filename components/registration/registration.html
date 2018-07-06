@@ -37,7 +37,7 @@
             ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.writable | orderBy: 'displayName'"                               
             ng-change="setTrackedEntityType()"
             >
-            <option value="" disabled selected> </option>
+            <option ng-attr-value="" disabled selected> </option>
         </select> 
         </h2> 
     </div>

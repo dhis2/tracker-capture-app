@@ -4,10 +4,10 @@
 
         <span class="pull-right widget-link">            
             <a class="small-horizontal-spacing" href ng-click="expandCollapse(enrollmentWidget)">
-                <span ng-show="enrollmentWidget.expand"><i class="fa fa-chevron-up" title="{{collapseLabel}}"></i></span>
-                <span ng-show="!enrollmentWidget.expand"><i class="fa fa-chevron-down" title="{{expandLabel}}"></i></span>
+                <span ng-show="enrollmentWidget.expand"><i class="fa fa-chevron-up" ng-attr-title="{{collapseLabel}}"></i></span>
+                <span ng-show="!enrollmentWidget.expand"><i class="fa fa-chevron-down" ng-attr-title="{{expandLabel}}"></i></span>
             </a>
-            <a ng-show="userAuthority.canAdministerDashboard || !lockedList[selectedProgram.id]" class="small-horizontal-spacing" href ng-click="removeWidget(enrollmentWidget)" title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>            
+            <a ng-show="userAuthority.canAdministerDashboard || !lockedList[selectedProgram.id]" class="small-horizontal-spacing" href ng-click="removeWidget(enrollmentWidget)" ng-attr-title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>            
         </span>
     </div>
     <div ng-show="enrollmentWidget.expand" class="panel-body dashboard-widget-container">
@@ -21,13 +21,13 @@
                             {{'selected_program'| translate}}                           
                         </span>
                         <span class="nav-pills" ng-show="selectedProgram && currentEnrollment && currentEnrollment !== selectedEnrollment">
-                            | <a href ng-click="loadEnrollmentDetails(currentEnrollment)" title="{{'current'| translate}}"><span ng-class="{true: 'widget-link-active bold', false: 'widget-link'} [showEnrollmentDiv]">{{'current'| translate}}</span></a>
+                            | <a href ng-click="loadEnrollmentDetails(currentEnrollment)" ng-attr-title="{{'current'| translate}}"><span ng-class="{true: 'widget-link-active bold', false: 'widget-link'} [showEnrollmentDiv]">{{'current'| translate}}</span></a>
                         </span>
                         <span class="nav-pills" ng-show="selectedProgram && !currentEnrollment && !selectedTei.inactive && selectedProgram.access.data.write">
-                            <span ng-show="selectedProgram && currentEnrollment && currentEnrollment !== selectedEnrollment">|</span> <a href ng-click="showNewEnrollment()" title="{{'add_new'| translate}}"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [showEnrollmentDiv]">{{'add_new'| translate}}</span></a>
+                            <span ng-show="selectedProgram && currentEnrollment && currentEnrollment !== selectedEnrollment">|</span> <a href ng-click="showNewEnrollment()" ng-attr-title="{{'add_new'| translate}}"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [showEnrollmentDiv]">{{'add_new'| translate}}</span></a>
                         </span>
                         <span class="nav-pills" ng-show="hasEnrollmentHistory">
-                            <span ng-if="selectedProgram && selectedProgram.access.data.write">|</span> <a href ng-click="showEnrollmentHistory()" title="{{'history'| translate}}"><span ng-class="{true: 'widget-link-active bold', false: 'widget - link'} [showEnrollmentHistoryDiv]">{{'history'| translate}}</span></a>
+                            <span ng-if="selectedProgram && selectedProgram.access.data.write">|</span> <a href ng-click="showEnrollmentHistory()" ng-attr-title="{{'history'| translate}}"><span ng-class="{true: 'widget-link-active bold', false: 'widget - link'} [showEnrollmentHistoryDiv]">{{'history'| translate}}</span></a>
                         </span>
                     </div>
                     <div class="vertical-spacing">
@@ -39,7 +39,7 @@
                                             {{'enrolling_orgunit' | translate}}
                                         </td>
                                         <td class="absorbing-column">
-                                            <input type="text" class="form-control" value={{selectedEnrollment.orgUnitName}} ng-disabled="true"/>
+                                            <input type="text" class="form-control" ng-attr-value={{selectedEnrollment.orgUnitName}} ng-disabled="true"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -47,12 +47,12 @@
                                             {{selectedProgram.enrollmentDateLabel}}
                                         </td>
                                         <td class="absorbing-column" ng-if="!enrollmentDateState.editable">
-                                            <input type="text" placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.enrollmentDate" ng-disabled="true"/>
+                                            <input type="text" ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.enrollmentDate" ng-disabled="true"/>
                                         </td>
                                         <td class="absorbing-column" ng-if="enrollmentDateState.editable">
                                             <form name="enrollmentDateForm" novalidate>
                                                 <input type="text"
-                                                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
+                                                    ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                                                     name="enrollmentDate" 
                                                     class="form-control hideInPrint" 
                                                     d2-date 
@@ -72,12 +72,12 @@
                                             {{selectedProgram.incidentDateLabel}}
                                         </td>
                                         <td class="absorbing-column" ng-if="!incidentDateState.editable">
-                                            <input type="text" placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.incidentDate" ng-disabled="true"/>
+                                            <input type="text" ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" class="form-control" d2-date ng-model="selectedEnrollment.incidentDate" ng-disabled="true"/>
                                         </td>
                                         <td class="absorbing-column" ng-if="incidentDateState.editable">
                                             <ng-form name="incidentDateForm" novalidate>
                                                 <input type="text"
-                                                    placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
+                                                    ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                                                     name="enrollmentDate" 
                                                     class="form-control hideInPrint" 
                                                     d2-date 
@@ -127,7 +127,7 @@
                                     <button type="button"
                                             class="btn"
                                             ng-if="selectedProgram.access.data.write && selectedEnrollment.status === 'ACTIVE'"
-                                            title="{{selectedEnrollment.followup ? 'unmark_for_followup' : 'mark_for_followup' | translate}}"
+                                            ng-attr-title="{{selectedEnrollment.followup ? 'unmark_for_followup' : 'mark_for_followup' | translate}}"
                                             ng-class="{true: 'btn-danger', false: 'btn-default'} [selectedEnrollment.followup]" 
                                             ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive || selectedOrgUnit.closedStatus"
                                             ng-click="markForFollowup()">
@@ -174,7 +174,7 @@
                                         {{'enrolling_orgunit' | translate}}
                                     </th>
                                 </tr>
-                                <tr ng-click="loadEnrollmentDetails(en)" ng-repeat="en in historicalEnrollments" title="{{'details'| translate}}">
+                                <tr ng-click="loadEnrollmentDetails(en)" ng-repeat="en in historicalEnrollments" ng-attr-title="{{'details'| translate}}">
                                     <td>
                                         {{en.enrollmentDate}}
                                     </td>
@@ -198,7 +198,7 @@
                         <div ng-if="activeEnrollments.length > 0">
                             <table class="table table-striped dhis2-table-hover table-bordered">
                                 <tr ng-repeat="activeEnrollment in activeEnrollments">
-                                    <td ng-if="selectedProgram && selectedProgram.id !== activeEnrollment.program || !selectedProgram" title="{{'set_as_current'| translate}}" ng-click="changeProgram(activeEnrollment.program)">
+                                    <td ng-if="selectedProgram && selectedProgram.id !== activeEnrollment.program || !selectedProgram" ng-attr-title="{{'set_as_current'| translate}}" ng-click="changeProgram(activeEnrollment.program)">
                                         {{programNames[activeEnrollment.program].displayName}}
                                     </td>
                                 </tr>

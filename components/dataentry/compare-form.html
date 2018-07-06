@@ -10,7 +10,7 @@
                     <div ng-class="getCompareModeColSize(compareModeColDefs.otherEvents)" ng-if="otherStageEvents.length > 0">
                         <div class="compare-form-navigation-column-back compare-form-navigation-column">
                             <span class="small-badge compare-form-other-events-badge-left cursor-pointer hideInPrint" 
-                                  title="{{'show_previous' | translate}}"
+                                  ng-attr-title="{{'show_previous' | translate}}"
                                   ng-show="showOtherEventsNavigationButtonInCompareForm(buttonType.back)" 
                                   ng-click="navigateOtherStageEvents(-1)">
                                 <i class="fa fa-chevron-left"></i>
@@ -24,7 +24,7 @@
                         </div>                                
                         <div class="compare-form-navigation-column-forward compare-form-navigation-column">
                             <span class="small-badge compare-form-other-events-badge-right cursor-pointer hideInPrint" 
-                                  title="{{'show_next' | translate}}"
+                                  ng-attr-title="{{'show_next' | translate}}"
                                   ng-show="showOtherEventsNavigationButtonInCompareForm(buttonType.forward)" 
                                   ng-click="navigateOtherStageEvents(1)">
                             <i class="fa fa-chevron-right"></i>
@@ -68,7 +68,7 @@
 
                         <div ng-if="eventEditable()" class="compare-form-extra-padding-current-event">
                             <input type="text"
-                                   placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                                   ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                                    class="form-control hideInPrint" 
                                    ng-class="{'input-success': eventDateSaved}"
                                    d2-date 
@@ -81,7 +81,7 @@
                             <input type="text"
                                    class="form-control not-for-screen" 
                                    ng-class="{'input-success': eventDateSaved}"
-                                   value={{currentEvent.eventDate}}>
+                                   ng-attr-value={{currentEvent.eventDate}}>
                             <span ng-if="invalidDate === currentEvent.event" class="error">{{'date_required'| translate}}</span>
                         </div>
 
@@ -114,10 +114,10 @@
                     <div ng-class="getCompareModeColSize(compareModeColDefs.currentEvent)">
                         <div ng-if="eventEditable()" class="compare-form-extra-padding-current-event">
                             <span ng-if="!currentEvent.eventDate && currentEvent.status !== 'SKIPPED' && !selectedEntity.inactive && selectedEnrollment.status === 'ACTIVE'">
-                                <a href ng-click="enableRescheduling()" title="{{ schedulingEnabled ? 'disable_rescheduling' : 'enable_rescheduling' | translate}}"><span class="text-primary bold">{{'reschedule_duedate'| translate}}</span></a>                        
+                                <a href ng-click="enableRescheduling()" ng-attr-title="{{ schedulingEnabled ? 'disable_rescheduling' : 'enable_rescheduling' | translate}}"><span class="text-primary bold">{{'reschedule_duedate'| translate}}</span></a>                        
                             </span>                    
                             <input type="text" 
-                                   placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                                   ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                                    class="form-control"
                                    ng-class="{'input-success': dueDateSaved}"
                                    d2-date                                
@@ -166,7 +166,7 @@
                               template="dataelement-details.html"
                               trigger="click"
                               placement="right">
-                            <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDe.dataElement.displayFormName}}</a>
+                            <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDe.dataElement.displayFormName}}</a>
                         </span>
 
                         <span class="not-for-screen">
@@ -186,7 +186,7 @@
                         <div class="compare-form-navigation-column-back compare-form-navigation-column">&nbsp;</div>
                         <div class="compare-form-other-events-column">
                             <div ng-repeat="otherEvent in otherStageEvents" ng-class="getCompareModeColSize(compareModeColDefs.otherEvent)" class="other-events-alignment">
-                                <div ng-switch="prStDe.dataElement.valueType" title="{{getValueTitleCompareForm(otherEvent)}}">
+                                <div ng-switch="prStDe.dataElement.valueType" ng-attr-title="{{getValueTitleCompareForm(otherEvent)}}">
                                     <div ng-switch-when="BOOLEAN">
                                         <d2-radio-button
                                             dh-required="prStDe.compulsory"                                     
@@ -297,7 +297,7 @@
                                     <div ng-class="getCompareModeColSize(compareModeColDefs.otherEvents)" ng-if="otherStageEvents.length > 0">
                                         <div class="compare-form-navigation-column-back compare-form-navigation-column">
                                             <span class="small-badge compare-form-other-events-badge-left cursor-pointer hideInPrint" 
-                                                title="{{'show_previous' | translate}}"
+                                                ng-attr-title="{{'show_previous' | translate}}"
                                                 ng-show="showOtherEventsNavigationButtonInCompareForm(buttonType.back)" 
                                                 ng-click="navigateOtherStageEvents(-1)">
                                                 <i class="fa fa-chevron-left"></i>
@@ -311,7 +311,7 @@
                                         </div>                                
                                         <div class="compare-form-navigation-column-forward compare-form-navigation-column">
                                             <span class="small-badge compare-form-other-events-badge-right cursor-pointer hideInPrint" 
-                                                title="{{'show_next' | translate}}"
+                                                ng-attr-title="{{'show_next' | translate}}"
                                                 ng-show="showOtherEventsNavigationButtonInCompareForm(buttonType.forward)" 
                                                 ng-click="navigateOtherStageEvents(1)">
                                             <i class="fa fa-chevron-right"></i>
@@ -341,7 +341,7 @@
                                               template="dataelement-details.html"
                                               trigger="click"
                                               placement="right">
-                                          <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDes[de.id].dataElement.formName ? prStDes[de.id].dataElement.formName :
+                                          <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDes[de.id].dataElement.formName ? prStDes[de.id].dataElement.formName :
                                                 prStDes[de.id].dataElement.displayName}}</a>
                                         </span>
                                       <span class="not-for-screen">
@@ -429,17 +429,17 @@
         <div class="compare-form-right" ng-show="stageNeedsEvent(currentStage, true)">
             <span>
                 <span class="small-badge cursor-pointer hideInPrint"
-                      title="{{'add_new' | translate}}"
+                      ng-attr-title="{{'add_new' | translate}}"
                       ng-click="showCreateEvent(currentStage, eventCreationActions.add)">
                     <i class="fa fa-plus"></i>
                 </span>
                 <span class="small-badge cursor-pointer hideInPrint"
-                      title="{{'schedule_new' | translate}}"                      
+                      ng-attr-title="{{'schedule_new' | translate}}"                      
                       ng-click="showCreateEvent(currentStage, eventCreationActions.schedule)">
                     <i class="fa fa-clock-o"></i>
                 </span>
                 <span class="small-badge cursor-pointer hideInPrint"
-                      title="{{'make_referral' | translate}}"                      
+                      ng-attr-title="{{'make_referral' | translate}}"                      
                       ng-click="showCreateEvent(currentStage, eventCreationActions.referral)">
                     <i class="fa fa-hospital-o"></i>
                 </span>
