@@ -733,19 +733,19 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         auditCancelledSettings = settings;
     }
     service.get = function(tei, program, url){
-        return callApi(() => $http.get(url), tei, program);
+        return callApi(function() { return $http.get(url) }, tei, program);
     }
 
     service.post = function(tei,program,url, data){
-        return callApi(() => $http.post(url,data), tei, program);
+        return callApi(function() { return $http.post(url) }, tei, program);
     }
 
     service.put = function(tei,program,url, data){
-        return callApi(() => $http.put(url,data), tei, program);
+        return callApi(function() { return $http.put(url) }, tei, program);
     }
 
     service.delete = function(tei,program,url, data){
-        return callApi(() => $http.delete(url,data), tei, program);
+        return callApi(function() { return $http.delete(url) }, tei, program);
     }
     return service;
 })
@@ -837,7 +837,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         return url;
     }
     var setTeiAttributeValues = function(teiAttributes, optionSets, attributesById){
-        teiAttributes.forEach(att => {
+        teiAttributes.forEach(function(att) {
             if(attributesById[att.attribute]){
                 att.displayName = attributesById[att.attribute].displayName;
                 att.value = CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'USER');
@@ -860,13 +860,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 var tei = response.data;
                 setTeiAttributeValues(tei.attributes, optionSets, attributesById);
                 if(tei.enrollments){
-                    tei.enrollments.forEach(e => {
+                    tei.enrollments.forEach(function(e) {
                         e.incidentDate = DateUtils.formatFromApiToUser(e.incidentDate);
                         e.enrollmentDate = DateUtils.formatFromApiToUser(e.enrollmentDate);
                     });
                 }
                 if(tei.programOwners){
-                    tei.programOwnersById = tei.programOwners.reduce((map,po) => {
+                    tei.programOwnersById = tei.programOwners.reduce(function(map,po) {
                         map[po.program] = po.ownerOrgUnit;
                         return map;
                     }, {});

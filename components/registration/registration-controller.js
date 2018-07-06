@@ -76,7 +76,7 @@ trackerCapture.controller('RegistrationController',
 
     if(!$scope.optionGroupsById){
         MetaDataFactory.getAll('optionGroups').then(function(optionGroups){
-            $scope.optionGroupsById = optionGroups.toHashMap('id', (map,obj,key) => { obj.optionsById = obj.options.toHashMap('id'); });
+            $scope.optionGroupsById = optionGroups.toHashMap('id', function(map,obj,key) { obj.optionsById = obj.options.toHashMap('id'); });
             CurrentSelection.setOptionGroupsById($scope.optionGroupsById);
         });
     }
@@ -126,7 +126,7 @@ trackerCapture.controller('RegistrationController',
                     trackedEntityTypesById[entity.id] = entity;
                 });
                 $scope.trackedEntityTypes.available = AccessUtils.toWritable(entities);
-                $scope.trackedEntityTypes.writable = $scope.trackedEntityTypes.available.filter(t => t.access && t.access.data.write);
+                $scope.trackedEntityTypes.writable = $scope.trackedEntityTypes.available.filter(function(t) { return t.access && t.access.data.write });
                 setSelectedTrackedEntityType(currentTet);
             });
         }else{
@@ -142,7 +142,7 @@ trackerCapture.controller('RegistrationController',
         if($scope.selectedProgram){
             $scope.trackedEntityTypes.selected = trackedEntityTypesById[$scope.selectedProgram.trackedEntityType.id];
         }else if(currentTet){
-            $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.writable.find(t => t.id === currentTet);
+            $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.writable.find(function(t) { return t.id === currentTet });
             $scope.setTrackedEntityType();
         }
     }
@@ -247,7 +247,7 @@ trackerCapture.controller('RegistrationController',
                 if(!$scope.selectedProgram){
                     prefilledTet = $scope.registrationPrefill["tet"];
                     if($scope.trackedEntityTypes.writable){
-                        $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.writable.find(t => t.id === prefilledTet);
+                        $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.writable.find(function(t) { return t.id === prefilledTet });
                     }
                 }
                 for(var key in $scope.registrationPrefill){
