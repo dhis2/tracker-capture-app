@@ -737,15 +737,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     }
 
     service.post = function(tei,program,url, data){
-        return callApi(function() { return $http.post(url) }, tei, program);
+        return callApi(function() { return $http.post(url, data) }, tei, program);
     }
 
     service.put = function(tei,program,url, data){
-        return callApi(function() { return $http.put(url) }, tei, program);
+        return callApi(function() { return $http.put(url, data) }, tei, program);
     }
 
     service.delete = function(tei,program,url, data){
-        return callApi(function() { return $http.delete(url) }, tei, program);
+        return callApi(function() { return $http.delete(url, data) }, tei, program);
     }
     return service;
 })
