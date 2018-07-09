@@ -64,7 +64,7 @@ import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 /* App Module */
 angular.module('trackerCapture')
 
-.value('DHIS2URL', '../api/28')
+.value('DHIS2URL', '../api/29')
 
 .value('DHIS2COORDINATESIZE', 6)
 
