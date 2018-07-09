@@ -31,7 +31,7 @@
                     <ui-select  ng-model="searchGroup[attribute.id]"
                                 theme="select2"
                                 class="search-ui-select">
-                        <ui-select-match allow-clear="true"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+                        <ui-select-match allow-clear="true"  class="form-control-ui-select"  ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                         <ui-select-choices  repeat="option.displayName as option in base.optionSets[attribute.optionSet.id].options | filter: $select.search">
                             <span ng-bind-html="option.displayName | highlight: $select.search"></span>
                         </ui-select-choices>
@@ -50,18 +50,18 @@
 
                 <span ng-switch-when="DATE">
                     <div class="col-xs-12" ng-if="attribute.unique">
-                        <input type="text" placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].exactValue"/>
+                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].exactValue"/>
                     </div>
                     <div class="col-xs-3 no-padding" ng-if="!attribute.unique">
                         <select ng-model="attribute.operator" class="form-control" ng-options="operator | translate for operator in defaultOperators">
                         </select>
                     </div>
                     <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[0] && !attribute.unique">
-                        <input type="text" placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].exactValue"/>
+                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].exactValue"/>
                     </div>
                     <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[1] && !attribute.sunique">
-                        <div class="col-xs-6 no-padding"><input type="text" placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].startValue"/></div>
-                        <div class="col-xs-6 no-padding"><input type="text" placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].endValue"/></div>
+                        <div class="col-xs-6 no-padding"><input type="text" ng-attr-placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].startValue"/></div>
+                        <div class="col-xs-6 no-padding"><input type="text" ng-attr-placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].endValue"/></div>
                     </div>
                 </span>
 
@@ -75,16 +75,16 @@
                         </select>
                     </div>
                     <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[0] && !attribute.unique">
-                        <input type="text" placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].exactValue"/>
+                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].exactValue"/>
                     </div>
                     <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[1] && !attribute.unique">
-                            <input type="text" placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].startValue"/>
-                            <input type="text" placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].endValue"/>         
+                            <input type="text" ng-attr-placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].startValue"/>
+                            <input type="text" ng-attr-placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].endValue"/>         
                     </div>
                 </span>
 
                 <span ng-switch-when="TIME">
-                    <input type="text" placeholder="TIME NOT SEARCHABLE" class="form-control"  ng-disabled="true"/>
+                    <input type="text" ng-attr-placeholder="TIME NOT SEARCHABLE" class="form-control"  ng-disabled="true"/>
                 </span>
 
                 <span ng-switch-when="BOOLEAN" class="form-control search-ui-select-container">
@@ -95,17 +95,17 @@
 
                 <span ng-switch-when="NUMBER">
                     <div class="col-xs-12 no-padding" ng-if="attribute.unique">
-                        <input type="number" placeholder="{{'exact_value'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].exactValue"/>
+                        <input type="number" ng-attr-placeholder="{{'exact_value'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].exactValue"/>
                     </div>
                     <div class="col-xs-3 no-padding" ng-if="!attribute.unique">
                         <select ng-model="attribute.operator" class="form-control" ng-options="operator | translate for operator in defaultOperators"></select>
                     </div>
                     <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[0] && !attribute.unique">
-                        <input type="number" placeholder="{{'exact_value'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].exactValue"/>
+                        <input type="number" ng-attr-placeholder="{{'exact_value'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].exactValue"/>
                     </div>
                     <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[1] && !attribute.unique">
-                            <div class="col-xs-6 no-padding"><input type="number" placeholder="{{'from'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].startValue"/></div>
-                            <div class="col-xs-6 no-padding"><input type="number" placeholder="{{'to'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].endValue"/></div>
+                            <div class="col-xs-6 no-padding"><input type="number" ng-attr-placeholder="{{'from'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].startValue"/></div>
+                            <div class="col-xs-6 no-padding"><input type="number" ng-attr-placeholder="{{'to'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].endValue"/></div>
                     </div>
                 </span>
 

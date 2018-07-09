@@ -17,7 +17,7 @@
 </script>
 
 <span id="showLeftBar" class="hideInPrint">
-    <a href="javascript:dhis2.leftBar.showAnimated()" title="$i18n.getString('show_menu' )"><i class="fa fa-arrow-right leftBarIcon"></i></a>
+    <a href="javascript:dhis2.leftBar.showAnimated()" ng-attr-title="$i18n.getString('show_menu' )"><i class="fa fa-arrow-right leftBarIcon"></i></a>
 </span>
 
 <div id="leftBar">
@@ -67,7 +67,7 @@
                         theme="select2" 
                         on-select="setProgram(parent.selectedProgram)"
                         style="width:100%;">
-                    <ui-select-match allow-clear="true" class="form-control-ui-select" placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+                    <ui-select-match allow-clear="true" class="form-control-ui-select" ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                     <ui-select-choices  repeat="program in programs | filter: $select.search | limitTo:maxOptionSize">
                         <span ng-bind-html="program.displayName | highlight: $select.search"></span>
                     </ui-select-choices>
