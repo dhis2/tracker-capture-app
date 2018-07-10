@@ -5,7 +5,7 @@
         {{currentStage.executionDateLabel ? currentStage.executionDateLabel : 'report_date' | translate}}
         <span class="required">*</span>
         <input type="text"
-               placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+               ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                class="form-control hideInPrint"
                ng-class="{'input-success': eventDateSaved}"
                d2-date-validator
@@ -23,7 +23,7 @@
         <input type="text"
                class="form-control not-for-screen"
                ng-class="{'input-success': eventDateSaved}"
-               value={{currentEvent.eventDate}}>
+               ng-attr-value={{currentEvent.eventDate}}>
         <div ng-messages="outerDataEntryForm.eventDate.$error" ng-if="interacted(outerDataEntryForm.eventDate)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
         </div>
     </div>
@@ -32,10 +32,10 @@
             {{currentStage.dueDateLabel ? currentStage.dueDateLabel : 'due_date' | translate}}
         </span>
         <span ng-if="!currentEvent.eventDate && currentEvent.status !== 'SKIPPED' && !selectedEntity.inactive && selectedEnrollment.status === 'ACTIVE' && registrationMode !== 'REGISTRATION'">
-            <a href ng-click="enableRescheduling()" title="{{ schedulingEnabled ? 'disable_rescheduling' : 'enable_rescheduling' | translate}}"><span class="text-primary bold">{{'reschedule_duedate'| translate}}</span></a>
+            <a href ng-click="enableRescheduling()" ng-attr-title="{{ schedulingEnabled ? 'disable_rescheduling' : 'enable_rescheduling' | translate}}"><span class="text-primary bold">{{'reschedule_duedate'| translate}}</span></a>
         </span>
         <input type="text"
-               placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+               ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                class="form-control hideInPrint"
                ng-class="{'input-success': dueDateSaved}"
                d2-date-validator
@@ -49,7 +49,7 @@
         <input type="text"
                class="form-control not-for-screen"
                ng-class="{'input-success': dueDateSaved}"
-               value={{currentEvent.dueDate}}>        
+               ng-attr-value={{currentEvent.dueDate}}>        
         <div ng-messages="outerDataEntryForm.dueDate.$error" ng-if="interacted(outerDataEntryForm.dueDate)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">                        
         </div>
     </div>    
@@ -78,7 +78,7 @@
         
         <a href 
            ng-click="editAttributeCategoryOptions()" 
-           title="{{'edit' | translate}}">
+           ng-attr-title="{{'edit' | translate}}">
             {{selectedProgram.categoryCombo.displayName}}  <i class="fa fa-pencil-square-o"></i>
         </a>        
         
@@ -94,7 +94,7 @@
                                 name="foo"
                                 on-select="saveAttributeCategoryOptions()"
                                 style="width: 100%">
-                            <ui-select-match allow-clear="false" ng-class="getOptionSaveNotifcationClass(category.id)"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+                            <ui-select-match allow-clear="false" ng-class="getOptionSaveNotifcationClass(category.id)"  class="form-control-ui-select"  ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                             <ui-select-choices  repeat="option in category.categoryOptions | filter: $select.search | limitTo:maxOptionSize">
                               <span ng-bind-html="option.displayName | highlight: $select.search"></span>
                             </ui-select-choices>

@@ -11,7 +11,7 @@
                 template="attribute-details.html"
                 trigger="click"
                 placement="right">
-                <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{attribute.displayName}}</a>
+                <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{attribute.displayName}}</a>
             </span>
             <span class="not-for-screen">
                 {{attribute.displayName}}
@@ -33,7 +33,7 @@
                                     ng-disabled="selectedOrgUnit.closedStatus || isDisabled(attribute)"
                                     on-select="teiValueUpdated(selectedTei, attribute.id)"
                                     class="ui-select-style">
-                            <ui-select-match allow-clear="true"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+                            <ui-select-match allow-clear="true"  class="form-control-ui-select"  ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                             <ui-select-choices  repeat="option.displayName as option in optionSets[attributesById[attribute.id].optionSet.id].options | filter: $select.search | limitTo:maxOptionSize">
                               <span ng-bind-html="option.displayName | highlight: $select.search"></span>
                             </ui-select-choices>
@@ -53,7 +53,7 @@
                 <span ng-if="!attribute.optionSetValue" ng-switch="attribute.valueType">
                     <span ng-switch-when="DATE">
                         <input type="text"
-                               placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
+                               ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                                name="foo" 
                                class="form-control"
                                d2-date
@@ -121,8 +121,8 @@
                             </d2-radio-button>
                         </span>
                         <span class="not-for-screen">
-                            <label class="radio-inline"><input type="radio" value="true" ng-model="selectedTei[attribute.id]">{{'yes' | translate}}</label>
-                            <label class="radio-inline"><input type="radio" value="false" ng-model="selectedTei[attribute.id]" >{{'no' | translate}}</label>
+                            <label class="radio-inline"><input type="radio" ng-attr-value="true" ng-model="selectedTei[attribute.id]">{{'yes' | translate}}</label>
+                            <label class="radio-inline"><input type="radio" ng-attr-value="false" ng-model="selectedTei[attribute.id]" >{{'no' | translate}}</label>
                         </span>
                     </span>                    
                     <span ng-switch-when="NUMBER">
@@ -248,7 +248,7 @@
                                name="foo" 
                                class="form-control"
                                d2-url-validator
-                               placeholder="{{'url_format' | translate}}"
+                               ng-attr-placeholder="{{'url_format' | translate}}"
                                ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
                                ng-model="selectedTei[attribute.id]"
                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
@@ -294,7 +294,7 @@
                                         ng-class="{true: 'disable-clicks'} [editingDisabled]"
                                         ng-disabled="selectedOrgUnit.closedStatus"
                                         type="button" 
-                                        title="{{'add'| translate}} {{attribute.displayName}}"
+                                        ng-attr-title="{{'add'| translate}} {{attribute.displayName}}"
                                         ng-click="getTrackerAssociate(attribute, selectedTei[attribute.id])">
                                         <i class="fa fa-external-link"></i>                             
                                 </button>
@@ -303,7 +303,7 @@
                                         ng-class="{true: 'disable-clicks'} [editingDisabled]"
                                         ng-disabled="selectedOrgUnit.closedStatus"
                                         type="button" 
-                                        title="{{'remove'| translate}} {{attribute.displayName}}"
+                                        ng-attr-title="{{'remove'| translate}} {{attribute.displayName}}"
                                         ng-click="selectedTei[attribute.id] = null">
                                         <i class="fa fa-trash-o"></i>                             
                                 </button>

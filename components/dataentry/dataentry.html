@@ -5,10 +5,10 @@
             {{'main_menu' | translate}}
             
             <span class="pull-right widget-link">
-                <a href ng-click="model.showLegend = !model.showLegend" title="{{'event_color_legend'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-info-circle vertical-center"></i></a>
+                <a href ng-click="model.showLegend = !model.showLegend" ng-attr-title="{{'event_color_legend'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-info-circle vertical-center"></i></a>
                 <a class="small-horizontal-spacing" href ng-click="expandCollapse(dataentryWidget)">
-                    <span ng-show="dataentryWidget.expand"><i class="fa fa-chevron-up vertical-center" title="{{collapseLabel}}"></i></span>
-                    <span ng-show="!dataentryWidget.expand"><i class="fa fa-chevron-down vertical-center" title="{{expandLabel}}"></i></span>
+                    <span ng-show="dataentryWidget.expand"><i class="fa fa-chevron-up vertical-center" ng-attr-title="{{collapseLabel}}"></i></span>
+                    <span ng-show="!dataentryWidget.expand"><i class="fa fa-chevron-down vertical-center" ng-attr-title="{{expandLabel}}"></i></span>
                 </a>            
             </span>
             
@@ -16,17 +16,17 @@
         <div ng-if="!useMainMenu">
             {{dataentryWidget.title | translate}}
             <span class="pull-right widget-link">               
-                <a href ng-click="model.showEventSearch = !model.showEventSearch" title="{{'search'| translate}}" ng-if="allEventsSorted.length > eventPageSize" class="small-horizontal-spacing"><span ng-class="{true: 'red'} [model.eventSearchText.length > 0]"><i class="fa fa-search vertical-center"></i></span></a>
-                <a href ng-click="model.showLegend = !model.showLegend" title="{{'event_color_legend'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-info-circle vertical-center"></i></a>
-                <a href ng-click="toggleEventsTableDisplay()" title="{{showEventsAsTables ? 'toggle_table_view_off' : 'toggle_table_view_on'| translate}}" ng-show="stagesCanBeShownAsTable"><span ng-if="!showEventsAsTables"><i class="fa fa-bars vertical-center"></i></span><span ng-if="showEventsAsTables"><i class="fa fa-square vertical-center"></i></span></a>
-                <a href ng-if="currentStage.timelineDataEntryMode === timelineDataEntryModes.COMPAREALLDATAENTRYFORM" ng-click="toggleCompForm()" title="{{'switch_default_form'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-th-list"></i></a>
-                <a href ng-if="currentStage.timelineDataEntryMode !== timelineDataEntryModes.COMPAREALLDATAENTRYFORM" ng-click="toggleCompForm()" title="{{'switch_compare_form'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-files-o"></i></a>
+                <a href ng-click="model.showEventSearch = !model.showEventSearch" ng-attr-title="{{'search'| translate}}" ng-if="allEventsSorted.length > eventPageSize" class="small-horizontal-spacing"><span ng-class="{true: 'red'} [model.eventSearchText.length > 0]"><i class="fa fa-search vertical-center"></i></span></a>
+                <a href ng-click="model.showLegend = !model.showLegend" ng-attr-title="{{'event_color_legend'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-info-circle vertical-center"></i></a>
+                <a href ng-click="toggleEventsTableDisplay()" ng-attr-title="{{showEventsAsTables ? 'toggle_table_view_off' : 'toggle_table_view_on'| translate}}" ng-show="stagesCanBeShownAsTable"><span ng-if="!showEventsAsTables"><i class="fa fa-bars vertical-center"></i></span><span ng-if="showEventsAsTables"><i class="fa fa-square vertical-center"></i></span></a>
+                <a href ng-if="currentStage.timelineDataEntryMode === timelineDataEntryModes.COMPAREALLDATAENTRYFORM" ng-click="toggleCompForm()" ng-attr-title="{{'switch_default_form'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-th-list"></i></a>
+                <a href ng-if="currentStage.timelineDataEntryMode !== timelineDataEntryModes.COMPAREALLDATAENTRYFORM" ng-click="toggleCompForm()" ng-attr-title="{{'switch_compare_form'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-files-o"></i></a>
                 <d2-audit name-id-map="prStDes" event-id="{{currentEvent.event}}" data-type="dataElement" ng-if="currentEvent.event"></d2-audit>
                 <a class="small-horizontal-spacing" href ng-click="expandCollapse(dataentryWidget)">
-                    <span ng-show="dataentryWidget.expand"><i class="fa fa-chevron-up vertical-center" title="{{collapseLabel}}"></i></span>
-                    <span ng-show="!dataentryWidget.expand"><i class="fa fa-chevron-down vertical-center" title="{{expandLabel}}"></i></span>
+                    <span ng-show="dataentryWidget.expand"><i class="fa fa-chevron-up vertical-center" ng-attr-title="{{collapseLabel}}"></i></span>
+                    <span ng-show="!dataentryWidget.expand"><i class="fa fa-chevron-down vertical-center" ng-attr-title="{{expandLabel}}"></i></span>
                 </a>
-                <a class="small-horizontal-spacing" href ng-click="removeWidget(dataentryWidget)" title="{{removeLabel}}"><i class="fa fa-times-circle vertical-center"></i></a>
+                <a class="small-horizontal-spacing" href ng-click="removeWidget(dataentryWidget)" ng-attr-title="{{removeLabel}}"><i class="fa fa-times-circle vertical-center"></i></a>
             </span>
         </div>
         <div ng-if="mainMenuStageSelected()">            
@@ -39,13 +39,13 @@
                         {{stage.displayName}} ({{getStageEventCnt(stage)}})
                     </a>
                 </span>
-                <a href ng-click="model.showLegend = !model.showLegend" title="{{'event_color_legend'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-info-circle vertical-center"></i></a>
-                <a href ng-click="toggleEventsTableDisplay()" title="{{showEventsAsTables ? 'toggle_table_view_off' : 'toggle_table_view_on'| translate}}" ng-show="stagesCanBeShownAsTable"><span ng-if="!showEventsAsTables"><i class="fa fa-bars vertical-center"></i></span><span ng-if="showEventsAsTables"><i class="fa fa-square vertical-center"></i></span></a>
+                <a href ng-click="model.showLegend = !model.showLegend" ng-attr-title="{{'event_color_legend'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-info-circle vertical-center"></i></a>
+                <a href ng-click="toggleEventsTableDisplay()" ng-attr-title="{{showEventsAsTables ? 'toggle_table_view_off' : 'toggle_table_view_on'| translate}}" ng-show="stagesCanBeShownAsTable"><span ng-if="!showEventsAsTables"><i class="fa fa-bars vertical-center"></i></span><span ng-if="showEventsAsTables"><i class="fa fa-square vertical-center"></i></span></a>
                 <a class="small-horizontal-spacing" href ng-click="expandCollapse(dataentryWidget)">
-                    <span ng-show="dataentryWidget.expand"><i class="fa fa-chevron-up vertical-center" title="{{collapseLabel}}"></i></span>
-                    <span ng-show="!dataentryWidget.expand"><i class="fa fa-chevron-down vertical-center" title="{{expandLabel}}"></i></span>
+                    <span ng-show="dataentryWidget.expand"><i class="fa fa-chevron-up vertical-center" ng-attr-title="{{collapseLabel}}"></i></span>
+                    <span ng-show="!dataentryWidget.expand"><i class="fa fa-chevron-down vertical-center" ng-attr-title="{{expandLabel}}"></i></span>
                 </a>
-                <a class="small-horizontal-spacing" href ng-click="removeWidget(dataentryWidget)" title="{{removeLabel}}" ng-if="dataentryWidget.showHideAllowed"><i class="fa fa-times-circle vertical-center"></i></a>            
+                <a class="small-horizontal-spacing" href ng-click="removeWidget(dataentryWidget)" ng-attr-title="{{removeLabel}}" ng-if="dataentryWidget.showHideAllowed"><i class="fa fa-times-circle vertical-center"></i></a>            
             </span>
         </div>       
     </div>

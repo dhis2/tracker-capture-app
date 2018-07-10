@@ -791,9 +791,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                     }
                                     if (index > -1) {
                                         xmlData += '<attribute id="' + attrNamesIdMap[itemName] + '" ' +
-                                            'name="' + itemName + '" value="' + value + '"></attribute>';
+                                            'name="' + itemName + '" ng-attr-value="' + value + '"></attribute>';
                                     } else {
-                                        xmlData += '<' + headers[j].name + ' value="' + value + '"></' + headers[j].name + '>';
+                                        xmlData += '<' + headers[j].name + ' ng-attr-value="' + value + '"></' + headers[j].name + '>';
                                     }
 
                                 }

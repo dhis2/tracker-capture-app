@@ -4,7 +4,7 @@
         <div class="panel-heading">{{'new_event'| translate}}
             <span class="pull-right">
                 <a class="small-horizontal-spacing" href ng-click="toggleShowStageTasks()">
-                    <span><i class="fa fa-chevron-right vertical-center" title="{{'hide_menu'| translate}}"></i></span>                    
+                    <span><i class="fa fa-chevron-right vertical-center" ng-attr-title="{{'hide_menu'| translate}}"></i></span>                    
                 </a>
             </span>
         </div>
@@ -14,13 +14,13 @@
                     <div class="col-sm-12">{{stage.displayName}}</div>
                     <div class="col-sm-12">
                         <span>
-                            <a href title="{{'create_new_event'| translate}}" ng-click="showCreateEvent(stage, eventCreationActions.add)" style="vertical-align:middle">
+                            <a href ng-attr-title="{{'create_new_event'| translate}}" ng-click="showCreateEvent(stage, eventCreationActions.add)" style="vertical-align:middle">
                                 {{'add'|translate}}
                             </a>
 
                             <span ng-if="!stage.hideDueDate || stage.periodType">
                                 |
-                                <a href title="{{'schedule_new_event'| translate}}" ng-click="showCreateEvent(stage, eventCreationActions.schedule)" style="vertical-align:middle">
+                                <a href ng-attr-title="{{'schedule_new_event'| translate}}" ng-click="showCreateEvent(stage, eventCreationActions.schedule)" style="vertical-align:middle">
                                     {{'schedule'|translate}}
                                 </a>
                             </span>
@@ -28,7 +28,7 @@
                             <!-- <span ng-if="useReferral && showReferral && !stage.hideDueDate"> -->
                             <span>
                                 |
-                                <a href title="{{'make_referral'| translate}}" ng-click="showCreateEvent(stage, eventCreationActions.referral)" style="vertical-align: middle">
+                                <a href ng-attr-title="{{'make_referral'| translate}}" ng-click="showCreateEvent(stage, eventCreationActions.referral)" style="vertical-align: middle">
                                     {{'referral'|translate}}
                                 </a>
                             </span>
@@ -41,7 +41,7 @@
     </div>       
         <div ng-if="!showStageTasks && selectedEnrollment.status === 'ACTIVE'" class="pull-right">
         <div ng-if="!useMainMenu">
-            <a href ng-click="toggleShowStageTasks()" title="{{'show_new_event_menu'| translate}}">
+            <a href ng-click="toggleShowStageTasks()" ng-attr-title="{{'show_new_event_menu'| translate}}">
                 <span class="stage-tasks-badge stage-tasks-badge-back">                                     
                     <span><i class="fa fa-chevron-left vertical-center"></i></span>                
                 </span>
@@ -49,14 +49,14 @@
         </div> 
         <div ng-if="!useMainMenu || (useMainMenu && topLineEvents.length > 0 && !hideTopLineEventsForFormTypes[displayCustomForm])">
             <div>
-                <a href class="disable-link-effects" ng-click="useMainMenu ? showCreateEventIfStageNeedsEvent(selectedMainMenuStage, eventCreationActions.add, false, true) : showCreateEvent(null, eventCreationActions.add)" title="{{'add_new'| translate}}">
+                <a href class="disable-link-effects" ng-click="useMainMenu ? showCreateEventIfStageNeedsEvent(selectedMainMenuStage, eventCreationActions.add, false, true) : showCreateEvent(null, eventCreationActions.add)" ng-attr-title="{{'add_new'| translate}}">
                     <span class="stage-tasks-badge" ng-class="useMainMenu ? {'stage-tasks-badge-disabled': !stageNeedsEventOfType(selectedMainMenuStage, eventCreationActions.add)} : ''">                                     
                         <span><i class="fa fa-plus vertical-center"></i></span>                
                     </span>
                 </a>                
             </div>
             <div>
-                <a href class="disable-link-effects" ng-click="useMainMenu ? showCreateEventIfStageNeedsEvent(selectedMainMenuStage, eventCreationActions.schedule, false, true) : showCreateEvent(null, eventCreationActions.schedule)" title="{{'schedule_new'| translate}}">
+                <a href class="disable-link-effects" ng-click="useMainMenu ? showCreateEventIfStageNeedsEvent(selectedMainMenuStage, eventCreationActions.schedule, false, true) : showCreateEvent(null, eventCreationActions.schedule)" ng-attr-title="{{'schedule_new'| translate}}">
                     <span class="stage-tasks-badge" ng-class="useMainMenu ? {'stage-tasks-badge-disabled': !stageNeedsEventOfType(selectedMainMenuStage, eventCreationActions.schedule)} : ''">                                     
                         <span><i class="fa fa-calendar vertical-center"></i></span>                
                     </span>
@@ -65,7 +65,7 @@
             <!-- TODO: Edit so that referral shows-->
             <!--  <div ng-if="useReferral && showReferral"> -->           
             <div>
-                <a href class="disable-link-effects" ng-click="useMainMenu ? showCreateEventIfStageNeedsEvent(selectedMainMenuStage, eventCreationActions.referral, false, true) : showCreateEvent(null, eventCreationActions.referral)" title="{{'make_referral'| translate}}">
+                <a href class="disable-link-effects" ng-click="useMainMenu ? showCreateEventIfStageNeedsEvent(selectedMainMenuStage, eventCreationActions.referral, false, true) : showCreateEvent(null, eventCreationActions.referral)" ng-attr-title="{{'make_referral'| translate}}">
                     <span class="stage-tasks-badge" ng-class="useMainMenu ? {'stage-tasks-badge-disabled': !stageNeedsEventOfType(selectedMainMenuStage, eventCreationActions.referral)} : ''">                                     
                         <span><i class="fa fa-share vertical-center"></i></span>                
                     </span>
