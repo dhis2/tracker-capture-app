@@ -158,6 +158,7 @@ trackerCapture.controller('RegistrationController',
             if ($scope.selectedOrgUnit.reportDateRange) {
                 if ($scope.selectedOrgUnit.reportDateRange.minDate) {
                     $scope.model.minEnrollmentDate = DateUtils.formatFromApiToUserCalendar($scope.selectedOrgUnit.reportDateRange.minDate);
+                    $scope.model.minEnrollmentDate = DateUtils.formatFromApiToUser($scope.model.minEnrollmentDate);
                 }
                 if ($scope.selectedOrgUnit.reportDateRange.maxDate) {
                     $scope.model.maxEnrollmentDate = $scope.selectedOrgUnit.reportDateRange.maxDate;
