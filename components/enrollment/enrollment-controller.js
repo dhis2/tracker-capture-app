@@ -44,6 +44,7 @@ trackerCapture.controller('EnrollmentController',
                 $scope.enrollmentDateState.maxDate = $scope.selectedProgram.selectEnrollmentDatesInFuture ? '' : "0";
                 if($scope.selectedOrgUnit.reportDateRange){
                     $scope.enrollmentDateState.minDate = DateUtils.formatFromApiToUserCalendar($scope.selectedOrgUnit.reportDateRange.minDate);
+                    $scope.enrollmentDateState.minDate = DateUtils.formatFromApiToUser($scope.enrollmentDateState.minDate);
                 }
                 if ($scope.selectedOrgUnit.reportDateRange.maxDate) {
                     $scope.enrollmentDateState.maxDate = $scope.selectedOrgUnit.reportDateRange.maxDate;
