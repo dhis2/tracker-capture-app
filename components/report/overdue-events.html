@@ -1,5 +1,5 @@
 <span id="showLeftBar">
-    <a href="javascript:dhis2.leftBar.showAnimated()" title="$i18n.getString('show_menu' )"><i class="fa fa-arrow-right leftBarIcon"></i></a>
+    <a href="javascript:dhis2.leftBar.showAnimated()" ng-attr-title="$i18n.getString('show_menu' )"><i class="fa fa-arrow-right leftBarIcon"></i></a>
 </span>
 
 <div id="leftBar">
@@ -28,7 +28,7 @@
             <div class="pull-right hideInPrint">
                 <div class="btn-group" dropdown is-open="status.isopen">
                     <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="!overdueEvents.length">
-                        <i class="fa fa-cog" title="{{settingsLabel}}"></i>
+                        <i class="fa fa-cog" ng-attr-title="{{settingsLabel}}"></i>
                     </button>
                     <ul class="dropdown-menu pull-right" role="menu">
                         <li ng-show="overdueEvents.length > 0"><a href ng-click="showHideColumns()">{{'show_hide_columns'| translate}}</a></li>
@@ -47,7 +47,7 @@
                     <tr>
                         <td>{{'org_unit' | translate}}</td>
                         <td>
-                            <input type="text" class="form-control" selected-org-unit ng-model="selectedOrgUnit.displayName" value="{{selectedOrgUnit.displayName || 'please_select'| translate}}" ng-disabled="true">                                                                                        
+                            <input type="text" class="form-control" selected-org-unit ng-model="selectedOrgUnit.displayName" ng-attr-value="{{selectedOrgUnit.displayName || 'please_select'| translate}}" ng-disabled="true">                                                                                        
                         </td>
                     </tr>
                     <tr>
@@ -57,7 +57,7 @@
                         <td>
                             <ui-select ng-model="model.selectedProgram" 
                                     theme="select2" style="width:100%;">
-                                <ui-select-match allow-clear="true" class="form-control-ui-select" placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+                                <ui-select-match allow-clear="true" class="form-control-ui-select" ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                                 <ui-select-choices  repeat="program in programs | filter: $select.search | limitTo:maxOptionSize">
                                     <span ng-bind-html="program.displayName | highlight: $select.search"></span>
                                 </ui-select-choices>
@@ -67,9 +67,9 @@
                     <tr>
                         <td>{{'org_unit_scope'| translate}}</td>
                         <td>                 
-                            <label><input type="radio" ng-model="selectedOuMode" name="selected" value="SELECTED"> {{'SELECTED'| translate}}</label><br/>
-                            <label><input type="radio" ng-model="selectedOuMode" name="children" value="CHILDREN"> {{'CHILDREN'| translate}}</label><br/>
-                            <label><input type="radio" ng-model="selectedOuMode" name="descendants" value="DESCENDANTS"> {{'DESCENDANTS'| translate}}</label><br/>                            
+                            <label><input type="radio" ng-model="selectedOuMode" name="selected" ng-attr-value="SELECTED"> {{'SELECTED'| translate}}</label><br/>
+                            <label><input type="radio" ng-model="selectedOuMode" name="children" ng-attr-value="CHILDREN"> {{'CHILDREN'| translate}}</label><br/>
+                            <label><input type="radio" ng-model="selectedOuMode" name="descendants" ng-attr-value="DESCENDANTS"> {{'DESCENDANTS'| translate}}</label><br/>                            
                         </td>
                     </tr>
                     <tr>
@@ -149,10 +149,10 @@
                                     <!-- filter icon begins -->
                                     <span class='pull-right hideInPrint'>
                                         <span ng-if="gridColumn.valueType !== 'DATE' && gridColumn.valueType !== 'NUMBER'">
-                                            <a href ng-click="searchInGrid(gridColumn)" title="{{'search'| translate}}"><span ng-class="{true: 'filter-without-content', false: 'filter-with-content'} [filterText[gridColumn.id] == undefined || filterText[gridColumn.id] == '']"><i class="fa fa-search"></i></span></a>
+                                            <a href ng-click="searchInGrid(gridColumn)" ng-attr-title="{{'search'| translate}}"><span ng-class="{true: 'filter-without-content', false: 'filter-with-content'} [filterText[gridColumn.id] == undefined || filterText[gridColumn.id] == '']"><i class="fa fa-search"></i></span></a>
                                         </span>
                                         <span ng-if="gridColumn.valueType === 'DATE' || gridColumn.valueType === 'NUMBER'">
-                                            <a href ng-click="searchInGrid(gridColumn)" title="{{'search'| translate}}"><span ng-class="{true: 'filter-without-content', false: 'filter-with-content'} [(filterText[gridColumn.id].start == undefined || filterText[gridColumn.id].start == '') && (filterText[gridColumn.id].end == undefined || filterText[gridColumn.id].end == '')]"><i class="fa fa-search"></i></span></a>
+                                            <a href ng-click="searchInGrid(gridColumn)" ng-attr-title="{{'search'| translate}}"><span ng-class="{true: 'filter-without-content', false: 'filter-with-content'} [(filterText[gridColumn.id].start == undefined || filterText[gridColumn.id].start == '') && (filterText[gridColumn.id].end == undefined || filterText[gridColumn.id].end == '')]"><i class="fa fa-search"></i></span></a>
                                         </span>                                                    
                                     </span>
                                     <!-- filter icon ends -->
@@ -161,31 +161,31 @@
                                     <span ng-show="gridColumn.showFilter" class="hideInPrint">                                          
                                         <span ng-switch="gridColumn.valueType">                                            
                                             <span ng-switch-when="NUMBER">
-                                                <input style="width: 45%;" placeholder="{{'lower_limit' | translate}}" type="number" ng-model="filterText[gridColumn.id].start" ng-blur="searchInGrid(gridColumn)">
-                                                <input style="width: 45%;" placeholder="{{'upper_limit' | translate}}" type="number" ng-model="filterText[gridColumn.id].end" ng-blur="searchInGrid(gridColumn)">
+                                                <input style="width: 45%;" ng-attr-placeholder="{{'lower_limit' | translate}}" type="number" ng-model="filterText[gridColumn.id].start" ng-blur="searchInGrid(gridColumn)">
+                                                <input style="width: 45%;" ng-attr-placeholder="{{'upper_limit' | translate}}" type="number" ng-model="filterText[gridColumn.id].end" ng-blur="searchInGrid(gridColumn)">
                                             </span>
                                             <span ng-switch-when="INTEGER">
-                                                <input style="width: 45%;" placeholder="{{'lower_limit' | translate}}" type="number" ng-model="filterText[gridColumn.id].start" ng-blur="searchInGrid(gridColumn)">
-                                                <input style="width: 45%;" placeholder="{{'upper_limit' | translate}}" type="number" ng-model="filterText[gridColumn.id].end" ng-blur="searchInGrid(gridColumn)">
+                                                <input style="width: 45%;" ng-attr-placeholder="{{'lower_limit' | translate}}" type="number" ng-model="filterText[gridColumn.id].start" ng-blur="searchInGrid(gridColumn)">
+                                                <input style="width: 45%;" ng-attr-placeholder="{{'upper_limit' | translate}}" type="number" ng-model="filterText[gridColumn.id].end" ng-blur="searchInGrid(gridColumn)">
                                             </span>
                                             <span ng-switch-when="INTEGER_POSITIVE">
-                                                <input style="width: 45%;" placeholder="{{'lower_limit' | translate}}" type="number" min="1" ng-model="filterText[gridColumn.id].start" ng-blur="searchInGrid(gridColumn)">
-                                                <input style="width: 45%;" placeholder="{{'upper_limit' | translate}}" type="number" min="1" ng-model="filterText[gridColumn.id].end" ng-blur="searchInGrid(gridColumn)">
+                                                <input style="width: 45%;" ng-attr-placeholder="{{'lower_limit' | translate}}" type="number" min="1" ng-model="filterText[gridColumn.id].start" ng-blur="searchInGrid(gridColumn)">
+                                                <input style="width: 45%;" ng-attr-placeholder="{{'upper_limit' | translate}}" type="number" min="1" ng-model="filterText[gridColumn.id].end" ng-blur="searchInGrid(gridColumn)">
                                             </span>
                                             <span ng-switch-when="INTEGER_NEGATIVE">
-                                                <input style="width: 45%;" placeholder="{{'lower_limit' | translate}}" type="number" max="-1" ng-model="filterText[gridColumn.id].start" ng-blur="searchInGrid(gridColumn)">
-                                                <input style="width: 45%;" placeholder="{{'upper_limit' | translate}}" type="number" max="-1" ng-model="filterText[gridColumn.id].end" ng-blur="searchInGrid(gridColumn)">
+                                                <input style="width: 45%;" ng-attr-placeholder="{{'lower_limit' | translate}}" type="number" max="-1" ng-model="filterText[gridColumn.id].start" ng-blur="searchInGrid(gridColumn)">
+                                                <input style="width: 45%;" ng-attr-placeholder="{{'upper_limit' | translate}}" type="number" max="-1" ng-model="filterText[gridColumn.id].end" ng-blur="searchInGrid(gridColumn)">
                                             </span>
                                             <span ng-switch-when="INTEGER_ZERO_OR_POSITIVE">
-                                                <input style="width: 45%;" placeholder="{{'lower_limit' | translate}}" type="number" min="0" ng-model="filterText[gridColumn.id].start" ng-blur="searchInGrid(gridColumn)">
-                                                <input style="width: 45%;" placeholder="{{'upper_limit' | translate}}" type="number" min="0" ng-model="filterText[gridColumn.id].end" ng-blur="searchInGrid(gridColumn)">
+                                                <input style="width: 45%;" ng-attr-placeholder="{{'lower_limit' | translate}}" type="number" min="0" ng-model="filterText[gridColumn.id].start" ng-blur="searchInGrid(gridColumn)">
+                                                <input style="width: 45%;" ng-attr-placeholder="{{'upper_limit' | translate}}" type="number" min="0" ng-model="filterText[gridColumn.id].end" ng-blur="searchInGrid(gridColumn)">
                                             </span>
                                             <span ng-switch-when="DATE">
-                                                <input style="width: 70%;" placeholder="{{'start_date' | translate}}" type="text" ng-model="filterText[gridColumn.id].start" d2-date readonly="readonly">
+                                                <input style="width: 70%;" ng-attr-placeholder="{{'start_date' | translate}}" type="text" ng-model="filterText[gridColumn.id].start" d2-date readonly="readonly">
                                                 <span ng-hide="!filterText[gridColumn.id].start || filterText[gridColumn.id].start == undefined || filterText[gridColumn.id].start == ''">
                                                     <a href ng-click='removeStartFilterText(gridColumn.id)'><span class='black'><i class="fa fa-trash-o"></i></span></a>                                                        
                                                 </span>
-                                                <input style="width: 70%;" placeholder="{{'end_date' | translate}}" type="text" ng-model="filterText[gridColumn.id].end" d2-date readonly="readonly">
+                                                <input style="width: 70%;" ng-attr-placeholder="{{'end_date' | translate}}" type="text" ng-model="filterText[gridColumn.id].end" d2-date readonly="readonly">
                                                 <span ng-hide="!filterText[gridColumn.id].end || filterText[gridColumn.id].end == undefined || filterText[gridColumn.id].end == ''">
                                                     <a href ng-click='removeEndFilterText(gridColumn.id)'><span class='black'><i class="fa fa-trash-o"></i></span></a>                                                        
                                                 </span> 
@@ -203,7 +203,7 @@
                         <tbody>
                             <tr ng-repeat="overdueEvent in overdueEvents | orderBy:[d2Sort, 'trackedEntityInstance']:reverse | gridFilter:filterText:filterTypes"
                                 ng-click="showDashboard(overdueEvent.trackedEntityInstance)"
-                                title="{{'go_to_dashboard'| translate}}">
+                                ng-attr-title="{{'go_to_dashboard'| translate}}">
                                 <td ng-repeat="gridColumn in gridColumns | filter:{show: true, eventCol: false}" 
                                     ng-if='displayMode.onlyMarkedFollowup ? overdueEvent.followup:true'>                                                
                                     {{overdueEvent[gridColumn.id]}}

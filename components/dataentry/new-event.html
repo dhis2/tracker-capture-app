@@ -30,7 +30,7 @@
                             ng-model="category.selectedOption"
                             ng-options="option as option.displayName for option in category.categoryOptions"
                             ng-change="getCategoryOptions()">
-                        <option value="" ng-selected="selectDefault.selected">{{'please_select' | translate}}</option>
+                        <option ng-attr-value="" ng-selected="selectDefault.selected">{{'please_select' | translate}}</option>
                     </select>
                 </td>
             </tr>
@@ -44,7 +44,7 @@
                            class="form-control" 
                            name="dueDate"
                            id="dueDate"
-                           placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
+                           ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                            ng-rquired="true" 
                            d2-date
                            d2-date-validator 
@@ -62,7 +62,7 @@
                            class="form-control" 
                            id="eventDate"
                            name="eventDate"
-                           placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
+                           ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                            ng-rquired="true" 
                            d2-date
                            d2-date-validator 
@@ -90,14 +90,14 @@
                                     class="btn btn-default trim" 
                                     ng-disabled="periodOffset <= referenceOffset" 
                                     ng-click="fetchPeriod('PREV')" 
-                                    title="{{'prev_period'| translate}}">
+                                    ng-attr-title="{{'prev_period'| translate}}">
                                 <i class="fa fa-backward"></i>
                             </button>
                             <button type="button" 
                                     class="btn btn-default trim" 
                                      ng-disabled="isNewEvent && hasFuturePeriod" 
                                     ng-click="fetchPeriod('NEXT')" 
-                                    title="{{'nxt_period'| translate}}">
+                                    ng-attr-title="{{'nxt_period'| translate}}">
                                 <i class="fa fa-forward"></i>
                             </button>                                    
                         </span>
@@ -133,7 +133,7 @@
                 <div class="input-group">
                     <label for="referralDueDate"><strong>{{dhis2Event.executionDateLabel}}</strong></label>
                     <input type="text" 
-                       placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                       ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                        id="referralDueDate"
                        name="dueDate"
                        d2-date
