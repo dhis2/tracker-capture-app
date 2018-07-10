@@ -99,7 +99,7 @@ trackerCapture.controller('TeiReportController',
             }
 
             if(ev.dataValues){
-                ev.dataValues.forEach(dataValue => {
+                ev.dataValues.forEach(function(dataValue) {
                     if(angular.isUndefined(ev[dataValue.dataElement])){
                         ev[dataValue.dataElement] = dataValue.value;
                     }
