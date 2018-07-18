@@ -848,7 +848,7 @@ trackerCapture.controller('DataEntryController',
                             dhis2Event.sortingDate = dhis2Event.eventDate;                            
                         }
                         
-                        dhis2Event.editingNotAllowed = EventUtils.getEditingStatus(dhis2Event, eventStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
+                        dhis2Event.editingNotAllowed = EventUtils.getEditingStatus(dhis2Event, eventStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram);
                         
                         dhis2Event.statusColor = EventUtils.getEventStatusColor(dhis2Event);
                         dhis2Event = EventUtils.processEvent(dhis2Event, eventStage, $scope.optionSets, $scope.prStDes);
@@ -1341,7 +1341,7 @@ trackerCapture.controller('DataEntryController',
 
         var stage = $scope.stagesById[event.programStage];        
         if( stage && stage.id ){
-            event.editingNotAllowed = EventUtils.getEditingStatus(event, stage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
+            event.editingNotAllowed = EventUtils.getEditingStatus(event, stage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram);
         }        
         
         $scope.eventEditFormModalInstance = modalInstance = $modal.open({
@@ -1456,7 +1456,7 @@ trackerCapture.controller('DataEntryController',
             }
         }
 
-        $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
+        $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram);
         
         $scope.currentEventOriginal = angular.copy($scope.currentEvent);
         
@@ -2116,7 +2116,7 @@ trackerCapture.controller('DataEntryController',
                 }
 
                 setStatusColor();
-                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
+                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram);
                 
                 for(var i=0;i<$scope.allEventsSorted.length;i++){
                     if($scope.allEventsSorted[i].event === $scope.currentEvent.event){
@@ -2194,7 +2194,7 @@ trackerCapture.controller('DataEntryController',
                 }
 
                 setStatusColor();                
-                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment);
+                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram);
             });
         
     };
