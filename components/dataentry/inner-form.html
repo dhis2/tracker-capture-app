@@ -9,7 +9,7 @@
                             name="foo"
                             on-select="saveDatavalue(prStDe, innerForm.foo)"
                             style="width: 100%">
-                    <ui-select-match allow-clear="true" ng-class="getInputNotifcationClass(prStDe.dataElement.id, true)"  class="form-control-ui-select"  placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+                    <ui-select-match allow-clear="true" ng-class="getInputNotifcationClass(prStDe.dataElement.id, true)"  class="form-control-ui-select"  ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                     <ui-select-choices  repeat="option.displayName as option in optionSets[prStDe.dataElement.optionSet.id].options | filter: $select.search | limitTo:maxOptionSize">
                       <span ng-bind-html="option.displayName | highlight: $select.search"></span>
                     </ui-select-choices>
@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="not-for-screen">
-            <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+            <input type="text" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}>
         </div>
     </div>
     <div ng-if="!prStDe.dataElement.optionSetValue" ng-switch="prStDe.dataElement.valueType">
@@ -46,7 +46,7 @@
                        name="foo"/>
             </div>
             <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+                <input type="text" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
         <div ng-switch-when="PERCENTAGE">
@@ -63,7 +63,7 @@
                        name="foo"/>
             </div>
             <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+                <input type="text" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
         <div ng-switch-when="INTEGER">
@@ -80,7 +80,7 @@
                        name="foo"/>
             </div>
             <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+                <input type="text" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
         <div ng-switch-when="INTEGER_POSITIVE">
@@ -97,7 +97,7 @@
                        name="foo"/>
             </div>
             <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+                <input type="text" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
         <div ng-switch-when="INTEGER_NEGATIVE">
@@ -114,7 +114,7 @@
                        name="foo"/>
             </div>
             <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+                <input type="text" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
         <div ng-switch-when="INTEGER_ZERO_OR_POSITIVE">
@@ -131,7 +131,7 @@
                        name="foo"/>
             </div>
             <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+                <input type="text" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
         <div ng-switch-when="AGE">
@@ -155,7 +155,7 @@
                        name="foo"/>
             </div>
             <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+                <input type="text" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
         <div ng-switch-when="LONG_TEXT">
@@ -171,7 +171,7 @@
                 </textarea>
             </div>
             <div class="not-for-screen">
-                <textarea rows="3" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}></textarea>
+                <textarea rows="3" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}></textarea>
             </div>
         </div>
         <div ng-switch-when="TEXT">
@@ -186,7 +186,7 @@
                        name="foo"/>
             </div>
             <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+                <input type="text" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
         <div ng-switch-when="BOOLEAN">
@@ -204,14 +204,14 @@
                 </d2-radio-button>
             </div>
             <div class="not-for-screen">
-                <label class="radio-inline"><input type="radio" value="true" ng-model="currentEvent[prStDe.dataElement.id]">{{'yes' | translate}}</label>
-                <label class="radio-inline"><input type="radio" value="false" ng-model="currentEvent[prStDe.dataElement.id]">{{'no' | translate}}</label>
+                <label class="radio-inline"><input type="radio" ng-attr-value="true" ng-model="currentEvent[prStDe.dataElement.id]">{{'yes' | translate}}</label>
+                <label class="radio-inline"><input type="radio" ng-attr-value="false" ng-model="currentEvent[prStDe.dataElement.id]">{{'no' | translate}}</label>
             </div>
         </div>
         <div ng-switch-when="DATE">
             <div class="hideInPrint">
                 <input type="text"
-                       placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                       ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                        d2-date
                        d2-date-validator
                        max-date="prStDe.allowFutureDate ? '' : 0"
@@ -224,7 +224,7 @@
                        name="foo"/>
             </div>
             <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+                <input type="text" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
         <div ng-switch-when="TRUE_ONLY">
@@ -245,19 +245,19 @@
             <div class="hideInPrint">
                 <div class="input-group max-input-filed-width">
                     <div class="form-control">
-                        <a href ng-click="downloadFile(currentEvent.event, prStDe.dataElement.id)" title="{{fileNames[currentEvent.event][prStDe.dataElement.id]}}">{{fileNames[currentEvent.event][prStDe.dataElement.id].length > 20 ? fileNames[currentEvent.event][prStDe.dataElement.id].substring(0,20).concat('...') : fileNames[currentEvent.event][prStDe.dataElement.id]}}</a>
+                        <a href ng-click="downloadFile(currentEvent.event, prStDe.dataElement.id)" ng-attr-title="{{fileNames[currentEvent.event][prStDe.dataElement.id]}}">{{fileNames[currentEvent.event][prStDe.dataElement.id].length > 20 ? fileNames[currentEvent.event][prStDe.dataElement.id].substring(0,20).concat('...') : fileNames[currentEvent.event][prStDe.dataElement.id]}}</a>
                     </div>
                     <span class="input-group-btn">
                         <span class="btn btn-grp btn-file" ng-if="currentEvent[prStDe.dataElement.id]" ng-click="deleteFile(currentEvent,prStDe.dataElement.id)">
                             <span ng-if="currentEvent[prStDe.dataElement.id]"
-                                  title="{{'delete' | translate}}"
+                                  ng-attr-title="{{'delete' | translate}}"
                                   d2-file-input-name="fileNames[currentEvent.event][prStDe.dataElement.id]"
                                   d2-file-input-delete="currentEvent[prStDe.dataElement.id]">
                                 <i class="fa fa-trash"></i>
                             </span>
                         </span>
                         <span class="btn btn-grp btn-file" ng-if="!currentEvent[prStDe.dataElement.id]">
-                            <span ng-if="!currentEvent[prStDe.dataElement.id]" title="{{'upload' | translate}}">
+                            <span ng-if="!currentEvent[prStDe.dataElement.id]" ng-attr-title="{{'upload' | translate}}">
                                 <i class="fa fa-upload"></i>
                                 <input type="file"
                                        ng-required="prStDe.compulsory || mandatoryFields[currentEvent.event][prStDe.dataElement.id]"
@@ -274,7 +274,7 @@
                 </div>
             </div>
             <div class="not-for-screen">
-                <input type="text" class="form-control" value={{currentEvent[prStDe.dataElement.id]}}>
+                <input type="text" class="form-control" ng-attr-value={{currentEvent[prStDe.dataElement.id]}}>
             </div>
         </div>
         <div ng-switch-when="COORDINATE">
@@ -319,7 +319,7 @@
             <div class="hideInPrint">
                 <input type="url"
                        d2-url-validator
-                       placeholder="{{'url_format' | translate}}"
+                       ng-attr-placeholder="{{'url_format' | translate}}"
                        ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id, currentEvent)"

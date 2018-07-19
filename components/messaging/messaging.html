@@ -4,10 +4,10 @@
 
         <span class="pull-right widget-link">
             <a class="small-horizontal-spacing" href ng-click="expandCollapse(messagingWidget)">
-                <span ng-show="messagingWidget.expand"><i class="fa fa-chevron-up" title="{{collapseLabel}}"></i></span>
-                <span ng-show="!messagingWidget.expand"><i class="fa fa-chevron-down" title="{{expandLabel}}"></i></span>
+                <span ng-show="messagingWidget.expand"><i class="fa fa-chevron-up" ng-attr-title="{{collapseLabel}}"></i></span>
+                <span ng-show="!messagingWidget.expand"><i class="fa fa-chevron-down" ng-attr-title="{{expandLabel}}"></i></span>
             </a>
-            <a class="small-horizontal-spacing" href ng-click="removeWidget(messagingWidget)" title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>            
+            <a class="small-horizontal-spacing" href ng-click="removeWidget(messagingWidget)" ng-attr-title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>            
         </span>        
     </div>
     <div ng-show="messagingWidget.expand" class="panel-body dashboard-widget-container">
@@ -19,7 +19,7 @@
                            on-select=""
                            ng-disabled="selectedOrgUnit.closedStatus"
                            style="width:100%;">
-                    <ui-select-match allow-clear="true" class="form-control-ui-select" placeholder="Message Type">{{model.selectedMessageType| translate}}</ui-select-match>
+                    <ui-select-match allow-clear="true" class="form-control-ui-select" ng-attr-placeholder="Message Type">{{model.selectedMessageType| translate}}</ui-select-match>
                     <ui-select-choices  repeat="messageType in model.messageTypes">
                         {{messageType | translate}}
                     </ui-select-choices>
@@ -27,7 +27,7 @@
                 <div ng-if="model.selectedMessageType === 'sms'">
                     <input type="text"
                            name="phoneNumber"
-                           placeholder="{{'phone_number' | translate}}"
+                           ng-attr-placeholder="{{'phone_number' | translate}}"
                            class="form-control"
                            ng-required="true"
                            ng-disabled="selectedOrgUnit.closedStatus"
@@ -40,13 +40,13 @@
                           ng-model="message.smsMessage"
                           ng-disabled="selectedOrgUnit.closedStatus"
                           ng-required="true"
-                          placeholder="{{'message'| translate}}"></textarea>
+                          ng-attr-placeholder="{{'message'| translate}}"></textarea>
                         <span ng-show="messagingForm.submitted && messagingForm.message.$invalid" class="error">{{'required'| translate}}</span>
                 </div>
                 <div ng-if="model.selectedMessageType === 'email'">
                     <input type="email"
                            name="emailId"
-                           placeholder="{{'email_address' | translate}}"
+                           ng-attr-placeholder="{{'email_address' | translate}}"
                            class="form-control"
                            ng-required="true"
                            ng-disabled="selectedOrgUnit.closedStatus"
@@ -54,7 +54,7 @@
                     <span ng-show="messagingForm.submitted && messagingForm.emailId.$invalid" class="error">{{'wrong_email'| translate}}</span>
                     <input type="text"
                            name="subject"
-                           placeholder="{{'email_subject' | translate}}"
+                           ng-attr-placeholder="{{'email_subject' | translate}}"
                            class="form-control"
                            ng-required="true"
                            ng-disabled="selectedOrgUnit.closedStatus"
@@ -67,7 +67,7 @@
                               ng-model="message.emailMessage"
                               ng-disabled="selectedOrgUnit.closedStatus"
                               ng-required="true"
-                              placeholder="{{'message'| translate}}"></textarea>
+                              ng-attr-placeholder="{{'message'| translate}}"></textarea>
                     <span ng-show="messagingForm.submitted && messagingForm.emailmessage.$invalid" class="error">{{'required'| translate}}</span>
                 </div>
                 <div ng-if="model.selectedMessageType">

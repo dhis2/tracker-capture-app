@@ -3,10 +3,10 @@
         {{notesWidget.title| translate}}
         <span class="pull-right widget-link">
             <a class="small-horizontal-spacing" href ng-click="expandCollapse(notesWidget)">
-                <span ng-show="notesWidget.expand"><i class="fa fa-chevron-up" title="{{collapseLabel}}"></i></span>
-                <span ng-show="!notesWidget.expand"><i class="fa fa-chevron-down" title="{{expandLabel}}"></i></span>
+                <span ng-show="notesWidget.expand"><i class="fa fa-chevron-up" ng-attr-title="{{collapseLabel}}"></i></span>
+                <span ng-show="!notesWidget.expand"><i class="fa fa-chevron-down" ng-attr-title="{{expandLabel}}"></i></span>
             </a>
-            <a class="small-horizontal-spacing" href ng-click="removeWidget(notesWidget)" title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>            
+            <a class="small-horizontal-spacing" href ng-click="removeWidget(notesWidget)" ng-attr-title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>            
         </span>        
     </div>
     <div ng-show="notesWidget.expand" class="panel-body dashboard-widget-container">
@@ -16,7 +16,7 @@
             <div ng-show="!selectedEnrollment" class="alert alert-danger">{{'not_yet_enrolled_note'| translate}}</div>
             <div ng-show="selectedEnrollment" class="remove-default-padding">                
                 <div class="add-default-padding">
-                    <textarea class="form-control" rows="3" ng-model="note.value" placeholder="{{'your_note_here'| translate}}"></textarea> 
+                    <textarea class="form-control" rows="3" ng-model="note.value" ng-attr-placeholder="{{'your_note_here'| translate}}"></textarea> 
                     <div class="vertical-spacing">
                         <button type="button" 
                                 class="btn btn-primary"

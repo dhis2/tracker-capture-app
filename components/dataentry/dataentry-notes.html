@@ -6,7 +6,7 @@
         <p><strong>{{'date' | translate}}: </strong>{{content.storedDate}}</p>                           
     </script>    
     <div class="add-default-padding bordered-div long-vertical-spacing">
-        <textarea class="form-control" rows="3" ng-model="note.value" placeholder="{{'your_note_here'| translate}}"></textarea> 
+        <textarea class="form-control" rows="3" ng-model="note.value" ng-attr-placeholder="{{'your_note_here'| translate}}"></textarea> 
         <div class="vertical-spacing hideInPrint">
             <button type="button" 
                     class="btn btn-primary"

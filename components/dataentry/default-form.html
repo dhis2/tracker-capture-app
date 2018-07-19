@@ -9,7 +9,7 @@
                     template="dataelement-details.html"
                     trigger="click"
                     placement="right">
-                    <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDe.dataElement.displayFormName}}</a>
+                    <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDe.dataElement.displayFormName}}</a>
                 </span>
                 <span class="not-for-screen">
                     {{prStDe.dataElement.displayFormName}}
@@ -59,7 +59,7 @@
                                     template="dataelement-details.html"
                                     trigger="click"
                                     placement="right">
-                                    <a href title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDes[de.id].dataElement.displayFormName}}</a>
+                                    <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDes[de.id].dataElement.displayFormName}}</a>
                                 </span>
                                 <span class="not-for-screen">
                                     {{prStDes[de.id].dataElement.displayFormName}}

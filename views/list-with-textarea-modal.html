@@ -14,7 +14,7 @@
     <br/>
     <ng-form name="textAreaModalForm">
         <div ng-repeat="bodyTextArea in modalOptions.bodyTextAreas">
-            <textarea class="form-control ng-pristine ng-untouched ng-valid" rows="10" name="{{bodyTextArea.model}}" ng-model="textAreaValues[bodyTextArea.model]" placeholder="{{bodyTextArea.placeholder}}" ng-required="{{bodyTextArea.required}}" ng-show="{{bodyTextArea.show}}" style="resize:vertical"></textarea>      
+            <textarea class="form-control ng-pristine ng-untouched ng-valid" rows="10" name="{{bodyTextArea.model}}" ng-model="textAreaValues[bodyTextArea.model]" ng-attr-placeholder="{{bodyTextArea.placeholder}}" ng-required="{{bodyTextArea.required}}" ng-show="{{bodyTextArea.show}}" style="resize:vertical"></textarea>      
             <div ng-messages="textAreaModalForm[bodyTextArea.model].$error" ng-if="textAreaModalForm[bodyTextArea.model].$touched || formSubmitted">
                 <div ng-message="required" class="error">{{bodyTextArea.model}} is required</div>
             </div>            

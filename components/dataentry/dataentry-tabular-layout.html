@@ -3,13 +3,13 @@
         <div ng-include="'components/dataentry/dataentry-print.html'"></div>
         {{dataentryTabularWidget.title| translate}}
         <span class="pull-right widget-link">
-            <a href ng-click="model.showLegend = !model.showLegend" title="{{'event_color_legend'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-info-circle vertical-center"></i></a>
+            <a href ng-click="model.showLegend = !model.showLegend" ng-attr-title="{{'event_color_legend'| translate}}" class="small-horizontal-spacing" ng-if="allEventsSorted.length > 0"><i class="fa fa-info-circle vertical-center"></i></a>
             <d2-audit name-id-map="prStDes" event-id="{{currentEvent.event}}" data-type="dataElement" ng-if="currentEvent.event"></d2-audit>
             <a class="small-horizontal-spacing" href ng-click="expandCollapse(dataentryTabularWidget)">
-                <span ng-show="dataentryTabularWidget.expand"><i class="fa fa-chevron-up vertical-center" title="{{collapseLabel}}"></i></span>
-                <span ng-show="!dataentryTabularWidget.expand"><i class="fa fa-chevron-down vertical-center" title="{{expandLabel}}"></i></span>
+                <span ng-show="dataentryTabularWidget.expand"><i class="fa fa-chevron-up vertical-center" ng-attr-title="{{collapseLabel}}"></i></span>
+                <span ng-show="!dataentryTabularWidget.expand"><i class="fa fa-chevron-down vertical-center" ng-attr-title="{{expandLabel}}"></i></span>
             </a>
-            <a class="small-horizontal-spacing" href ng-click="removeWidget(dataentryTabularWidget)" title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>
+            <a class="small-horizontal-spacing" href ng-click="removeWidget(dataentryTabularWidget)" ng-attr-title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>
         </span>
     </div>
 
@@ -40,21 +40,21 @@
                         </div>
                         <div style="width: 3%; float: left;" ng-hide="stagesNotShowingInStageTasks[currentStage.id] || !currentStage">
                             <button type="button"
-                                    title="{{'add_new_event'|translate}}"
+                                    ng-attr-title="{{'add_new_event'|translate}}"
                                     class="btn btn-primary" 
                                     ng-click="showCreateEvent(currentStage, eventCreationActions.add, currentStage)"
                                     ng-disabled="selectedEntity.inactive || selectedEnrollment.status !== 'ACTIVE' || selectedOrgUnit.closedStatus">
                                 <i class="fa fa-plus"></i>
                             </button>
                             <button type="button" 
-                                    title="{{'schedule_new_event'|translate}}"
+                                    ng-attr-title="{{'schedule_new_event'|translate}}"
                                     class="btn btn-info long-vertical-spacing" 
                                     ng-click="showCreateEvent(stage, eventCreationActions.schedule, currentStage)"
                                     ng-disabled="selectedEntity.inactive || selectedEnrollment.status !== 'ACTIVE' || selectedOrgUnit.closedStatus || currentStage.hideDueDate || currentStage.periodType">
                                 <i class="fa fa-calendar"></i>
                             </button>
                             <button type="button" 
-                                    title="{{'make_referral'| translate}}"
+                                    ng-attr-title="{{'make_referral'| translate}}"
                                     class="btn btn-warning long-vertical-spacing" 
                                     ng-click="useMainMenu ? showCreateEventIfStageNeedsEvent(selectedMainMenuStage, eventCreationActions.referral, false, true) : showCreateEvent(null, eventCreationActions.referral)"
                                     ng-disabled="selectedEntity.inactive || selectedEnrollment.status !== 'ACTIVE' || selectedOrgUnit.closedStatus || currentStage.hideDueDate || currentStage.periodType">

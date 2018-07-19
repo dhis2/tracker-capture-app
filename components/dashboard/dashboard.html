@@ -13,7 +13,7 @@
                 <div ng-include="'components/dashboard/dashboard-topbar.html'" class="dashboard-info-box-container" ng-class="topbarClass"></div>
                 <div ng-class="topbarRightSizeClass">
                     <button type="button"
-                            title="{{model.stickyDisabled ? stickLabel : unstickLabel}}"
+                            ng-attr-title="{{model.stickyDisabled ? stickLabel : unstickLabel}}"
                             ng-show="(dashboardWidgets | filter: {parent: 'smallerWidget', show: true}).length > 0"
                             class="btn btn-default dashboard-info-btn-right-size"
                             ng-class="{true: 'stick', false: 'unstick'} [!model.stickyDisabled]"
@@ -22,7 +22,7 @@
                     </button>
                     
                     <div class="btn-group trim">
-                        <button type="button" title="{{'manage' | translate}} {{trackedEntity.displayName}}" class="btn btn-danger dropdown-toggle" ng-disabled="selectedOrgUnit.closedStatus" data-toggle="dropdown">
+                        <button type="button" ng-attr-title="{{'manage' | translate}} {{trackedEntity.displayName}}" class="btn btn-danger dropdown-toggle" ng-disabled="selectedOrgUnit.closedStatus" data-toggle="dropdown">
                             <i class="fa fa-exclamation-circle"></i>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">                            
@@ -32,7 +32,7 @@
                     </div>
                     
                     <div class="btn-group trim">
-                        <button type="button" title="{{settingsLabel}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <button type="button" ng-attr-title="{{settingsLabel}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-cog"></i>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
@@ -55,10 +55,10 @@
 
                     <button ng-disabled="!previousTeiExists" type="button"
                             class="btn btn-default small-horizontal-spacing" ng-click="fetchTei('PREV')"
-                            title="{{'previous'| translate}}"><i class="fa fa-caret-left"></i></button>
+                            ng-attr-title="{{'previous'| translate}}"><i class="fa fa-caret-left"></i></button>
 
                     <button ng-disabled="!nextTeiExists" type="button" class="btn btn-default small-horizontal-spacing"
-                            ng-click="fetchTei('NEXT')" title="{{'next'| translate}}"><i class="fa fa-caret-right"></i>
+                            ng-click="fetchTei('NEXT')" ng-attr-title="{{'next'| translate}}"><i class="fa fa-caret-right"></i>
                     </button>
 
                     <select ng-model="selectedProgram"
@@ -66,7 +66,7 @@
                             ng-options="program as program.displayName for program in programs | orderBy: 'displayName'"
                             ng-disabled="programs.length < 1"
                             ng-change="applySelectedProgram(selectedProgram)">
-                        <option value="">{{programs.length > 0 ? 'please_select_a_program' : 'no_program_exists' |
+                        <option ng-attr-value="">{{programs.length > 0 ? 'please_select_a_program' : 'no_program_exists' |
                             translate}}
                         </option>
                     </select>
@@ -93,7 +93,7 @@
             <div class="row add-default-right-padding vertical-spacing" ng-if="!useTopBar">
                 <div class="pull-right">
                     <button type="button"
-                            title="{{model.stickyDisabled ? stickLabel : unstickLabel}}"
+                            ng-attr-title="{{model.stickyDisabled ? stickLabel : unstickLabel}}"
                             ng-show="(dashboardWidgets | filter: {parent: 'smallerWidget', show: true}).length > 0"
                             class="btn btn-default"
                             ng-class="{true: 'stick', false: 'unstick'} [!model.stickyDisabled]"
@@ -102,7 +102,7 @@
                     </button>
                     
                     <div class="btn-group trim">
-                        <button type="button" title="{{'manage' | translate}} {{trackedEntity.displayName}}" ng-disabled="selectedOrgUnit.closedStatus" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
+                        <button type="button" ng-attr-title="{{'manage' | translate}} {{trackedEntity.displayName}}" ng-disabled="selectedOrgUnit.closedStatus" class="btn btn-danger dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-exclamation-circle"></i>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">                            
@@ -112,7 +112,7 @@
                     </div>
                     
                     <div class="btn-group trim">
-                        <button type="button" title="{{settingsLabel}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <button type="button" ng-attr-title="{{settingsLabel}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-cog"></i>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">

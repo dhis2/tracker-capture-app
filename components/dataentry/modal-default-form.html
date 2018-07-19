@@ -7,7 +7,7 @@
             <div class="col-md-6">
                 {{currentEvent.executionDateLabel}}
                 <input type="text"
-                       placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                       ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                        class="form-control" 
                        ng-class="{'input-success': eventDateSaved}"
                        d2-date 
@@ -24,10 +24,10 @@
                     {{'due_date'| translate}}
                 </span>
                 <span ng-if="!currentEvent.eventDate && currentEvent.status !== 'SKIPPED' && !selectedEntity.inactive">
-                    <a href ng-click="enableRescheduling()" title="{{ schedulingEnabled ? 'disable_rescheduling' : 'enable_rescheduling' | translate}}"><span class="text-primary bold">{{'reschedule_duedate'| translate}}</span></a>                        
+                    <a href ng-click="enableRescheduling()" ng-attr-title="{{ schedulingEnabled ? 'disable_rescheduling' : 'enable_rescheduling' | translate}}"><span class="text-primary bold">{{'reschedule_duedate'| translate}}</span></a>                        
                 </span>                    
                 <input type="text" 
-                       placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                       ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                        class="form-control"
                        ng-class="{'input-success': dueDateSaved}"
                        d2-date                                
@@ -43,7 +43,7 @@
 
         <div class="row" ng-if="currentStage.captureCoordinates && currentEvent.eventDate">
             <div class="col-md-6">
-                {{'latitude'| translate}}<span><a href ng-click="showMap(currentEvent)" title="{{'get_from_map'| translate}}"><i class="fa fa-map-marker fa-2x"></i></a></span>
+                {{'latitude'| translate}}<span><a href ng-click="showMap(currentEvent)" ng-attr-title="{{'get_from_map'| translate}}"><i class="fa fa-map-marker fa-2x"></i></a></span>
                 <input type="number"
                        ng-model="currentEvent.coordinate.latitude"     
                        class="form-control" 
@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                {{'longitude'| translate}}<span><a href ng-click="showMap(currentEvent)" title="{{'get_from_map'| translate}}"><i class="fa fa-map-marker fa-2x"></i></a></span>                    
+                {{'longitude'| translate}}<span><a href ng-click="showMap(currentEvent)" ng-attr-title="{{'get_from_map'| translate}}"><i class="fa fa-map-marker fa-2x"></i></a></span>                    
                 <input type="number"  
                        ng-model="currentEvent.coordinate.longitude"     
                        class="form-control" 
