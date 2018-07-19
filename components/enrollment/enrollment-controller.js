@@ -44,6 +44,7 @@ trackerCapture.controller('EnrollmentController',
                 $scope.enrollmentDateState.maxDate = $scope.selectedProgram.selectEnrollmentDatesInFuture ? '' : "0";
                 if($scope.selectedOrgUnit.reportDateRange){
                     $scope.enrollmentDateState.minDate = DateUtils.formatFromApiToUserCalendar($scope.selectedOrgUnit.reportDateRange.minDate);
+                    $scope.enrollmentDateState.minDate = DateUtils.formatFromApiToUser($scope.enrollmentDateState.minDate);
                 }
                 if ($scope.selectedOrgUnit.reportDateRange.maxDate) {
                     $scope.enrollmentDateState.maxDate = $scope.selectedOrgUnit.reportDateRange.maxDate;
@@ -379,7 +380,7 @@ trackerCapture.controller('EnrollmentController',
                 $scope.enrollmentDateState.date = $scope.selectedEnrollment.enrollmentDate;
                 return NotificationService.showNotifcationDialog($translate.instant('error'), $scope.selectedProgram.enrollmentDateLabel + ' ' + $translate.instant('invalid'));
             }
-            else if(!DateUtils.verifyExpiryDate($scope.enrollmentDateState.date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)){
+            else if(!$scope.userAuthority.canEditExpiredStuff && !DateUtils.verifyExpiryDate($scope.enrollmentDateState.date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)){
                 $scope.enrollmentDateState.date = $scope.selectedEnrollment.enrollmentDate;
                 return NotificationService.showNotifcationDialog($translate.instant('error'), $scope.selectedProgram.enrollmentDateLabel + ' ' + $translate.instant('expired'));
             }
@@ -392,7 +393,7 @@ trackerCapture.controller('EnrollmentController',
                 $scope.incidentDateState.date = $scope.selectedEnrollment.incidentDate;
                 return NotificationService.showNotifcationDialog($translate.instant('error'), $scope.selectedProgram.incidentDateLabel + ' ' + $translate.instant('invalid'));
             }
-            else if(!DateUtils.verifyExpiryDate($scope.incidentDateState.date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)){
+            else if(!$scope.userAuthority.canEditExpiredStuff && !DateUtils.verifyExpiryDate($scope.incidentDateState.date, $scope.selectedProgram.expiryPeriodType, $scope.selectedProgram.expiryDays)){
                 $scope.incidentDateState.date = $scope.selectedEnrollment.incidentDate;
                 return NotificationService.showNotifcationDialog($translate.instant('error'), $scope.selectedProgram.incidentDateLabel + ' ' + $translate.instant('expired'));
             }

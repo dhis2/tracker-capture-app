@@ -33,6 +33,8 @@ trackerCapture.controller('TEIAddController',
     var selection = CurrentSelection.get();
    
     $scope.base = {};
+    $scope.selectedConstraints = { currentTei: null, related: null};
+    $scope.tempSelectedConstraints = { currentTei: null, related: null};
     $scope.attributesById = CurrentSelection.getAttributesById();
     if(!$scope.attributesById){
         $scope.attributesById = [];
@@ -56,6 +58,55 @@ trackerCapture.controller('TEIAddController',
             CurrentSelection.setOptionSets($scope.optionSets);
         });
     }
+
+    var isValidCurrentTeiConstraint = function(constraint){
+        var tetTypeValid = constraint.trackedEntityType.id === $scope.mainTei.trackedEntityType;
+        var programValid = (!constraint.program || constraint.program.id === $scope.selectedProgram.id);
+        return (tetTypeValid && programValid);
+    }
+
+    $scope.updateCurrentTeiConstraint = function(){
+        var currentTeiConstraint = $scope.tempSelectedConstraints.currentTei && $scope.relationship.selected[$scope.tempSelectedConstraints.currentTei];
+        if(currentTeiConstraint){
+            if(!isValidCurrentTeiConstraint(currentTeiConstraint)){
+                NotificationService.showNotifcationDialog("current tei constraint not valid", "current tei constraint not valid");
+                $scope.tempSelectedConstraints.currentTei = $scope.selectedConstraints.currentTei;
+                return;
+            }
+            $scope.selectedConstraints.currentTei = $scope.tempSelectedConstraints.currentTei;
+            $scope.tempSelectedConstraints.related = $scope.selectedConstraints.related = ($scope.selectedConstraints.currentTei === "fromConstraint" ? "toConstraint" : "fromConstraint");
+            $scope.resetRelatedView();
+        }
+    }
+
+    $scope.updateRelatedConstraint = function(){
+        $scope.tempSelectedConstraints.currentTei = $scope.selectedConstraints.related === "fromConstraint" ? "toConstraint" : "fromConstraint";
+        $scope.updateCurrentTeiConstraint();
+    }
+
+
+
+    $scope.resetRelatedView = function(){
+        $scope.relatedPredefinedProgram = false;
+        
+        var relatedConstraint = $scope.selectedConstraints.related && $scope.relationship.selected[$scope.selectedConstraints.related];
+        if(relatedConstraint){
+            if(relatedConstraint.program && relatedConstraint.program.id){
+                var program = $scope.programs.find(function(p){
+                    return p.id === relatedConstraint.program.id;
+                });
+                $scope.relatedPredefinedProgram = true;
+                $scope.base.selectedProgramForRelative = program;
+                $scope.onSelectedProgram(program);
+            }else{
+                $scope.relatedPredefinedProgram = false;
+                $scope.base.selectedProgramForRelative = null;
+                $scope.onSelectedProgram($scope.base.selectedProgramForRelative);
+            }
+        }
+    }
+
+
     
     $scope.today = DateUtils.getToday();
     $scope.relationshipTypes = relationshipTypes;
@@ -175,10 +226,9 @@ trackerCapture.controller('TEIAddController',
         //watch for selection of relationship
         $scope.$watch('relationship.selected', function () {
             if (angular.isObject($scope.relationship.selected)) {
-                $scope.selectedRelationship = {
-                    aIsToB: $scope.relationship.selected.aIsToB,
-                    bIsToA: $scope.relationship.selected.bIsToA
-                };
+                $scope.selectedConstraints.currentTei = "fromConstraint";
+                $scope.selectedConstraints.related = "toConstraint";
+                $scope.resetRelatedView();
             }
         });
 
@@ -335,8 +385,6 @@ trackerCapture.controller('TEIAddController',
             $scope.setAttributesForSearch(program);
             TEService.get(selectedProgram.trackedEntityType.id).then(function(te){
                 $scope.canRegister = AccessUtils.isWritable(te) && AccessUtils.isWritable(selectedProgram);
-                var g = 1;
-                var u  = 2;
 
             });
 
@@ -442,32 +490,35 @@ trackerCapture.controller('TEIAddController',
             if ($scope.addingRelationship) {
                 if ($scope.mainTei && $scope.teiForRelationship && $scope.relationship.selected) {
                     var tei = angular.copy($scope.mainTei);
-                    var relationship = {};
-                    relationship.relationship = $scope.relationship.selected.id;
-                    relationship.displayName = $scope.relationship.selected.displayName;
-                    relationship.relative = {};
 
-                    relationship.trackedEntityInstanceA = $scope.selectedRelationship.aIsToB === $scope.relationship.selected.aIsToB ? $scope.mainTei.trackedEntityInstance : $scope.teiForRelationship.id;
-                    relationship.trackedEntityInstanceB = $scope.selectedRelationship.bIsToA === $scope.relationship.selected.bIsToA ? $scope.teiForRelationship.id : $scope.mainTei.trackedEntityInstance;
+                    var relationship = { from: {trackedEntityInstance: {} }, to: {trackedEntityInstance: {}}};
 
-                    tei.relationships = [];
-                    angular.forEach($scope.mainTei.relationships, function (rel) {
-                        tei.relationships.push({
-                            relationship: rel.relationship,
-                            displayName: rel.displayName,
-                            trackedEntityInstanceA: rel.trackedEntityInstanceA,
-                            trackedEntityInstanceB: rel.trackedEntityInstanceB
-                        });
-                    });
+                    relationship.relationshipType = $scope.relationship.selected.id;
+                    
+                    relationship.from.trackedEntityInstance.trackedEntityInstance = $scope.selectedConstraints.currentTei === 'fromConstraint' ? $scope.mainTei.trackedEntityInstance : $scope.teiForRelationship.id;
+                    relationship.to.trackedEntityInstance.trackedEntityInstance = $scope.selectedConstraints.currentTei === 'toConstraint' ? $scope.mainTei.trackedEntityInstance : $scope.teiForRelationship.id;
+
                     tei.relationships.push(relationship);
 
                     TEIService.update(tei, $scope.optionSets, $scope.attributesById).then(function (response) {
-                        if (!response || response.response && response.response.status !== 'SUCCESS') {//update has failed
+                        var relationshipResponse = response && response.response && response.response.relationships;
+                        var importSummary = relationshipResponse && relationshipResponse.importSummaries && relationshipResponse.importSummaries[0];
+                        if(!importSummary){
+                            NotificationService.showNotifcationDialog($translate.instant("unknown_error"), $translate.instant("unknown_error"));
+                            return;
+                        }
+                        if (importSummary && importSummary.status !== 'SUCCESS') {//update has failed
+                            var message = $translate.instant("saving_relationship_failed_conflicts");
+                            var conflictMessage = importSummary.conflicts.reduce(function(msg, conflict){
+                                msg += "["+conflict.value+"] ";
+                                return msg;
+                            },"");
+                            NotificationService.showNotifcationDialog($translate.instant("saving_relationship_failed"), message +": "+conflictMessage);
                             return;
                         }
 
-                        relationship.relative.processed = true;
-                        relationship.relative.attributes = $scope.teiForRelationship;
+                        relationship.relationshipName = $scope.relationship.selected.displayName;
+                        relationship.relationship = importSummary.reference;
 
                         if ($scope.mainTei.relationships) {
                             $scope.mainTei.relationships.push(relationship);

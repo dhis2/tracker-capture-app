@@ -166,9 +166,15 @@ trackerCapture.controller('DashboardController',
                             });
     
                             CurrentSelection.setAttributesById($scope.attributesById);
-    
+                            var teiPromise;
+
+                            if($scope.selectedProgramId){
+                                teiPromise = TEIService.getWithProgramData($scope.selectedTeiId, $scope.selectedProgramId, $scope.optionSets, $scope.attributesById, fromAudit);
+                            }else{
+                                teiPromise = TEIService.get($scope.selectedTeiId,$scope.optionSets, $scope.attributesById);
+                            }
                             //Fetch the selected entity
-                            TEIService.getWithProgramData($scope.selectedTeiId, $scope.selectedProgramId, $scope.optionSets, $scope.attributesById, fromAudit).then(function (response) {
+                            teiPromise.then(function (response) {
                                 $rootScope.hasAccess = true;
                                 if (response) {
                                     $scope.selectedTei = response;

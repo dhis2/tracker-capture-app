@@ -9,7 +9,7 @@ trackerCapture.controller('TeiAuditController',
                             + ' '+trackedEntityTypeName.toLowerCase()+' '
                             +$translate.instant('belongs_to_another_organisation_unit')+'. '
                             +$translate.instant('please_fill_in_a_reason_for_accessing')+'. '
-                            +$translate.instant('your_action_is_being_monitored');
+                            +$translate.instant('your_action_is_being_monitored')+'.';
 
         $scope.addAuditMessage = function(){
             $modalInstance.close({ auditMessage: $scope.auditMessage });

@@ -1208,6 +1208,10 @@ a:active {
     padding:0px;
 }
 
+.no-margin {
+    margin:0px;
+}
+
 /*Necessary to override the .panel-group .panel { overflow: hidden; } in bootstrap.*/
 .panel-group .panel {
     overflow: visible;
@@ -2259,6 +2263,7 @@ button.list-group-item-danger.active:focus {
     font-size: 14px;
     border: 1px solid #aaa;
     border-radius: 4px;
+    line-height: 14px;
 }
 
 .audit-spinner {
