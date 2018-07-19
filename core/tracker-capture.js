@@ -574,7 +574,7 @@ function getOptionSets()
 }
 
 function getObjectIds(data){
-    return data && Array.isArray(data.self) ? data.self.map(obj => obj.id) : [];
+    return data && Array.isArray(data.self) ? data.self.map(function(obj) { return obj.id }) : [];
 }
 
 function getMetaProgramIndicators( programs, programIds )

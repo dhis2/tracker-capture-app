@@ -6,7 +6,7 @@
                 ng-model="category.selectedOption"
                 ng-options="option as option.displayName for option in category.categoryOptions"
                 ng-change="getCategoryOptions()">
-            <option value="" ng-selected="selectDefault.selected">{{'please_select' | translate}}</option>
+            <option ng-attr-value="" ng-selected="selectDefault.selected">{{'please_select' | translate}}</option>
         </select>
     </div>
 </div>

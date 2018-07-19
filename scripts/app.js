@@ -114,7 +114,7 @@ angular.module('trackerCapture')
 
 .run(function($templateCache, $http, $rootScope){
     Array.prototype.toHashMap = function(key, objFunc){
-        var hashmap = this.reduce((map, obj)  => {
+        var hashmap = this.reduce(function(map, obj) {
             if(objFunc) objFunc(map,obj,key);
             if(obj[key] ==='jYDntjPUD5C'){
                 var g = 1;

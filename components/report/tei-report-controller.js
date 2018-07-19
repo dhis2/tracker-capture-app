@@ -99,7 +99,7 @@ trackerCapture.controller('TeiReportController',
             }
 
             if(ev.dataValues){
-                ev.dataValues.forEach(dataValue => {
+                ev.dataValues.forEach(function(dataValue) {
                     if(angular.isUndefined(ev[dataValue.dataElement])){
                         ev[dataValue.dataElement] = dataValue.value;
                     }
@@ -161,18 +161,18 @@ trackerCapture.controller('TeiReportController',
             $scope.enrollments = [];
             return;
         }
-        Object.keys($scope.selectedReport.enrollments).forEach(enr => {
-            $scope.selectedReport.enrollments[enr].forEach(ev => {
+        Object.keys($scope.selectedReport.enrollments).forEach(function(enr) {
+            $scope.selectedReport.enrollments[enr].forEach(function(ev) {
                 if(ev.notes){
-                    ev.notes.forEach(note => {
+                    ev.notes.forEach(function(note) {
                         note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
                     });
                 }
             });
-            var foundEnrollment = allEnrollments.find(e => e.enrollment === enr);
+            var foundEnrollment = allEnrollments.find(function(e) { return e.enrollment === enr });
             var enrollment = angular.copy(foundEnrollment);
             if(enrollment.notes){
-                enrollment.notes.forEach(note => {
+                enrollment.notes.forEach(function(note) {
                     note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
                 });
             }

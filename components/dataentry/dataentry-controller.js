@@ -462,13 +462,13 @@ trackerCapture.controller('DataEntryController',
     var clearValueForShowHideOptionActions = function(dataElements, affectedEvent){
         //Dont process if editing not allowed
         if(['SCHEDULE','SKIPPED'].indexOf(affectedEvent.status) === -1 && !affectedEvent.editingNotAllowed){
-            dataElements.forEach(de => {
+            dataElements.forEach(function(de) {
                 var value = affectedEvent[de];
                 //Only process if has selected value
                 if(angular.isDefined(value) && value !== "") {
                     var optionSet = $scope.optionSets[$scope.prStDes[de].dataElement.optionSet.id];
                     //Find selectedOption by displayName
-                    var selectedOption = optionSet.options.find(o => o.displayName === value);
+                    var selectedOption = optionSet.options.find(function(o) { return o.displayName === value });
                     var shouldClear = !selectedOption;
                     
                     //If has selected option and a option is not in showOnly or is in hidden, field should be cleared.
@@ -3187,15 +3187,15 @@ trackerCapture.controller('DataEntryController',
         });
     };
     
-    $scope.updateFileNames = function(){        
-        for(var dataElement in $scope.currentFileNames){
+    $scope.updateFileNames = function(){
+        Object.keys($scope.currentFileNames).forEach(function(dataElement) {
             if($scope.currentFileNames[dataElement]){
                 if(!$scope.fileNames[$scope.currentEvent.event]){
                     $scope.fileNames[$scope.currentEvent.event] = [];
                 }                 
                 $scope.fileNames[$scope.currentEvent.event][dataElement] = $scope.currentFileNames[dataElement];
             }
-        }
+        });
     };
 
     $scope.editAttributeCategoryOptions = function(){

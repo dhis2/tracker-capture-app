@@ -7,7 +7,7 @@
     </script>    
     <div class="add-default-padding bordered-div long-vertical-spacing">
         <div ng-if="eventEditable()">
-            <textarea class="form-control" rows="3" ng-model="note.value" placeholder="{{'your_note_here'| translate}}"></textarea> 
+            <textarea class="form-control" rows="3" ng-model="note.value" ng-attr-placeholder="{{'your_note_here'| translate}}"></textarea> 
             <div class="vertical-spacing hideInPrint">
                 <button type="button" 
                         class="btn btn-primary"

@@ -150,7 +150,7 @@ trackerCapture.controller('DashboardController',
                 //get option sets
                 $scope.optionSets = [];
                 MetaDataFactory.getAll('optionGroups').then(function(optionGroups){
-                    var optionGroupsById = optionGroups.toHashMap('id', (map,obj,key) => { obj.optionsById = obj.options.toHashMap('id'); });
+                    var optionGroupsById = optionGroups.toHashMap('id', function(map,obj,key) { obj.optionsById = obj.options.toHashMap('id'); });
                     CurrentSelection.setOptionGroupsById(optionGroupsById);
 
                     MetaDataFactory.getAll('optionSets').then(function (optionSets) {
@@ -227,7 +227,7 @@ trackerCapture.controller('DashboardController',
                                                 }
                                             });
 
-                                            var events = enrollments.reduce((previousEvents,e) => {
+                                            var events = enrollments.reduce(function(previousEvents,e) {
                                                 var events = previousEvents.concat(e.events);
                                                 return events;
                                             },[]);

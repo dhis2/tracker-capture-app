@@ -5,32 +5,32 @@
     <tr>
         <td>{{'ou_search_scope'| translate}}</td>
         <td>                    
-            <label><input type="radio" ng-model="customWorkingListValues.ouMode.name" name="selected" value="SELECTED"> {{'SELECTED'| translate}}</label><br/>
-            <label><input type="radio" ng-model="customWorkingListValues.ouMode.name" name="children" value="CHILDREN"> {{'CHILDREN'| translate}}</label><br/>
-            <label><input type="radio" ng-model="customWorkingListValues.ouMode.name" name="descendants" value="DESCENDANTS"> {{'DESCENDANTS'| translate}}</label><br/>
+            <label><input type="radio" ng-model="customWorkingListValues.ouMode.name" name="selected" ng-attr-value="SELECTED"> {{'SELECTED'| translate}}</label><br/>
+            <label><input type="radio" ng-model="customWorkingListValues.ouMode.name" name="children" ng-attr-value="CHILDREN"> {{'CHILDREN'| translate}}</label><br/>
+            <label><input type="radio" ng-model="customWorkingListValues.ouMode.name" name="descendants" ng-attr-value="DESCENDANTS"> {{'DESCENDANTS'| translate}}</label><br/>
         </td>
     </tr>
     <tr ng-if="base.selectedProgram">
         <td>{{'enrollment_status' | translate}}</td>
         <td >
-            <label><input type="radio" ng-model="customWorkingListValues.programStatus" name="All" value=""> {{'all'| translate}}</label><br/>
-            <label><input type="radio" ng-model="customWorkingListValues.programStatus" name="Completed" value="COMPLETED"> {{'completed'| translate}}</label><br/>
-            <label><input type="radio" ng-model="customWorkingListValues.programStatus" name="Active" value="ACTIVE"> {{'active'| translate}}</label><br/>
-            <label><input type="radio" ng-model="customWorkingListValues.programStatus" name="Cancelled" value="CANCELLED"> {{'cancelled'| translate}}</label><br/>
+            <label><input type="radio" ng-model="customWorkingListValues.programStatus" name="All" ng-attr-value=""> {{'all'| translate}}</label><br/>
+            <label><input type="radio" ng-model="customWorkingListValues.programStatus" name="Completed" ng-attr-value="COMPLETED"> {{'completed'| translate}}</label><br/>
+            <label><input type="radio" ng-model="customWorkingListValues.programStatus" name="Active" ng-attr-value="ACTIVE"> {{'active'| translate}}</label><br/>
+            <label><input type="radio" ng-model="customWorkingListValues.programStatus" name="Cancelled" ng-attr-value="CANCELLED"> {{'cancelled'| translate}}</label><br/>
         </td>
     </tr>
     <tr ng-if="base.selectedProgram">
         <td>{{base.selectedProgram.enrollmentDateLabel}}</td>
         <td>
             <input type="text" 
-                placeholder="{{'start_date'| translate}}" 
+                ng-attr-placeholder="{{'start_date'| translate}}" 
                 class="form-control" 
                 d2-date 
                 d2-date-validator
                 max-date="customWorkingListValues.enrollment.programEnrollmentEndDate ? customWorkingListValues.enrollment.programEnrollmentEndDate : base.selectedProgram.selectEnrollmentDatesInFuture ? '' : 0"
                 ng-model="customWorkingListValues.enrollment.programEnrollmentStartDate"/>
             <input type="text" 
-                placeholder="{{'end_date'| translate}}" 
+                ng-attr-placeholder="{{'end_date'| translate}}" 
                 class="form-control" 
                 d2-date 
                 min-date="customWorkingListValues.enrollment.programEnrollmentStartDate ? customWorkingListValues.enrollment.programEnrollmentStartDate : ''"
@@ -44,14 +44,14 @@
         <td>{{base.selectedProgram.incidentDateLabel}}</td>
         <td>
             <input type="text" 
-                    placeholder="{{'start_date'| translate}}" 
+                    ng-attr-placeholder="{{'start_date'| translate}}" 
                     class="form-control" 
                     d2-date 
                     d2-date-validator
                     max-date="customWorkingListValues.enrollment.programIncidentEndDate ? customWorkingListValues.enrollment.programIncidentEndDate : base.selectedProgram.selectIncidentDatesInFuture ? '' : 0"
                     ng-model="customWorkingListValues.enrollment.programIncidentStartDate"/>
             <input type="text" 
-                    placeholder="{{'end_date'| translate}}" 
+                    ng-attr-placeholder="{{'end_date'| translate}}" 
                     class="form-control" 
                     d2-date 
                     d2-date-validator
@@ -67,7 +67,7 @@
         <td>
             <div ng-if="attribute.optionSetValue">
                 <select multiple ui-select2 ng-model="attribute.value" data-placeholder="{{'please_select'| translate}}" style="width:100%;">
-                    <option ng-repeat="option in optionSets[attribute.optionSet.id].options | filter:$viewValue | limitTo:maxOptionSize" value="{{option.code}}">{{option.displayName}}</option>
+                    <option ng-repeat="option in optionSets[attribute.optionSet.id].options | filter:$viewValue | limitTo:maxOptionSize" ng-attr-value="{{option.code}}">{{option.displayName}}</option>
                 </select>
             </div>
             <div ng-if="!attribute.optionSetValue" ng-switch="attribute.valueType">
@@ -77,11 +77,11 @@
                             </select>
                         </div>
                         <div class="filter-value" ng-show="attribute.operator === defaultOperators[0]">
-                            <input type="number" placeholder="{{'exact_value'| translate}}" class="form-control" ng-model="attribute.exactValue"/>
+                            <input type="number" ng-attr-placeholder="{{'exact_value'| translate}}" class="form-control" ng-model="attribute.exactValue"/>
                         </div>
                         <div class="filter-value" ng-show="attribute.operator === defaultOperators[1]">
-                                <input type="number" placeholder="{{'from'| translate}}" class="form-control" ng-model="attribute.startValue"/>
-                                <input type="number" placeholder="{{'to'| translate}}" class="form-control" ng-model="attribute.endValue"/>
+                                <input type="number" ng-attr-placeholder="{{'from'| translate}}" class="form-control" ng-model="attribute.startValue"/>
+                                <input type="number" ng-attr-placeholder="{{'to'| translate}}" class="form-control" ng-model="attribute.endValue"/>
                         </div>                     
                 </div>
                 <div ng-switch-when="DATE">
@@ -90,11 +90,11 @@
                         </select>
                     </div>
                     <div class="filter-value" ng-show="attribute.operator === defaultOperators[0]">
-                        <input type="text" placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="attribute.exactValue"/>
+                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="attribute.exactValue"/>
                     </div>
                     <div class="filter-value" ng-show="attribute.operator === defaultOperators[1]">
-                            <input type="text" placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="attribute.startValue"/>
-                            <input type="text" placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="attribute.endValue"/>
+                            <input type="text" ng-attr-placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="attribute.startValue"/>
+                            <input type="text" ng-attr-placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="attribute.endValue"/>
                     </div>
                 </div>
                 <div ng-switch-when="DATETIME">
@@ -103,19 +103,19 @@
                         </select>
                     </div>
                     <div class="filter-value" ng-show="attribute.operator === defaultOperators[0]">
-                        <input type="text" placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="attribute.exactValue"/>
+                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="attribute.exactValue"/>
                     </div>
                     <div class="filter-value" ng-show="attribute.operator === defaultOperators[1]">
-                        <input type="text" placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="attribute.startValue"/>
-                        <input type="text" placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="attribute.endValue"/>                
+                        <input type="text" ng-attr-placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="attribute.startValue"/>
+                        <input type="text" ng-attr-placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="attribute.endValue"/>                
                     </div>                         
                 </div>
                 <div ng-switch-when="TIME">
-                    <input type="text" placeholder="TIME NOT SEARCHABLE" class="form-control"  ng-disabled="true"/>
+                    <input type="text" ng-attr-placeholder="TIME NOT SEARCHABLE" class="form-control"  ng-disabled="true"/>
                 </div>
                 <div ng-switch-when="BOOLEAN">
                     <select ui-select2 multiple ng-model="attribute.value" data-placeholder="{{'please_select'| translate}}" style="width:100%;">
-                        <option ng-repeat="option in boolOperators" value="{{option}}">{{option}}</option>
+                        <option ng-repeat="option in boolOperators" ng-attr-value="{{option}}">{{option}}</option>
                     </select>
                 </div> 
                 <div ng-switch-default>
