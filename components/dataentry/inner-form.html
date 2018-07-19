@@ -229,7 +229,7 @@
         <div ng-switch-when="DATE">
             <div class="hideInPrint">
                 <input type="text"
-                       placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                       ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                        d2-date
                        d2-date-validator
                        max-date="prStDe.allowFutureDate ? '' : 0"
@@ -292,19 +292,19 @@
             <div class="hideInPrint">
                 <div class="input-group max-input-filed-width">
                     <div class="form-control">
-                        <a href ng-click="downloadFile(currentEvent.event, prStDe.dataElement.id)" title="{{fileNames[currentEvent.event][prStDe.dataElement.id]}}">{{fileNames[currentEvent.event][prStDe.dataElement.id].length > 20 ? fileNames[currentEvent.event][prStDe.dataElement.id].substring(0,20).concat('...') : fileNames[currentEvent.event][prStDe.dataElement.id]}}</a>
+                        <a href ng-click="downloadFile(currentEvent.event, prStDe.dataElement.id)" ng-attr-title="{{fileNames[currentEvent.event][prStDe.dataElement.id]}}">{{fileNames[currentEvent.event][prStDe.dataElement.id].length > 20 ? fileNames[currentEvent.event][prStDe.dataElement.id].substring(0,20).concat('...') : fileNames[currentEvent.event][prStDe.dataElement.id]}}</a>
                     </div>
                     <span class="input-group-btn">
                         <span class="btn btn-grp btn-file" ng-if="currentEvent[prStDe.dataElement.id]" ng-click="deleteFile(currentEvent,prStDe.dataElement.id)">
                             <span ng-if="currentEvent[prStDe.dataElement.id]"
-                                  title="{{'delete' | translate}}"
+                                  ng-attr-title="{{'delete' | translate}}"
                                   d2-file-input-name="fileNames[currentEvent.event][prStDe.dataElement.id]"
                                   d2-file-input-delete="currentEvent[prStDe.dataElement.id]">
                                 <i class="fa fa-trash"></i>
                             </span>
                         </span>
                         <span class="btn btn-grp btn-file" ng-if="!currentEvent[prStDe.dataElement.id]">
-                            <span ng-if="!currentEvent[prStDe.dataElement.id]" title="{{'upload' | translate}}">
+                            <span ng-if="!currentEvent[prStDe.dataElement.id]" ng-attr-title="{{'upload' | translate}}">
                                 <i class="fa fa-upload"></i>
                                 <input type="file"
                                        ng-required="prStDe.compulsory || mandatoryFields[currentEvent.event][prStDe.dataElement.id]"
@@ -386,7 +386,7 @@
             <div class="hideInPrint">
                 <input type="url"
                        d2-url-validator
-                       placeholder="{{'url_format' | translate}}"
+                       ng-attr-placeholder="{{'url_format' | translate}}"
                        ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id, currentEvent)"

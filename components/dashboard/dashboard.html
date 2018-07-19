@@ -2,10 +2,10 @@
     <div>
         <button ng-disabled="!previousTeiExists" type="button"
         class="btn btn-default small-horizontal-spacing" ng-click="fetchTei('PREV')"
-        title="{{'previous'| translate}}" style="margin-bottom:3px"><i class="fa fa-caret-left"></i></button>
+        ng-attr-title="{{'previous'| translate}}" style="margin-bottom:3px"><i class="fa fa-caret-left"></i></button>
 
         <button ng-disabled="!nextTeiExists" type="button" class="btn btn-default small-horizontal-spacing"
-                ng-click="fetchTei('NEXT')" title="{{'next'| translate}}" style="margin-bottom:3px"><i class="fa fa-caret-right"></i>
+                ng-click="fetchTei('NEXT')" ng-attr-title="{{'next'| translate}}" style="margin-bottom:3px"><i class="fa fa-caret-right"></i>
         </button>
         <select style="margin-top:0px;margin-bottom:3px;" ng-model="selectedProgram"
                 class="form-control-program"
@@ -33,7 +33,7 @@
                 <div ng-include="'components/topbar/topbar.html'" ng-style="{'flex' : (topBarConfig.settings && topBarConfig.settings.active) ? '1 100%' : '0'}"></div>
                 <div ng-class="topbarRightSizeClass" style="width:150px; display:flex;">
                     <button type="button"
-                            title="{{model.stickyDisabled ? stickLabel : unstickLabel}}"
+                            ng-attr-title="{{model.stickyDisabled ? stickLabel : unstickLabel}}"
                             ng-show="(dashboardWidgets | filter: {parent: 'smallerWidget', show: true}).length > 0"
                             class="btn btn-default dashboard-info-btn-right-size"
                             ng-class="{true: 'stick', false: 'unstick'} [!model.stickyDisabled]"
@@ -43,7 +43,7 @@
                     </button>
                     
                     <div class="btn-group trim" ng-if="showManageTeiDropdown()">
-                        <button type="button" title="{{'manage' | translate}} {{trackedEntityType.displayName}}" class="btn btn-danger dropdown-toggle" ng-disabled="selectedOrgUnit.closedStatus" data-toggle="dropdown" style="height: 35px;">
+                        <button type="button" ng-attr-title="{{'manage' | translate}} {{trackedEntityType.displayName}}" class="btn btn-danger dropdown-toggle" ng-disabled="selectedOrgUnit.closedStatus" data-toggle="dropdown" style="height: 35px;">
                             <i class="fa fa-exclamation-circle"></i>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">                            
@@ -53,7 +53,7 @@
                     </div>
                     
                     <div class="btn-group trim">
-                        <button type="button" title="{{settingsLabel}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height: 35px;">
+                        <button type="button" ng-attr-title="{{settingsLabel}}" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height: 35px;">
                             <i class="fa fa-cog"></i>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">

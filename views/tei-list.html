@@ -5,7 +5,7 @@
                 <tr>
                     <th ng-repeat="gridColumn in gridColumns| filter:{show: true}" class='mouse-pointer' ng-click="sortGrid(gridColumn)">                            
                         <!-- sort icon begins -->                                
-                        <span ng-hide="gridColumn.showFilter" class="bold pointer" title="{{'sort'| translate}}" class="fa fa-sort">
+                        <span ng-hide="gridColumn.showFilter" class="bold pointer" ng-attr-title="{{'sort'| translate}}" class="fa fa-sort">
                             <span class="fa-stack">
                                 <span ng-class="{true: 'red'} [sortColumn.id === gridColumn.id && sortColumn.direction === 'asc']"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
                                 <span ng-class="{true: 'red'} [sortColumn.id === gridColumn.id && sortColumn.direction === 'desc']"><i class="fa fa-sort-desc fa-stack-1x"></i></span>
@@ -20,7 +20,7 @@
                 <tr ng-repeat="tei in data.rows.own" 
                     ng-click="onTeiClickedInternal(tei)"
                     ng-class="{true: 'inactive-tei'} [tei.inactive]"
-                    title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
+                    ng-attr-title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">
@@ -47,7 +47,7 @@
                 <tr ng-repeat="tei in data.rows.other" 
                     ng-click="onTeiClickedInternal(tei)"
                     ng-class="{true: 'inactive-tei'} [tei.inactive]"
-                    title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
+                    ng-attr-title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">

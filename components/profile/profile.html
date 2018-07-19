@@ -2,17 +2,17 @@
     <div class="panel-heading handle bold">
         {{profileWidget.title| translate}}
         <span class="nav-pills" ng-if="!enrollmentEditing && !selectedTei.inactive">
-            <a href ng-click="enableEdit()" title="{{'edit_profile'| translate}}" ng-if="trackedEntityType.access.data.write"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [!editingDisabled]">{{'edit'| translate}}</span></a>
-            <a href ng-click="enableEdit()" title="{{'show_all'| translate}}" ng-if="!trackedEntityType.access.data.write"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [!editingDisabled]">{{'show_all'| translate}}</span></a>
+            <a href ng-click="enableEdit()" ng-attr-title="{{'edit_profile'| translate}}" ng-if="trackedEntityType.access.data.write"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [!editingDisabled]">{{'edit'| translate}}</span></a>
+            <a href ng-click="enableEdit()" ng-attr-title="{{'show_all'| translate}}" ng-if="!trackedEntityType.access.data.write"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [!editingDisabled]">{{'show_all'| translate}}</span></a>
         </span>
 
         <span class="pull-right widget-link">            
             <a class="small-horizontal-spacing" href ng-click="expandCollapse(profileWidget)">
-                <span ng-show="profileWidget.expand"><i class="fa fa-chevron-up" title="{{collapseLabel}}"></i></span>
-                <span ng-show="!profileWidget.expand"><i class="fa fa-chevron-down" title="{{expandLabel}}"></i></span>
+                <span ng-show="profileWidget.expand"><i class="fa fa-chevron-up" ng-attr-title="{{collapseLabel}}"></i></span>
+                <span ng-show="!profileWidget.expand"><i class="fa fa-chevron-down" ng-attr-title="{{expandLabel}}"></i></span>
             </a>            
             <d2-audit name-id-map="attributesById" event-id="{{selectedTei.trackedEntityInstance}}" data-type="attribute"></d2-audit>
-            <a ng-show="userAuthority.canAdministerDashboard || !lockedList[selectedProgram.id]" class="small-horizontal-spacing" href ng-click="removeWidget(profileWidget)" title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>
+            <a ng-show="userAuthority.canAdministerDashboard || !lockedList[selectedProgram.id]" class="small-horizontal-spacing" href ng-click="removeWidget(profileWidget)" ng-attr-title="{{removeLabel}}"><i class="fa fa-times-circle"></i></a>
         </span>        
     </div>
     <div ng-show="profileWidget.expand" class="panel-body dashboard-widget-container" ng-class="{'disable-clicks':selectedOrgUnit.closedStatus}">

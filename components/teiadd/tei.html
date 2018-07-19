@@ -2,7 +2,7 @@
     <div id="selectDropDownParent" class="input-group col-md-3">
         <button type="button" class="select-dropdown-button form-control">{{selectedEventsTodayFilter.name}}</button>
         <div class="input-group-btn todayfilter-drop-down">
-            <button class="btn btn-default select-dropdown-caret" type="button" data-toggle="dropdown" title="Test"><i class="fa fa-caret-down"></i></button>
+            <button class="btn btn-default select-dropdown-caret" type="button" data-toggle="dropdown" ng-attr-title="Test"><i class="fa fa-caret-down"></i></button>
             <ul id="selectDropDown" class="dropdown-menu dropdown-menu-right">
                 <li ng-repeat="filter in eventsTodayFilters | orderBy: 'name'">
                     <a href ng-click="fetchTeisEventsToday(filter)">{{filter.name}}</a>
@@ -23,7 +23,7 @@
                 <tr>
                     <th ng-repeat="gridColumn in gridColumns| filter:{show: true}" class='mouse-pointer' ng-click="sortGrid(gridColumn)">                            
                         <!-- sort icon begins -->                                
-                        <span ng-hide="gridColumn.showFilter" class="bold pointer" title="{{'sort'| translate}}" class="fa fa-sort">
+                        <span ng-hide="gridColumn.showFilter" class="bold pointer" ng-attr-title="{{'sort'| translate}}" class="fa fa-sort">
                             <span class="fa-stack">
                                 <span ng-class="{true: 'red'} [sortColumn.id === gridColumn.id && !reverse]"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
                                 <span ng-class="{true: 'red'} [sortColumn.id === gridColumn.id && reverse]"><i class="fa fa-sort-desc fa-stack-1x"></i></span>
@@ -39,7 +39,7 @@
                     ng-repeat="trackedEntityType in trackedEntityList.rows.own | orderBy:d2Sort:reverse" 
                     ng-click="mainTei.trackedEntityInstance ? assignRelationship(trackedEntityType) : showDashboard(trackedEntityType)"
                     ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
-                    title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
+                    ng-attr-title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">
@@ -60,7 +60,7 @@
                     ng-repeat="trackedEntityType in trackedEntityList.rows.other | orderBy:d2Sort:reverse" 
                     ng-click="mainTei.trackedEntityInstance ? assignRelationship(trackedEntityType) : showDashboard(trackedEntityType)"
                     ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
-                    title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
+                    ng-attr-title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">
@@ -82,7 +82,7 @@
                     ng-repeat="trackedEntityType in trackedEntityList.rows.own| orderBy:d2Sort:reverse" 
                     ng-click="assignRelationship(trackedEntityType)"
                     ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
-                    title="{{'select'| translate}}">
+                    ng-attr-title="{{'select'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">
@@ -103,7 +103,7 @@
                     ng-repeat="trackedEntityType in trackedEntityList.rows.other| orderBy:d2Sort:reverse" 
                     ng-click="assignRelationship(trackedEntityType)"
                     ng-class="{true: 'inactive-tei'} [trackedEntityType.inactive]"
-                    title="{{'select'| translate}}">
+                    ng-attr-title="{{'select'| translate}}">
                     <td ng-repeat="gridColumn in gridColumns| filter:{show: true}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">
