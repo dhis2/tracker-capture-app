@@ -1,0 +1,169 @@
+<div ng-controller="SearchController" class="col-lg-6 col-md-8 col-sm-10">
+    <div ng-if="base.selectedProgram">
+        <h2>{{'search_for'| translate}} {{trackedEntityTypes.selected.displayName.toLowerCase()}}</h2>
+    </div>
+    <div ng-if="!base.selectedProgram && trackedEntityTypes.readable.length > 0">
+        <h2>
+            {{'search_for'| translate}}
+            <select
+            style="height:30px;margin-left:10px;"
+            name="trackedEntityTypeSelect"
+            ng-model="trackedEntityTypes.selected"
+            ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.readable | orderBy: 'displayName'"
+            ng-change="setTrackedEntityType()"
+            >
+            <option ng-attr-value="" disabled selected> </option>
+        </select> 
+        </h2> 
+    </div>
+    <div ng-if="!base.selectedProgram && trackedEntityTypes.readable.length === 0">
+        <br/>
+        <div class="alert alert-warning" >
+            {{ 'you_need_read_access_to_at_least_one_tracked_entity_type_to_be_able_to_search' | translate }}
+        </div>
+    </div>
+
+    <form class="form-horizontal search-tei-form" ng-repeat="searchGroup in searchConfig.searchGroups | filter: {orgunitUnique: 'false'}">
+        <div class="form-group" ng-repeat="attribute in searchGroup.attributes">
+            <label class=" col-xs-4 control-label control-label-search" for="{{attribute.id}}">{{attribute.displayName}}</label>
+            <div class="col-xs-8" ng-if="attribute.optionSetValue">
+                <span ng-if="!attribute.renderOptionsAsRadio || base.optionSets[attribute.optionSet.id].options.length >= 7">
+                    <ui-select  ng-model="searchGroup[attribute.id]"
+                                theme="select2"
+                                class="search-ui-select">
+                        <ui-select-match allow-clear="true"  class="form-control-ui-select"  ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+                        <ui-select-choices  repeat="option.displayName as option in base.optionSets[attribute.optionSet.id].options | filter: $select.search">
+                            <span ng-bind-html="option.displayName | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </span>
+                <span ng-if="attribute.renderOptionsAsRadio && base.optionSets[attribute.optionSet.id].options.length < 7">
+                    <d2-radio id="attribute.id" 
+                            d2-name="foo" 
+                            d2-object="searchGroup"
+                            d2-options="base.optionSets[attribute.optionSet.id].options"
+                            >
+                    </d2-radio>
+                </span>
+            </div>
+            <div class="col-xs-8" ng-if="!attribute.optionSetValue" ng-switch="attribute.valueType">
+
+                <span ng-switch-when="DATE">
+                    <div class="col-xs-12" ng-if="attribute.unique">
+                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].exactValue"/>
+                    </div>
+                    <div class="col-xs-3 no-padding" ng-if="!attribute.unique">
+                        <select ng-model="attribute.operator" class="form-control" ng-options="operator | translate for operator in defaultOperators">
+                        </select>
+                    </div>
+                    <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[0] && !attribute.unique">
+                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].exactValue"/>
+                    </div>
+                    <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[1] && !attribute.sunique">
+                        <div class="col-xs-6 no-padding"><input type="text" ng-attr-placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].startValue"/></div>
+                        <div class="col-xs-6 no-padding"><input type="text" ng-attr-placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].endValue"/></div>
+                    </div>
+                </span>
+
+                <span ng-switch-when="DATETIME">
+                    <div class="col-xs-12 no-padding" ng-if="attribute.unique">
+                        <select ng-model="attribute.operator" class="form-control" ng-options="operator | translate for operator in defaultOperators">
+                        </select>
+                    </div>
+                    <div class="col-xs-3 no-padding" ng-if="!attribute.unique">
+                        <select ng-model="attribute.operator" class="form-control" ng-options="operator | translate for operator in defaultOperators">
+                        </select>
+                    </div>
+                    <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[0] && !attribute.unique">
+                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].exactValue"/>
+                    </div>
+                    <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[1] && !attribute.unique">
+                            <input type="text" ng-attr-placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].startValue"/>
+                            <input type="text" ng-attr-placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].endValue"/>         
+                    </div>
+                </span>
+
+                <span ng-switch-when="TIME">
+                    <input type="text" ng-attr-placeholder="TIME NOT SEARCHABLE" class="form-control"  ng-disabled="true"/>
+                </span>
+
+                <span ng-switch-when="BOOLEAN" class="form-control search-ui-select-container">
+                    <select ui-select2 multiple ng-model="searchGroup[attribute.id].value" data-placeholder="{{'please_select'| translate}}">
+                        <option ng-repeat="option in boolOperators" ng-attr-value="{{option}}">{{option}}</option>
+                    </select>
+                </span>
+
+                <span ng-switch-when="NUMBER">
+                    <div class="col-xs-12 no-padding" ng-if="attribute.unique">
+                        <input type="number" ng-attr-placeholder="{{'exact_value'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].exactValue"/>
+                    </div>
+                    <div class="col-xs-3 no-padding" ng-if="!attribute.unique">
+                        <select ng-model="attribute.operator" class="form-control" ng-options="operator | translate for operator in defaultOperators"></select>
+                    </div>
+                    <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[0] && !attribute.unique">
+                        <input type="number" ng-attr-placeholder="{{'exact_value'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].exactValue"/>
+                    </div>
+                    <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[1] && !attribute.unique">
+                            <div class="col-xs-6 no-padding"><input type="number" ng-attr-placeholder="{{'from'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].startValue"/></div>
+                            <div class="col-xs-6 no-padding"><input type="number" ng-attr-placeholder="{{'to'| translate}}" class="form-control" ng-model="searchGroup[attribute.id].endValue"/></div>
+                    </div>
+                </span>
+
+                <span ng-switch-default>
+                    <input type="text" class="form-control" ng-model="searchGroup[attribute.id].value" /> 
+                </span>
+            </div>
+        </div>
+        <div class="form-group" ng-if="!searchGroup.uniqueGroup" style="margin-top: 10px; margin-bottom: 10px;">
+            <div class="col-xs-12 search-more-options-header" ng-click="searchGroup.moreOptionsOpen = !searchGroup.moreOptionsOpen" style="height:28px;line-height:28px;">
+                <label class=" col-xs-4 control-label" style="font-weight:bold!important;">More options</label>
+                <i class="pull-right" ng-class="{'fa fa-chevron-up vertical-center': searchGroup.moreOptionsOpen, 'fa fa-chevron-down vertical-center': !searchGroup.moreOptionsOpen}" style="padding-right:12px;"></i>
+            </div>
+            <div ng-if="searchGroup.moreOptionsOpen" class="col-xs-12" >
+                <div class="form-group">
+                    <label class=" col-xs-4 no-padding more-options-label control-label">{{'org_unit' | translate}}</label>
+                    <div class="col-xs-8 no-padding">
+                        <div style="margin-right:15px; margin-left:20px;margin-top:6px;">
+                            <script type="text/ng-template" id="orgUnitTree.html">
+                                <span class="org-unit-tree-button" ng-click="expandCollapseOrgUnitTree(orgUnit)" ng-show="orgUnit.show && orgUnit.children.length > 0"><i class="fa fa-minus-square-o"></i></span>
+                                <span class="org-unit-tree-button" ng-click="expandCollapseOrgUnitTree(orgUnit)" ng-show="(!orgUnit.show && orgUnit.children.length > 0) || (!orgUnit.show && orgUnit.hasChildren)"><i class="fa fa-plus-square-o"></i></span>
+                                <span class="org-unit-tree-button" ng-click="setSelectedOrgUnit(orgUnit, searchGroup)" ng-class="{'selected-org-unit' : orgUnit.id === searchGroup.orgUnit.id}">{{orgUnit.displayName}}</span>
+                                <ul class="tree" id="tree" ng-show="orgUnit.show">
+                                    <li ng-repeat="orgUnit in orgUnit.children | orderBy:'displayName'" ng-include="'orgUnitTree.html'"></li>
+                                </ul>
+                            </script>
+                            <ul class="tree" id="tree">
+                                <li ng-repeat="orgUnit in orgUnits | orderBy:'displayName'" ng-include="'orgUnitTree.html'"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-4 no-padding more-options-label control-label">{{'ou_search_scope'| translate}}</label>
+                    <div class="col-xs-8">
+                        <div class="radio">
+                            <label><input type="radio" ng-model="searchGroup.ouMode.name" name="accessible" ng-attr-value="ACCESSIBLE" ng-change="setOuModeAccessible(searchGroup)"> {{'ACCESSIBLE'| translate}}</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="searchGroup.ouMode.name" name="selected" ng-attr-value="SELECTED" ng-disabled="!searchGroup.orgUnit"> {{'SELECTED'| translate}}</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="searchGroup.ouMode.name" name="children" ng-attr-value="CHILDREN" ng-disabled="!searchGroup.orgUnit"> {{'CHILDREN'| translate}}</label>
+                        </div>
+                        <div class="radio disabled">
+                            <label><input type="radio" ng-model="searchGroup.ouMode.name" name="descendants" ng-attr-value="DESCENDANTS" ng-disabled="!searchGroup.orgUnit"> {{'DESCENDANTS'| translate}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group search-tei-form-button">
+            <div class="col-md-12 text-center" style="height:34px;line-height:34px;">
+                <span ng-if="!searchGroup.uniqueGroup" ng-class="{ 'error' : searchGroup.error}" ng-if="searchGroup.minAttributesRequiredToSearch">Fill in at least {{searchGroup.minAttributesRequiredToSearch}} {{searchGroup.minAttributesRequiredToSearch === 1 ? 'attribute' : 'attributes'}} to search</span>
+                <button class="btn btn-default pull-right" ng-click="search(searchGroup)"><span class="fa fa-search-plus"></span></button>
+            </div>
+
+        </div>
+    </form>
+</div>

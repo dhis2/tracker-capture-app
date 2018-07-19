@@ -29,7 +29,7 @@ POSSIBILITY OF SUCH DAMAGE.
 <div>
     <div class="pull-right" ng-show="event===chosenEvent && buttonsEnabled()">
         <div class="btn-group event-table-options-dropdown dropup">
-          <button type="button" class="btn btn-default" ng-click="defaultOption.onClick()"  data-toggle='tooltip' title='{{defaultOption.tooltip | translate}}' ng-bind-html="defaultOption.icon" ng-disabled="defaultOption.disabled">                                             
+          <button type="button" class="btn btn-default" ng-click="defaultOption.onClick()"  data-toggle='tooltip' ng-attr-title='{{defaultOption.tooltip | translate}}' ng-bind-html="defaultOption.icon" ng-disabled="defaultOption.disabled">                                             
           </button>
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             <span class="caret"></span>

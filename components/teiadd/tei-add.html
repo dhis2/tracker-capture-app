@@ -8,7 +8,7 @@
                     class="form-control"
                     ng-options="rel as rel.displayName for rel in relationshipTypes | orderBy: 'displayName'"
                     ng-disabled="relatedProgramRelationship">
-                <option value="">{{'please_select_a_relationship'| translate}}</option>
+                <option ng-attr-value="">{{'please_select_a_relationship'| translate}}</option>
             </select>
         </div>
     </div>
@@ -78,16 +78,16 @@
                                 ng-disabled="programs.length < 1 || (selectedProgramForRelative && selectedProgram.relatedProgram && relatedProgramRelationship)"
                                 ng-options="program as program.displayName for program in programs | orderBy: 'displayName'" 
                                 ng-change="setAttributesForSearch(selectedProgramForRelative)">
-                            <option value="">{{'please_select_a_program'| translate}}</option>
+                            <option ng-attr-value="">{{'please_select_a_program'| translate}}</option>
                         </select>                
                     </div>
                     <div class="input-group col-sm-8 vertical-spacing">
-                        <input type="text" placeholder="{{'type_your_search_criteria_here'| translate}}" ng-model="searchText.value" d2-enter="search(searchMode.freeText)" class="form-control expanded" ng-class="{true: 'invalid - input'} [!searchText && emptySearchText]" ng-focus="showHideSearch(true)">
+                        <input type="text" ng-attr-placeholder="{{'type_your_search_criteria_here'| translate}}" ng-model="searchText.value" d2-enter="search(searchMode.freeText)" class="form-control expanded" ng-class="{true: 'invalid - input'} [!searchText && emptySearchText]" ng-focus="showHideSearch(true)">
                         <div class="input-group-btn">
-                            <button class="btn btn-default without-border-radius trim" type="button" title="{{'advanced_search'| translate}}" ng-click="showHideSearch(false)"><i class="fa fa-caret-down"></i></button>
-                            <button class="btn btn-primary without-border-radius trim" type="button" title="{{'search'| translate}}" ng-click="search(searchMode.freeText)"><i class="fa fa-search"></i></button>                            
-                            <button class="btn btn-default without-border-radius trim" type="button" title="{{'list_all'| translate}}" ng-disabled="showRegistrationDiv" ng-click="search(searchMode.listAll)"><i class="fa fa-list"></i></button>
-                            <button class="btn btn-success trim" type="button" title="{{'register'| translate}}" ng-click="showRegistration()"><i class="fa fa-plus-square"></i></button>                            
+                            <button class="btn btn-default without-border-radius trim" type="button" ng-attr-title="{{'advanced_search'| translate}}" ng-click="showHideSearch(false)"><i class="fa fa-caret-down"></i></button>
+                            <button class="btn btn-primary without-border-radius trim" type="button" ng-attr-title="{{'search'| translate}}" ng-click="search(searchMode.freeText)"><i class="fa fa-search"></i></button>                            
+                            <button class="btn btn-default without-border-radius trim" type="button" ng-attr-title="{{'list_all'| translate}}" ng-disabled="showRegistrationDiv" ng-click="search(searchMode.listAll)"><i class="fa fa-list"></i></button>
+                            <button class="btn btn-success trim" type="button" ng-attr-title="{{'register'| translate}}" ng-click="showRegistration()"><i class="fa fa-plus-square"></i></button>                            
                             
                         </div>                
                     </div>                    

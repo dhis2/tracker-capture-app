@@ -10,7 +10,7 @@
                     {{attribute.displayName}}
                 </td>
                 <td class="col-sm-6">
-                    <input type="text" value={{attribute.value}} class="form-control">
+                    <input type="text" ng-attr-value={{attribute.value}} class="form-control">
                 </td>
             </tr>
         </tbody>
@@ -26,7 +26,7 @@
                     {{'enrolling_orgunit'| translate}}
                 </td>
                 <td class="col-sm-6">
-                    <input type="text" value={{selectedEnrollment.orgUnitName}} class="form-control">
+                    <input type="text" ng-attr-value={{selectedEnrollment.orgUnitName}} class="form-control">
                 </td>
             </tr>
             <tr>
@@ -34,7 +34,7 @@
                     {{selectedProgram.enrollmentDateLabel}}
                 </td>
                 <td class="col-sm-6">
-                    <input type="text" value= {{selectedEnrollment.enrollmentDate}} class="form-control">
+                    <input type="text" ng-attr-value= {{selectedEnrollment.enrollmentDate}} class="form-control">
                 </td>
             </tr>
             <tr>
@@ -42,7 +42,7 @@
                     {{selectedProgram.incidentDateLabel}}
                 </td>
                 <td class="col-sm-6">
-                    <input type="text" value={{selectedEnrollment.incidentDate}} class="form-control">
+                    <input type="text" ng-attr-value={{selectedEnrollment.incidentDate}} class="form-control">
                 </td>
             </tr>
         </tbody>
