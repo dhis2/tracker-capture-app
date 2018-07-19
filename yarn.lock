@@ -1259,9 +1259,9 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-d2-tracker@29.0.42:
-  version "29.0.42"
-  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-29.0.42.tgz#92a9849b5a86fb2c5a19a17de0e2312a502ad0f9"
+d2-tracker@29.0.43:
+  version "29.0.43"
+  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-29.0.43.tgz#7088392105fd155388bd70efbd872cd120f78b28"
   dependencies:
     gulp "^3.9.1"
     gulp-angular-templatecache "^2.0.0"
