@@ -20,8 +20,8 @@
         </td>
         <td class="absorbing-column">
             <ng-form name="innerForm">
-                <span ng-if="attribute.optionSetValue" class="hideInPrint">
-                    <span ng-if="!attribute.renderOptionsAsRadio || optionSets[attributesById[attribute.id].optionSet.id].options.length >= 7">
+                <span ng-if="attribute.optionSetValue">
+                    <span class="hideInPrint" ng-if="!attribute.renderOptionsAsRadio || optionSets[attributesById[attribute.id].optionSet.id].options.length >= 7">
                         <d2-option-list d2-model="selectedTei"
                                         d2-model-id="attribute.id"
                                         d2-required="attribute.mandatory || mandatoryFields[attribute.id]"
@@ -33,7 +33,7 @@
                                         d2-all-options="optionSets[attributesById[attribute.id].optionSet.id].options">
                         </d2-option-list>
                     </span>
-                    <span ng-if="attribute.renderOptionsAsRadio && optionSets[attributesById[attribute.id].optionSet.id].options.length < 7">
+                    <span class="hideInPrint" ng-if="attribute.renderOptionsAsRadio && optionSets[attributesById[attribute.id].optionSet.id].options.length < 7">
                         <d2-radio id="attribute.id" 
                                 d2-name="foo" 
                                 d2-object="selectedTei"
@@ -41,8 +41,11 @@
                                 d2-required="attribute.mandatory || mandatoryFields[attribute.id]"
                                 d2-disabled="attributeFieldDisabled(attribute)">
                         </d2-radio>
-                    </span>                    
-                </span>
+                    </span>
+                    <span class="not-for-screen">
+                        <input type="text" ng-attr-value={{selectedTei[attribute.id]}}>
+                    </span>        
+                </span> 
 
                 <span ng-if="!attribute.optionSetValue" ng-switch="attribute.valueType">
                     <span ng-switch-when="DATE">
