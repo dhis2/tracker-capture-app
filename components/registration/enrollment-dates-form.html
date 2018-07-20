@@ -29,7 +29,7 @@
                    ng-change="verifyExpiryDate('selectedEnrollment.enrollmentDate')"
                    ng-disabled="selectedOrgUnit.closedStatus"
                    ng-required="true"/>
-            <input type="text" class="form-control not-for-screen"/>
+            <input type="text" ng-attr-value={{selectedEnrollment.enrollmentDate}} class="form-control not-for-screen"/>
             <span ng-show="outerForm.submitted && outerForm.enrollmentDate.$invalid" class="error">{{'required'| translate}}</span>
         </td>
     </tr>
@@ -48,7 +48,7 @@
                 ng-model="selectedEnrollment.incidentDate"
                 ng-disabled="selectedOrgUnit.closedStatus"
                 ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
-            <input type="text" class="form-control not-for-screen"/>
+            <input type="text" ng-attr-value={{selectedEnrollment.incidentDate}} class="form-control not-for-screen"/>
         </td>
     </tr>
     <tr ng-if="selectedProgram.captureCoordinates && !selectedProgramForRelative">
@@ -74,7 +74,7 @@
                 ng-model="selectedEnrollment.incidentDate"
                 ng-disabled="selectedOrgUnit.closedStatus"
                 ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
-            <input type="text" class="form-control not-for-screen"/>
+            <input type="text" ng-attr-value={{selectedEnrollment.incidentDate}} class="form-control not-for-screen"/>
         </td>
     </tr>
     <tr ng-if="selectedProgramForRelative.captureCoordinates && selectedProgramForRelative">
