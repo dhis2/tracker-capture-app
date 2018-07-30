@@ -274,7 +274,7 @@ trackerCapture.controller('SearchController',function(
                             }, function(error){
                                 if(error && !error.auditDismissed && error.data && error.data.message){
                                     var headerText = $translate.instant('open_tei_error');
-                                    var bodyText = error.data.message;
+                                    var bodyText = $translate.instant(error.data.message);
                                     NotificationService.showNotifcationDialog(headerText, bodyText);
                                 }
                             });
