@@ -45,6 +45,7 @@ trackerCapture.controller('RegistrationController',
     $scope.assignedFields = [];
     $scope.errorMessages = {};
     $scope.hiddenSections = [];
+    $scope.mandatoryFields = [];
     $scope.currentEvent = null;
     $scope.prStDes = null;
     $scope.registrationAndDataEntry = false;
@@ -1222,6 +1223,14 @@ trackerCapture.controller('RegistrationController',
 
     $scope.showTetRegistrationWarning =  function(){
         return $scope.registrationMode === 'REGISTRATION' && (!$scope.selectedProgram && $scope.trackedEntityTypes.selected && !showTetRegistrationButtons());
+    }
+
+    $scope.attributeIsRequired = function(attribute) {
+        //If has authority Ignore required validation, skip required
+        if($scope.userAuthority.ignoreRequiredTrackerValueValidation) {
+            return false;
+        }
+        return attribute.mandatory || $scope.mandatoryFields[attribute.id];
     }
 
     var showTetRegistrationButtons = function(){
