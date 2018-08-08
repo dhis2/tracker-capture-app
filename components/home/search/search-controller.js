@@ -346,7 +346,7 @@ trackerCapture.controller('SearchController',function(
         var getRegistrationPrefill = function(searchGroup){
             var prefill = {};
             for(var key in searchGroup){
-                if($scope.base.attributesById[key]){
+                if($scope.base.attributesById[key] && !$scope.base.attributesById[key].generated){
                     var val = searchGroup[key];
                     if(angular.isDefined(val.value)){
                         prefill[key] = val.value;
