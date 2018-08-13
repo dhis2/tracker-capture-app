@@ -168,6 +168,8 @@ trackerCapture.controller('EnrollmentController',
         $scope.loadEnrollmentDetails = function (enrollment) {
             $scope.showEnrollmentHistoryDiv = false;
             $scope.selectedEnrollment = enrollment;
+            $scope.enrollmentDateState.date = enrollment.enrollmentDate;
+            $scope.incidentDateState.date = enrollment.incidentDate;
 
             if ($scope.selectedEnrollment.enrollment && $scope.selectedEnrollment.orgUnit) {
                 $scope.broadCastSelections('dashboardWidgets');
