@@ -125,21 +125,26 @@
                         </span>
                     </span>                    
                     <span ng-switch-when="NUMBER">
-                        <input type="number"
-                               name="foo" 
-                               class="form-control"
-                               ng-model="selectedTei[attribute.id]"
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                               d2-attribute-validator 
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               d2-number-validator 
-                               number-type={{attribute.valueType}} 
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute)"/>
+                        <span class="hideInPrint">
+                            <input type="number"
+                                   name="foo" 
+                                   class="form-control"
+                                   ng-model="selectedTei[attribute.id]"
+                                   ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                   d2-attribute-validator 
+                                   selected-tet={{trackedEntityTypes.selected.id}}
+                                   attribute-data={{attribute}}
+                                   selected-program-id={{selectedProgram.id}}  
+                                   selected-tei-id={{selectedTei.trackedEntityInstance}}  
+                                   d2-number-validator 
+                                   number-type={{attribute.valueType}} 
+                                   ng-disabled="attributeFieldDisabled(attribute)"
+                                   ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                   ng-required="attributeIsRequired(attribute)"/>
+                        </span>
+                        <span class="not-for-screen">
+                            <input type="text" class="form-control" ng-attr-value={{selectedTei[attribute.id]}}>
+                        </span>
                     </span>
                     <span ng-switch-when="PERCENTAGE">
                         <input type="number"
