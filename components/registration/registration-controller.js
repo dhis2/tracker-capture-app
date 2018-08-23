@@ -719,7 +719,7 @@ trackerCapture.controller('RegistrationController',
         if(field.dataElement) {
             //The saveDataValueForRadio was called from the dataentry template. Update dataelement og current event:
             context[field.dataElement.id] = value;
-            def = $q.defer();
+            var def = $q.defer();
             def.resolve();
             promise = def.promise;
         }
