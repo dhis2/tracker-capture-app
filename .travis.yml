@@ -1,16 +1,12 @@
 language: node_js
 node_js:
-- '9'
+- '8'
 cache:
   directories:
   - node_modules
 script:
 - npm run build
-after_success:
-- if ( [ "$TRAVIS_BRANCH" == "master" ] || [ ! -z "$TRAVIS_TAG" ] ) && [ "$TRAVIS_REPO_SLUG"
-  == "dhis2/tracker-capture-app" ]  &&  [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then
-  mvn clean deploy --settings deploy/settings.xml && exit 0; fi
+- npm run deploy
 env:
   global:
-  - secure: rWcE9EGctViHhHtxTjHps11yuqUD9iGMkm40dRWStce5U3EHkuIWvHG8sPof/9+2CJzlooquGElVJAxkTMY8O9MnJJmihECjJHtEaU+S/9TUekF+iyRMmBr27+0+8ndh6GvOj37Ng2/qOv7N0SRcmxqv7cqi9xSzdvvb89rGBBHN0tbEBu/Mboprn7GxBpP+8VHNkGcQb2w4xrJcCnL+KLDdzp2FCMxTdo4Hcyhg6BnYteRqE3vUKLD8ehpQe1OiPwQ5r3URadyu6t0U4S5q7OGtQtkx2/kojkk+ukScGQeNR2wC9FIQ51K+/QvTIErhvIsWP95tl/ULAAT7pfswKt0cCgSmxyvb4dEJvrAJ/yLx43P4XfF4rzMSc618Wa4tCwWCFdbE0GmnpFjvKhaUS3Iw395JJXitBpGZcYK8OIhxWy40W9DnUJu5y8hoqbFCShVBfsr3aKwxRhGLVmrv3z1ukfsV0JGybZAoPhsdHQWQJUPho8UI0ngfk+CLvoJbkl4rixqkJCL3wlB9lRU1Uq45A4ka/CxI8Oylwau+DXKzinH7QbyQZjwu8a4xnYGMhWc52Pzq338gyb/yXjCR7KPh06lujW+kJT4KVley4ELHvOnxngfsaDcizrNVnzpiqzbBJK1bCzEFD/THWkUpxqXN9DFFjVxehW8LLO4bd+0=
-  - secure: IObIm5iJjrMudlpQOxBXY8WBBTn/4W2+lTgX4Uf8A4YJ9EsT3uR3P8Enle/Jk4B1GgEXYLAusPEbdy3BiKLE6fHlJBOouBGr358PeCNgGWJhelacDo+G02evcXKWiNyNC0JGRnzwF+wPwVPTrLncqMx5nqRSRdGhRFbks4TpO4CzRk9pdOPUSmViphBtp0Jd2FwA5v1HAs0m9XSXnGAMZGVR2SMZn1ZWOlp9I3hW3uq6AfZmT7zVADntZHTYXXK8IOvjjaZdf/8A+L+YC6Vkkm6sy0f9KK6yNs9nST7W0V4YWW+pB37CkjzLB3zOzJ1lzo/Gf44mBP16adn6CrJNAXQ1Tb/O7/xPC0hVVMBd3iDxkaX5CaGvkgmJsDyFle8fRH+LlFytN9b9w/+v9qNViDYzRGeeNPknoVVFxGtNx79CadrDyRvqM1DQmneLpK0qVIjJhoHKb1ahiL+3OmLVi9vHyAM5E9O+dFJ//V0dofOn6ofluJjlkRlLq1Pe8q2qhIpsYLRuXlX8+c96lPYWqY3s3Q87Et+qC2ehpg8YEBVMQOp/+u5BZDos7OpdE0+c9dUcggxBYUFoPrRb+AHaaJ73u2rtiS/wyUnVGuCGOBBOGxeA2Awp+2MM7ovPH1fxyn7q6gtG8qbeYlDK/slf4YpLY9Mb5oL4ZJ7bGBz+2gw=
+    secure: A9HNijEiwHz0ZV9DsPbl7VwUlV1rf7SsRiIW3Mq0AsXbupWXc9imFvbDDCyORNy61GKlHBgrHB9BxQZlaG4GO0aAVNpQ1yyTf4+B2NPpM5ja567HQdTH1P/AyDnT67FlSbetI/Rya+vecXCvS3KzGZDrhw2OHs059vBufBycnSYCQd6K+zNqJNI3iXlQZGyU9CW/ha0ggU5b1oXX8YqmRdYn+uvf6XJJmFINvI60n3ECxOwKuQg/ok2BukH8n/0H1kSSxycehn/7MoABEgc6qXxWjgAcDnKFZYngnntwJxtUFa60CW9xKuVtWtTEgvio4i2KfhAl5cxSHiBT3a2xzeyH/NXdTSRDo3O6+hptfaNc/Tux/8eLHNOqaDFlp2CGMG411qFk53EpuT+bV7LiyZpye3c3HZRz7YUQqrJVI3RV9DnEMIpC6etvCLU4yuRLJEGi5EMx3VMBLmumSRHmh7SvPUtu/sZfj1jFbEplAoJMFsQUBq+99r1kQjX3MUTLazjYkA6muHvr0zA5K3c30PGM+c24JxTybJ1L5AQpthQznXBr7NF6C5yt/7B3E+QbJ5N3CU5T357fcRlM16fVhHtOmylUP0s49RtXeM8pygAyycnU5SkITnygPH+0Fih8+xiF8xAiDztb8dEzbaL6AR9wntAiu9X9BFyP2vTL/UU=
