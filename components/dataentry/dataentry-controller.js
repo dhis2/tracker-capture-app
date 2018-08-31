@@ -3235,6 +3235,11 @@ trackerCapture.controller('DataEntryController',
     $scope.hideEditAttributeCategoryOptions = function(){
         $scope.showAttributeCategoryOptions = !$scope.showAttributeCategoryOptions;
     };
+
+    $scope.calcTableWidth = function(){
+        var width = angular.element(document.getElementById('tabelContainer'))[0].clientWidth;
+        return width;
+    };
     
 })
 .controller('EventOptionsInTableController', function($scope, $translate){

@@ -23,7 +23,7 @@
                                 {{stage.displayName}}
                             </a>
                         </div>
-                        <div style="width: 87%; float: left; padding-left: 12px; padding-right: 12px;">
+                        <div id="tabelContainer" style="width: 87%; float: left; padding-left: 12px; padding-right: 12px; overflow-x: scroll; overflow-y: hidden;">
                             <div ng-if="model.showLegend">
                                 <div ng-include="'components/dataentry/event-legend.html'"></div>
                             </div>
