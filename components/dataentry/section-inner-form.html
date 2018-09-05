@@ -401,7 +401,7 @@
                 {{'unsupported_value_type' | translate}}:  {{prStDes[de.id].dataElement.valueType}}
             </div>
         </div>
-        <div ng-messages="innerForm.foo.$error" ng-if="interacted(innerForm.foo, outerDataEntryForm)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">          
+        <div ng-messages="innerForm.foo.$error" ng-if="interacted(innerForm.foo, outerDataEntryForm) && selectedValidationType === 'ON_UPDATE_AND_INSERT' || completeClicked && selectedValidationType === 'ON_COMPLETE'" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">          
             <!-- URL error message is temporarily placed here. Should be placed with the other error messages in the core. -->
             <span ng-message="urlValidator">{{'url_error' | translate}}</span>
             <span ng-message="timeValidator">{{'time_error' | translate}}</span>

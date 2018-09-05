@@ -140,7 +140,13 @@ trackerCapture.controller('DataEntryController',
     $scope.model.showLegend = false;
     $scope.model.showEventSearch = false;
     $scope.model.eventSearchText = '';
+
     
+    var validationTypes = ["NONE", "ON_UPDATE_AND_INSERT", "ON_COMPLETE"];
+    $scope.selectedValidationType = validationTypes[0];
+
+    $scope.completeClicked = false;
+
     $scope.filterLegend = function(){
         if($scope.mainMenuStageSelected()){
             return {showInEventLegend: true};
@@ -1605,7 +1611,7 @@ trackerCapture.controller('DataEntryController',
             }
         }
         
-        if (field && field.$invalid) {
+        if (field && field.$invalid && $scope.selectedValidationType === "ON_UPDATE_AND_INSERT") {
             $scope.currentEvent[prStDe.dataElement.id] = oldValue;
             $scope.currentElement = {id: prStDe.dataElement.id, saved: false, event: eventToSave.event};
             return false;
@@ -2024,10 +2030,11 @@ trackerCapture.controller('DataEntryController',
     };
     
     $scope.completeIncompleteEvent = function (inTableView, outerDataEntryForm) {
-        
+
         if($scope.currentEvent.status !== 'COMPLETED'){
             $scope.outerDataEntryForm.submitted = true;
-            if($scope.outerDataEntryForm.$invalid){
+            $scope.completeClicked = true;
+            if($scope.outerDataEntryForm.$invalid && $scope.selectedValidationType !== "NONE"){
                 NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("form_invalid"));
                 return;
             }
@@ -2045,8 +2052,9 @@ trackerCapture.controller('DataEntryController',
                 bodyText: 'are_you_sure_to_incomplete_event'
             };
             dhis2Event.status = 'ACTIVE';
-        }
-        else {//complete event    
+            $scope.completeClicked = false;
+
+        } else {//complete event    
             //We must execute the rules right before deciding wheter to allow completion:
             $scope.executeRules();
             
@@ -2056,7 +2064,7 @@ trackerCapture.controller('DataEntryController',
                     outerDataEntryForm = $scope.outerDataEntryForm;
                 }
                 outerDataEntryForm.$setSubmitted();
-                if(outerDataEntryForm.$invalid){
+                if(outerDataEntryForm.$invalid && $scope.selectedValidationType !== "NONE"){
                     var dialogOptions = {
                         headerText: 'errors',
                         bodyText: 'form_invalid',
@@ -2099,9 +2107,7 @@ trackerCapture.controller('DataEntryController',
                 
                 NotificationService.showNotifcationWithOptions({}, dialogOptions);
                 return;
-            }
-            else
-            {
+            } else {
                 modalOptions = {
                     closeButtonText: 'cancel',
                     headerText: 'complete',
