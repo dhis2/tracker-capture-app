@@ -457,7 +457,7 @@ trackerCapture.controller('RegistrationController',
         //Temp fix for not being able to save images with attribute.value = "" or null.
         var tempAttributes = [];
         angular.forEach($scope.tei.attributes, function (attribute) {
-            if(attribute.value !== '' && attribute.value) {
+            if(attribute.value !== '' && attribute.value != null ) {
                 tempAttributes.push(attribute);
             }
         });
