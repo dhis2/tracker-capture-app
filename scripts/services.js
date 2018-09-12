@@ -1171,9 +1171,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         att.programTrackedEntityAttribute = pAttribute;
                         if (att) {
                             att.mandatory = pAttribute.mandatory;
-                            if (pAttribute.displayInList) {
-                                att.displayInListNoProgram = true;
-                            }
+                            att.displayInListNoProgram = pAttribute.displayInList;
+                            
                             if(pAttribute.renderOptionsAsRadio){
                                 att.renderOptionsAsRadio = pAttribute.renderOptionsAsRadio;
                             }
@@ -1932,7 +1931,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             angular.forEach(grid.rows, function (row) {
                 if (invalidTeis.indexOf(row[0]) === -1) {
                     var entity = {};
-                    var isEmpty = true;
 
                     entity.id = row[0];
                     entity.created = DateUtils.formatFromApiToUser(row[1]);
@@ -1945,7 +1943,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
                     for (var i = 7; i < row.length; i++) {
                         if (row[i] && row[i] !== '') {
-                            isEmpty = false;
                             var val = row[i];
 
                             if (attributesById[grid.headers[i].name] &&
@@ -1970,17 +1967,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         }
                     }
 
-                    if (!isEmpty) {
-                        if (map) {
-                            entityList[entity.id] = entity;
+                    if (map) {
+                        entityList[entity.id] = entity;
+                    }
+                    else {
+                        if (entity.orgUnit === ouId) {
+                            entityList.own.push(entity);
                         }
                         else {
-                            if (entity.orgUnit === ouId) {
-                                entityList.own.push(entity);
-                            }
-                            else {
-                                entityList.other.push(entity);
-                            }
+                            entityList.other.push(entity);
                         }
                     }
                 }
