@@ -141,10 +141,6 @@ trackerCapture.controller('DataEntryController',
     $scope.model.showEventSearch = false;
     $scope.model.eventSearchText = '';
 
-    
-    var validationTypes = ["NONE", "ON_UPDATE_AND_INSERT", "ON_COMPLETE"];
-    $scope.selectedValidationType = validationTypes[0];
-
     $scope.completeClicked = false;
 
     $scope.filterLegend = function(){
@@ -1611,7 +1607,7 @@ trackerCapture.controller('DataEntryController',
             }
         }
         
-        if (field && field.$invalid && $scope.selectedValidationType === "ON_UPDATE_AND_INSERT") {
+        if (field && field.$invalid && $scope.currentStage.validationStrategy === "ON_UPDATE_AND_INSERT") {
             $scope.currentEvent[prStDe.dataElement.id] = oldValue;
             $scope.currentElement = {id: prStDe.dataElement.id, saved: false, event: eventToSave.event};
             return false;
@@ -2034,7 +2030,7 @@ trackerCapture.controller('DataEntryController',
         if($scope.currentEvent.status !== 'COMPLETED'){
             $scope.outerDataEntryForm.submitted = true;
             $scope.completeClicked = true;
-            if($scope.outerDataEntryForm.$invalid && $scope.selectedValidationType !== "NONE"){
+            if($scope.outerDataEntryForm.$invalid && $scope.currentStage.validationStrategy !== "NONE"){
                 NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("form_invalid"));
                 return;
             }
@@ -2064,7 +2060,7 @@ trackerCapture.controller('DataEntryController',
                     outerDataEntryForm = $scope.outerDataEntryForm;
                 }
                 outerDataEntryForm.$setSubmitted();
-                if(outerDataEntryForm.$invalid && $scope.selectedValidationType !== "NONE"){
+                if(outerDataEntryForm.$invalid && $scope.currentStage.validationStrategy !== "NONE"){
                     var dialogOptions = {
                         headerText: 'errors',
                         bodyText: 'form_invalid',
