@@ -2082,7 +2082,7 @@ trackerCapture.controller('DataEntryController',
                 };
             }
             
-            if(angular.isDefined($scope.errorMessages[$scope.currentEvent.event]) && $scope.errorMessages[$scope.currentEvent.event].length > 0) {
+            if(angular.isDefined($scope.errorMessages[$scope.currentEvent.event]) && $scope.errorMessages[$scope.currentEvent.event].length > 0 && $scope.currentStage.validationStrategy !== "NONE") {
                 //There is unresolved program rule errors - show error message.
                 var sections = [
                     {
