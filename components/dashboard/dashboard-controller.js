@@ -276,6 +276,7 @@ trackerCapture.controller('DashboardController',
         DashboardLayoutService.getLockedList().then(function(r){
             if(!r || r === '') {
                 $scope.lockedList = {};
+                DashboardLayoutService.saveLockedList($scope.lockedList);
             } else {
                 $scope.lockedList = r;                
             }

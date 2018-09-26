@@ -104,6 +104,7 @@ trackerCapture.controller('DataEntryController',
     DashboardLayoutService.getLockedList().then(function(response){
         if(!response || response === '') {
             $scope.lockedList = {};
+            DashboardLayoutService.saveLockedList($scope.lockedList);
         } else {
             $scope.lockedList = response;                
         }
@@ -1560,12 +1561,15 @@ trackerCapture.controller('DataEntryController',
         $scope.currentStage = $scope.stagesById[$scope.currentEvent.programStage];
         $scope.currentStageEvents = $scope.eventsByStage[$scope.currentEvent.programStage];
 
-        if($scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout && $scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id] && !$scope.lockedList[$scope.selectedProgramId]) {
+        if($scope.dashBoardLayout.customLayout[$scope.selectedProgramId] && $scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout && $scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id] && !$scope.lockedList[$scope.selectedProgramId]) {
             $scope.currentStage.timelineDataEntryMode = $scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id].timelineDataEntryMode;
             $scope.currentStage.tableEditMode = $scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id].tableEditMode;
-        } else if($scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout && $scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id] || $scope.lockedList[$scope.selectedProgramId]) {
+        } else if($scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId] && $scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout && $scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id] || $scope.lockedList[$scope.selectedProgramId]) {
             $scope.currentStage.timelineDataEntryMode = $scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id].timelineDataEntryMode;
             $scope.currentStage.tableEditMode = $scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id].tableEditMode;
+        } else {
+            $scope.currentStage.timelineDataEntryMode = 0;
+            $scope.currentStage.tableEditMode = 0;
         }
 
         angular.forEach($scope.currentStage.programStageSections, function (section) {
