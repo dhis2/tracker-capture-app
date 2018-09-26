@@ -885,7 +885,8 @@ trackerCapture.controller('RegistrationController',
     $scope.showMatchesModal = function(allowRegistration){
         var modalData = {
             allowRegistration: allowRegistration,
-            translateWithTETName: $scope.translateWithTETName
+            translateWithTETName: $scope.translateWithTETName,
+            optionSets: $scope.optionSets
         }
         var refetch;
         if($scope.programSearchScope){
@@ -905,7 +906,7 @@ trackerCapture.controller('RegistrationController',
                 {
                     $scope.allowRegistration = modalData.allowRegistration;
                     $scope.translateWithTETName = modalData.translateWithTETName;
-                    $scope.gridData = TEIGridService.format(orgUnit.id, data, false, null, null);
+                    $scope.gridData = TEIGridService.format(orgUnit.id, data, false, modalData.optionSets, null);
                     $scope.pager = data && data.metaData ? data.metaData.pager : null;
                     $scope.openTei = function(tei){
                         $modalInstance.close({ action: "OPENTEI", tei: tei});
@@ -920,7 +921,7 @@ trackerCapture.controller('RegistrationController',
                     $scope.refetchData = function(pager, sortColumn){
                         refetchDataFn(pager,sortColumn).then(function(res){
                             $scope.pager = res.data && res.data.metaData ? res.data.metaData.pager : null;
-                            $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, null, null);
+                            $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, modalData.optionSets, null);
                         });
                     }
                 },
@@ -965,6 +966,7 @@ trackerCapture.controller('RegistrationController',
             orgUnit: $scope.selectedOrgUnit,
             data: duplicateTei,
             attribute: field,
+            optionSets: $scope.optionSets,
             translateWithTEAName: $scope.translateWithTEAName,
             translateWithTETName: $scope.translateWithTETName
         };
@@ -974,7 +976,7 @@ trackerCapture.controller('RegistrationController',
             controller: function($scope,$modalInstance, TEIGridService,modalData)
             {
                 $scope.attribute = modalData.attribute;
-                $scope.gridData = TEIGridService.format(modalData.orgUnit.id, modalData.data, false, null, null);
+                $scope.gridData = TEIGridService.format(modalData.orgUnit.id, modalData.data, false, modalData.optionSets, null);
                 $scope.translateWithTEAName = modalData.translateWithTEAName;
                 $scope.translateWithTETName = modalData.translateWithTETName;
                 $scope.openTei = function(tei){
