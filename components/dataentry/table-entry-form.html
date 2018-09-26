@@ -407,7 +407,6 @@
                                 </span>
                         </div>
                     </div>
-                    <!--<span ng-show="dataEntryOuterForm.submitted && innerform.foo.$invalid" class="error">{{'required'| translate}}</span>-->
                 </td>
                 <td class="min-possible-width prevent-text-selection-on-double-click" ng-class="{'current-event-td': currentEvent === eventRow}">
                     <div class="statuscol" ng-controller="EventOptionsInTableController">
@@ -442,14 +441,6 @@
                         </div>
                     </div>
                 </td>
-                <!--<td class="col-md-2" ng-if="allowProvidedElsewhereExists">
-                    <div class="align-center" ng-show="prStDe.allowProvidedElsewhere">
-                        <input type="checkbox"
-                               ng-model="eventRow.providedElsewhere[prStDe.dataElement.id]"
-                               ng-disabled="selectedEnrollment.status !== 'ACTIVE' || eventRow.editingNotAllowed || assignedFields[eventRow.event][prStDe.dataElement.id] "
-                               ng-change="saveDatavalueLocation(prStDe)"/>
-                    </div>
-                </td>-->
             </tr>
             </tbody>
         </table>
