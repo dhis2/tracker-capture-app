@@ -642,22 +642,25 @@ trackerCapture.controller('RegistrationController',
     };
 
     var getMatchingTeisCount = function(tei, field){
-        var searchGroups = $scope.searchConfig.searchGroupsByAttributeId[field];
         var promises = [];
-        if(searchGroups){
-            if(searchGroups.default){
-                searchGroups.default[field] = tei[field];
-                promises.push(getMatchingTeisCountBySearchGroup(searchGroups.default, field));
-            } 
-            if(searchGroups.unique){
-                searchGroups.unique[field] = tei[field];
-                promises.push(getMatchingTeisCountBySearchGroup(searchGroups.unique, field));
+        if($scope.registrationMode === 'REGISTRATION') {
+            var searchGroups = $scope.searchConfig.searchGroupsByAttributeId[field];
+            if(searchGroups){
+                if(searchGroups.default){
+                    searchGroups.default[field] = tei[field];
+                    promises.push(getMatchingTeisCountBySearchGroup(searchGroups.default, field));
+                } 
+                if(searchGroups.unique){
+                    searchGroups.unique[field] = tei[field];
+                    promises.push(getMatchingTeisCountBySearchGroup(searchGroups.unique, field));
+                }
+            }else{
+                var def = $q.defer();
+                def.resolve();
+                promises.push(def.promise);
             }
-        }else{
-            var def = $q.defer();
-            def.resolve();
-            promises.push(def.promise);
         }
+
         return $q.all(promises);
     }
 
