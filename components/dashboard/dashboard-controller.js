@@ -481,6 +481,10 @@ trackerCapture.controller('DashboardController',
         $scope.dataEntryMainMenuItemSelected = true;
     });
 
+    $scope.$on('ErollmentDeleted', function (args, data) {
+        $scope.allEnrollments = data.enrollments;
+    });
+
     $scope.$on('DataEntryMainMenuVisibilitySet', function (event, data) {
         if (data.visible) {
             //hide all widgets except visibleItems in data
@@ -612,11 +616,9 @@ trackerCapture.controller('DashboardController',
                             CurrentSelection.setTrackedEntityTypes(teis);
                         }
                     }
-                    
-                    NotificationService.showNotifcationDialog($translate.instant('success'), $scope.trackedEntityType.displayName + ' ' + $translate.instant('deleted'));                
-                    $scope.back();
                 }
-                
+                NotificationService.showNotifcationDialog($translate.instant('success'), $scope.trackedEntityType.displayName + ' ' + $translate.instant('deleted'));                
+                $scope.back();                
             });
         });
     };

@@ -355,13 +355,20 @@ trackerCapture.controller('EnrollmentController',
 
             ModalService.showModal({}, modalOptions).then(function (result) {                
                 EnrollmentService.delete( $scope.selectedEnrollment ).then(function (data) {
-                    $scope.selectedEnrollment = null;
-                    var advancedSearchOptions = CurrentSelection.getAdvancedSearchOptions();
-                    advancedSearchOptions.refresh = true;
-                    CurrentSelection.setAdvancedSearchOptions(advancedSearchOptions);
+                    if(data.httpStatus === 'OK' || data.httpStatusCode === 200) {
+                        angular.forEach($scope.enrollments, function(enrollment, index){
+                            if(enrollment.enrollment === $scope.selectedEnrollment.enrollment){
+                                $scope.enrollments.splice(index, 1); 
+                            }
+                        });
 
-                    NotificationService.showNotifcationDialog($translate.instant('success'), $translate.instant('enrollment') + ' ' + $translate.instant('deleted'));                
-                    $scope.back();
+                        $timeout(function () {
+                            $rootScope.$broadcast('ErollmentDeleted', {enrollments: $scope.enrollments});
+                        }, 200);
+
+                        $scope.selectedEnrollment = null;
+                        NotificationService.showNotifcationDialog($translate.instant('success'), $translate.instant('enrollment') + ' ' + $translate.instant('deleted'));   
+                    }             
                 });
             });
         };
