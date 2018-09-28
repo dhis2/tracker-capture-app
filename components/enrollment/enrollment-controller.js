@@ -366,6 +366,7 @@ trackerCapture.controller('EnrollmentController',
                             $rootScope.$broadcast('ErollmentDeleted', {enrollments: $scope.enrollments});
                         }, 200);
 
+                        $scope.currentEnrollment = null;
                         $scope.selectedEnrollment = null;
                         NotificationService.showNotifcationDialog($translate.instant('success'), $translate.instant('enrollment') + ' ' + $translate.instant('deleted'));   
                     }             
