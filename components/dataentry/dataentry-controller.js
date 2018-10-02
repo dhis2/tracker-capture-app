@@ -3302,6 +3302,12 @@ trackerCapture.controller('DataEntryController',
         var width = angular.element(document.getElementById('tabelContainer'))[0].clientWidth;
         return width;
     };
+
+    $scope.setDateOnFocus = function(currentValue) {
+        if(!currentValue) {
+            $scope.currentEvent.eventDate = DateUtils.getToday();
+        }
+    };
     
 })
 .controller('EventOptionsInTableController', function($scope, $translate){

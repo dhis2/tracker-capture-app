@@ -1211,9 +1211,9 @@ trackerCapture.controller('RegistrationController',
         $window.open('../api/trackedEntityInstances/' + tei.trackedEntityInstance + '/' + attributeId + '/image', '_blank', '');
     };
 
-    $scope.setDateOnFocus = function(currentValue, date) {
+    $scope.setDateOnFocus = function(currentValue) {
         if(!currentValue) {
-            $scope.currentEvent.eventDate = date;
+            $scope.currentEvent.eventDate = DateUtils.getToday();
         }
     };
 
