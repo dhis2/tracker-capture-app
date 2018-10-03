@@ -106,7 +106,7 @@ trackerCapture.controller('RegistrationController',
     
     
     $scope.isDisabled = function(attribute) {
-        return attribute.generated || $scope.assignedFields[attribute.id] || $scope.editingDisabled;
+        return attribute.generated || $scope.assignedFields[attribute.id] || $scope.editingDisabled && $scope.registrationMode !== 'ENROLLMENT';
     };
 
     $scope.selectedEnrollment = {

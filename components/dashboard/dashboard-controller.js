@@ -510,7 +510,7 @@ trackerCapture.controller('DashboardController',
         if (pr) {
             $scope.selectedProgram = pr;
         }
-        getDashboardLayout();
+        updateDashboard();
     };
 
     $scope.broadCastSelections = function (tei) {
