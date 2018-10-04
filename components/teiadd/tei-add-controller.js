@@ -170,7 +170,6 @@ trackerCapture.controller('TEIAddController',
 
         if ($scope.addingRelationship) {
             $scope.teiAddLabel = $translate.instant('add_relationship');
-            //Get all programs
             $scope.programs = AccessUtils.toWritable(allPrograms);
             CurrentSelection.setRelationshipOwner($scope.mainTei);
         }
