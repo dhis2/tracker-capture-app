@@ -378,6 +378,40 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return def.promise;
             
         },
+        getAll: function(){
+            var roles = SessionStorageService.get('USER_PROFILE');
+            var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
+            var def = $q.defer();
+
+            this.getAllAccesses().then(function(accesses){
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.getAll('programs').done(function(prs){
+                        var programs = [];
+                        angular.forEach(prs, function(pr){
+                            if(accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read){
+                                pr.access = accesses.programsById[pr.id];
+                                var accessiblePrs = [];
+                                angular.forEach(pr.programStages, function(prs){
+                                    if(accesses.programStagesById[prs.id] && accesses.programStagesById[prs.id].data.read){
+                                        prs.access = accesses.programStagesById[prs.id];
+                                        accessiblePrs.push(prs);
+                                    }
+                                });
+                                pr.programStages = accessiblePrs;
+                                programs.push(pr);
+                            }
+                        });
+                        programs = orderByFilter(programs, '-displayName').reverse();
+    
+                        $rootScope.$apply(function(){
+                            def.resolve({programs: programs});
+                        });
+                    });
+                });
+            });
+            return def.promise;
+        },
+
         getProgramsByOu: function(ou,loadSelectedProgram, selectedProgram){
             var roles = SessionStorageService.get('USER_PROFILE');
             var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
