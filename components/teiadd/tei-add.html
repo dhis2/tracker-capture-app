@@ -59,7 +59,7 @@
                                             class="form-control"
                                             style="margin-top:6px;"
                                             ng-disabled="programs.length < 1 || (base.selectedProgramForRelative && selectedProgram.relatedProgram && relatedProgramRelationship)"
-                                            ng-options="program as program.displayName for program in programs | orderBy: 'displayName'" 
+                                            ng-options="program as program.displayName for program in relatedAvailablePrograms | orderBy: 'displayName'" 
                                             ng-change="onSelectedProgram(base.selectedProgramForRelative)">
                                         <option value="">{{'please_select_a_program'| translate}}</option>
                                     </select>                
