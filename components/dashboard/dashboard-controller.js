@@ -510,7 +510,7 @@ trackerCapture.controller('DashboardController',
         if (pr) {
             $scope.selectedProgram = pr;
         }
-        getDashboardLayout();
+        $location.path('/dashboard').search({program: pr.id, ou: $scope.selectedOrgUnit.id, tei: $scope.selectedTei.trackedEntityInstance});
     };
 
     $scope.broadCastSelections = function (tei) {
