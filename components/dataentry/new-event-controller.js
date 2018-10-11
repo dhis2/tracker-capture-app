@@ -33,7 +33,9 @@ trackerCapture.controller('EventCreationController',
                 ModalService,
                 CurrentSelection,
                 $rootScope,
-                EnrollmentService) {
+                EnrollmentService,
+                TEIService,
+                TCOrgUnitService) {
     $scope.selectedOrgUnit = orgUnit;
     $scope.selectedEnrollment = enrollment;      
     $scope.stages = stages;
@@ -277,79 +279,23 @@ trackerCapture.controller('EventCreationController',
         dummyEvent.orgUnit = orgUnit.id;
         dummyEvent.orgUnitName = orgUnit.displayName;
     };
-    
-    
-    if(angular.isDefined(orgUnit) && angular.isDefined(orgUnit.id) && $scope.isReferralEvent){
-        $scope.orgUnitsLoading = true;
-        $timeout(function(){
-            OrgUnitFactory.get(orgUnit.id).then(function(data){
-                    orgUnit = data;
-                    var url = generateFieldsUrl();
-                    OrgUnitFactory.getOrgUnits(orgUnit.id,url).then(function(data){
-                        if(data && data.organisationUnits && data.organisationUnits.length >0){
-                            $scope.orgWithParents = data.organisationUnits[0];
-                            var org = data.organisationUnits[0];
-                            var orgUnitsById ={};
-                            orgUnitsById[org.id] = org;
-                            while(org.parent){
-                                org.parent.childrenLoaded = true;
-                                orgUnitsById[org.parent.id] = org.parent;
-                                org.parent.show = true;
-                                for(var i=0;i<org.parent.children.length;i++){
-                                    angular.forEach(org.parent.children[i].children, function(child){
-                                       if(!orgUnitsById[child.id]){
-                                            orgUnitsById[child.id] =child; 
-                                       }
-                                    });
-                                    if(org.parent.children[i].id===org.id){
-                                        org.parent.children[i] = org;
-                                        i= org.parent.children.length;
-                                    }else{
-                                        orgUnitsById[org.parent.children[i].id] = org.parent.children[i];
-                                    }
-                                }
-                                org = org.parent;
-                            }
-                            $scope.orgUnits = [org];
-                        }
-                        $scope.orgUnitsLoading = false;
-                    });
-            });
-            
-        },350);
+
+    if($scope.isReferralEvent){
+        TCOrgUnitService.getSearchOrgUnitTree().then(function(searchOrgUnitTree){
+            $scope.searchOrgUnitTree = searchOrgUnitTree;
+        });
     }
-    
-    function generateFieldsUrl(){
-        var fieldUrl = "fields=id,displayName,organisationUnitGroups[shortName],programs[id]";
-        var parentStartDefault = ",parent[id,displayName,programs[id],children[id,displayName,programs[id],organisationUnitGroups[shortName],children[id,displayName,programs[id],organisationUnitGroups[shortName]]]";
-        var parentEndDefault = "]";
-        if(orgUnit.level && orgUnit.level > 1){
-            var parentStart = parentStartDefault;
-            var parentEnd = parentEndDefault;
-            for(var i =0; i< orgUnit.level-2;i++){
-                parentStart+= parentStartDefault;
-                parentEnd +=parentStartDefault;
-            }
-            fieldUrl += parentStart;
-            fieldUrl += parentEnd;
+
+    $scope.expandCollapseOrgUnitTree = function(orgUnit) {
+        if(!orgUnit.children || orgUnit.children.length === 0) return;
+        if(orgUnit.children[0].displayName){
+            orgUnit.show = !orgUnit.show;
         }
-        return fieldUrl;
-    }
-    
-    $scope.expandCollapse = function(orgUnit) {
-        orgUnit.show = !orgUnit.show;
-        if(!orgUnit.childrenLoaded){
-            OrgUnitFactory.getOrgUnits(orgUnit.id, "fields=id,path,programs[id],children[id,displayName,programs[id],level,children[id]]&paging=false").then(function(data){
-
-                orgUnit.children = data.organisationUnits[0].children;
-                orgUnit.childrenLoaded = true;
+        else {
+            OrgUnitFactory.getChildren(orgUnit.id).then(function(ou){
+                orgUnit.children = ou.children;
+                orgUnit.show = !orgUnit.show;
             });
-
-            /*OrgUnitFactory.getChildren(orgUnit.id).then(function(data){
-                orgUnit.children = data.children;
-                orgUnit.childrenLoaded = true;
-                
-            });*/
         }
     };
     //end referral logic
