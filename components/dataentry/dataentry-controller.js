@@ -31,7 +31,8 @@ trackerCapture.controller('DataEntryController',
                 TrackerRulesFactory,
                 EventCreationService,
                 AuthorityService,
-                AccessUtils) {
+                AccessUtils,
+                TCOrgUnitService) {
     
     //Unique instance id for the controller:
     $scope.instanceId = Math.floor(Math.random() * 1000000000);
@@ -119,6 +120,11 @@ trackerCapture.controller('DataEntryController',
     $scope.eventCreationActions = EventCreationService.eventCreationActions;
     
     var userProfile = SessionStorageService.get('USER_PROFILE');
+    var userSearchOrgUnits = [];
+    if(userProfile) {
+        userSearchOrgUnits = userProfile.teiSearchOrganisationUnits && userProfile.teiSearchOrganisationUnits.length > 0 ? 
+            userProfile.teiSearchOrganisationUnits : (userProfile.organisationUnits || []);
+    }
     var storedBy = userProfile && userProfile.userCredentials && userProfile.userCredentials.username ? userProfile.userCredentials.username : '';
 
     var today = DateUtils.getToday();
@@ -921,7 +927,7 @@ trackerCapture.controller('DataEntryController',
                             dhis2Event.sortingDate = dhis2Event.eventDate;                            
                         }
                         
-                        dhis2Event.editingNotAllowed = EventUtils.getEditingStatus(dhis2Event, eventStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram);
+                        dhis2Event.editingNotAllowed = EventUtils.getEditingStatus(dhis2Event, eventStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram, userSearchOrgUnits);
                         
                         dhis2Event.statusColor = EventUtils.getEventStatusColor(dhis2Event);
                         dhis2Event = EventUtils.processEvent(dhis2Event, eventStage, $scope.optionSets, $scope.prStDes);
@@ -1321,34 +1327,36 @@ trackerCapture.controller('DataEntryController',
                 $scope.deSelectCurrentEvent(resetStage);
             }
             else {
-                $scope.currentElement = {};                
-                $scope.currentEvent = event;
-                
-                var index = -1;
-                for (var i = 0; i < $scope.eventsByStage[event.programStage].length && index === -1; i++) {
-                    if ($scope.eventsByStage[event.programStage][i].event === event.event) {
-                        index = i;
+                TCOrgUnitService.get(event.orgUnit).then(function(orgUnit){
+                    event.orgUnitPath = orgUnit.path;
+                    $scope.currentElement = {};                
+                    $scope.currentEvent = event;
+                    
+                    var index = -1;
+                    for (var i = 0; i < $scope.eventsByStage[event.programStage].length && index === -1; i++) {
+                        if ($scope.eventsByStage[event.programStage][i].event === event.event) {
+                            index = i;
+                        }
+                    }                
+                    if(index !== -1){
+                        $scope.currentEvent = $scope.eventsByStage[event.programStage][index];                    
                     }
-                }                
-                if(index !== -1){
-                    $scope.currentEvent = $scope.eventsByStage[event.programStage][index];                    
-                }
-                
-                $scope.showDataEntryDiv = true;
-                $scope.showEventCreationDiv = false;
-
-                if ($scope.currentEvent.notes) {
-                    angular.forEach($scope.currentEvent.notes, function (note) {
-                        note.displayDate = DateUtils.formatFromApiToUser(note.storedDate);
-                        note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
-                    });
-
-                    if ($scope.currentEvent.notes.length > 0) {
-                        $scope.currentEvent.notes = orderByFilter($scope.currentEvent.notes, '-storedDate');
+                    
+                    $scope.showDataEntryDiv = true;
+                    $scope.showEventCreationDiv = false;
+    
+                    if ($scope.currentEvent.notes) {
+                        angular.forEach($scope.currentEvent.notes, function (note) {
+                            note.displayDate = DateUtils.formatFromApiToUser(note.storedDate);
+                            note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
+                        });
+    
+                        if ($scope.currentEvent.notes.length > 0) {
+                            $scope.currentEvent.notes = orderByFilter($scope.currentEvent.notes, '-storedDate');
+                        }
                     }
-                }
-                
-                $scope.getDataEntryForm();
+                    $scope.getDataEntryForm();
+                });
             }
         }
     };
@@ -1414,7 +1422,7 @@ trackerCapture.controller('DataEntryController',
 
         var stage = $scope.stagesById[event.programStage];        
         if( stage && stage.id ){
-            event.editingNotAllowed = EventUtils.getEditingStatus(event, stage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram);
+            event.editingNotAllowed = EventUtils.getEditingStatus(event, stage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram, userSearchOrgUnits);
         }        
         
         $scope.eventEditFormModalInstance = modalInstance = $modal.open({
@@ -1529,7 +1537,7 @@ trackerCapture.controller('DataEntryController',
             }
         }
 
-        $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram);
+        $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram, userSearchOrgUnits);
         
         $scope.currentEventOriginal = angular.copy($scope.currentEvent);
         
@@ -1726,6 +1734,8 @@ trackerCapture.controller('DataEntryController',
             program: eventToSave.program,
             programStage: eventToSave.programStage,
             orgUnit: eventToSave.dataValues && eventToSave.dataValues.length > 0 ? eventToSave.orgUnit : $scope.selectedOrgUnit.id,
+            orgUnitName: eventToSave.dataValues && eventToSave.dataValues.length > 0 ? eventToSave.orgUnitName : $scope.selectedOrgUnit.displayName,
+            orgUnitPath: eventToSave.dataValues && eventToSave.dataValues.length > 0 ? eventToSave.orgUnitPath : $scope.selectedOrgUnit.path,
             eventDate: DateUtils.formatFromUserToApi(eventToSave.eventDate),
             trackedEntityInstance: eventToSave.trackedEntityInstance
         };
@@ -1744,7 +1754,9 @@ trackerCapture.controller('DataEntryController',
             $scope.currentEvent.orgUnit = e.orgUnit;
             $scope.currentEvent.statusColor = eventToSave.statusColor;
             $scope.currentEvent.status = eventToSave.status;
-            $scope.currentEvent.orgUnitName = $scope.selectedOrgUnit.displayName;
+            $scope.currentEvent.orgUnitName = e.orgUnitName;
+            $scope.currentEvent.orgUnitPath = e.orgUnitPath;
+            $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram);
             
             sortEventsByStage('UPDATE');
             
@@ -2178,7 +2190,7 @@ trackerCapture.controller('DataEntryController',
                 }
 
                 setStatusColor();
-                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram);
+                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram, userSearchOrgUnits);
                 
                 for(var i=0;i<$scope.allEventsSorted.length;i++){
                     if($scope.allEventsSorted[i].event === $scope.currentEvent.event){
@@ -2256,7 +2268,7 @@ trackerCapture.controller('DataEntryController',
                 }
 
                 setStatusColor();                
-                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram);
+                $scope.currentEvent.editingNotAllowed = EventUtils.getEditingStatus($scope.currentEvent, $scope.currentStage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram, userSearchOrgUnits);
             });
         
     };
@@ -2280,6 +2292,34 @@ trackerCapture.controller('DataEntryController',
             return true;
         }
         return false;
+    }
+
+    var getOrgUnitIdsFromPath = function(orgUnitPath) {
+        var formattedPath = orgUnitPath.replace(/^\/|\/$/g, '');
+        return formattedPath.split('/');
+    }
+
+    var isInSearchOrgUnits = function(orgUnitPath, searchOrgUnits){
+        if($scope.userAuthority.ALL) return true;
+        if(!orgUnitPath) return false;
+        return TCOrgUnitService.isPathInOrgUnitList(orgUnitPath, searchOrgUnits);
+    }
+
+    $scope.reportDateEditable = function() {
+        //Check if user has data write to current program stage
+        if(!$scope.currentStage || !$scope.currentStage.access.data.write) return false;
+        //Check if organisation unit is closed
+        if($scope.selectedOrgUnit.closedStatus) return false;
+        //Check if event is the selected org unit or event is scheduled and org unit exists in users search org units
+        if($scope.currentEvent.orgUnit !== $scope.selectedOrgUnit.id && !($scope.currentEvent.status==='SCHEDULE' && isInSearchOrgUnits($scope.currentEvent.orgUnitPath, userSearchOrgUnits))) return false;
+        // Check if currentProgramStage blocks entry form when status is completed
+        if($scope.currentStage && $scope.currentStage.blockEntryForm && $scope.currentEvent.status ==='COMPLETED') return false;
+        //Check if tei is inactive
+        if($scope.selectedTei.inactive) return false;     
+        //Check if event is expired and user can edit expired stuff
+        if(($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
+
+        return true;
     }
 
     $scope.eventEditable = function(isButton){
