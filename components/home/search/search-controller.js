@@ -21,7 +21,8 @@ trackerCapture.controller('SearchController',function(
     SearchGroupService,
     OperatorFactory,
     TEIGridService,
-    AccessUtils) {
+    AccessUtils,
+    TCOrgUnitService) {
         var searchScopes = SearchGroupService.getSearchScopes();
         var currentSearchScope = searchScopes.TRACKEDENTITYTYPE;
         $scope.trackedEntityTypes = {};
@@ -30,12 +31,14 @@ trackerCapture.controller('SearchController',function(
         $scope.defaultOperators = OperatorFactory.defaultOperators;
         $scope.selectedProgramTET;
 
-        $scope.auditDescription = 
-
 
         $scope.$watch('base.selectedProgram', function() {
             loadTrackedEntityTypes()
             .then(loadForProgram);
+        });
+
+        TCOrgUnitService.getSearchOrgUnitTree().then(function(searchOrgUnitTree){
+            $scope.searchOrgUnitTree = searchOrgUnitTree;
         });
 
         var loadForProgram = function(){
@@ -327,19 +330,15 @@ trackerCapture.controller('SearchController',function(
             }, function(){return;});
         }
         $scope.expandCollapseOrgUnitTree = function(orgUnit) {
-            if( orgUnit.hasChildren ){
-                //Get children for the selected orgUnit
-                OrgUnitFactory.getChildren(orgUnit.id).then(function(ou) {
-                    orgUnit.show = !orgUnit.show;
-                    orgUnit.hasChildren = false;
-                    orgUnit.children = ou.children;
-                    angular.forEach(orgUnit.children, function(ou){
-                        ou.hasChildren = ou.children && ou.children.length > 0 ? true : false;
-                    });
-                });
-            }
-            else{
+            if(!orgUnit.children || orgUnit.children.length === 0) return;
+            if(orgUnit.children[0].displayName){
                 orgUnit.show = !orgUnit.show;
+            }
+            else {
+                OrgUnitFactory.getChildren(orgUnit.id).then(function(ou){
+                    orgUnit.children = ou.children;
+                    orgUnit.show = !orgUnit.show;
+                });
             }
         };
 

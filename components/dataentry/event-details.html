@@ -16,7 +16,7 @@
                name="eventDate"
                ng-model="currentEvent.eventDate"
                ng-change="verifyEventExpiryDate('eventDate')"
-               ng-disabled="!eventEditable() || currentStage.periodType"
+               ng-disabled="!reportDateEditable()"
                ng-required="true"
                blur-or-change="saveEventDate()"
                ng-focus="setDateOnFocus(currentEvent.eventDate, selectedEnrollment.enrollmentDate)"/>
