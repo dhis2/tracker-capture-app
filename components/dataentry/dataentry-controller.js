@@ -2030,7 +2030,7 @@ trackerCapture.controller('DataEntryController',
         if($scope.currentEvent.status !== 'COMPLETED'){
             $scope.outerDataEntryForm.submitted = true;
             $scope.completeClicked = true;
-            if($scope.outerDataEntryForm.$invalid && $scope.currentStage.validationStrategy !== "NONE"){
+            if($scope.outerDataEntryForm.$invalid){
                 NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("form_invalid"));
                 return;
             }
@@ -2060,7 +2060,7 @@ trackerCapture.controller('DataEntryController',
                     outerDataEntryForm = $scope.outerDataEntryForm;
                 }
                 outerDataEntryForm.$setSubmitted();
-                if(outerDataEntryForm.$invalid && $scope.currentStage.validationStrategy !== "NONE"){
+                if(outerDataEntryForm.$invalid){
                     var dialogOptions = {
                         headerText: 'errors',
                         bodyText: 'form_invalid',
@@ -2082,7 +2082,7 @@ trackerCapture.controller('DataEntryController',
                 };
             }
             
-            if(angular.isDefined($scope.errorMessages[$scope.currentEvent.event]) && $scope.errorMessages[$scope.currentEvent.event].length > 0 && $scope.currentStage.validationStrategy !== "NONE") {
+            if(angular.isDefined($scope.errorMessages[$scope.currentEvent.event]) && $scope.errorMessages[$scope.currentEvent.event].length > 0) {
                 //There is unresolved program rule errors - show error message.
                 var sections = [
                     {
