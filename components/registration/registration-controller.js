@@ -493,8 +493,8 @@ trackerCapture.controller('RegistrationController',
                         enrollment.enrollmentDate = $scope.selectedEnrollment.enrollmentDate;
                         enrollment.incidentDate = $scope.selectedEnrollment.incidentDate === '' ? $scope.selectedEnrollment.enrollmentDate : $scope.selectedEnrollment.incidentDate;
 
-                        if( $scope.selectedEnrollment.coordinate ){
-                            enrollment.coordinate = $scope.selectedEnrollment.coordinate;
+                        if( $scope.selectedEnrollment.geometry ){
+                            enrollment.geometry = $scope.selectedEnrollment.geometry;
                         }
 
                         EnrollmentService.enroll(enrollment).then(function (enrollmentResponse) {
@@ -570,7 +570,7 @@ trackerCapture.controller('RegistrationController',
             $scope.selectedTei.orgUnit = $scope.tei.orgUnit = $scope.selectedOrgUnit.id;
             $scope.selectedTei.attributes = $scope.tei.attributes = [];
         }
-
+        $scope.tei.geometry = $scope.selectedTei.geometry;
         //get tei attributes and their values
         //but there could be a case where attributes are non-mandatory and
         //registration form comes empty, in this case enforce at least one value

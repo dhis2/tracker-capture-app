@@ -353,7 +353,7 @@ function getBatchPrograms( programs, batch )
     $.ajax( {
         url: DHIS2URL + '/programs.json',
         type: 'GET',
-        data: 'fields=*,dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],trackedEntityType[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],organisationUnits[id,displayName],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,description,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique,orgunitScope]],minAttributesRequiredToSearch,maxTeiCountToReturn&paging=false&filter=id:in:' + ids
+        data: 'fields=*,dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],featureType,trackedEntityType[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],organisationUnits[id,displayName],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,description,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique,orgunitScope]],minAttributesRequiredToSearch,maxTeiCountToReturn&paging=false&filter=id:in:' + ids
     }).done( function( response ){
 
         if(response.programs){
@@ -638,7 +638,7 @@ function setHasAllAccess(){
 
 function getTrackedEntityTypesWithAccess()
 {
-    return dhis2.tracker.getTrackerObjects('trackedEntityTypes', 'trackedEntityTypes', DHIS2URL + '/trackedEntityTypes.json', 'paging=false&fields=id,displayName,maxTeiCountToReturn,minAttributesRequiredToSearch,trackedEntityTypeAttributes[*,trackedEntityAttribute[id,unique]],access[data[read,write]]','temp', dhis2.tc.store).then(function(trackedEntityTypes)
+    return dhis2.tracker.getTrackerObjects('trackedEntityTypes', 'trackedEntityTypes', DHIS2URL + '/trackedEntityTypes.json', 'paging=false&fields=id,displayName,featureType,maxTeiCountToReturn,minAttributesRequiredToSearch,trackedEntityTypeAttributes[*,trackedEntityAttribute[id,unique]],access[data[read,write]]','temp', dhis2.tc.store).then(function(trackedEntityTypes)
     {
         if(hasAllAccess){
             _.each(_.values(trackedEntityTypes), function(tet){
