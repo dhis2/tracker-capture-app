@@ -49,8 +49,8 @@
                                         <td class="absorbing-column">
                                             <d2-geometry
                                                 d2-object-id="geometry"
-                                                d2-object="selectedEnrollment"
-                                                d2-disabled="selectedOrgUnit.closedStatus"
+                                                d2-object="enrollmentGeometryState"
+                                                d2-disabled="selectedOrgUnit.closedStatus || !enrollmentGeometryState.editable"
                                                 d2-geometry-type="selectedProgram.featureType"
                                                 d2-callback-function="updateEnrollmentGeometry()"
                                                 >

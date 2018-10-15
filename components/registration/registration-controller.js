@@ -493,8 +493,8 @@ trackerCapture.controller('RegistrationController',
                         enrollment.enrollmentDate = $scope.selectedEnrollment.enrollmentDate;
                         enrollment.incidentDate = $scope.selectedEnrollment.incidentDate === '' ? $scope.selectedEnrollment.enrollmentDate : $scope.selectedEnrollment.incidentDate;
 
-                        if( $scope.selectedEnrollment.coordinate ){
-                            enrollment.coordinate = $scope.selectedEnrollment.coordinate;
+                        if( $scope.selectedEnrollment.geometry ){
+                            enrollment.geometry = $scope.selectedEnrollment.geometry;
                         }
 
                         EnrollmentService.enroll(enrollment).then(function (enrollmentResponse) {
