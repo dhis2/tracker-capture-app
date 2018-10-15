@@ -1188,6 +1188,14 @@ trackerCapture.controller('RegistrationController',
         return false;
     }
 
+    $scope.saveAttributedDisabledButton = function(){
+        if($scope.selectedTei && $scope.selectedTei.programOwnersById && $scope.selectedProgram && $scope.selectedTei.programOwnersById[$scope.selectedProgram.id] != $scope.selectedOrgUnit.id) return true;
+        if($scope.selectedOrgUnit.closedStatus) return true;
+        if(!$scope.hasTeiWrite()) return true;
+        return false;
+    }
+    
+
     $scope.dataElementEditable = function(prStDe){
         if($scope.eventEditable()){
             if($scope.assignedFields && $scope.assignedFields[$scope.currentEvent.event] && $scope.assignedFields[$scope.currentEvent.event][prStDe.dataElement.id]){
