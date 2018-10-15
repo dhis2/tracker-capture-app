@@ -411,6 +411,15 @@ trackerCapture.controller('EnrollmentController',
             updateReportDate('incidentdate');         
         }
 
+        $scope.updateEnrollmentGeometry = function(){
+            EnrollmentService.update($scope.selectedEnrollment).then(function(){
+                currentReportDate.status = 'saved';
+            }, function(){
+                currentReportDate.status = 'error';
+            });
+        }
+
+
         var updateReportDate = function(type){
             currentReportDate = {type: type, status: 'pending'};
             EnrollmentService.update($scope.selectedEnrollment).then(function(){
