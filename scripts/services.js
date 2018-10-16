@@ -431,6 +431,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                         accessiblePrs.push(prs);
                                     }
                                 });
+                                pr.allProgramStagesMetadataRead = pr.programStages;
                                 pr.programStages = accessiblePrs;
                                 programs.push(pr);
                             }
