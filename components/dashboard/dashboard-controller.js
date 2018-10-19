@@ -276,6 +276,7 @@ trackerCapture.controller('DashboardController',
         DashboardLayoutService.getLockedList().then(function(r){
             if(!r || r === '') {
                 $scope.lockedList = {};
+                DashboardLayoutService.saveLockedList($scope.lockedList);
             } else {
                 $scope.lockedList = r;                
             }
@@ -406,7 +407,7 @@ trackerCapture.controller('DashboardController',
             widgets.push(w);
         });
 
-        return {widgets: widgets, topBarSettings: $scope.topBarConfig.settings, program: $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT'};
+        return {widgets: widgets, topBarSettings: $scope.topBarConfig.settings, program: $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT', programStageTimeLineLayout: DashboardLayoutService.getProgramStageLayout()};
     }
 
     function saveDashboardLayout() {

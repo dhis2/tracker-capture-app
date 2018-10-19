@@ -15,6 +15,7 @@ trackerCapture.controller('DataEntryController',
                 $location,
                 CommonUtils,                
                 DateUtils,
+                DashboardLayoutService,
                 EventUtils,
                 orderByFilter,
                 SessionStorageService,
@@ -91,6 +92,24 @@ trackerCapture.controller('DataEntryController',
     
     $scope.attributesById = CurrentSelection.getAttributesById();
     $scope.optionGroupsById = CurrentSelection.getOptionGroupsById();
+
+    DashboardLayoutService.get().then(function(response) {
+        $scope.dashBoardLayout = response;
+        if($scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout) {
+            DashboardLayoutService.setProgramStageLayout($scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout);
+        } else if($scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout) {
+            DashboardLayoutService.setProgramStageLayout($scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout);
+        }
+    });
+
+    DashboardLayoutService.getLockedList().then(function(response){
+        if(!response || response === '') {
+            $scope.lockedList = {};
+            DashboardLayoutService.saveLockedList($scope.lockedList);
+        } else {
+            $scope.lockedList = response;                
+        }
+    });
 
     $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
     if(!$scope.attributesById){
@@ -237,15 +256,67 @@ trackerCapture.controller('DataEntryController',
         $scope.printEmptyForm = false;
     };
 
-    $scope.toggleCompForm = function() {
-        if($scope.currentStage.timelineDataEntryMode !== $scope.timelineDataEntryModes.COMPAREALLDATAENTRYFORM) {
+    $scope.toggleForm = function(type) {
+        if(type === 'DEFAULT') {
+            $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.DATAENTRYFORM;
+        } else if(type === 'COMPPRE') {
+            $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.COMPAREPREVIOUSDATAENTRYFORM;
+        } else if(type === 'COMPALL') {
             $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.COMPAREALLDATAENTRYFORM;
+        } else if(type === 'GRID') {
+            $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.TABLEDATAENTRYFORM;
+            $scope.tableEditMode = $scope.tableEditModes.table;
+        } else if(type === 'POP') {
+            $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.TABLEDATAENTRYFORM;
+            $scope.tableEditMode = $scope.tableEditModes.form;
         } else {
+            //Fall back to DEFAULT form.
             $scope.currentStage.timelineDataEntryMode = $scope.timelineDataEntryModes.DATAENTRYFORM;
         }
+
+        var layout = angular.copy($scope.dashBoardLayout);
+
+        if(!layout.customLayout[$scope.selectedProgramId]) {
+            layout.customLayout[$scope.selectedProgramId] = getCurrentDashboardLayout();
+        }
+
+        if(!layout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout) {
+            layout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout = {};
+        }
+
+        layout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id] = {timelineDataEntryMode: $scope.currentStage.timelineDataEntryMode, tableEditMode: $scope.tableEditMode || $scope.tableEditMode === 0  ? $scope.tableEditMode : -1};
+        
+        DashboardLayoutService.saveLayout(layout.customLayout, false);
+        DashboardLayoutService.setProgramStageLayout(layout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout);
+        $scope.dashBoardLayout.customLayout = layout.customLayout;
+
         $scope.getDataEntryForm();
     };
 
+    function getCurrentDashboardLayout() {
+        var widgets = [];
+        $scope.hasBigger = false;
+        $scope.hasSmaller = false;
+        angular.forEach($rootScope.dashboardWidgets, function (widget) {
+            var w = angular.copy(widget);
+            if ($scope.orderChanged) {
+                if ($scope.widgetsOrder.biggerWidgets.indexOf(w.title) !== -1) {
+                    $scope.hasBigger = $scope.hasBigger || w.show;
+                    w.parent = 'biggerWidget';
+                    w.order = $scope.widgetsOrder.biggerWidgets.indexOf(w.title);
+                }
+
+                if ($scope.widgetsOrder.smallerWidgets.indexOf(w.title) !== -1) {
+                    $scope.hasSmaller = $scope.hasSmaller || w.show;
+                    w.parent = 'smallerWidget';
+                    w.order = $scope.widgetsOrder.smallerWidgets.indexOf(w.title);
+                }
+            }
+            widgets.push(w);
+        });
+
+        return {widgets: widgets, topBarSettings: $scope.topBarConfig.settings, program: $scope.selectedProgram && $scope.selectedProgram.id ? $scope.selectedProgram.id : 'DEFAULT'};
+    }
 
     //Adds support for HIDEPROGRAMSTAGE even if no event exists in enrollment
     var processRegistrationRuleEffect = function(event, callerId){
@@ -1388,10 +1459,6 @@ trackerCapture.controller('DataEntryController',
     $scope.tableEditModes = { form: 0, table: 1, tableAndForm: 2 };
     $scope.tableEditMode = $scope.tableEditModes.table;
     
-    $scope.toggleTableEditMode = function(){        
-        $scope.tableEditMode = $scope.tableEditMode === $scope.tableEditModes.tableAndForm ? $scope.tableEditModes.form : $scope.tableEditModes.tableAndForm;
-    };
-    
     $scope.eventRowChanged = false;
     $scope.eventRowClicked = function(event){        
         
@@ -1403,6 +1470,7 @@ trackerCapture.controller('DataEntryController',
             $scope.eventRowChanged = false;
         }        
          
+        // This controls if it should be displayed as modal or normal table.
         if($scope.tableEditMode === $scope.tableEditModes.form){
             $scope.openEventEditFormModal(event);
         }
@@ -1425,7 +1493,7 @@ trackerCapture.controller('DataEntryController',
             event.editingNotAllowed = EventUtils.getEditingStatus(event, stage, $scope.selectedOrgUnit, $scope.selectedTei, $scope.selectedEnrollment, $scope.selectedProgram, userSearchOrgUnits);
         }        
         
-        $scope.eventEditFormModalInstance = modalInstance = $modal.open({
+        $scope.eventEditFormModalInstance = $modal.open({
             templateUrl: 'components/dataentry/modal-default-form.html',
             scope: $scope           
         });
@@ -1499,7 +1567,18 @@ trackerCapture.controller('DataEntryController',
         $scope.showAttributeCategoryOptions = false;
         $scope.currentFileNames = $scope.fileNames ? ($scope.fileNames[$scope.currentEvent.event] ? $scope.fileNames[$scope.currentEvent.event] : []) : [];
         $scope.currentStage = $scope.stagesById[$scope.currentEvent.programStage];
-        $scope.currentStageEvents = $scope.eventsByStage[$scope.currentEvent.programStage];       
+        $scope.currentStageEvents = $scope.eventsByStage[$scope.currentEvent.programStage];
+
+        if($scope.dashBoardLayout.customLayout[$scope.selectedProgramId] && $scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout && $scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id] && !$scope.lockedList[$scope.selectedProgramId]) {
+            $scope.currentStage.timelineDataEntryMode = $scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id].timelineDataEntryMode;
+            $scope.currentStage.tableEditMode = $scope.dashBoardLayout.customLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id].tableEditMode;
+        } else if($scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId] && $scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout && $scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id] || $scope.lockedList[$scope.selectedProgramId]) {
+            $scope.currentStage.timelineDataEntryMode = $scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id].timelineDataEntryMode;
+            $scope.currentStage.tableEditMode = $scope.dashBoardLayout.defaultLayout[$scope.selectedProgramId].programStageTimeLineLayout[$scope.currentStage.id].tableEditMode;
+        } else {
+            $scope.currentStage.timelineDataEntryMode = 0;
+            $scope.currentStage.tableEditMode = 0;
+        }
 
         angular.forEach($scope.currentStage.programStageSections, function (section) {
             section.open = true;
@@ -1529,6 +1608,9 @@ trackerCapture.controller('DataEntryController',
                         }            
                     }
                     $scope.displayCustomForm = "TABLE";
+                    
+                    $scope.tableEditMode = $scope.currentStage.tableEditMode;
+
                     break;
                 
                 default:
