@@ -169,7 +169,8 @@
                     dh-current-element="currentElement"
                     dh-event="currentEvent.event"
                     dh-id="de.id"
-                    dh-click="saveDataValueForRadio(prStDes[de.id], currentEvent, value)">
+                    dh-click="saveDataValueForRadio(prStDes[de.id], currentEvent, value)"
+                    dh-field="innerForm.foo">
                 </d2-radio-button>
             </div>
             <div class="not-for-screen">
@@ -401,18 +402,18 @@
                 {{'unsupported_value_type' | translate}}:  {{prStDes[de.id].dataElement.valueType}}
             </div>
         </div>
-        <div ng-messages="innerForm.foo.$error" ng-if="interacted(innerForm.foo, outerDataEntryForm)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">          
-            <!-- URL error message is temporarily placed here. Should be placed with the other error messages in the core. -->
-            <span ng-message="urlValidator">{{'url_error' | translate}}</span>
-            <span ng-message="timeValidator">{{'time_error' | translate}}</span>
-        </div>
-        <div class="alert alert-warning alert-dismissible" role="alert" ng-if="warningMessages[currentEvent.event][de.id]">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {{warningMessages[currentEvent.event][de.id]}}
-        </div>
-        <div class="alert alert-danger alert-dismissible" role="alert" ng-if="errorMessages[currentEvent.event][de.id]">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {{errorMessages[currentEvent.event][de.id]}}
-        </div>
+    </div>
+    <div ng-messages="innerForm.foo.$error" ng-if="interacted(innerForm.foo, outerDataEntryForm) && currentStage.validationStrategy === 'ON_UPDATE_AND_INSERT' || completeClicked && currentStage.validationStrategy === 'ON_COMPLETE'" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">          
+        <!-- URL error message is temporarily placed here. Should be placed with the other error messages in the core. -->
+        <span ng-message="urlValidator">{{'url_error' | translate}}</span>
+        <span ng-message="timeValidator">{{'time_error' | translate}}</span>
+    </div>
+    <div class="alert alert-warning alert-dismissible" role="alert" ng-if="warningMessages[currentEvent.event][de.id]">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {{warningMessages[currentEvent.event][de.id]}}
+    </div>
+    <div class="alert alert-danger alert-dismissible" role="alert" ng-if="errorMessages[currentEvent.event][de.id]">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {{errorMessages[currentEvent.event][de.id]}}
     </div>
 </ng-form>
