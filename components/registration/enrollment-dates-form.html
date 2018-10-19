@@ -10,6 +10,20 @@
             <input type="text" class="form-control" ng-attr-value={{selectedEnrollment.orgUnitName}} ng-disabled="true"/>
         </td>
     </tr>
+    <tr ng-if="selectedProgram.featureType && ['POLYGON','POINT'].includes(selectedProgram.featureType)">
+        <td>
+            {{ 'enrollment_'+selectedProgram.featureType.toLowerCase() | translate}}
+        </td>
+        <td class="absorbing-column">
+            <d2-geometry
+                d2-object-id="geometry"
+                d2-object="selectedEnrollment"
+                d2-disabled="selectedOrgUnit.closedStatus"
+                d2-geometry-type="selectedProgram.featureType"
+                >
+            </d2-geometry>
+        </td>
+    </tr>
     <tr>
         <td ng-if="!selectedProgramForRelative">
             {{selectedProgram.enrollmentDateLabel}}

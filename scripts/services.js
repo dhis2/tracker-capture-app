@@ -39,7 +39,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     var store = new dhis2.storage.Store({
         name: "dhis2tc",
         adapters: [dhis2.storage.IndexedDBAdapter, dhis2.storage.DomSessionStorageAdapter, dhis2.storage.InMemoryAdapter],
-        objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements', 'programAccess','programStageAccess','trackedEntityTypeAccess','optionGroups']
+        objectStores: ['programs', 'trackedEntityTypes', 'attributes', 'relationshipTypes', 'optionSets', 'programIndicators', 'ouLevels', 'programRuleVariables', 'programRules','constants', 'dataElements', 'programAccess','programStageAccess','trackedEntityTypeAccess','optionGroups', 'organisationUnits']
     });
     return{
         currentStore: store
@@ -429,6 +429,40 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return def.promise;
             
         },
+        getAll: function(){
+            var roles = SessionStorageService.get('USER_PROFILE');
+            var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
+            var def = $q.defer();
+
+            this.getAllAccesses().then(function(accesses){
+                TCStorageService.currentStore.open().done(function(){
+                    TCStorageService.currentStore.getAll('programs').done(function(prs){
+                        var programs = [];
+                        angular.forEach(prs, function(pr){
+                            if(accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read){
+                                pr.access = accesses.programsById[pr.id];
+                                var accessiblePrs = [];
+                                angular.forEach(pr.programStages, function(prs){
+                                    if(accesses.programStagesById[prs.id] && accesses.programStagesById[prs.id].data.read){
+                                        prs.access = accesses.programStagesById[prs.id];
+                                        accessiblePrs.push(prs);
+                                    }
+                                });
+                                pr.programStages = accessiblePrs;
+                                programs.push(pr);
+                            }
+                        });
+                        programs = orderByFilter(programs, '-displayName').reverse();
+    
+                        $rootScope.$apply(function(){
+                            def.resolve({programs: programs});
+                        });
+                    });
+                });
+            });
+            return def.promise;
+        },
+
         getProgramsByOu: function(ou,loadSelectedProgram, selectedProgram){
             var roles = SessionStorageService.get('USER_PROFILE');
             var userRoles = roles && roles.userCredentials && roles.userCredentials.userRoles ? roles.userCredentials.userRoles : [];
@@ -448,6 +482,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                         accessiblePrs.push(prs);
                                     }
                                 });
+                                pr.allProgramStagesMetadataRead = pr.programStages;
                                 pr.programStages = accessiblePrs;
                                 programs.push(pr);
                             }
@@ -2467,7 +2502,7 @@ i
             }
             return {partial: partial, all: allColumns};
         },
-        getEditingStatus: function(dhis2Event, stage, orgUnit, tei, enrollment,program){
+        getEditingStatus: function(dhis2Event, stage, orgUnit, tei, enrollment,program, searchOrgUnits){
             return dhis2Event.orgUnit !== orgUnit.id || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || tei.inactive || enrollment.status !== 'ACTIVE';
         },
         isExpired: function(program, event){
@@ -3200,6 +3235,42 @@ i
             }
         });
         return writable;
+    }
+})
+.service('TCOrgUnitService', function($q, $rootScope, TCStorageService, OrgUnitFactory){
+    this.get = function(uid) {
+        var def = $q.defer();
+        TCStorageService.currentStore.open().done(function(){
+            TCStorageService.currentStore.get('organisationUnits', uid).done(function(orgUnit){
+                $rootScope.$apply(function(){
+                    def.resolve(orgUnit);
+                });
+            });
+        });
+        return def.promise;
+    };
+
+    this.getSearchOrgUnitTree = function(){
+        return OrgUnitFactory.getSearchTreeRoot().then(function(res){
+            var allSearchOrgUnits = res.organisationUnits;
+            var filtered = allSearchOrgUnits.filter(function(orgUnit){
+                return !isPathInOrgUnitList(orgUnit.path, allSearchOrgUnits);
+            });
+            return filtered;
+        });
+    }
+    var getOrgUnitIdsFromPath = this.getOrgUnitIdsFromPath = function(orgUnitPath) {
+        var formattedPath = orgUnitPath.replace(/^\/|\/$/g, '');
+        return formattedPath.split('/');
+    }
+    var isPathInOrgUnitList = this.isPathInOrgUnitList = function(path, orgUnits){
+        var idsFromPath = getOrgUnitIdsFromPath(path);
+        var lastId = idsFromPath[idsFromPath.length-1];
+        return idsFromPath.some(function(idFromPath){
+            return orgUnits.some(function(orgUnit){
+                return orgUnit.id === idFromPath && orgUnit.id !== lastId;
+            });
+        });
     }
 });
 

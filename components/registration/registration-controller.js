@@ -33,7 +33,8 @@ trackerCapture.controller('RegistrationController',
                 AccessUtils,
                 AuthorityService,
                 SessionStorageService,
-                AttributeUtils) {
+                AttributeUtils,
+                TCOrgUnitService) {
     var prefilledTet = null;
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
@@ -492,8 +493,8 @@ trackerCapture.controller('RegistrationController',
                         enrollment.enrollmentDate = $scope.selectedEnrollment.enrollmentDate;
                         enrollment.incidentDate = $scope.selectedEnrollment.incidentDate === '' ? $scope.selectedEnrollment.enrollmentDate : $scope.selectedEnrollment.incidentDate;
 
-                        if( $scope.selectedEnrollment.coordinate ){
-                            enrollment.coordinate = $scope.selectedEnrollment.coordinate;
+                        if( $scope.selectedEnrollment.geometry ){
+                            enrollment.geometry = $scope.selectedEnrollment.geometry;
                         }
 
                         EnrollmentService.enroll(enrollment).then(function (enrollmentResponse) {
@@ -569,7 +570,7 @@ trackerCapture.controller('RegistrationController',
             $scope.selectedTei.orgUnit = $scope.tei.orgUnit = $scope.selectedOrgUnit.id;
             $scope.selectedTei.attributes = $scope.tei.attributes = [];
         }
-
+        $scope.tei.geometry = $scope.selectedTei.geometry;
         //get tei attributes and their values
         //but there could be a case where attributes are non-mandatory and
         //registration form comes empty, in this case enforce at least one value
@@ -895,7 +896,8 @@ trackerCapture.controller('RegistrationController',
     $scope.showMatchesModal = function(allowRegistration){
         var modalData = {
             allowRegistration: allowRegistration,
-            translateWithTETName: $scope.translateWithTETName
+            translateWithTETName: $scope.translateWithTETName,
+            optionSets: $scope.optionSets
         }
         var refetch;
         if($scope.programSearchScope){
@@ -915,7 +917,7 @@ trackerCapture.controller('RegistrationController',
                 {
                     $scope.allowRegistration = modalData.allowRegistration;
                     $scope.translateWithTETName = modalData.translateWithTETName;
-                    $scope.gridData = TEIGridService.format(orgUnit.id, data, false, null, null);
+                    $scope.gridData = TEIGridService.format(orgUnit.id, data, false, modalData.optionSets, null);
                     $scope.pager = data && data.metaData ? data.metaData.pager : null;
                     $scope.openTei = function(tei){
                         $modalInstance.close({ action: "OPENTEI", tei: tei});
@@ -930,7 +932,7 @@ trackerCapture.controller('RegistrationController',
                     $scope.refetchData = function(pager, sortColumn){
                         refetchDataFn(pager,sortColumn).then(function(res){
                             $scope.pager = res.data && res.data.metaData ? res.data.metaData.pager : null;
-                            $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, null, null);
+                            $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, modalData.optionSets, null);
                         });
                     }
                 },
@@ -975,6 +977,7 @@ trackerCapture.controller('RegistrationController',
             orgUnit: $scope.selectedOrgUnit,
             data: duplicateTei,
             attribute: field,
+            optionSets: $scope.optionSets,
             translateWithTEAName: $scope.translateWithTEAName,
             translateWithTETName: $scope.translateWithTETName
         };
@@ -984,7 +987,7 @@ trackerCapture.controller('RegistrationController',
             controller: function($scope,$modalInstance, TEIGridService,modalData)
             {
                 $scope.attribute = modalData.attribute;
-                $scope.gridData = TEIGridService.format(modalData.orgUnit.id, modalData.data, false, null, null);
+                $scope.gridData = TEIGridService.format(modalData.orgUnit.id, modalData.data, false, modalData.optionSets, null);
                 $scope.translateWithTEAName = modalData.translateWithTEAName;
                 $scope.translateWithTETName = modalData.translateWithTETName;
                 $scope.openTei = function(tei){
@@ -1122,6 +1125,29 @@ trackerCapture.controller('RegistrationController',
 
     };
 
+    var isInSearchOrgUnits = function(orgUnitPath, searchOrgUnits){
+        if($scope.userAuthority.ALL) return true;
+        if(!orgUnitPath) return false;
+        return TCOrgUnitService.isPathInOrgUnitList(orgUnitPath, searchOrgUnits);
+    }
+
+    $scope.reportDateEditable = function() {
+        //Check if user has data write to current program stage
+        if(!$scope.currentStage || !$scope.currentStage.access.data.write) return false;
+        //Check if organisation unit is closed
+        if($scope.selectedOrgUnit.closedStatus) return false;
+        //Check if event is the selected org unit or event is scheduled and org unit exists in users search org units
+        if($scope.currentEvent.orgUnit !== $scope.selectedOrgUnit.id && !($scope.currentEvent.status==='SCHEDULE' && isInSearchOrgUnits($scope.currentEvent.orgUnitPath, userSearchOrgUnits))) return false;
+        // Check if currentProgramStage blocks entry form when status is completed
+        if($scope.currentStage && $scope.currentStage.blockEntryForm && $scope.currentEvent.status ==='COMPLETED') return false;
+        //Check if tei is inactive
+        if($scope.selectedTei.inactive) return false;     
+        //Check if event is expired and user can edit expired stuff
+        if(($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
+
+        return true;
+    }
+
     $scope.translateWithTETName = function(text, nameToLower){
         var trackedEntityTypeName = $scope.selectedProgram ? 
             $scope.selectedProgram.trackedEntityType.displayName : 
@@ -1161,6 +1187,14 @@ trackerCapture.controller('RegistrationController',
         if(!$scope.hasTeiWrite()) return true;
         return false;
     }
+
+    $scope.saveAttributedDisabledButton = function(){
+        if($scope.selectedTei && $scope.selectedTei.programOwnersById && $scope.selectedProgram && $scope.selectedTei.programOwnersById[$scope.selectedProgram.id] != $scope.selectedOrgUnit.id) return true;
+        if($scope.selectedOrgUnit.closedStatus) return true;
+        if(!$scope.hasTeiWrite()) return true;
+        return false;
+    }
+    
 
     $scope.dataElementEditable = function(prStDe){
         if($scope.eventEditable()){

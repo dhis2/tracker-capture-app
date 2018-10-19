@@ -28,7 +28,8 @@ trackerCapture.controller('TEIAddController',
             addingRelationship,
             selectedTei,
             AccessUtils,
-            TEService
+            TEService,
+            allPrograms
             ){
     var selection = CurrentSelection.get();
    
@@ -98,7 +99,11 @@ trackerCapture.controller('TEIAddController',
                 $scope.relatedPredefinedProgram = true;
                 $scope.base.selectedProgramForRelative = program;
                 $scope.onSelectedProgram(program);
-            }else{
+            } else {
+                
+                $scope.relatedAvailablePrograms = $scope.programs.filter(function(p){
+                    return p.trackedEntityType && p.trackedEntityType.id === relatedConstraint.trackedEntityType.id;
+                });
                 $scope.relatedPredefinedProgram = false;
                 $scope.base.selectedProgramForRelative = null;
                 $scope.onSelectedProgram($scope.base.selectedProgramForRelative);
@@ -165,7 +170,7 @@ trackerCapture.controller('TEIAddController',
 
         if ($scope.addingRelationship) {
             $scope.teiAddLabel = $translate.instant('add_relationship');
-            $scope.programs = AccessUtils.toWritable(selections.prs);
+            $scope.programs = AccessUtils.toWritable(allPrograms);
             CurrentSelection.setRelationshipOwner($scope.mainTei);
         }
         else {
@@ -615,7 +620,6 @@ trackerCapture.controller('TEIAddController',
     $scope.editingDisabled = false;
     
     var selections = CurrentSelection.get();
-    $scope.programs = selections.prs;
     $scope.selectedOrgUnit = selections.orgUnit;
 
     $scope.attributesById = CurrentSelection.getAttributesById();
@@ -667,16 +671,6 @@ trackerCapture.controller('TEIAddController',
             });
         }
     };
-  
-    
-    if(angular.isObject($scope.programs) && $scope.programs.length === 1){
-        $scope.base.selectedProgramForRelative = $scope.programs[0];
-        AttributesFactory.getByProgram($scope.base.selectedProgramForRelative).then(function(atts){
-            $scope.attributes = TEIGridService.generateGridColumns(atts, null,false).columns;
-            assignInheritance();
-            getRules();
-        });
-    }
     
     //watch for selection of program
     $scope.$watch('base.selectedProgramForRelative', function() {        
@@ -822,7 +816,7 @@ trackerCapture.controller('TEIAddController',
            $scope.selectedTei.attributes.push(newAttributeInArray);
         });
         
-        if($scope.selectedProgram && $scope.selectedProgram.id){
+        if($scope.base.selectedProgramForRelative && $scope.base.selectedProgramForRelative.id){
             TrackerRulesExecutionService.executeRules($scope.allProgramRules, 'registration', null, null, null, $scope.selectedTei, $scope.selectedEnrollment, null, flag);
         }        
     };

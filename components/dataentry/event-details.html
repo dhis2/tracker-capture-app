@@ -16,7 +16,7 @@
                name="eventDate"
                ng-model="currentEvent.eventDate"
                ng-change="verifyEventExpiryDate('eventDate')"
-               ng-disabled="!eventEditable() || currentStage.periodType"
+               ng-disabled="!reportDateEditable()"
                ng-required="true"
                blur-or-change="saveEventDate()"
                ng-focus="setDateOnFocus(currentEvent.eventDate, selectedEnrollment.enrollmentDate)"/>
@@ -56,9 +56,9 @@
 </div>
 <!-- event dates/scheduling end -->
 <!-- coordinates begin -->
-<div class="row" ng-if="currentStage.featureType && currentStage.featureType !== 'NONE' && (currentEvent.eventDate || registrationMode ==='REGISTRATION')">
+<div class="row" ng-if="currentStage.featureType && ['POLYGON','POINT'].includes(currentStage.featureType) && (currentEvent.eventDate || registrationMode ==='REGISTRATION')">
     <div class="col-sm-12">
-        {{'geometry' | translate}}
+        {{'event_'+currentStage.featureType.toLowerCase() | translate}}
         <d2-geometry
                 d2-object-id="geometry"
                 d2-object="currentEvent"
