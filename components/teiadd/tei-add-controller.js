@@ -671,6 +671,7 @@ trackerCapture.controller('TEIAddController',
         if( angular.isObject($scope.base.selectedProgramForRelative) && $scope.base.selectedProgramForRelative.id ){
             TrackerRulesFactory.getRules($scope.base.selectedProgramForRelative.id).then(function(rules){                    
                 $scope.allProgramRules = rules;
+                $scope.executeRules();
             });
         }
     };
@@ -715,7 +716,6 @@ trackerCapture.controller('TEIAddController',
             fetchGeneratedAttributes(); 
             getRules();                
         });
-        
     }); 
 
     $scope.attributeFieldDisabled = function(attribute){
@@ -857,7 +857,7 @@ trackerCapture.controller('TEIAddController',
         });
         
         if($scope.base.selectedProgramForRelative && $scope.base.selectedProgramForRelative.id){
-            TrackerRulesExecutionService.executeRules($scope.allProgramRules, 'registration', null, null, null, $scope.selectedTei, $scope.selectedEnrollment, null, flag);
+            TrackerRulesExecutionService.executeRules($scope.allProgramRules, 'registrationRelationship', null, null, null, $scope.selectedTei, $scope.selectedEnrollment, null, flag);
         }        
     };
     
@@ -875,7 +875,7 @@ trackerCapture.controller('TEIAddController',
     //listen for rule effect changes
     $scope.$on('ruleeffectsupdated', function(){
         $scope.warningMessages = [];
-        var effectResult = TrackerRulesExecutionService.processRuleEffectAttribute('registration', $scope.selectedTei, $scope.tei,null,null,null, $scope.attributesById, null, $scope.optionSets,$scope.optionGroupsById);
+        var effectResult = TrackerRulesExecutionService.processRuleEffectAttribute('registrationRelationship', $scope.selectedTei, $scope.tei,null,null,null, $scope.attributesById, null, $scope.optionSets,$scope.optionGroupsById);
         $scope.selectedTei = effectResult.selectedTei;
         $scope.hiddenFields = effectResult.hiddenFields;
         $scope.assignedFields = effectResult.assignedFields;
