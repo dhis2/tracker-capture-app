@@ -2390,3 +2390,12 @@ button.list-group-item-danger.active:focus {
     line-height: 34px;
     background-color: white;
 }
+
+.icon-program{
+   max-width: 16px;
+}
+
+.icon-program-right{
+    max-width: 16px;
+    float: right;
+ }

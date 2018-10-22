@@ -29,6 +29,7 @@ trackerCapture.controller('HomeController',function(
         $scope.trackedEntityTypesById ={};
         var previousProgram = null;
         $scope.base = {};
+        $scope.APIURL = DHIS2URL;
 
         var viewsByType = {
             registration: {
@@ -191,6 +192,7 @@ trackerCapture.controller('HomeController',function(
         }
 
         $scope.setProgram = function(selectedProgram, defaultView){
+            console.log(DHIS2URL);
             previousProgram = $scope.base.selectedProgram;
             $scope.base.selectedProgram = $scope.selectedProgram = selectedProgram;
             if(!$scope.base.selectedProgram || !$scope.base.selectedProgram.displayFrontPageList) {
