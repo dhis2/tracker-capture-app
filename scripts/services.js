@@ -69,7 +69,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
     var getDefaultLayout = function(customLayout){
         var dashboardLayout = {customLayout: customLayout, defaultLayout: defaultLayout};
-        var promise = $http.get(  DHIS2URL + '/systemSettings/keyTrackerDashboardDefaultLayout' ).then(function(response){
+        var promise = $http.get(  DHIS2URL + '/dataStore/tracker-capture/keyTrackerDashboardDefaultLayout' ).then(function(response){
             angular.extend(dashboardLayout.defaultLayout, response.data);
             return dashboardLayout;
         }, function(){
