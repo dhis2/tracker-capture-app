@@ -83,26 +83,59 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
     return {
         saveLayout: function(dashboardLayout, saveAsDefault){
-            var url = saveAsDefault ? DHIS2URL + '/systemSettings/keyTrackerDashboardDefaultLayout' : DHIS2URL + '/userSettings/keyTrackerDashboardLayout';
-            var promise = $http({
-                method: "post",
-                url: url,
-                data: dashboardLayout,
-                headers: {'Content-Type': 'text/plain;charset=utf-8'}
-            }).then(function(response){
-                return response.data;
-            },function(error){
-                var errorMsgHdr, errorMsgBody;
-                errorMsgHdr = $translate.instant("error");
-                if(saveAsDefault) {
-                    errorMsgBody = $translate.instant("dashboard_layout_not_saved_as_default");
-                } else {
-                    errorMsgBody = $translate.instant("dashboard_layout_not_saved");
-                }
-                NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
-                return null;
-            });
-            return promise;
+            if(saveAsDefault) {
+                var url = DHIS2URL + '/dataStore/tracker-capture/keyTrackerDashboardDefaultLayout';
+                var promise = $http({
+                    method: "put",
+                    url: url,
+                    data: dashboardLayout,
+                    headers: {'Content-Type': 'application/json'}
+                }).then(function(response){
+                    return response.data;
+                },function(error){
+                    var promise = $http({
+                        method: "post",
+                        url: url,
+                        data: dashboardLayout,
+                        headers: {'Content-Type': 'application/json'}
+                    }).then(function(response){
+                        return response.data;
+                    },function(error){
+                        var errorMsgHdr, errorMsgBody;
+                        errorMsgHdr = $translate.instant("error");
+                        if(saveAsDefault) {
+                            errorMsgBody = $translate.instant("dashboard_layout_not_saved_as_default");
+                        } else {
+                            errorMsgBody = $translate.instant("dashboard_layout_not_saved");
+                        }
+                        NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
+                        return null;
+                    });
+                    return promise;
+                });
+                return promise;
+            } else {
+                var url = DHIS2URL + '/userSettings/keyTrackerDashboardLayout';
+                var promise = $http({
+                    method: "post",
+                    url: url,
+                    data: dashboardLayout,
+                    headers: {'Content-Type': 'application/json'}
+                }).then(function(response){
+                    return response.data;
+                },function(error){
+                    var errorMsgHdr, errorMsgBody;
+                    errorMsgHdr = $translate.instant("error");
+                    if(saveAsDefault) {
+                        errorMsgBody = $translate.instant("dashboard_layout_not_saved_as_default");
+                    } else {
+                        errorMsgBody = $translate.instant("dashboard_layout_not_saved");
+                    }
+                    NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
+                    return null;
+                });
+                return promise;
+            }
         },
         get: function(){
             var promise = $http.get(  DHIS2URL + '/userSettings/keyTrackerDashboardLayout' ).then(function(response){
@@ -113,7 +146,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getLockedList: function() {
-            var promise = $http.get(  DHIS2URL + '/systemSettings/keyDefaultLayoutLocked' ).then(function(response){
+            var promise = $http.get(  DHIS2URL + '/dataStore/tracker-capture/keyDefaultLayoutLocked' ).then(function(response){
                 return response.data;
             }, function(){
                 return null;
@@ -121,16 +154,26 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         saveLockedList: function(list) {
-            var url = DHIS2URL + '/systemSettings/keyDefaultLayoutLocked';
+            var url = DHIS2URL + '/dataStore/tracker-capture/keyDefaultLayoutLocked';
             var promise = $http({
-                method: "post",
+                method: "put",
                 url: url,
                 data: list,
-                headers: {'Content-Type': 'text/plain;charset=utf-8'}
+                headers: {'Content-Type': 'application/json'}
             }).then(function(response){
                 return response.data;
             },function(error){
-                return null;
+                var promise = $http({
+                    method: "post",
+                    url: url,
+                    data: list,
+                    headers: {'Content-Type': 'application/json'}
+                }).then(function(response){
+                    return response.data;
+                },function(error){
+                    return null;
+                });
+                return promise;
             });
             return promise;
         }
