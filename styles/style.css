@@ -2392,10 +2392,12 @@ button.list-group-item-danger.active:focus {
 }
 
 .icon-program{
-   max-width: 16px;
+   width: 16px;
+   border-radius: 2px;
 }
 
 .icon-program-right{
-    max-width: 16px;
+    width: 16px;
     float: right;
+    border-radius: 2px;
  }

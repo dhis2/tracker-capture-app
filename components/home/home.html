@@ -61,7 +61,7 @@
                         style="width:100%">
                     <ui-select-match allow-clear="true" class="form-control-ui-select program-select" ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                     <ui-select-choices  repeat="program in programs | filter: $select.search | limitTo:maxOptionSize">
-                        <span>{{program.displayName | highlight: $select.search}} <img class="icon-program-right" ng-if="program.style.icon" ng-src="{{APIURL}}/icons/{{program.style.icon}}/icon.svg"></i></span>
+                        <span>{{program.displayName | highlight: $select.search}} <img class="icon-program-right" ng-style="{'background-color': (program.style.color ? program.style.color : 'none')}" ng-if="program.style.icon || program.style.color" ng-src="{{APIURL}}/icons/{{program.style.icon}}/icon.svg"></i></span>
                     </ui-select-choices>
                 </ui-select>
             </div>

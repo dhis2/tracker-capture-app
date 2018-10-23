@@ -50,7 +50,7 @@
                     {{dhis2Event.orgUnitName}}
                 </div>
                 <div class="event-container-item">
-                        <img class="icon-program" ng-if="dhis2Event.style.icon" ng-src="{{APIURL}}/icons/{{dhis2Event.style.icon}}/icon.svg"> {{dhis2Event.name}}
+                        <img class="icon-program" ng-style="{'background-color': (dhis2Event.style.color ? dhis2Event.style.color : 'none')}" ng-if="dhis2Event.style.icon" ng-src="{{APIURL}}/icons/{{dhis2Event.style.icon}}/icon.svg"> {{dhis2Event.name}}
                 </div>
                 <div class="event-container-footer">{{getEventStyleLabel(dhis2Event)}}</div>
             </div>
