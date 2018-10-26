@@ -2393,11 +2393,14 @@ button.list-group-item-danger.active:focus {
 
 .icon-program{
    width: 16px;
+   height: 16px;
    border-radius: 2px;
 }
 
-.icon-program-right{
+.icon-program-left{
     width: 16px;
-    float: right;
+    height: 16px;
+    float: left;
     border-radius: 2px;
+    margin-right: 5px;
  }
