@@ -1262,12 +1262,12 @@ trackerCapture.controller('RegistrationController',
         return $scope.registrationMode === 'REGISTRATION' && (!$scope.selectedProgram && $scope.trackedEntityTypes.selected && !showTetRegistrationButtons());
     }
 
-    $scope.attributeIsRequired = function(attribute) {
+    $scope.attributeIsRequired = function(attributeId, attributeMandatory) {
         //If has authority Ignore required validation, skip required
         if($scope.userAuthority.ignoreRequiredTrackerValueValidation) {
             return false;
         }
-        return attribute.mandatory || $scope.mandatoryFields[attribute.id];
+        return attributeMandatory || $scope.mandatoryFields[attributeId];
     }
 
     var showTetRegistrationButtons = function(){
