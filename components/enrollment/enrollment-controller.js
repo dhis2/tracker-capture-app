@@ -150,7 +150,7 @@ trackerCapture.controller('EnrollmentController',
         });
         $scope.$on('teienrolled', function (event, args) {
             $route.updateParams({program: event.currentScope.selectedProgram.id});
-            //$route.reload();
+            $route.reload();
 
         });
         $scope.verifyExpiryDate = function(eventDateStr) {
