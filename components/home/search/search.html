@@ -1,20 +1,22 @@
 <div ng-controller="SearchController" class="col-lg-6 col-md-8 col-sm-10">
     <div ng-if="base.selectedProgram">
-        <h2>{{'search_for'| translate}} {{trackedEntityTypes.selected.displayName.toLowerCase()}}</h2>
+        <h2>{{'search_for'| translate}} {{trackedEntityTypes.selected.displayName.toLowerCase()}} 
+            <img class="icon-program" 
+                 ng-style="{'background-color': (trackedEntityTypes.selected.style.color ? trackedEntityTypes.selected.style.color : '#9e9e9e')}"
+                 ng-src="{{APIURL}}/icons/{{trackedEntityTypes.selected.style.icon ? trackedEntityTypes.selected.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>
+        </h2>
     </div>
     <div ng-if="!base.selectedProgram && trackedEntityTypes.readable.length > 0">
-        <h2>
-            {{'search_for'| translate}}
-            <select
-            style="height:30px;margin-left:10px;"
-            name="trackedEntityTypeSelect"
-            ng-model="trackedEntityTypes.selected"
-            ng-options="trackedEntityType.displayName for trackedEntityType in trackedEntityTypes.readable | orderBy: 'displayName'"
-            ng-change="setTrackedEntityType()"
-            >
-            <option ng-attr-value="" disabled selected> </option>
-        </select> 
-        </h2> 
+        <h2>{{'search_for'| translate}}</h2>
+        <ui-select ng-model="trackedEntityTypes.selected"
+                   theme="select2"
+                   on-select="setTrackedEntityType(selectedProgram)"
+                   style="margin-top:0px;margin-bottom:3px;width:50%">
+            <ui-select-match allow-clear="true" class="form-control-ui-select program-select" ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+            <ui-select-choices  repeat="trackedEntityType in trackedEntityTypes.readable | orderBy: 'displayName'">
+                <span><img class="icon-program-left" ng-style="{'background-color': (trackedEntityType.style.color ? trackedEntityType.style.color : '#9e9e9e')}" ng-src="{{APIURL}}/icons/{{trackedEntityType.style.icon ? trackedEntityType.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>{{trackedEntityType.displayName | highlight: $select.search}}</span>
+            </ui-select-choices>
+        </ui-select>
     </div>
     <div ng-if="!base.selectedProgram && trackedEntityTypes.readable.length === 0">
         <br/>

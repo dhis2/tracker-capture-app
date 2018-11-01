@@ -35,6 +35,7 @@ trackerCapture.controller('DataEntryController',
                 TCOrgUnitService) {
     
     //Unique instance id for the controller:
+    $scope.APIURL = DHIS2URL;
     $scope.instanceId = Math.floor(Math.random() * 1000000000);
     $scope.printForm = false;
     $scope.printEmptyForm = false;
@@ -921,6 +922,7 @@ trackerCapture.controller('DataEntryController',
                         dhis2Event.dueDateLabel = eventStage.dueDateLabel ? eventStage.dueDateLabel : $translate.instant('due_date');
                         dhis2Event.dueDate = DateUtils.formatFromApiToUser(dhis2Event.dueDate);
                         dhis2Event.sortingDate = dhis2Event.dueDate;
+                        dhis2Event.style = eventStage.style;
 
                         if (dhis2Event.eventDate) {                            
                             dhis2Event.eventDate = DateUtils.formatFromApiToUser(dhis2Event.eventDate);

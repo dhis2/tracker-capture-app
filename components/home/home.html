@@ -56,12 +56,12 @@
             <!-- program selection begins -->
             <div class="col-md-4 small-vertical-spacing hideInPrint">
                 <ui-select ng-model="base.selectedProgram" 
-                        theme="select2" 
-                        on-select="setProgram(base.selectedProgram)"
-                        style="width:100%">
+                           theme="select2" 
+                           on-select="setProgram(base.selectedProgram)"
+                           style="width:100%">
                     <ui-select-match allow-clear="true" class="form-control-ui-select program-select" ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                     <ui-select-choices  repeat="program in programs | filter: $select.search | limitTo:maxOptionSize">
-                        <span ng-bind-html="program.displayName | highlight: $select.search"></span>
+                        <span><img class="icon-program-left" ng-style="{'background-color': (program.style.color ? program.style.color : '#9e9e9e')}" ng-src="{{APIURL}}/icons/{{program.style.icon ? program.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>{{program.displayName | highlight: $select.search}}</span>
                     </ui-select-choices>
                 </ui-select>
             </div>

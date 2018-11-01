@@ -50,6 +50,7 @@ trackerCapture.controller('DashboardController',
         }
     });
     $rootScope.hasAccess = false;
+    $scope.APIURL = DHIS2URL;
     //selections
     var orgUnitUrl = ($location.search()).ou;
     var fromAudit = ($location.search()).fromAudit;
