@@ -2360,7 +2360,7 @@ button.list-group-item-danger.active:focus {
 }
 
 .select2-drop{
-    z-index: 10000;
+    z-index: 1000;
 }
 
 .tei-list-scroll {
@@ -2390,3 +2390,17 @@ button.list-group-item-danger.active:focus {
     line-height: 34px;
     background-color: white;
 }
+
+.icon-program{
+   width: 16px;
+   height: 16px;
+   border-radius: 2px;
+}
+
+.icon-program-left{
+    width: 16px;
+    height: 16px;
+    float: left;
+    border-radius: 2px;
+    margin-right: 5px;
+ }

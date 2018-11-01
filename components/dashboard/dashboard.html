@@ -7,15 +7,16 @@
         <button ng-disabled="!nextTeiExists" type="button" class="btn btn-default small-horizontal-spacing"
                 ng-click="fetchTei('NEXT')" ng-attr-title="{{'next'| translate}}" style="margin-bottom:3px"><i class="fa fa-caret-right"></i>
         </button>
-        <select style="margin-top:0px;margin-bottom:3px;" ng-model="selectedProgram"
-                class="form-control-program"
-                ng-options="program as program.displayName for program in programs | orderBy: 'displayName'"
-                ng-disabled="programs.length < 1"
-                ng-change="applySelectedProgram(selectedProgram)">
-            <option ng-attr-value="">{{programs.length > 0 ? 'please_select_a_program' : 'no_program_exists' |
-                translate}}
-            </option>
-        </select>
+        <ui-select ng-model="selectedProgram"
+                   theme="select2"
+                   ng-disabled="programs.length < 1"
+                   on-select="applySelectedProgram(selectedProgram)"
+                   style="margin-top:0px;margin-bottom:3px;width:50%">
+            <ui-select-match allow-clear="true" class="form-control-ui-select program-select" ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+            <ui-select-choices  repeat="program in programs | filter: $select.search | limitTo:maxOptionSize">
+                <span><img class="icon-program-left" ng-style="{'background-color': (program.style.color ? program.style.color : '#9e9e9e')}" ng-src="{{APIURL}}/icons/{{program.style.icon ? program.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>{{program.displayName | highlight: $select.search}}</span>
+            </ui-select-choices>
+        </ui-select>
     </div>
 </script>
 <div class="audit-overlay" style="position: fixed;background-color: white;width:100%;height: 100%;" ng-hide="hasAccess">
