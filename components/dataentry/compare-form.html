@@ -166,7 +166,7 @@
                               template="dataelement-details.html"
                               trigger="click"
                               placement="right">
-                            <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDe.dataElement.displayFormName}}</a>
+                            <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDe.dataElement.displayFormName}} <img class="icon-program" ng-style="{'background-color': (prStDe.dataElement.style.color ? prStDe.dataElement.style.color : 'none')}" ng-if="prStDe.dataElement.style.icon" ng-src="{{APIURL}}/icons/{{prStDe.dataElement.style.icon}}/icon.svg"></a>
                         </span>
 
                         <span class="not-for-screen">
