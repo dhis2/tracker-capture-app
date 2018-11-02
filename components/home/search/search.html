@@ -2,7 +2,7 @@
     <div ng-if="base.selectedProgram">
         <h2>{{'search_for'| translate}} {{trackedEntityTypes.selected.displayName.toLowerCase()}} 
             <img class="icon-program" 
-                 ng-style="{'background-color': (trackedEntityTypes.selected.style.color ? trackedEntityTypes.selected.style.color : '#9e9e9e')}"
+                 ng-style="{'background-color': (trackedEntityTypes.selected.style.color ? trackedEntityTypes.selected.style.color : '#E0E0E0')}"
                  ng-src="{{APIURL}}/icons/{{trackedEntityTypes.selected.style.icon ? trackedEntityTypes.selected.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>
         </h2>
     </div>
@@ -12,9 +12,13 @@
                    theme="select2"
                    on-select="setTrackedEntityType(selectedProgram)"
                    style="margin-top:0px;margin-bottom:3px;width:50%">
-            <ui-select-match allow-clear="true" class="form-control-ui-select program-select" ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
+            <ui-select-match allow-clear="true"
+                             class="form-control-ui-select program-select"
+                             ng-attr-placeholder="{{'select_or_search' | translate}}">
+                <img class="icon-program-left" ng-style="{'background-color': ($select.selected.style.color ? $select.selected.style.color : '#E0E0E0')}" ng-src="{{APIURL}}/icons/{{$select.selected.style.icon ? $select.selected.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>{{$select.selected.displayName  || $select.selected}}
+            </ui-select-match>
             <ui-select-choices  repeat="trackedEntityType in trackedEntityTypes.readable | orderBy: 'displayName'">
-                <span><img class="icon-program-left" ng-style="{'background-color': (trackedEntityType.style.color ? trackedEntityType.style.color : '#9e9e9e')}" ng-src="{{APIURL}}/icons/{{trackedEntityType.style.icon ? trackedEntityType.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>{{trackedEntityType.displayName | highlight: $select.search}}</span>
+                <span><img class="icon-program-left" ng-style="{'background-color': (trackedEntityType.style.color ? trackedEntityType.style.color : '#E0E0E0')}" ng-src="{{APIURL}}/icons/{{trackedEntityType.style.icon ? trackedEntityType.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>{{trackedEntityType.displayName | highlight: $select.search}}</span>
             </ui-select-choices>
         </ui-select>
     </div>
