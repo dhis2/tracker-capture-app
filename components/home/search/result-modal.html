@@ -1,7 +1,8 @@
 <div class="modal-header page">
 
 
-        <h3 ng-if="isUnique && gridData">{{translateWithTETName('tracked_entity_instance_unique_found_header')}}</h3>
+        <h3 ng-if="isUnique && gridData.length === 1">{{translateWithTETName('tracked_entity_instance_unique_found_header')}}</h3>
+        <h3 ng-if="isUnique && gridData.length > 1">{{translateWithTETName('tracked_entity_instance_search_results_header')}}</h3>
         <h3 ng-if="!isUnique && gridData">{{translateWithTETName('tracked_entity_instance_search_results_header')}}</h3>
         <h3 ng-if="!gridData && !tooManySearchResults">{{translateWithTETName('no_tracked_entity_instance_found_header', true)}}</h3>
         <h3 ng-if="tooManySearchResults">{{'too_many_search_results' | translate}}</h3>
@@ -25,18 +26,12 @@
                 {{translateWithTETName('no_tracked_entity_instance_found_in_selected_program_showing_results_from_other_programs',true)}}
         </div>
         <br/>
-        <div ng-if="gridData && !isUnique">
+        <div ng-if="gridData">
                 <tracker-tei-list
                     tei-data="gridData"
                     on-tei-clicked="openTei(tei)"
                     tei-refetch-data="refetchData(pager, sortColumn)"
                     tei-pager="pager"
-            >
-            </tracker-tei-list>
-        </div>
-        <div ng-if="gridData && isUnique">
-                <tracker-tei-list
-                    tei-data="gridData"
             >
             </tracker-tei-list>
         </div>
