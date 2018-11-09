@@ -170,7 +170,7 @@ trackerCapture.controller('TopBarController',
         var attributeFields = {};
         angular.forEach(programAttributes, function(attr){
             attributeFields[attr.id] = attr.displayName;
-            if(tei && tei[attr.id]) values[attr.id] = {id: attr.id, name: attr.displayName, value: tei[attr.id]};
+            if(tei && tei[attr.id]) values[attr.id] = {id: attr.id, name: attr.displayName, type: attr.valueType, value: tei[attr.id]};
         });
         attributesValues = values;
         setValues();
