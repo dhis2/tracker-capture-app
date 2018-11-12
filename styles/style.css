@@ -2404,3 +2404,8 @@ button.list-group-item-danger.active:focus {
     border-radius: 2px;
     margin-right: 5px;
  }
+
+ #headerBanner {
+    top: 0px;
+    left: 0px;
+ }
