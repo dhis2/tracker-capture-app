@@ -457,12 +457,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                         prs.access = accesses.programStagesById[prs.id];
                                         accessiblePrs.push(prs);
                                     }
-                                    var accessibleDataElements = [];
-                                    angular.forEach(prs.programStageDataElements, function(de) {
-                                        if(de.access && de.access.read){
-                                            accessibleDataElements.push(de);
-                                        }
-                                    });
                                 });
                                 pr.programStages = accessiblePrs;
                                 programs.push(pr);
