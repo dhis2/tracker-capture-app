@@ -1048,23 +1048,6 @@ trackerCapture.controller('DataEntryController',
         }
         return false;
     };
-
-    $scope.toggleEventsTableDisplay = function () {       
-        $scope.showEventsAsTables = !$scope.showEventsAsTables;                
-
-        $scope.setDisplayTypeForStages();
-
-        
-        if ($scope.currentStage && $scope.stageCanBeShownAsTable($scope.currentStage)) {
-            //If the current event was deselected, select the first event in the current Stage before showing data entry:
-            if(!$scope.currentEvent.event 
-                    && $scope.eventsByStage[$scope.currentStage.id]) {
-                $scope.currentEvent = $scope.eventsByStage[$scope.currentStage.id][0];
-            }
-            
-            $scope.getDataEntryForm();
-        } 
-    };
     
     $scope.setDisplayTypeForStages = function(){
         angular.forEach($scope.programStages, function (stage) {
