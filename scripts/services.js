@@ -432,13 +432,29 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         var programs = [];
                         angular.forEach(prs, function(pr){
                             if(accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read){
+                                if(pr.programTrackedEntityAttributes){
+                                    pr.programTrackedEntityAttributes = pr.programTrackedEntityAttributes.filter(function(attr){
+                                        return attr.access && attr.access.read;
+                                    });
+                                }
                                 pr.access = accesses.programsById[pr.id];
                                 var accessiblePrs = [];
                                 angular.forEach(pr.programStages, function(prs){
                                     if(accesses.programStagesById[prs.id] && accesses.programStagesById[prs.id].data.read){
+                                        if(prs.programStageDataElements){
+                                            prs.programStageDataElements = prs.programStageDataElements.filter(function(de){
+                                                return de.access && de.access.read;
+                                            });
+                                        }
                                         prs.access = accesses.programStagesById[prs.id];
                                         accessiblePrs.push(prs);
                                     }
+                                    var accessibleDataElements = [];
+                                    angular.forEach(prs.programStageDataElements, function(de) {
+                                        if(de.access && de.access.read){
+                                            accessibleDataElements.push(de);
+                                        }
+                                    });
                                 });
                                 pr.programStages = accessiblePrs;
                                 programs.push(pr);
@@ -466,10 +482,20 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         var programs = [];
                         angular.forEach(prs, function(pr){
                             if(pr.organisationUnits.hasOwnProperty( ou.id ) && accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read){
+                                if(pr.programTrackedEntityAttributes){
+                                    pr.programTrackedEntityAttributes = pr.programTrackedEntityAttributes.filter(function(attr){
+                                        return attr.access && attr.access.read;
+                                    });
+                                }
                                 pr.access = accesses.programsById[pr.id];
                                 var accessiblePrs = [];
                                 angular.forEach(pr.programStages, function(prs){
                                     if(accesses.programStagesById[prs.id] && accesses.programStagesById[prs.id].data.read){
+                                        if(prs.programStageDataElements){
+                                            prs.programStageDataElements = prs.programStageDataElements.filter(function(de){
+                                                return de.access && de.access.read;
+                                            });
+                                        }
                                         prs.access = accesses.programStagesById[prs.id];
                                         accessiblePrs.push(prs);
                                     }
