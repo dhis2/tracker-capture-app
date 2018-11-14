@@ -36,7 +36,7 @@
                         on-select="getCategoryOptions()"
                         style="width:100%;">
                         <ui-select-match allow-clear="true" class="form-control-ui-select" ng-attr-placeholder="{{category.categoryOptions && category.categoryOptions.length > 0 ? 'select_or_search' : 'empty'| translate}}">{{$select.selected.displayName|| $select.selected}}</ui-select-match>
-                        <ui-select-choices  repeat="option in category.categoryOptions | categoryOptionFilter:selectedOrgUnit | filter: $select.search | limitTo:maxOptionSize">
+                        <ui-select-choices  repeat="option in category.categoryOptions | categoryOptionFilter:selectedOrgUnit | filter:{displayName:$select.search} | limitTo:maxOptionSize">
                             <span ng-bind-html="option.displayName | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
