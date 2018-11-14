@@ -15,10 +15,10 @@
             <ui-select-match allow-clear="true"
                              class="form-control-ui-select program-select"
                              ng-attr-placeholder="{{'select_or_search' | translate}}">
-                <img class="icon-program-left" ng-style="{'background-color': ($select.selected.style.color ? $select.selected.style.color : '#E0E0E0')}" ng-src="{{APIURL}}/icons/{{$select.selected.style.icon ? $select.selected.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>{{$select.selected.displayName  || $select.selected}}
+                <img class="icon-program-left" ng-style="{'background-color': ($select.selected.style.color ? $select.selected.style.color : '#E0E0E0')}" ng-src="{{APIURL}}/icons/{{$select.selected.style.icon ? $select.selected.style.icon : 'clinical_fe_outline'}}/icon.svg"/>{{$select.selected.displayName  || $select.selected}}
             </ui-select-match>
-            <ui-select-choices  repeat="trackedEntityType in trackedEntityTypes.readable | orderBy: 'displayName'">
-                <span><img class="icon-program-left" ng-style="{'background-color': (trackedEntityType.style.color ? trackedEntityType.style.color : '#E0E0E0')}" ng-src="{{APIURL}}/icons/{{trackedEntityType.style.icon ? trackedEntityType.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>{{trackedEntityType.displayName | highlight: $select.search}}</span>
+            <ui-select-choices  repeat="trackedEntityType in trackedEntityTypes.readable | filter:{displayName:$select.search} | orderBy: 'displayName'">
+                <span><img class="icon-program-left" ng-style="{'background-color': (trackedEntityType.style.color ? trackedEntityType.style.color : '#E0E0E0')}" ng-src="{{APIURL}}/icons/{{trackedEntityType.style.icon ? trackedEntityType.style.icon : 'clinical_fe_outline'}}/icon.svg"/><span ng-bind-html="trackedEntityType.displayName | highlight: $select.search"></span></span>
             </ui-select-choices>
         </ui-select>
     </div>
@@ -38,7 +38,7 @@
                                 theme="select2"
                                 class="search-ui-select">
                         <ui-select-match allow-clear="true"  class="form-control-ui-select"  ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
-                        <ui-select-choices  repeat="option.displayName as option in base.optionSets[attribute.optionSet.id].options | filter: $select.search">
+                        <ui-select-choices  repeat="option.displayName as option in base.optionSets[attribute.optionSet.id].options | filter:{displayName:$select.search}">
                             <span ng-bind-html="option.displayName | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>

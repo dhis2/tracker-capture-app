@@ -15,10 +15,10 @@
             <ui-select-match allow-clear="true"
                              class="form-control-ui-select program-select"
                              ng-attr-placeholder="{{'select_or_search' | translate}}">
-                <img class="icon-program-left" ng-style="{'background-color': ($select.selected.style.color ? $select.selected.style.color : '#E0E0E0')}" ng-src="{{APIURL}}/icons/{{$select.selected.style.icon ? $select.selected.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>{{$select.selected.displayName  || $select.selected}}
+                <img class="icon-program-left" ng-style="{'background-color': ($select.selected.style.color ? $select.selected.style.color : '#E0E0E0')}" ng-src="{{APIURL}}/icons/{{$select.selected.style.icon ? $select.selected.style.icon : 'clinical_fe_outline'}}/icon.svg"/>{{$select.selected.displayName  || $select.selected}}
             </ui-select-match>
-            <ui-select-choices  repeat="program in programs | filter: $select.search | limitTo:maxOptionSize">
-                <span><img class="icon-program-left" ng-style="{'background-color': (program.style.color ? program.style.color : '#E0E0E0')}" ng-src="{{APIURL}}/icons/{{program.style.icon ? program.style.icon : 'clinical_fe_outline'}}/icon.svg"></i>{{program.displayName | highlight: $select.search}}</span>
+            <ui-select-choices  repeat="program in programs | filter:{displayName:$select.search} | limitTo:maxOptionSize">
+                <span><img class="icon-program-left" ng-style="{'background-color': (program.style.color ? program.style.color : '#E0E0E0')}" ng-src="{{APIURL}}/icons/{{program.style.icon ? program.style.icon : 'clinical_fe_outline'}}/icon.svg"/><span ng-bind-html="program.displayName | highlight: $select.search"></span></span>
             </ui-select-choices>
         </ui-select>
     </div>
