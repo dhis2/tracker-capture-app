@@ -94,7 +94,7 @@
                                 on-select="saveAttributeCategoryOptions()"
                                 style="width: 100%">
                             <ui-select-match allow-clear="false" ng-class="getOptionSaveNotifcationClass(category.id)"  class="form-control-ui-select"  ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
-                            <ui-select-choices  repeat="option in category.categoryOptions | filter: $select.search | limitTo:maxOptionSize">
+                            <ui-select-choices  repeat="option in category.categoryOptions | filter:{displayName:$select.search} | limitTo:maxOptionSize">
                               <span ng-bind-html="option.displayName | highlight: $select.search"></span>
                             </ui-select-choices>
                         </ui-select>
