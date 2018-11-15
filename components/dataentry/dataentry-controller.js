@@ -173,7 +173,6 @@ trackerCapture.controller('DataEntryController',
     $scope.model.showEventSearch = false;
     $scope.model.eventSearchText = '';
 
-    $scope.completeClicked = false;
 
     $scope.filterLegend = function(){
         if($scope.mainMenuStageSelected()){
@@ -1695,7 +1694,7 @@ trackerCapture.controller('DataEntryController',
             }
         }
         
-        if (field && field.$invalid && $scope.currentStage.validationStrategy === "ON_UPDATE_AND_INSERT") {
+        if (field && field.$invalid) {
             $scope.currentEvent[prStDe.dataElement.id] = oldValue;
             $scope.currentElement = {id: prStDe.dataElement.id, saved: false, event: eventToSave.event};
             return false;
@@ -2121,7 +2120,6 @@ trackerCapture.controller('DataEntryController',
 
         if($scope.currentEvent.status !== 'COMPLETED'){
             $scope.outerDataEntryForm.submitted = true;
-            $scope.completeClicked = true;
             if($scope.outerDataEntryForm.$invalid){
                 NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("form_invalid"));
                 return;
@@ -2140,7 +2138,6 @@ trackerCapture.controller('DataEntryController',
                 bodyText: 'are_you_sure_to_incomplete_event'
             };
             dhis2Event.status = 'ACTIVE';
-            $scope.completeClicked = false;
 
         } else {//complete event    
             //We must execute the rules right before deciding wheter to allow completion:
