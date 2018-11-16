@@ -1263,10 +1263,11 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-d2-tracker@30.0.30:
-  version "30.0.30"
-  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-30.0.30.tgz#0b3edbacf6fe52afc2ea2bf9a78bf55e8712072b"
+d2-tracker@30.0.31:
+  version "30.0.31"
+  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-30.0.31.tgz#fc93a9b5730d8f520045db8a350a554b3c1bb461"
   dependencies:
+    angular-vs-repeat "^2.0.9"
     gulp "^3.9.1"
     gulp-angular-templatecache "^2.0.0"
     leaflet-draw "^1.0.2"
