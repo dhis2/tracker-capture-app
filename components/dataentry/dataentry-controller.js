@@ -1391,35 +1391,41 @@ trackerCapture.controller('DataEntryController',
                 $scope.deSelectCurrentEvent(resetStage);
             }
             else {
-                TCOrgUnitService.get(event.orgUnit).then(function(orgUnit){
-                    event.orgUnitPath = orgUnit.path;
-                    $scope.currentElement = {};                
-                    $scope.currentEvent = event;
-                    
-                    var index = -1;
-                    for (var i = 0; i < $scope.eventsByStage[event.programStage].length && index === -1; i++) {
-                        if ($scope.eventsByStage[event.programStage][i].event === event.event) {
-                            index = i;
+                $scope.showLoadingEventSpinner = true;
+                $timeout(function(){
+                    TCOrgUnitService.get(event.orgUnit).then(function(orgUnit){
+                        event.orgUnitPath = orgUnit.path;
+                        $scope.currentElement = {};                
+                        $scope.currentEvent = event;
+                        
+                        var index = -1;
+                        for (var i = 0; i < $scope.eventsByStage[event.programStage].length && index === -1; i++) {
+                            if ($scope.eventsByStage[event.programStage][i].event === event.event) {
+                                index = i;
+                            }
+                        }                
+                        if(index !== -1){
+                            $scope.currentEvent = $scope.eventsByStage[event.programStage][index];                    
                         }
-                    }                
-                    if(index !== -1){
-                        $scope.currentEvent = $scope.eventsByStage[event.programStage][index];                    
-                    }
-                    
-                    $scope.showDataEntryDiv = true;
-                    $scope.showEventCreationDiv = false;
-    
-                    if ($scope.currentEvent.notes) {
-                        angular.forEach($scope.currentEvent.notes, function (note) {
-                            note.displayDate = DateUtils.formatFromApiToUser(note.storedDate);
-                            note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
+                        
+                        $scope.showDataEntryDiv = true;
+                        $scope.showEventCreationDiv = false;
+        
+                        if ($scope.currentEvent.notes) {
+                            angular.forEach($scope.currentEvent.notes, function (note) {
+                                note.displayDate = DateUtils.formatFromApiToUser(note.storedDate);
+                                note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
+                            });
+        
+                            if ($scope.currentEvent.notes.length > 0) {
+                                $scope.currentEvent.notes = orderByFilter($scope.currentEvent.notes, '-storedDate');
+                            }
+                        }
+                        $scope.getDataEntryForm();
+                        $timeout(function(){
+                            $scope.showLoadingEventSpinner = false;
                         });
-    
-                        if ($scope.currentEvent.notes.length > 0) {
-                            $scope.currentEvent.notes = orderByFilter($scope.currentEvent.notes, '-storedDate');
-                        }
-                    }
-                    $scope.getDataEntryForm();
+                    });
                 });
             }
         }
