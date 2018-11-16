@@ -8,6 +8,7 @@ import 'd2-tracker/lib/dhis2.angular.validations.js';
 import 'd2-tracker/lib/dhis2.angular.filters.js';
 import 'd2-tracker/lib/dhis2.angular.controllers.js';
 import 'd2-tracker/lib/dhis2.angular.templates.js';
+import 'd2-tracker/src/styles/style.css';
 
 // App files
 import '../scripts/services.js';
@@ -53,6 +54,9 @@ L.Icon.Default.mergeOptions({
   iconUrl: require('leaflet/dist/images/marker-icon.png'),
   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
+
+import 'angular-vs-repeat';
+
 import 'leaflet-contextmenu';
 import 'd2-tracker/lib/Google.js';
 

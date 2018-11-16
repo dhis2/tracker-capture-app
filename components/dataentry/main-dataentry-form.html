@@ -17,8 +17,9 @@
         </tr>
     </table>
 </script>
-<form name="outerDataEntryForm" novalidate>    
-    <div ng-if="currentEvent">
+<form name="outerDataEntryForm" novalidate>
+    <div ng-show="showLoadingEventSpinner" style="text-align:center;"><i class="fa fa-spinner fa-spin fa-3x"></i></div>
+    <div ng-if="currentEvent" ng-hide="showLoadingEventSpinner">
         <div ng-include="'components/dataentry/event-details.html'"></div>
         <!-- data entry form begins -->
         <div ng-if="currentEvent.eventDate">

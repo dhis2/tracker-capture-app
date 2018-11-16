@@ -35,16 +35,18 @@
     <div ng-if="!prStDes[de.id].dataElement.optionSetValue" ng-switch="prStDes[de.id].dataElement.valueType">
         <div ng-switch-when="NUMBER">
             <div class="hideInPrint">
-                    <input type="number"
-                           d2-number-validator
-                           number-type={{prStDes[de.id].dataElement.valueType}}
-                           class="form-control"
-                           ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                           ng-model="currentEvent[de.id]"
-                           ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                           ng-disabled="!dataElementEditable(prStDes[de.id])"
-                           ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                           name="foo"/>
+                    <input 
+                        type="number"
+                        autocomplete="off"
+                        d2-number-validator
+                        number-type={{prStDes[de.id].dataElement.valueType}}
+                        class="form-control"
+                        ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                        ng-model="currentEvent[de.id]"
+                        ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                        ng-disabled="!dataElementEditable(prStDes[de.id])"
+                        ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                        name="foo"/>
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" ng-attr-value={{currentEvent[de.id]}}>
@@ -52,16 +54,18 @@
         </div>
         <div ng-switch-when="PERCENTAGE">
             <div class="hideInPrint">
-                <input type="number"
-                       d2-number-validator
-                       number-type={{prStDes[de.id].dataElement.valueType}}
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="currentEvent[de.id]"
-                       ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                       ng-disabled="!dataElementEditable(prStDes[de.id])"
-                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                       name="foo"/>
+                <input 
+                    type="number"
+                    autocomplete="off"
+                    d2-number-validator
+                    number-type={{prStDes[de.id].dataElement.valueType}}
+                    class="form-control"
+                    ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                    ng-model="currentEvent[de.id]"
+                    ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                    ng-disabled="!dataElementEditable(prStDes[de.id])"
+                    ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                    name="foo"/>
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" ng-attr-value={{currentEvent[de.id]}}>
@@ -69,16 +73,18 @@
         </div>
         <div ng-switch-when="INTEGER">
             <div class="hideInPrint">
-                <input type="number"
-                       d2-number-validator
-                       number-type={{prStDes[de.id].dataElement.valueType}}
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="currentEvent[de.id]"
-                       ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                       ng-disabled="!dataElementEditable(prStDes[de.id])"
-                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                       name="foo" />
+                <input 
+                    type="number"
+                    autocomplete="off"
+                    d2-number-validator
+                    number-type={{prStDes[de.id].dataElement.valueType}}
+                    class="form-control"
+                    ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                    ng-model="currentEvent[de.id]"
+                    ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                    ng-disabled="!dataElementEditable(prStDes[de.id])"
+                    ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                    name="foo" />
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" ng-attr-value={{currentEvent[de.id]}}>
@@ -86,16 +92,18 @@
         </div>
         <div ng-switch-when="INTEGER_POSITIVE">
             <div class="hideInPrint">
-                <input type="number"
-                       d2-number-validator
-                       number-type={{prStDes[de.id].dataElement.valueType}}
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="currentEvent[de.id]"
-                       ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                       ng-disabled="!dataElementEditable(prStDes[de.id])"
-                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                       name="foo"/>
+                <input 
+                    type="number"
+                    autocomplete="off"
+                    d2-number-validator
+                    number-type={{prStDes[de.id].dataElement.valueType}}
+                    class="form-control"
+                    ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                    ng-model="currentEvent[de.id]"
+                    ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                    ng-disabled="!dataElementEditable(prStDes[de.id])"
+                    ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                    name="foo"/>
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" ng-attr-value={{currentEvent[de.id]}}>
@@ -103,16 +111,18 @@
         </div>
         <div ng-switch-when="INTEGER_NEGATIVE">
             <div class="hideInPrint">
-                <input type="number"
-                       d2-number-validator
-                       number-type={{prStDes[de.id].dataElement.valueType}}
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="currentEvent[de.id]"
-                       ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                       ng-disabled="!dataElementEditable(prStDes[de.id])"
-                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                       name="foo"/>
+                <input 
+                    type="number"
+                    autocomplete="off"
+                    d2-number-validator
+                    number-type={{prStDes[de.id].dataElement.valueType}}
+                    class="form-control"
+                    ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                    ng-model="currentEvent[de.id]"
+                    ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                    ng-disabled="!dataElementEditable(prStDes[de.id])"
+                    ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                    name="foo"/>
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" ng-attr-value={{currentEvent[de.id]}}>
@@ -120,16 +130,18 @@
         </div>
         <div ng-switch-when="INTEGER_ZERO_OR_POSITIVE">
             <div class="hideInPrint">
-                <input type="number"
-                       d2-number-validator
-                       number-type={{prStDes[de.id].dataElement.valueType}}
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="currentEvent[de.id]"
-                       ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                       ng-disabled="!dataElementEditable(prStDes[de.id])"
-                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                       name="foo"/>
+                <input 
+                    type="number"
+                    autocomplete="off"
+                    d2-number-validator
+                    number-type={{prStDes[de.id].dataElement.valueType}}
+                    class="form-control"
+                    ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                    ng-model="currentEvent[de.id]"
+                    ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                    ng-disabled="!dataElementEditable(prStDes[de.id])"
+                    ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                    name="foo"/>
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" ng-attr-value={{currentEvent[de.id]}}>
@@ -146,14 +158,16 @@
         </div>
         <div ng-switch-when="PHONE_NUMBER">
             <div class="hideInPrint">
-                <input type="text"
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="currentEvent[de.id]"
-                       ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                       ng-disabled="!dataElementEditable(prStDes[de.id])"
-                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                       name="foo"/>
+                <input 
+                    type="text"
+                    autocomplete="off"
+                    class="form-control"
+                    ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                    ng-model="currentEvent[de.id]"
+                    ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                    ng-disabled="!dataElementEditable(prStDes[de.id])"
+                    ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                    name="foo"/>
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" ng-attr-value={{currentEvent[de.id]}}>
@@ -179,18 +193,20 @@
         </div>
         <div ng-switch-when="DATE">
             <div class="hideInPrint">
-                <input type="text"
-                       ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
-                       d2-date
-                       d2-date-validator
-                       max-date="prStDes[de.id].allowFutureDate ? '' : 0"
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="currentEvent[de.id]"
-                       ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                       ng-disabled="!dataElementEditable(prStDes[de.id])"
-                       blur-or-change="saveDatavalue(prStDes[de.id])"
-                       name="foo"/>
+                <input 
+                    type="text"
+                    autocomplete="off"
+                    ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                    d2-date
+                    d2-date-validator
+                    max-date="prStDes[de.id].allowFutureDate ? '' : 0"
+                    class="form-control"
+                    ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                    ng-model="currentEvent[de.id]"
+                    ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                    ng-disabled="!dataElementEditable(prStDes[de.id])"
+                    blur-or-change="saveDatavalue(prStDes[de.id])"
+                    name="foo"/>
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" ng-attr-value={{currentEvent[de.id]}}>
@@ -198,14 +214,14 @@
         </div>
         <div ng-switch-when="TIME">
             <d2-time time-model="currentEvent"
-                     time-model-id="de.id"
-                     time-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                     time-save-methode="saveDatavalue"
-                     time-save-methode-parameter1="prStDes[de.id]"
-                     time-use-notification="true"
-                     time-element="currentElement"
-                     time-disabled="!dataElementEditable(prStDes[de.id])"
-                     time-format="timeFormat">
+                    time-model-id="de.id"
+                    time-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                    time-save-methode="saveDatavalue"
+                    time-save-methode-parameter1="prStDes[de.id]"
+                    time-use-notification="true"
+                    time-element="currentElement"
+                    time-disabled="!dataElementEditable(prStDes[de.id])"
+                    time-format="timeFormat">
             </d2-time>
         </div>
         <div ng-switch-when="DATETIME">
@@ -241,14 +257,15 @@
         <div ng-switch-when="LONG_TEXT">
             <div class="hideInPrint">
                     <textarea rows="3"
-                              class="form-control"
-
-                              ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                              ng-model="currentEvent[de.id]"
-                              ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                              ng-disabled="!dataElementEditable(prStDes[de.id])"
-                              ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                              name="foo"></textarea>
+                        class="form-control"
+                        autocomplete="off"
+                        ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                        ng-model="currentEvent[de.id]"
+                        ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                        ng-disabled="!dataElementEditable(prStDes[de.id])"
+                        ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                        name="foo">
+                    </textarea>
             </div>
             <div class="not-for-screen">
                 <textarea rows="3" class="form-control">{{currentEvent[de.id]}}</textarea>
@@ -257,13 +274,14 @@
         <div ng-switch-when="TEXT">
             <div class="hideInPrint">
                 <input type="text"
-                       class="form-control"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="currentEvent[de.id]"
-                       ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                       ng-disabled="!dataElementEditable(prStDes[de.id])"
-                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                       name="foo"/>
+                    autocomplete="off"
+                    class="form-control"
+                    ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                    ng-model="currentEvent[de.id]"
+                    ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                    ng-disabled="!dataElementEditable(prStDes[de.id])"
+                    ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                    name="foo"/>
             </div>
             <div class="not-for-screen">
                 <input type="text" class="form-control" ng-attr-value={{currentEvent[de.id]}}>
@@ -326,17 +344,17 @@
         <div ng-switch-when="IMAGE">
             <div class="hideInPrint">
                 <d2-image d2-display-open="true"
-                          d2-can-edit="true"
-                          d2-hide-image="registrationAndDataEntry ? true : false"
-                          d2-event="currentEvent"
-                          d2-data-element-id="de.id"
-                          d2-file-names="fileNames"
-                          d2-current-image-name="currentFileNames"
-                          d2-ps="currentStage"
-                          d2-delete-methode="deleteFile"
-                          d2-download-methode="downloadFile"
-                          d2-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                          d2-diabled="!dataElementEditable(prStDes[de.id])">
+                    d2-can-edit="true"
+                    d2-hide-image="registrationAndDataEntry ? true : false"
+                    d2-event="currentEvent"
+                    d2-data-element-id="de.id"
+                    d2-file-names="fileNames"
+                    d2-current-image-name="currentFileNames"
+                    d2-ps="currentStage"
+                    d2-delete-methode="deleteFile"
+                    d2-download-methode="downloadFile"
+                    d2-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                    d2-diabled="!dataElementEditable(prStDes[de.id])">
                 </d2-image>
             </div>
             <div class="not-for-screen">
@@ -345,55 +363,58 @@
         </div>       
         <div ng-switch-when="COORDINATE">            
             <d2-map id="{{de.id}}"                    
-                    d2-lat-saved="currentElement.saved && currentElement.id === de.id"
-                    d2-lng-saved="currentElement.saved && currentElement.id === de.id"
-                    d2-object="currentEvent" 
-                    d2-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                    d2-disabled="!dataElementEditable(prStDes[de.id])"
-                    d2-function="saveDatavalue(arg1)" 
-                    d2-coordinate-format="'TEXT'"
-                    d2-function-param-text="prStDes[de.id]"
-                    d2-function-param-coordinate="LATLNG">
+                d2-lat-saved="currentElement.saved && currentElement.id === de.id"
+                d2-lng-saved="currentElement.saved && currentElement.id === de.id"
+                d2-object="currentEvent" 
+                d2-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                d2-disabled="!dataElementEditable(prStDes[de.id])"
+                d2-function="saveDatavalue(arg1)" 
+                d2-coordinate-format="'TEXT'"
+                d2-function-param-text="prStDes[de.id]"
+                d2-function-param-coordinate="LATLNG">
             </d2-map>
         </div>        
         <div ng-switch-when="ORGANISATION_UNIT">
             <d2-org-unit-tree
-                    selected-org-unit-id="{{selectedOrgUnit.id}}"
-                    id="{{de.id}}"
-                    d2-value="currentEvent[de.id]"
-                    d2-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                    d2-disabled="!dataElementEditable(prStDes[de.id])"
-                    d2-object="currentEvent"
-                    d2-function="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                    d2-orgunit-names="orgUnitNames">
+                selected-org-unit-id="{{selectedOrgUnit.id}}"
+                id="{{de.id}}"
+                d2-value="currentEvent[de.id]"
+                d2-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                d2-disabled="!dataElementEditable(prStDes[de.id])"
+                d2-object="currentEvent"
+                d2-function="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                d2-orgunit-names="orgUnitNames">
             </d2-org-unit-tree>
         </div>
         <div ng-switch-when="EMAIL">
-            <input type="email"
-                   name="foo"
-                   class="form-control"
-                   ng-model="currentEvent[de.id]"
-                   ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                   d2-attribute-validator
-                   selected-program-id={{selectedProgram.id}}
-                   selected-tei-id={{selectedTei.trackedEntityInstance}}
-                   ng-disabled="!dataElementEditable(prStDes[de.id])"
-                   ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                   ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"/>
+            <input 
+                type="email"
+                autocomplete="off"
+                name="foo"
+                class="form-control"
+                ng-model="currentEvent[de.id]"
+                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                d2-attribute-validator
+                selected-program-id={{selectedProgram.id}}
+                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                ng-disabled="!dataElementEditable(prStDes[de.id])"
+                ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"/>
         </div>
         <div ng-switch-when="URL">
             <div class="hideInPrint">
                 <input type="url"
-                       d2-url-validator
-                       ng-attr-placeholder="{{'url_format' | translate}}"
-                       class="form-control"
-                       ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
-                       ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
-                       ng-model="currentEvent[de.id]"
-                       ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
-                       ng-disabled="!dataElementEditable(prStDes[de.id])"
-                       ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
-                       name="foo"/>
+                    autocomplete="off"
+                    d2-url-validator
+                    ng-attr-placeholder="{{'url_format' | translate}}"
+                    class="form-control"
+                    ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
+                    ng-class="getInputNotifcationClass(de.id,false, currentEvent)"
+                    ng-model="currentEvent[de.id]"
+                    ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
+                    ng-disabled="!dataElementEditable(prStDes[de.id])"
+                    ng-blur="saveDatavalue(prStDes[de.id], innerForm.foo)"
+                    name="foo"/>
             </div>
         </div>
         <div ng-switch-default>
