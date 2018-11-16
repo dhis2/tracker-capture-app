@@ -21,5 +21,6 @@ export default angular.module('trackerCapture', [
     'nvd3ChartDirectives',
     'pascalprecht.translate',
     'leaflet-directive',
-    'angularCSS'
+    'angularCSS',
+    'vs-repeat',
 ]);

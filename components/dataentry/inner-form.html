@@ -35,6 +35,7 @@
         <div ng-switch-when="NUMBER">
             <div class="hideInPrint">
                 <input type="number"
+                       autocomplete="off"
                        number-type={{prStDe.dataElement.valueType}}
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id,false, currentEvent)"
@@ -52,6 +53,7 @@
         <div ng-switch-when="PERCENTAGE">
             <div class="hideInPrint">
                 <input type="number"
+                       autocomplete="off"
                        number-type={{prStDe.dataElement.valueType}}
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id,false, currentEvent)"
@@ -69,6 +71,7 @@
         <div ng-switch-when="INTEGER">
             <div class="hideInPrint">
                 <input type="number"
+                       autocomplete="off"
                        number-type={{prStDe.dataElement.valueType}}
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id,false, currentEvent)"
@@ -86,6 +89,7 @@
         <div ng-switch-when="INTEGER_POSITIVE">
             <div class="hideInPrint">
                 <input type="number"
+                       autocomplete="off"
                        number-type={{prStDe.dataElement.valueType}}
                        class="form-control"
                        ng-class='getInputNotifcationClass(prStDe.dataElement.id,false)'
@@ -103,6 +107,7 @@
         <div ng-switch-when="INTEGER_NEGATIVE">
             <div class="hideInPrint">
                 <input type="number"
+                       autocomplete="off"
                        number-type={{prStDe.dataElement.valueType}}
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id,false, currentEvent)"
@@ -120,6 +125,7 @@
         <div ng-switch-when="INTEGER_ZERO_OR_POSITIVE">
             <div class="hideInPrint">
                 <input type="number"
+                       autocomplete="off"
                        number-type={{prStDe.dataElement.valueType}}
                        class="form-control"
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id,false, currentEvent)"
@@ -146,6 +152,7 @@
         <div ng-switch-when="PHONE_NUMBER">
             <div class="hideInPrint">
                 <input type="text"
+                       autocomplete="off"
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id,false, currentEvent)"
                        class="form-control"
                        ng-model="currentEvent[prStDe.dataElement.id]"
@@ -177,6 +184,7 @@
         <div ng-switch-when="TEXT">
             <div class="hideInPrint">
                 <input type="text"
+                       autocomplete="off"
                        ng-class="getInputNotifcationClass(prStDe.dataElement.id,false, currentEvent)"
                        class="form-control"
                        ng-model="currentEvent[prStDe.dataElement.id]"
@@ -230,6 +238,7 @@
         <div ng-switch-when="DATE">
             <div class="hideInPrint">
                 <input type="text"
+                       autocomplete="off"
                        ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                        d2-date
                        d2-date-validator
@@ -371,21 +380,24 @@
             </d2-org-unit-tree>
         </div>
         <span ng-switch-when="EMAIL">
-            <input type="email"
-                   name="foo"
-                   class="form-control"
-                   ng-model="currentEvent[prStDe.dataElement.id]"
-                   ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                   d2-attribute-validator
-                   selected-program-id={{selectedProgram.id}}
-                   selected-tei-id={{selectedTei.trackedEntityInstance}}
-                   ng-disabled="!dataElementEditable(prStDe)"
-                   ng-blur="saveDatavalue(prStDe, innerForm.foo)"
-                   ng-required="prStDe.compulsory || mandatoryFields[currentEvent.event][prStDe.dataElement.id]"/>
+            <input 
+                type="email"
+                autocomplete="off"
+                name="foo"
+                class="form-control"
+                ng-model="currentEvent[prStDe.dataElement.id]"
+                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                d2-attribute-validator
+                selected-program-id={{selectedProgram.id}}
+                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                ng-disabled="!dataElementEditable(prStDe)"
+                ng-blur="saveDatavalue(prStDe, innerForm.foo)"
+                ng-required="prStDe.compulsory || mandatoryFields[currentEvent.event][prStDe.dataElement.id]"/>
         </span>
         <div ng-switch-when="URL">
             <div class="hideInPrint">
                 <input type="url"
+                       autocomplete="off"
                        d2-url-validator
                        ng-attr-placeholder="{{'url_format' | translate}}"
                        ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
