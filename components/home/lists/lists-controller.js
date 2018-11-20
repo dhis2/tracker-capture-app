@@ -206,36 +206,24 @@ trackerCapture.controller('ListsController',function(
 
         $scope.setCustomWorkingList = function(){
             var customConfig = {
-                queryUrl: "",
-                programUrl: "", 
-                attributeUrl: { url: null, hasValue: false }, 
+                queryParameters: {},
                 ouMode: $scope.customWorkingListValues.ouMode,
                 orgUnit: $scope.selectedOrgUnit,
             };
 
             if($scope.base.selectedProgram){
-                customConfig.programUrl = 'program=' + $scope.base.selectedProgram.id;
+                customConfig.queryParameters.program = program;
                 if($scope.customWorkingListValues.programStatus){
-                    customConfig.programUrl += "&programStatus="+$scope.customWorkingListValues.programStatus;
+                    customConfig.queryParameters.programStatus = $scope.customWorkingListValues.programStatus;
                 }
             }
-            customConfig.attributeUrl = EntityQueryFactory.getAttributesQuery($scope.customWorkingListValues.attributes, $scope.customWorkingListValues.enrollment);
-
+            var attributeQueryParameters = EntityQueryFactory.getAttributesQueryParameters($scope.customWorkingListValues.attributes, $scope.customWorkingListValues.enrollment);
+            if(attributeQueryParameters){
+                angular.extend(customConfig.queryParameters, customConfig.queryParameters, attributeQueryParameters);
+            }
             setCurrentTrackedEntityList($scope.trackedEntityListTypes.CUSTOM, customConfig, null);
             $scope.fetchCustomWorkingList(customConfig);
         }
-
-        var getOrderUrl = function(urlToExtend){
-            if($scope.currentTrackedEntityList.sortColumn){
-                var sortColumn = $scope.currentTrackedEntityList.sortColumn;
-                if(urlToExtend){
-                    return urlToExtend += "&order="+sortColumn.id+':'+sortColumn.direction;
-                }
-                return "order="+sortColumn.id+":"+sortColumn.direction;
-            }
-
-        }
-
 
         $scope.fetchCustomWorkingList= function(){
             if(!$scope.currentTrackedEntityList.type == $scope.trackedEntityListTypes.CUSTOM) return;

@@ -47,7 +47,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service to fetch/store dasboard widgets */
-.service('DashboardLayoutService', function($http, DHIS2URL, NotificationService, $translate) {
+.service('DashboardLayoutService', function($http, DHIS2URL, NotificationService, $translate, $q) {
 
     var ButtonIds = { Complete: "Complete", Incomplete: "Incomplete", Validate: "Validate", Delete: "Delete", Skip: "Skip", Unskip: "Unskip", Note: "Note" };
 
@@ -66,17 +66,30 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     var defaultLayout = new Object();
 
     defaultLayout['DEFAULT'] = {widgets: w, program: 'DEFAULT'};
-
+    var programStageLayout = {};
+    var initializeKeyDashboardStore = function(){
+        return $http.post( DHIS2URL + '/dataStore/tracker-capture/keyTrackerDashboardDefaultLayout', {});
+    }
     var getDefaultLayout = function(customLayout){
         var dashboardLayout = {customLayout: customLayout, defaultLayout: defaultLayout};
         var promise = $http.get(  DHIS2URL + '/dataStore/tracker-capture/keyTrackerDashboardDefaultLayout' ).then(function(response){
             angular.extend(dashboardLayout.defaultLayout, response.data);
             return dashboardLayout;
-        }, function(){
-            if(!dashboardLayout.customLayout){
-                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("dashboard_layout_not_fetched"));
+        }, function(errorResponse){
+            var innerPromise;
+            if(errorResponse.status = 404){
+                innerPromise = initializeKeyDashboardStore();
+            }else{
+                var def = $q.defer();
+                def.resolve();
+                innerPromise = def.promise;
             }
-            return dashboardLayout;
+            return innerPromise.then(function(){
+                if(!dashboardLayout.customLayout){
+                    NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("dashboard_layout_not_fetched"));
+                }
+                return dashboardLayout;
+            });
         });
         return promise;
     };
@@ -602,7 +615,14 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getByEntity: function( entity ){
-            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&fields=:all&paging=false').then(function(response){
+            var promise = $http.get(DHIS2URL + '/enrollments.json', {
+                params: {
+                    ouMode: 'ACCESSIBLE',
+                    trackedEntityInstance: entity,
+                    fields: ':all',
+                    paging: 'false'
+                }
+            }).then(function(response){
                 return convertFromApiToUser(response.data);
             },function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
@@ -612,7 +632,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getByEntityAndProgram: function( entity, program ){
-            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&program=' + program + '&fields=:all&paging=false').then(function(response){
+            var requestData = {
+                url: DHIS2URL + '/enrollments.json',
+                params: {
+                    ouMode: 'ACCESSIBLE',
+                    trackedEntityInstance: entity,
+                    program: program,
+                    fields: ':all',
+                    paging: 'false'
+                }
+            }
+            var promise = $http.get(requestData.url, { params: requestData.params }).then(function(response){
                 return convertFromApiToUser(response.data);
             }, function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
@@ -622,7 +652,18 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getByStartAndEndDate: function( program, orgUnit, ouMode, startDate, endDate ){
-            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&program=' + program + '&orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&startDate=' + startDate + '&endDate=' + endDate + '&fields=:all&paging=false').then(function(response){
+            var promise = $http.get(DHIS2URL + '/enrollments.json', {
+                params: {
+                    ouMode: 'ACCESSIBLE',
+                    program: program,
+                    orgUnit: orgUnit,
+                    ouMode: ouMode,
+                    startDate: startDate,
+                    endDate: endDate,
+                    fields: ':all',
+                    paging: 'false',
+                }
+            }).then(function(response){
                 return convertFromApiToUser(response.data);
             }, function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
@@ -739,39 +780,26 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 /* Service for getting tracked entity instances */
 .factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService ) {
     var errorHeader = $translate.instant("error");
-    var getSearchUrl = function(type,ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
-        var baseUrl = DHIS2URL + '/trackedEntityInstances/'+type;
-        var url = baseUrl;
-        var deferred = $q.defer();
-        
-        if (format === "csv") {
-            url = url+'.csv?ou=' + ouId + '&ouMode=' + ouMode;
-        } else if (format === "xml") {
-            url = url+'.json?ou=' + ouId + '&ouMode=' + ouMode;
-        }else {
-            url = url+'.json?ou=' + ouId + '&ouMode=' + ouMode;
+    var getSearchRequestData = function(type,ouId, ouMode, queryParameters, pager, paging, format){
+        var requestData = {
+            url: DHIS2URL + '/trackedEntityInstances/'+type + (format === 'csv' ? '.csv' : '.json'),
+            params: queryParameters || {},
         }
-
-        if(queryUrl){
-            url = url + '&'+ queryUrl;
-        }
-        if(programOrTETUrl){
-            url = url + '&' + programOrTETUrl;
-        }
-        if(attributeUrl){
-            url = url + '&' + attributeUrl;
-        }
+        requestData.params.ouMode = ouMode;
+        requestData.params.ou = ouId;
         if(paging){
             var pgSize = pager ? pager.pageSize : 50;
             var pg = pager ? pager.page : 1;
             pgSize = pgSize > 1 ? pgSize  : 1;
             pg = pg > 1 ? pg : 1;
-            url = url + '&pageSize=' + pgSize + '&page=' + pg + '&totalPages=true';
+            requestData.params.pageSize = pgSize;
+            requestData.params.page = pg;
+            requestData.params.totalPages = 'true';
         }
         else{
-            url = url + '&paging=false';
+            requestData.params.paging = 'false';
         }
-        return url;
+        return requestData;
     }
     var getFormatUrl = function(){
 
@@ -825,18 +853,18 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        searchCount: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
-            var url = getSearchUrl("count",ouId, ouMode,queryUrl, programOrTETUrl, attributeUrl, pager, paging, format);
-            return $http.get( url ).then(function(response)
+        searchCount: function(ouId, ouMode, queryParameters, pager, paging, format){
+            var requestData = getSearchRequestData("count",ouId, ouMode,queryParameters, pager, paging, format);
+            return $http.get( requestData.url, { params: requestData.params }).then(function(response)
             {
                 if(response && response.data) return response.data;
                 return 0;
             });
         },
-        search: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
+        search: function(ouId, ouMode, queryParameters, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
             var deferred = $q.defer();
-            var url = getSearchUrl("query",ouId, ouMode,queryUrl, programOrTETUrl, attributeUrl, pager, paging, format);
-            $http.get( url ).then(function(response){
+            var requestData = getSearchRequestData("query",ouId, ouMode,queryParameters, pager, paging, format);
+            $http.get( requestData.url, { params: requestData.params }).then(function(response){
                 var xmlData, rows, headers, index, itemName, value, jsonData;
                 var trackedEntityInstance, attributesById;
                 if (format) {
@@ -981,51 +1009,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             }
             return def.promise;
-        }/*,
-        getGeneratedAttributeValue: function(attribute, selectedTei, program, orgUnit) {
-            var getValueUrl = function(valueToSet, selectedTei, program, orgUnit, required){
-                var valueUrlBase = valueToSet+"=";
-                var valueUrl = null;
-                switch(valueToSet){
-                    case "ORG_UNIT_CODE":
-                        if(orgUnit && orgUnit.code) valueUrl = valueUrlBase+orgUnit.code;
-                        break;
-                    default:
-                        return null;
-                }
-                if(required && !valueUrl) throw "value "+valueToSet+ "not found";
-                return valueUrl;
-            }
-
-            return $http.get(DHIS2URL + '/trackedEntityAttributes/'+attribute+'/requiredValues').then(function(response){
-                var paramsUrl = "?";
-                if(response && response.data){
-                    if(response.data.REQUIRED){
-                        angular.forEach(response.data.REQUIRED, function(requiredValue){
-                            var valueUrl = getValueUrl(requiredValue, selectedTei, program, orgUnit,true);
-                            paramsUrl+="&"+valueUrl;
-                        });
-                    }
-                    if(response.data.OPTIONAL){
-                        angular.forEach(response.data.OPTIONAL, function(optionalValue){
-                            var valueUrl = getValueUrl(optionalValue, selectedTei, program, orgUnit,false);
-                            if(valueUrl) paramsUrl += "&"+valueUrl;
-                        });
-                    }
-                }
-                if(paramsUrl.length >= 2 && paramsUrl.charAt(1) === "&") paramsUrl = paramsUrl.slice(0,1)+paramsUrl.slice(2);
-                return $http.get(DHIS2URL + '/trackedEntityAttributes/' + attribute + '/generate'+paramsUrl).then(function (response) {
-                    if (response && response.data && response.data.value) {
-                        return response.data.value;
-                    }
-                    return null;
-                }, function (response) {
-                    var errorBody = $translate.instant('failed_to_generate_tracked_entity_attribute');
-                    NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
-                    return response.data;
-                });
-            });
-        }*/
+        }
     };
 })
 
@@ -1216,13 +1200,22 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 /* factory for handling events */
 .factory('DHIS2EventFactory', function($http, DHIS2URL, NotificationService, $translate) {
-
-    var skipPaging = "&skipPaging=true";
+    var requestData = {
+        url: DHIS2URL + '/events.json',
+        params: {
+            ouMode: 'ACCESSIBLE',
+            trackedEntityInstance: entity,
+            orgUnit: orgUnit,
+            program: program,
+            programStatus: programStatus,
+            skipPaging: 'true'
+        }
+    }
     var errorHeader = $translate.instant("error");
     return {
 
         getEventsByStatus: function(entity, orgUnit, program, programStatus){
-            var promise = $http.get( DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + '&orgUnit=' + orgUnit + '&program=' + program + '&programStatus=' + programStatus  + skipPaging).then(function(response){
+            var promise = $http.get(requestData.url, { params: requestData.params }).then(function(response){
                 return response.data.events;
             }, function (response) {
 
@@ -1233,17 +1226,25 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getEventsByProgram: function(entity, program, attributeCategory){
-            var url = DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging;
+            var requestData = {
+                url: DHIS2URL + '/events.json',
+                params: {
+                    ouMode: 'ACCESSIBLE',
+                    trackedEntityInstance: entity,
+                    skipPaging: 'true',
+                },
+            };
 
             if(program){
-                url = url + '&program=' + program;
+                requestData.params.program = program;
             }
 
             if( attributeCategory && !attributeCategory.default){
-                url = url + '&attributeCc=' + attributeCategory.cc + '&attributeCos=' + attributeCategory.cp;
+                requestData.params.attributeCc = attributeCategory.cc;
+                requestData.params.attributeCos = attributeCategory.cp;
             }
 
-            var promise = $http.get( url ).then(function(response){
+            var promise = $http.get(requestData.url, { params: requestData.params }).then(function(response){
                 return response.data.events;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_fetch_events');
@@ -1252,12 +1253,19 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        getEventsByProgramStage: function(entity, programStage){
-            var url = DHIS2URL + '/events.json?ouMode=ACCESSIBLE&' + 'trackedEntityInstance=' + entity + skipPaging;
-            if(programStage){
-                url += '&programStage='+programStage;
+        getEventsByProgramStage: function(entity, program, programStage){
+            var requestData = {
+                url: DHIS2URL + '/events.json',
+                params: {
+                    ouMode: 'ACCESSIBLE',
+                    trackedEntityInstance: entity,
+                    skipPaging: 'true'
+                }
             }
-            var promise = $http.get(url).then(function(response){
+            if(programStage){
+                requestData.params.programStage = programStage;
+            }
+            var promise = $http.get(requestData.url, { params: requestData.params }).then(function(response){
                 return response.data.events;
             }, function (response) {
                 var errorBody = $translate.instant('failed_to_fetch_events');
@@ -1267,14 +1275,20 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getByOrgUnitAndProgram: function(orgUnit, ouMode, program, startDate, endDate){
-            var url;
+            var requestData = {
+                url: DHIS2URL + '/events.json',
+                params: {
+                    orgUnit: orgUnit,
+                    ouMode: ouMode,
+                    program: program,
+                    skipPaging: 'true',
+                }
+            };
             if(startDate && endDate){
-                url = DHIS2URL + '/events.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program + '&startDate=' + startDate + '&endDate=' + endDate + skipPaging;
+                requestData.params.startDate = startDate;
+                requestData.params.endDate = endDate;
             }
-            else{
-                url = DHIS2URL + '/events.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program + skipPaging;
-            }
-            var promise = $http.get( url ).then(function(response){
+            var promise = $http.get(requestData.url, { params: requestData.params }).then(function(response){
                 return response.data.events;
             }, function(response){
                 if( response && response.data && response.data.status === 'ERROR'){
@@ -1367,18 +1381,26 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
         getEventReport: function(orgUnit, ouMode, program, startDate, endDate, programStatus, eventStatus, pager){
 
-            var url = DHIS2URL + '/events/eventRows.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program;
+            var requestData = { 
+                url: DHIS2URL + '/events/eventRows.json',
+                params: {
+                    orgUnit: orgUnit,
+                    ouMode: ouMode,
+                    program: program,
+                }
+            }
 
             if( programStatus ){
-                url = url + '&programStatus=' + programStatus;
+                requestData.params.programStatus = programStatus;
             }
 
             if( eventStatus ){
-                url = url + '&eventStatus=' + eventStatus;
+                requestData.params.eventStatus = eventStatus;
             }
 
             if(startDate && endDate){
-                url = url + '&startDate=' + startDate + '&endDate=' + endDate ;
+                requestData.params.startDate = startDate;
+                requestData.params.endDate = endDate;
             }
 
             if( pager ){
@@ -1386,10 +1408,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 var pg = pager ? pager.page : 1;
                 pgSize = pgSize > 1 ? pgSize  : 1;
                 pg = pg > 1 ? pg : 1;
-                url = url + '&pageSize=' + pgSize + '&page=' + pg + '&totalPages=true';
+                requestData.params.pageSize = pgSize;
+                requestData.params.page = pg;
+                requestData.params.totalPages = 'true';
             }
 
-            var promise = $http.get( url ).then(function(response){
+            var promise = $http.get(requestData.url, {params: requestData.params }).then(function(response){
                 return response.data;
             }, function(response){
                 var errorBody = $translate.instant('failed_to_update_event');
@@ -1629,10 +1653,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
 .service('EntityQueryFactory', function(OperatorFactory, DateUtils){
 
-    this.getAttributesQuery = function(attributes, enrollment){
-
-        var query = {url: null, hasValue: false};
-        
+    this.getAttributesQueryParameters = function(attributes, enrollment){
+        var queryParameters = { filter: []};
+        var hasQueryParameters = false;
         angular.forEach(attributes, function(attribute){
 
             if(attribute.valueType === 'DATE' || attribute.valueType === 'NUMBER' || attribute.valueType === 'DATETIME'){
@@ -1640,7 +1663,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
                 if(attribute.operator === OperatorFactory.defaultOperators[0]){
                     if(attribute.exactValue && attribute.exactValue !== ''){
-                        query.hasValue = true;
+                        hasQueryParameters = true;
                         if(attribute.valueType === 'DATE' || attribute.valueType === 'DATETIME'){
                             attribute.exactValue = DateUtils.formatFromUserToApi(attribute.exactValue);
                         }
@@ -1654,36 +1677,28 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
                 if(attribute.operator === OperatorFactory.defaultOperators[1]){
                     if(attribute.startValue && attribute.startValue !== ''){
-                        query.hasValue = true;
+                        hasQueryParameters = true;
                         if(attribute.valueType === 'DATE' || attribute.valueType === 'DATETIME'){
                             attribute.startValue = DateUtils.formatFromUserToApi(attribute.startValue);
                         }
                         q += 'GT:' + attribute.startValue + ':';
                     }
                     if(attribute.endValue && attribute.endValue !== ''){
-                        query.hasValue = true;
+                        hasQueryParameters = true;
                         if(attribute.valueType === 'DATE' || attribute.valueType === 'DATETIME'){
                             attribute.endValue = DateUtils.formatFromUserToApi(attribute.endValue);
                         }
                         q += 'LT:' + attribute.endValue + ':';
                     }
                 }
-                if(query.url){
-                    if(q){
-                        q = q.substr(0,q.length-1);
-                        query.url = query.url + '&filter=' + attribute.id + ':' + q;
-                    }
-                }
-                else{
-                    if(q){
-                        q = q.substr(0,q.length-1);
-                        query.url = 'filter=' + attribute.id + ':' + q;
-                    }
+                if(q){
+                    q = q.substr(0,q.length-1);
+                    queryParameters.filter.push(attribute.id + ':' + q);
                 }
             }
             else{
                 if(attribute.value && attribute.value !== ''){
-                    query.hasValue = true;
+                    hasQueryParameters = true;
 
                     if(angular.isArray(attribute.value)){
                         var q = '';
@@ -1692,25 +1707,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         });
 
                         q = q.substr(0,q.length-1);
-
-                        if(query.url){
-                            if(q){
-                                query.url = query.url + '&filter=' + attribute.id + ':IN:' + q;
-                            }
-                        }
-                        else{
-                            if(q){
-                                query.url = 'filter=' + attribute.id + ':IN:' + q;
-                            }
+                        if(q){
+                            queryParameters.filter.push(attribute.id + ':IN:' + q);
                         }
                     }
                     else{
-                        if(query.url){
-                            query.url = query.url + '&filter=' + attribute.id + ':LIKE:' + attribute.value;
-                        }
-                        else{
-                            query.url = 'filter=' + attribute.id + ':LIKE:' + attribute.value;
-                        }
+                        queryParameters.filter.push(attribute.id + ':LIKE:' + attribute.value);
                     }
                 }
             }
@@ -1719,31 +1721,23 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         if(enrollment){
             var q = '';
             if(enrollment.programEnrollmentStartDate && enrollment.programEnrollmentStartDate !== ''){
-                query.hasValue = true;
-                q += '&programEnrollmentStartDate=' + DateUtils.formatFromUserToApi(enrollment.programEnrollmentStartDate);
+                hasQueryParameters = true;
+                queryParameters.programEnrollmentStartDate = DateUtils.formatFromUserToApi(enrollment.programEnrollmentStartDate);
             }
             if(enrollment.programEnrollmentEndDate && enrollment.programEnrollmentEndDate !== ''){
-                query.hasValue = true;
-                q += '&programEnrollmentEndDate=' + DateUtils.formatFromUserToApi(enrollment.programEnrollmentEndDate);
+                hasQueryParameters = true;
+                queryParameters.programEnrollmentEndDate = DateUtils.formatFromUserToApi(enrollment.programEnrollmentEndDate);
             }
             if(enrollment.programIncidentStartDate && enrollment.programIncidentStartDate !== ''){
-                query.hasValue = true;
-                q += '&programIncidentStartDate=' + DateUtils.formatFromUserToApi(enrollment.programIncidentStartDate);
+                hasQueryParameters = true;
+                queryParameters.programIncidentStartDate = DateUtils.formatFromUserToApi(enrollment.programIncidentStartDate);
             }
             if(enrollment.programIncidentEndDate && enrollment.programIncidentEndDate !== ''){
-                query.hasValue = true;
-                q += '&programIncidentEndDate=' + DateUtils.formatFromUserToApi(enrollment.programIncidentEndDate);
-            }
-            if(q){
-                if(query.url){
-                    query.url = query.url + q;
-                }
-                else{
-                    query.url = q;
-                }
+                hasQueryParameters = true;
+                queryParameters.programIncidentEndDate = DateUtils.formatFromUserToApi(enrollment.programIncidentEndDate);
             }
         }
-        return query;
+        return hasQueryParameters ? queryParameters : null;
 
     };
 
@@ -2445,19 +2439,15 @@ i
     var getPeriodDate = function(days){
         return moment().add(days,'days').format('YYYY-MM-DD');
     }
-    var getEventUrl = function(eventFilter){
-        var eventUrl = null;
-        if(eventFilter.eventStatus) eventUrl = "eventStatus="+eventFilter.eventStatus;
+    var setEventParameters = function(eventFilter, queryParameters){
+        if(eventFilter.eventStatus) queryParameters.eventStatus = eventFilter.eventStatus;
         if(eventFilter.eventCreatedPeriod){
-            if(eventUrl) eventUrl+= "&";
-            eventUrl+="eventStartDate="+getPeriodDate(eventFilter.eventCreatedPeriod.periodFrom);
-            eventUrl+="&eventEndDate="+getPeriodDate(eventFilter.eventCreatedPeriod.periodTo);
+            queryParameters.eventStartDate = getPeriodDate(eventFilter.eventCreatedPeriod.periodFrom);
+            queryParameters.eventEndDate = getPeriodDate(eventFilter.eventCreatedPeriod.periodTo);
         }
         if(eventFilter.programStage){
-            if(eventUrl) eventUrl+="&";
-            eventUrl+="programStage="+eventFilter.programStage;
+            queryParameters.programStage = eventFilter.programStage;
         }
-        return eventUrl;
     }
     var getCachedMultipleEventFiltersData = function(workingList, pager, sortColumn){
         var cachedData = cachedMultipleEventFiltersData[workingList.name];
@@ -2475,20 +2465,20 @@ i
         }
         return data;
     }
-    var getWorkingListDataWithMultipleEventFilters = function(searchParams, workingList, pager, sortColumn){
+    var getWorkingListDataWithMultipleEventFilters = function(orgUnit, queryParameters, workingList, pager, sortColumn){
         var def = $q.defer();
-        if(workingList.cachedSorting === searchParams.sortUrl && workingList.cachedOrgUnit === searchParams.orgUnitId){
+        if(workingList.cachedSorting === queryParameters.order && workingList.cachedOrgUnit === queryParameters.orgUnit){
             var data = getCachedMultipleEventFiltersData(workingList,pager);
             def.resolve(data);
         }else{
             var promises = [];
             angular.forEach(workingList.eventFilters, function(eventFilter){
-                var eventUrl = getEventUrl(eventFilter);
+                setEventParameters(eventFilter, queryParameters);
                 var tempPager = {
                     pageSize:1000,
                     page: 1
                 }
-                promises.push(TEIService.search(searchParams.orgUnitId, "SELECTED", searchParams.sortUrl, searchParams.programUrl, eventUrl,tempPager, true));
+                promises.push(TEIService.search(orgUnit, "SELECTED", queryParameters,tempPager, true));
             });
             $q.all(promises).then(function(response){
                 var data = { height: 0, width: 0, rows: []};
@@ -2510,8 +2500,8 @@ i
                 if(sortColumnIndex) data.rows = orderByKeyFilter(data.rows, sortColumnIndex, sortColumn.direction);
                 //order list
                 cachedMultipleEventFiltersData[workingList.name] = data;
-                workingList.cachedSorting = searchParams.sortUrl;
-                workingList.cachedOrgUnit = searchParams.orgUnitId;
+                workingList.cachedSorting = queryParameters.order;
+                workingList.cachedOrgUnit = queryParameters.orgUnit;
                 var data = getCachedMultipleEventFiltersData(workingList, pager, sortColumn);
                 def.resolve(data);
             });
@@ -2526,7 +2516,7 @@ i
         }
 
         if(!workingListsByProgram){
-            $http.get(DHIS2URL+"/trackedEntityInstanceFilters?fields=*&paging=false").then(function(response){
+            $http.get(DHIS2URL+'/trackedEntityInstanceFilters', { params: {fields: '*', paging: 'false' }}).then(function(response){
                 workingListsByProgram = {};
                 if(response && response.data && response.data.trackedEntityInstanceFilters && response.data.trackedEntityInstanceFilters.length > 0){
                     angular.forEach(response.data.trackedEntityInstanceFilters, function(workingList){
@@ -2556,29 +2546,33 @@ i
     }
 
     this.getWorkingListData = function(orgUnit, workingList, pager, sortColumn){
+        var queryParameters = {
+            program: workingList.program.id,
+        }
         var searchParams = {
             orgUnitId: orgUnit.id,
             programUrl: "program="+workingList.program.id,
             eventUrl: null
         }
         if(workingList.enrollmentStatus){
-            searchParams.programUrl += "&programStatus="+workingList.enrollmentStatus;
+            queryParameters.programStatus = workingList.enrollmentStatus;
         }
         if(sortColumn){
-            searchParams.sortUrl = "order="+sortColumn.id+':'+sortColumn.direction;
+            queryParameters.order = sortColumn.id+':'+sortColumn.direction;
         }
         if(workingList.enrollmentCreatedPeriod){
             var enrollmentStartDate = moment().add(workingList.enrollmentCreatedPeriod.periodFrom, 'days').format("YYYY-MM-DD");
             var enrollmentEndDate = moment().add(workingList.enrollmentCreatedPeriod.periodTo, 'days').format("YYYY-MM-DD");
-            searchParams.programUrl += "&programStartDate="+enrollmentStartDate+"&programEndDate="+enrollmentEndDate;
+            queryParameters.programStartDate = enrollmentStartDate;
+            queryParameters.programEndDate = enrollmentEndDate;
         }
         if(workingList.eventFilters){
             if(workingList.eventFilters.length > 1){
-                return getWorkingListDataWithMultipleEventFilters(searchParams, workingList, pager, sortColumn);
+                return getWorkingListDataWithMultipleEventFilters(orgUnit.id, queryParameters, workingList, pager, sortColumn);
             }
-            searchParams.eventUrl = getEventUrl(workingList.eventFilters[0]);
+            setEventParameters(workingList.eventFilters[0], queryParameters);
         }
-        return TEIService.search(searchParams.orgUnitId, "SELECTED", searchParams.sortUrl, searchParams.programUrl, searchParams.eventUrl, pager, true);
+        return TEIService.search(orgUnit.id, "SELECTED", queryParameters, pager, true);
     }
     this.setTrackedEntityList = function(trackedEntityList){
         this.trackedEntityList = trackedEntityList;
@@ -2630,10 +2624,11 @@ i
         return searchConfig;
     }
 
-    var getSearchParams = function(searchGroup, program,trackedEntityType, orgUnit,pager, searchScope){
+    var getSearchData = function(searchGroup, program,trackedEntityType, orgUnit,pager, searchScope){
         var uniqueSearch = false;
         var numberOfSetAttributes = 0;
-        var query = {url: null, hasValue: false};
+        var queryParameters = { filter: [] };
+        var hasQueryParameters = false;
         if(searchGroup){
             angular.forEach(searchGroup.attributes, function(attr){
                 if(searchGroup.uniqueGroup) uniqueSearch = true;
@@ -2646,7 +2641,7 @@ i
 
 
                         if(exactValue && exactValue !== ''){
-                            query.hasValue = true;
+                            hasQueryParameters = true;
                             if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
                                 exactValue = DateUtils.formatFromUserToApi(exactValue);
                             }
@@ -2662,40 +2657,31 @@ i
                         var startValue =  searchGroup[attr.id] ? searchGroup[attr.id].startValue : null;
                         var endValue = searchGroup[attr.id] ? searchGroup[attr.id].endValue : null;
                         if(startValue && startValue !== ''){
-                            query.hasValue = true;
+                            hasQueryParameters = true;
                             if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
                                 startValue = DateUtils.formatFromUserToApi(startValue);
                             }
                             q += 'GT:' + startValue + ':';
                         }
                         if(endValue && endValue !== ''){
-                            query.hasValue = true;
+                            hasQueryParameters = true;
                             if(attr.valueType === 'DATE' || attr.valueType === 'DATETIME'){
                                 endValue = DateUtils.formatFromUserToApi(endValue);
                             }
                             q += 'LT:' + endValue + ':';
                         }
                     }
-                    if(query.url){
-                        if(q){
-                            numberOfSetAttributes++;
-                            q = q.substr(0,q.length-1);
-                            query.url = query.url + '&filter=' + attr.id + ':' + q;
-                        }
-                    }
-                    else{
-                        if(q){
-                            numberOfSetAttributes++;
-                            q = q.substr(0,q.length-1);
-                            query.url = 'filter=' + attr.id + ':' + q;
-                        }
+                    if(q){
+                        numberOfSetAttributes++;
+                        q = q.substr(0,q.length-1);
+                        queryParameters.filter.push(attr.id + ':' +q);
                     }
                 }
                 else{
                     var value = searchGroup[attr.id] ? searchGroup[attr.id].value : null;
                     if(value == null) value = searchGroup[attr.id];
                     if(value && value !== ''){
-                        query.hasValue = true;
+                        hasQueryParameters = true;
     
                         if(angular.isArray(value)){
                             var q = '';
@@ -2704,50 +2690,34 @@ i
                             });
     
                             q = q.substr(0,q.length-1);
-    
-                            if(query.url){
-                                if(q){
-                                    numberOfSetAttributes++;
-                                    query.url = query.url + '&filter=' + attr.id + ':IN:' + q;
-                                }
-                            }
-                            else{
-                                if(q){
-                                    numberOfSetAttributes++;
-                                    query.url = 'filter=' + attr.id + ':IN:' + q;
-                                }
+                            if(q){
+                                numberOfSetAttributes++;
+                                queryParameters.filter.push(attr.id+':IN:'+q);
                             }
                         }
                         else{
-                            if(query.url){
-                                numberOfSetAttributes++;
-                                if(attr.operator === "Eq"){
-                                    query.url = query.url + '&filter=' + attr.id + ':EQ:' + value;
-                                }else{
-                                    query.url = query.url + '&filter=' + attr.id + ':LIKE:' + value;
-                                }
-                                
-                            }
-                            else{
-                                numberOfSetAttributes++;
-                                if(attr.operator === "Eq"){
-                                    query.url = 'filter=' + attr.id + ':EQ:' + value;
-                                }else{
-                                    query.url = 'filter=' + attr.id + ':LIKE:' + value;
-                                }
-                                
+                            numberOfSetAttributes++;
+                            if(attr.operator === "Eq"){
+                                queryParameters.filter.push(attr.id + ':EQ:'+value);
+                            }else{
+                                queryParameters.filter.push(attr.id + ':LIKE:' + value);
                             }
                         }
                     }
                 }
             });
         }
-        if(query.hasValue &&(uniqueSearch || numberOfSetAttributes >= searchGroup.minAttributesRequiredToSearch)){
+        if(hasQueryParameters &&(uniqueSearch || numberOfSetAttributes >= searchGroup.minAttributesRequiredToSearch)){
             var programOrTETUrl = searchScope === searchScopes.PROGRAM ? "program="+program.id :"trackedEntityType="+trackedEntityType.id;
-
+            if(searchScope === searchScopes.PROGRAM){
+                queryParameters.program = program.id;
+            }else{
+                queryParameters.trackedEntityType = trackedEntityType.id;
+            }
             var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
-            return { orgUnit: searchOrgUnit, ouMode: searchGroup.ouMode.name, programOrTETUrl: programOrTETUrl, queryUrl: query.url, pager: pager, uniqueSearch: uniqueSearch };
+            return { orgUnit: searchOrgUnit, ouMode: searchGroup.ouMode.name, queryParameters: queryParameters, pager: pager, uniqueSearch: uniqueSearch };
         }
+        return null;
     }
     
     this.getSearchConfigForProgram = function(program, orgUnitUniqueAsSearchGroup) {
@@ -2780,9 +2750,9 @@ i
     }
 
     this.programScopeSearchCount = function(searchGroup,tetSearchGroup, program, trackedEntityType, orgUnit, pager){
-        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.PROGRAM);
-        if(params){
-            return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+        var searchData = getSearchData(searchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.PROGRAM);
+        if(searchData){
+            return TEIService.searchCount(searchData.orgUnit.id, searchData.ouMode,searchData.queryParameters, searchData.pager, true).then(function(response){
                 if(response){
                     return response;
                 }else{
@@ -2799,9 +2769,9 @@ i
         }
     }
     var tetScopeSearchCount = this.tetScopeSearchCount = function(tetSearchGroup, trackedEntityType, orgUnit, pager){
-        var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET);
-        if(params){
-            return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+        var searchData = getSearchData(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET);
+        if(searchData){
+            return TEIService.searchCount(searchData.orgUnit.id, searchData.ouMode,searchData.queryParameters, searchData.pager, true).then(function(response){
                 if(response){
                     return response;
                 }
@@ -2848,15 +2818,13 @@ i
     }
 
     this.programScopeSearch = function(programSearchGroup, tetSearchGroup, program, trackedEntityType, orgUnit, pager){
-        var params = getSearchParams(programSearchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.PROGRAM);
-        if(params){
-
-        }
-        return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+        var searchData = getSearchData(programSearchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.PROGRAM);
+        if(searchData){
+            return TEIService.search(searchData.orgUnit.id, searchData.ouMode,searchData.queryParameters, searchData.pager, true).then(function(response){
                 if(response && response.rows && response.rows.length > 0){
                     var result = { data: response, callingScope: searchScopes.PROGRAM, resultScope: searchScopes.PROGRAM };
                     var def = $q.defer();
-                    if(params.uniqueSearch){
+                    if(searchData.uniqueSearch){
                         result.status = "UNIQUE";
                     }else{
                         result.status = "MATCHES";
@@ -2888,15 +2856,16 @@ i
                 }
                 return d.promise;
             });
+        }
 
     }
     var tetScopeSearch = this.tetScopeSearch = function(tetSearchGroup,trackedEntityType, orgUnit, pager){
-        var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET);
-        if(params){
-            return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+        var searchData = getSearchData(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET);
+        if(searchData){
+            return TEIService.search(searchData.orgUnit.id, searchData.ouMode,searchData.queryParameters, searchData.pager, true).then(function(response){
                 var result = {data: response, callingScope: searchScopes.TET, resultScope: searchScopes.TET };
                 if(response && response.rows && response.rows.length > 0){
-                    if(params.uniqueSearch){
+                    if(searchData.uniqueSearch){
                         result.status = "UNIQUE";
                     }else{
                         result.status = "MATCHES";
