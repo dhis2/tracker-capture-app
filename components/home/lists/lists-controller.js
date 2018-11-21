@@ -212,7 +212,7 @@ trackerCapture.controller('ListsController',function(
             };
 
             if($scope.base.selectedProgram){
-                customConfig.queryParameters.program = program;
+                customConfig.queryParameters.program = $scope.base.selectedProgram.id;
                 if($scope.customWorkingListValues.programStatus){
                     customConfig.queryParameters.programStatus = $scope.customWorkingListValues.programStatus;
                 }
@@ -232,10 +232,9 @@ trackerCapture.controller('ListsController',function(
             $scope.currentTrackedEntityList.loading = true;
             customConfig.queryAndSortUrl = customConfig.queryUrl;
             if(sortColumn){
-                var order = '&order=' + sortColumn.id + ':' +sortColumn.direction;
-                customConfig.queryAndSortUrl = customConfig.queryAndSortUrl.concat(order);
+                customConfig.queryParameters.order = sortColumn.id + ':' +sortColumn.direction;
             }
-            TEIService.search(customConfig.orgUnit.id,customConfig.ouMode.name, customConfig.queryAndSortUrl, customConfig.programUrl, customConfig.attributeUrl.url, $scope.pager, true)
+            TEIService.search(customConfig.orgUnit.id,customConfig.ouMode.name, customConfig.queryParameters, $scope.pager, true)
             .then(setCurrentTrackedEntityListData);
         }
 
