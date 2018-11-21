@@ -11,7 +11,7 @@ trackerCapture.controller('NotesController',
                 SessionStorageService,
                 orderByFilter) {
     var userProfile = SessionStorageService.get('USER_PROFILE');
-    var storedBy = userProfile && userProfile.username ? userProfile.username : '';
+    var storedBy = userProfile && userProfile.userCredentials && userProfile.userCredentials.username ? userProfile.userCredentials.username : '';
 
     var today = DateUtils.getToday();
     
