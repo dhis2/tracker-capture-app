@@ -138,11 +138,18 @@ trackerCapture.controller('SearchController',function(
                 }
             }
             var promise;
+            var refetchFn = null;
             if(currentSearchScope === searchScopes.PROGRAM){
                 var tetSearchGroup = SearchGroupService.findValidTetSearchGroup(searchGroup, $scope.tetSearchConfig, $scope.base.attributesById);
-                promise = SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit)
+                promise = SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit);
+                refetchFn = function(pager) {
+                    return SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, pager);
+                }
             }else{
                 promise = SearchGroupService.tetScopeSearch(searchGroup,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit);
+                refetchFn = function(pager) {
+                    return SearchGroupService.tetScopeSearch(searchGroup,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, pager);
+                }
             }
 
             return promise.then(function(res){
@@ -157,7 +164,7 @@ trackerCapture.controller('SearchController',function(
                         return;
                     }
                 }
-                return showResultModal(res, searchGroup).then(function(){ searching = false;});
+                return showResultModal(res, searchGroup, refetchFn).then(function(){ searching = false;});
             });
 
         }
@@ -225,7 +232,7 @@ trackerCapture.controller('SearchController',function(
             return false; 
         }
 
-        var showResultModal = function(res, searchGroup){
+        var showResultModal = function(res, searchGroup, refetchFn){
             var internalService = {
                 translateWithOULevelName: translateWithOULevelName,
                 translateWithTETName: translateWithTETName,
@@ -277,7 +284,7 @@ trackerCapture.controller('SearchController',function(
                     }
 
                     $scope.refetchData = function(pager, sortColumn){
-                        refetchDataFn(pager, sortColumn).then(function(newRes)
+                        refetchDataFn(pager).then(function(newRes)
                         {
                             res = newRes;
                             loadData();
@@ -286,7 +293,7 @@ trackerCapture.controller('SearchController',function(
                 },
                 resolve: {
                     refetchDataFn: function(){
-                        return function(pager,sortColumn){ return SearchGroupService.search(searchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, pager); }
+                        return refetchFn;
                     },
 
                     orgUnit: function(){

@@ -656,7 +656,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 params: {
                     ouMode: 'ACCESSIBLE',
                     program: program,
-                    orgUnit: orgUnit,
+                    ou: orgUnit,
                     ouMode: ouMode,
                     startDate: startDate,
                     endDate: endDate,
