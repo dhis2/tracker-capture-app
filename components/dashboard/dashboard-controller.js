@@ -684,6 +684,6 @@ trackerCapture.controller('DashboardController',
     };
 
     $scope.showManageTeiDropdown = function(){
-        return $scope.trackedEntityType && $scope.trackedEntityType.access.data.write && $scope.selectedProgram && $scope.selectedProgram.access.data.write;
+        return $scope.trackedEntityType && $scope.selectedProgram && $scope.selectedProgram.access.data.write;
     }
 });
