@@ -26,10 +26,10 @@
     </tr>
     <tr>
         <td ng-if="!selectedProgramForRelative">
-            {{selectedProgram.enrollmentDateLabel}}
+            {{selectedProgram.enrollmentDateLabel ? selectedProgram.enrollmentDateLabel : ('enrollment_date' | translate)}}
         </td>
         <td ng-if="selectedProgramForRelative">
-            {{selectedProgramForRelative.enrollmentDateLabel}}
+            {{selectedProgramForRelative.enrollmentDateLabel ? selectedProgramForRelative.enrollmentDateLabel : ('enrollment_date' | translate)}}
         </td>
         <td class="absorbing-column">
             <input type="text"
@@ -49,7 +49,7 @@
     </tr>
     <tr ng-if="selectedProgram.displayIncidentDate && !selectedProgramForRelative">
         <td>
-            {{selectedProgram.incidentDateLabel}}
+            {{selectedProgram.incidentDateLabel ? selectedProgram.incidentDateLabel : ('incident_date' | translate)}}
         </td>
         <td class="absorbing-column">
             <input type="text"
@@ -75,7 +75,7 @@
     </tr>
     <tr ng-if="selectedProgramForRelative.displayIncidentDate && selectedProgramForRelative">
         <td>
-            {{selectedProgramForRelative.incidentDateLabel}}
+            {{selectedProgramForRelative.incidentDateLabel ? selectedProgramForRelative.incidentDateLabel : ('incident_date' | translate)}}
         </td>
         <td class="absorbing-column">
             <input type="text"
