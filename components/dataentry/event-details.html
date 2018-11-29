@@ -72,15 +72,11 @@
 <!-- coordinates end -->
 
 <!-- attribute category options begin -->
-<div class="row" ng-if="selectedProgram.categoryCombo && !selectedProgram.categoryCombo.isDefault && currentEvent && currentEvent.attributeCategoryOptions && currentEvent.attributeOptionCombo">
+<div class="row" ng-if="selectedProgram.categoryCombo && !selectedProgram.categoryCombo.isDefault && selectedProgram.categoryCombo.categories">
     <div class="col-sm-12">
-        
-        <a href 
-           ng-click="editAttributeCategoryOptions()" 
-           ng-attr-title="{{'edit' | translate}}">
+        <a href ng-click="editAttributeCategoryOptions()" ng-attr-title="{{'edit' | translate}}">
             {{selectedProgram.categoryCombo.displayName}}  <i class="fa fa-pencil-square-o"></i>
         </a>        
-        
         <div ng-if="showAttributeCategoryOptions">
             <table class="table table-striped table-bordered">
                 <tr ng-repeat="category in selectedProgram.categoryCombo.categories">
@@ -91,7 +87,7 @@
                         <ui-select ng-model="category.selectedOption"
                                 theme="select2"
                                 name="foo"
-                                on-select="saveAttributeCategoryOptions()"
+                                on-select="saveAttributeCategoryOptions(category.selectedOption)"
                                 style="width: 100%">
                             <ui-select-match allow-clear="false" ng-class="getOptionSaveNotifcationClass(category.id)"  class="form-control-ui-select"  ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
                             <ui-select-choices  repeat="option in category.categoryOptions | filter:{displayName:$select.search} | limitTo:maxOptionSize">

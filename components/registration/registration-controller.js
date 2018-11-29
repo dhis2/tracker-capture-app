@@ -62,6 +62,8 @@ trackerCapture.controller('RegistrationController',
     $scope.fileNames = CurrentSelection.getFileNames();
     $scope.currentFileNames = $scope.fileNames;
 
+    $scope.selectedCategories = [];
+    
     //Placeholder till proper settings for time is implemented. Currently hard coded to 24h format.
     $scope.timeFormat = '24h';
 
@@ -1269,6 +1271,63 @@ trackerCapture.controller('RegistrationController',
         }
         return attributeMandatory || $scope.mandatoryFields[attributeId];
     }
+
+    $scope.editAttributeCategoryOptions = function(){
+        $scope.showAttributeCategoryOptions = !$scope.showAttributeCategoryOptions;
+        
+        if( $scope.showAttributeCategoryOptions && $scope.currentEvent && $scope.currentEvent.attributeCategoryOptions ){                        
+            var selectedOptions = $scope.currentEvent.attributeCategoryOptions.split(";");
+            var reverse = false;
+            for (var i=0; i<$scope.selectedCategories.length; i++) {
+                for(var j=0; j<$scope.selectedCategories[i].categoryOptions.length; j++) {
+                    if($scope.selectedCategories[i].categoryOptions[j].id === selectedOptions[i]){
+                        $scope.selectedCategories[i].selectedOption = $scope.selectedCategories[i].categoryOptions[j];
+                        break;
+                    }
+                    else{
+                        reverse = true;
+                    }
+                }
+            }
+            
+            if( reverse ){
+                selectedOptions = selectedOptions.reverse();
+                $scope.currentEvent.attributeCategoryOptions = selectedOptions.join(';');
+                for (var i=0; i<$scope.selectedCategories.length; i++) {
+                    for(var j=0; j<$scope.selectedCategories[i].categoryOptions.length; j++) {
+                        if($scope.selectedCategories[i].categoryOptions[j].id === selectedOptions[i]){
+                            $scope.selectedCategories[i].selectedOption = $scope.selectedCategories[i].categoryOptions[j];
+                            break;
+                        }
+                    }
+                }
+            }
+        }        
+    };
+
+    $scope.saveAttributeCategoryOptions = function(option){
+        var selectedOptions = [], optionsReady = true;
+        $scope.changedCat = {id: -1, saved: false};
+        if($scope.selectedCategories.length < 1) {
+            $scope.selectedCategories.push(option.id);
+        } else {
+            for (var i = 0; i < $scope.selectedCategories.length; i++) {
+            
+                if($scope.selectedCategories[i].selectedOption.id !== $scope.currentEvent.attributeCategoryOptions.split(';')[i] ){                
+                    $scope.changedCat.id = $scope.selectedCategories[i].id;
+                }
+                if ($scope.selectedCategories[i].selectedOption && $scope.selectedCategories[i].selectedOption.id) {
+                    selectedOptions.push($scope.selectedCategories[i].selectedOption.id);
+                }
+                else{
+                    optionsReady = false;
+                }
+            }
+        }
+        
+        
+        var acos = selectedOptions.join(';');
+    };
 
     var showTetRegistrationButtons = function(){
         return $scope.trackedEntityTypes.selected && $scope.attributes && $scope.attributes.length > 3;
