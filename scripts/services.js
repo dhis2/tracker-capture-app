@@ -2416,6 +2416,11 @@ i
                         ev.enrollment = enrollment.enrollment;
                         delete ev.event;
                         ev = reconstructEvent(ev, stage, CurrentSelection.getOptionSets());
+
+                        if(availableEvent.attributeOptionCombo) {
+                            ev.attributeOptionCombo = availableEvent.attributeOptionCombo;
+                        }
+
                         dhis2Events.events.push(ev);
                     }
 

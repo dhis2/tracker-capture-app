@@ -62,7 +62,7 @@ trackerCapture.controller('RegistrationController',
     $scope.fileNames = CurrentSelection.getFileNames();
     $scope.currentFileNames = $scope.fileNames;
 
-    $scope.selectedCategories = [];
+    $scope.selectedCategories = {};
     
     //Placeholder till proper settings for time is implemented. Currently hard coded to 24h format.
     $scope.timeFormat = '24h';
@@ -495,7 +495,7 @@ trackerCapture.controller('RegistrationController',
                         enrollment.enrollmentDate = $scope.selectedEnrollment.enrollmentDate;
                         enrollment.incidentDate = $scope.selectedEnrollment.incidentDate === '' ? $scope.selectedEnrollment.enrollmentDate : $scope.selectedEnrollment.incidentDate;
 
-                        if( $scope.selectedEnrollment.geometry ){
+                        if($scope.selectedEnrollment.geometry){
                             enrollment.geometry = $scope.selectedEnrollment.geometry;
                         }
 
@@ -507,6 +507,9 @@ trackerCapture.controller('RegistrationController',
                                     enrollment.enrollment = en.importSummaries[0].reference;
                                     $scope.selectedEnrollment = enrollment;
                                     var avilableEvent = $scope.currentEvent && $scope.currentEvent.event ? $scope.currentEvent : null;
+                                    if($scope.stringSelectedCategoryOptions) {
+                                        avilableEvent.attributeOptionCombo = $scope.stringSelectedCategoryOptions;
+                                    }
                                     var dhis2Events = EventUtils.autoGenerateEvents($scope.tei.trackedEntityInstance, $scope.selectedProgram, $scope.selectedOrgUnit, enrollment, avilableEvent);
                                     if (dhis2Events.events.length > 0) {
                                         DHIS2EventFactory.create(dhis2Events).then(function () {
@@ -1305,28 +1308,17 @@ trackerCapture.controller('RegistrationController',
         }        
     };
 
-    $scope.saveAttributeCategoryOptions = function(option){
+    $scope.saveAttributeCategoryOptions = function(category){
         var selectedOptions = [], optionsReady = true;
         $scope.changedCat = {id: -1, saved: false};
-        if($scope.selectedCategories.length < 1) {
-            $scope.selectedCategories.push(option.id);
-        } else {
-            for (var i = 0; i < $scope.selectedCategories.length; i++) {
-            
-                if($scope.selectedCategories[i].selectedOption.id !== $scope.currentEvent.attributeCategoryOptions.split(';')[i] ){                
-                    $scope.changedCat.id = $scope.selectedCategories[i].id;
-                }
-                if ($scope.selectedCategories[i].selectedOption && $scope.selectedCategories[i].selectedOption.id) {
-                    selectedOptions.push($scope.selectedCategories[i].selectedOption.id);
-                }
-                else{
-                    optionsReady = false;
-                }
-            }
-        }
+
+        $scope.selectedCategories[category.id] = category.selectedOption.id;
+
         
         
-        var acos = selectedOptions.join(';');
+        if($scope.selectedProgram.categoryCombo.categories && $scope.selectedCategories) {
+            $scope.stringSelectedCategoryOptions =  $scope.selectedProgram.categoryCombo.categories.map(function(category) {return $scope.selectedCategories[category.id]}).join(";");
+         }
     };
 
     var showTetRegistrationButtons = function(){
