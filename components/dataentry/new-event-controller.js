@@ -255,6 +255,7 @@ trackerCapture.controller('EventCreationController',
         //for saving category combo
         if ($scope.selectedProgram.categoryCombo && !$scope.selectedProgram.categoryCombo.isDefault) {
             if ($scope.selectedOptions.length !== $scope.selectedCategories.length) {
+                $scope.lockButton = false;
                 NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("fill_all_category_options"));
                 return;
             }
