@@ -304,32 +304,50 @@ trackerCapture.controller('EnrollmentController',
             });
         };
 
+        var completeEnrollmentAllowed = function(){
+            var canComplete = true;
+            angular.forEach($scope.allEventsSorted, function(event){
+                if(event.status === "ACTIVE") {
+                    canComplete = false;
+                }
+            });
+            return canComplete;
+        };
+
         $scope.completeReopenEnrollment = function () {
             
             if($scope.enrollmentForm && $scope.enrollmentForm.$invalid){
                 NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("form_invalid"));
                 return;
             }
-            
-            var modalOptions = {
-                closeButtonText: 'no',
-                actionButtonText: 'yes',
-                headerText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'complete_enrollment' : 'reopen_enrollment',
-                bodyText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'are_you_sure_to_complete_enrollment' : 'are_you_sure_to_reopen_enrollment'
-            };
 
+            if(!completeEnrollmentAllowed()) {
+                var modalOptions = {
+                    actionButtonText: 'OK',
+                    headerText: 'complete_enrollment_failed',
+                    bodyText: 'complete_active_events_before_completing_enrollment'
+                };
 
-            ModalService.showModal({}, modalOptions).then(function (result) {
-                
-                var en = angular.copy( $scope.selectedEnrollment );
-                en.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
-                EnrollmentService.update( en ).then(function (data) {
-                    if( data && data.status === 'OK' ){
-                        $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
-                        $scope.loadEnrollmentDetails($scope.selectedEnrollment);
-                    }
+                ModalService.showModal({},modalOptions);
+            } else {
+                var modalOptions = {
+                    closeButtonText: 'no',
+                    actionButtonText: 'yes',
+                    headerText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'complete_enrollment' : 'reopen_enrollment',
+                    bodyText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'are_you_sure_to_complete_enrollment' : 'are_you_sure_to_reopen_enrollment'
+                };
+
+                ModalService.showModal({}, modalOptions).then(function (result) {
+                    var en = angular.copy( $scope.selectedEnrollment );
+                    en.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
+                    EnrollmentService.update( en ).then(function (data) {
+                        if( data && data.status === 'OK' ){
+                            $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
+                            $scope.loadEnrollmentDetails($scope.selectedEnrollment);
+                        }
+                    });
                 });
-            });
+            }
         };
 
         var canDeleteEnrollment = function(){
