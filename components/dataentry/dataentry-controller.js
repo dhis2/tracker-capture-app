@@ -1993,18 +1993,6 @@ trackerCapture.controller('DataEntryController',
         return 'form-control';
     };
 
-    var completeEnrollmentAllowed = function(ignoreEventId){
-        for(var i = 0; i < $scope.programStages.length; i++ ) {
-            for(var e = 0; e < $scope.eventsByStage[$scope.programStages[i].id].length; e++) {
-                if($scope.eventsByStage[$scope.programStages[i].id][e].status ==='ACTIVE' && $scope.eventsByStage[$scope.programStages[i].id][e].event !== ignoreEventId){
-                    return false;
-                }
-            }
-        }
-        return true;
-    };
-    
-    
     var completeEnrollment = function () {
         $scope.deleteScheduleAndOverdueEvents().then(function(result){
             
@@ -2149,24 +2137,15 @@ trackerCapture.controller('DataEntryController',
         }
         ModalService.showModal(modalDefaults, modalOptions).then(function (modalResult) {
             if(modalResult===modalCompleteIncompleteActions.completeEnrollment){
-                if(!completeEnrollmentAllowed(dhis2Event.event)){
-                    modalOptions = {
-                        actionButtonText: 'OK',
-                        headerText: 'complete_enrollment_failed',
-                        bodyText: 'complete_active_events_before_completing_enrollment'
-                    };
-                    ModalService.showModal({},modalOptions);
-                }else{
-                    modalOptions = {
-                        closeButtonText: 'cancel',
-                        actionButtonText: 'complete',
-                        headerText: 'complete_enrollment',
-                        bodyText: 'are_you_sure_to_complete_enrollment_delete_schedule'
-                    };
-                    ModalService.showModal({},modalOptions).then(function(){
-                        $scope.executeCompleteIncompleteEvent(dhis2Event,modalResult);
-                    });
-                }
+                modalOptions = {
+                    closeButtonText: 'cancel',
+                    actionButtonText: 'complete',
+                    headerText: 'complete_enrollment',
+                    bodyText: 'are_you_sure_to_complete_enrollment_delete_schedule'
+                };
+                ModalService.showModal({},modalOptions).then(function(){
+                    $scope.executeCompleteIncompleteEvent(dhis2Event,modalResult);
+                });
             }else{
                 $scope.executeCompleteIncompleteEvent(dhis2Event,modalResult);               
             }
