@@ -2783,7 +2783,7 @@ i
         var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.PROGRAM);
         if(params){
             return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
-                if(response){
+                if(response || response === 0){
                     return response;
                 }else{
                     return tetScopeSearchCount(tetSearchGroup, trackedEntityType, orgUnit, pager);
