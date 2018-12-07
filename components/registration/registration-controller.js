@@ -34,7 +34,8 @@ trackerCapture.controller('RegistrationController',
                 AuthorityService,
                 SessionStorageService,
                 AttributeUtils,
-                TCOrgUnitService) {
+                TCOrgUnitService,
+                ProgramFactory) {
     var prefilledTet = null;
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
@@ -795,44 +796,67 @@ trackerCapture.controller('RegistrationController',
         return status;
     };
 
+    var allPrograms = null;
+    var getAllPrograms = function () {
+        var def = $q.defer();
+        if(allPrograms) {
+            def.resolve(allPrograms);
+        }else{
+            ProgramFactory.getAll().then(function(result) {
+                allPrograms = result.programs;
+                def.resolve(allPrograms);
+            });
+        }
+
+        return def.promise;
+
+    }
+
+
     $scope.getTrackerAssociate = function (selectedAttribute, existingAssociateUid) {
-        var modalInstance = $modal.open({
-            templateUrl: 'components/teiadd/tei-add.html',
-            controller: 'TEIAddController',
-            windowClass: 'modal-full-window',
-            resolve: {
-                relationshipTypes: function () {
-                    return $scope.relationshipTypes;
-                },
-                addingRelationship: function () {
-                    return false;
-                },
-                selections: function () {
-                    return CurrentSelection.get();
-                },
-                selectedTei: function () {
-                    return $scope.selectedTei;
-                },
-                selectedAttribute: function () {
-                    return selectedAttribute;
-                },
-                existingAssociateUid: function () {
-                    return existingAssociateUid;
-                },
-                selectedProgram: function () {
-                    return $scope.selectedProgram;
-                },
-                relatedProgramRelationship: function () {
-                    return $scope.relatedProgramRelationship;
+        return getAllPrograms().then(function(allProgramsResult){
+            var modalInstance = $modal.open({
+                templateUrl: 'components/teiadd/tei-add.html',
+                controller: 'TEIAddController',
+                windowClass: 'modal-full-window',
+                resolve: {
+                    relationshipTypes: function () {
+                        return $scope.relationshipTypes;
+                    },
+                    addingRelationship: function () {
+                        return false;
+                    },
+                    selections: function () {
+                        return CurrentSelection.get();
+                    },
+                    selectedTei: function () {
+                        return $scope.selectedTei;
+                    },
+                    selectedAttribute: function () {
+                        return selectedAttribute;
+                    },
+                    existingAssociateUid: function () {
+                        return existingAssociateUid;
+                    },
+                    selectedProgram: function () {
+                        return $scope.selectedProgram;
+                    },
+                    relatedProgramRelationship: function () {
+                        return $scope.relatedProgramRelationship;
+                    },
+                    allPrograms: function () {
+                        return allProgramsResult;
+                    },
                 }
-            }
-        });
-        return modalInstance.result.then(function (res) {
-            if (res && res.id) {
-                //Send object with tei id and program id
-                $scope.selectedTei[selectedAttribute.id] = res.id;
-            }
-            return res;
+            });
+            return modalInstance.result.then(function (res) {
+                if (res && res.id) {
+                    //Send object with tei id and program id
+                    $scope.selectedTei[selectedAttribute.id] = res.id;
+                }
+                return res;
+            });
+
         });
     };
 

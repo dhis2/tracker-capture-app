@@ -176,19 +176,16 @@ trackerCapture.controller('TEIAddController',
         else {
             $scope.teiAddLabel = $scope.selectedAttribute && $scope.selectedAttribute.displayName ? $scope.selectedAttribute.displayName : $translate.instant('tracker_associate');
             $scope.addingTeiAssociate = true;
-            ProgramFactory.getProgramsByOu($scope.selectedOrgUnit,true, $scope.selectedProgram).then(function (response) {
-                var programs = response.programs;
-                if ($scope.selectedAttribute && $scope.selectedAttribute.trackedEntityType && $scope.selectedAttribute.trackedEntityType.id) {
-                    programs = [];
-                    angular.forEach(response.programs, function (pr) {
-                        if (pr.trackedEntityType && pr.trackedEntityType.id === $scope.selectedAttribute.trackedEntityType.id) {
-                            programs.push(pr);
-                        }
-                    });
-                }
-                $scope.programs = AccessUtils.toWritable(programs);
-                $scope.selectedProgram = response.selectedProgram;
-            });
+            var programs = allPrograms;
+            if ($scope.selectedAttribute && $scope.selectedAttribute.trackedEntityType && $scope.selectedAttribute.trackedEntityType.id) {
+                programs = [];
+                angular.forEach(allPrograms, function (pr) {
+                    if (pr.trackedEntityType && pr.trackedEntityType.id === $scope.selectedAttribute.trackedEntityType.id) {
+                        programs.push(pr);
+                    }
+                });
+            }
+            $scope.relatedAvailablePrograms = AccessUtils.toWritable(programs);
 
             if (existingAssociateUid) {
                 TEIService.get(existingAssociateUid, $scope.optionSets, $scope.attributesById).then(function (data) {
