@@ -6,7 +6,7 @@
             </th>
         </tr>
     </thead>
-    <tbody ng-repeat="dhis2Event in eventsByStage[currentStage.id]">
+    <tbody ng-repeat="dhis2Event in eventsByStage[currentStage.id] track by $index">
         <tr ng-click="showDataEntry(dhis2Event, false, false)" ng-if="eventsByStage[currentStage.id].length > 1">
             <td ng-class="getEventStyle(dhis2Event)" class="cursor-pointer" ng-repeat="col in eventGridColumns.partial">
                 <span ng-switch="col.valueType">
