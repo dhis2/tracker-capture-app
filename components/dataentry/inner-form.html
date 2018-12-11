@@ -218,7 +218,8 @@
                     dh-current-element="currentElement"
                     dh-event="currentEvent.event"
                     dh-id="prStDe.dataElement.id"
-                    dh-click="saveDataValueForRadio(prStDe, currentEvent, value)">
+                    dh-click="saveDataValueForRadio(prStDe, currentEvent, value)"
+                    ng-disabled="!dataElementEditable(prStDe)>
                 </d2-radio-button>
             </div>
             <div class="not-for-screen">
