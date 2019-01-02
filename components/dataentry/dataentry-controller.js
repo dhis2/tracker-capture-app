@@ -32,7 +32,8 @@ trackerCapture.controller('DataEntryController',
                 EventCreationService,
                 AuthorityService,
                 AccessUtils,
-                TCOrgUnitService) {
+                TCOrgUnitService,
+                MetaDataFactory) {
     
     //Unique instance id for the controller:
     $scope.APIURL = DHIS2URL;
@@ -102,6 +103,17 @@ trackerCapture.controller('DataEntryController',
             });
             
             CurrentSelection.setAttributesById($scope.attributesById);
+        });
+    }
+
+    $scope.optionSets = CurrentSelection.getOptionSets();        
+    if(!$scope.optionSets){
+        $scope.optionSets = [];
+        MetaDataFactory.getAll('optionSets').then(function(optionSets){
+            angular.forEach(optionSets, function(optionSet){                        
+                $scope.optionSets[optionSet.id] = optionSet;
+            });
+            CurrentSelection.setOptionSets($scope.optionSets);
         });
     }
 
