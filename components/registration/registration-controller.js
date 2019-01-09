@@ -423,7 +423,7 @@ trackerCapture.controller('RegistrationController',
         var selections = CurrentSelection.get();
         CurrentSelection.set({
             tei: $scope.selectedTei,
-            te: $scope.selectedTei.trackedEntityType,
+            te: selections.te,
             prs: selections.prs,
             pr: $scope.selectedProgram,
             prNames: selections.prNames,
