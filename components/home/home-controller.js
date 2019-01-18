@@ -24,19 +24,13 @@ trackerCapture.controller('HomeController',function(
     orderByFilter,
     TEService,
     AccessUtils,
-    TeiAccessApiService,
-    SessionStorageService) {
+    TeiAccessApiService) {
         TeiAccessApiService.setAuditCancelledSettings(null);
         $scope.trackedEntityTypesById ={};
         var previousProgram = null;
         $scope.base = {};
         $scope.APIURL = DHIS2URL;
         
-        var ouFromUrl = ($location.search()).ou;
-        if(ouFromUrl) {
-            SessionStorageService.set('ouSelected', ouFromUrl);
-        }
-
         var viewsByType = {
             registration: {
                 name: "Register",
@@ -109,8 +103,6 @@ trackerCapture.controller('HomeController',function(
                 });
             });
         });
-
-
 
         $scope.$watch('selectedOrgUnit', function(a,b,c) {
             if( angular.isObject($scope.selectedOrgUnit) && !$scope.selectedOrgUnit.loaded){
@@ -259,7 +251,7 @@ trackerCapture.controller('HomeController',function(
                 view.loaded = true;
             }
 
-            $location.path('/').search({program: $scope.selectedProgram.id, ou: $scope.selectedOrgUnit.id}); 
+            $location.path('/').search({program: $scope.selectedProgram.id}); 
             loadCanRegister();
         }
 
