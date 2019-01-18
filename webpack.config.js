@@ -86,7 +86,6 @@ module.exports = {
             ]),
             scripts: makeScriptTags([
                 'core/tracker-capture.js',
-                'core/ouwt.js',
                 '../main.js',
             ]),
         }),
