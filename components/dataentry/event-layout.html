@@ -44,7 +44,7 @@
                  ng-class="getEventStyle(dhis2Event)" 
                  ng-click="showDataEntry(dhis2Event, false, true)">                
                 <div class="event-container-item">
-                    {{dhis2Event.sortingDate}}
+                    {{dhis2Event.eventDate ? dhis2Event.eventDate : dhis2Event.dueDate}}
                 </div>
                 <div class="event-container-item">
                     {{dhis2Event.orgUnitName}}
