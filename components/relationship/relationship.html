@@ -28,7 +28,7 @@
                             {{'relationship' | translate}}
                         </th>
                         <!-- ng-if checks if the displayInListNoProgram is true and if that spesific attribute shold be displayed for the current program. -->
-                        <th ng-repeat="att in trackedEntityType.trackedEntityTypeAttributes" ng-if="att.displayInList">
+                        <th ng-repeat="att in trackedEntityType.trackedEntityTypeAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
                             {{att.displayName}}
                         </th>
                         <th></th>
@@ -36,7 +36,7 @@
                     <!-- Checks if the rel is enrolled in the program, if so, he is displayed -->
                     <tr ng-repeat="rel in relatedTeis">
                         <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, program.id)">{{rel.relName}}</td> 
-                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, program.id)" ng-repeat="att in trackedEntityType.trackedEntityTypeAttributes" ng-if="att.displayInList">
+                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, program.id)" ng-repeat="att in trackedEntityType.trackedEntityTypeAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
                             {{rel.attributes[att.trackedEntityAttribute.id]}}
                         </td>
                         <td ng-click="removeRelationship(rel)" ng-attr-title="{{'delete_relationship'| translate}}" ng-if="!selectedTei.inactive && selectedProgram.access.data.write">
