@@ -638,7 +638,7 @@ function setHasAllAccess(){
 
 function getTrackedEntityTypesWithAccess()
 {
-    return dhis2.tracker.getTrackerObjects('trackedEntityTypes', 'trackedEntityTypes', DHIS2URL + '/trackedEntityTypes.json', 'paging=false&fields=id,displayName,maxTeiCountToReturn,minAttributesRequiredToSearch,trackedEntityTypeAttributes[*,trackedEntityAttribute[id,unique]],style,access[data[read,write]]','temp', dhis2.tc.store).then(function(trackedEntityTypes)
+    return dhis2.tracker.getTrackerObjects('trackedEntityTypes', 'trackedEntityTypes', DHIS2URL + '/trackedEntityTypes.json', 'paging=false&fields=id,displayName,maxTeiCountToReturn,minAttributesRequiredToSearch,trackedEntityTypeAttributes[*,trackedEntityAttribute[id,unique,displayInListNoProgram]],style,access[data[read,write]]','temp', dhis2.tc.store).then(function(trackedEntityTypes)
     {
         if(hasAllAccess){
             _.each(_.values(trackedEntityTypes), function(tet){
