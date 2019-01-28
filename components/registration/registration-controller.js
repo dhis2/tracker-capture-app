@@ -452,7 +452,7 @@ trackerCapture.controller('RegistrationController',
     });
 
     var performRegistration = function (destination) {
-        if (destination === "DASHBOARD" || destination === "SELF") {
+        if (destination === "DASHBOARD" || destination === "SELF" || destination === "ENROLLMENT") {
            $scope.model.savingRegistration = true;
         }
 
