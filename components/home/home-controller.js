@@ -251,7 +251,10 @@ trackerCapture.controller('HomeController',function(
                 view.loaded = true;
             }
 
-            $location.path('/').search({program: $scope.selectedProgram.id}); 
+            if($scope.selectedProgram) {
+                $location.path('/').search({program: $scope.selectedProgram.id}); 
+            }
+
             loadCanRegister();
         }
 
