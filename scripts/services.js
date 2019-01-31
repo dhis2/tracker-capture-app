@@ -2983,9 +2983,6 @@ i
                         else if(effect.action === "ASSIGN") {
                             //the dataentry control saves the variable and or dataelement
                         }
-                        else {
-                            $log.warn("action: '" + effect.action + "' not supported by rulebound-controller.js");
-                        }
                     }
                 });
             }
