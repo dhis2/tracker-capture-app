@@ -442,7 +442,7 @@ trackerCapture.controller('RegistrationController',
     });
 
     var performRegistration = function (destination) {
-        if (destination === "DASHBOARD" || destination === "SELF") {
+        if (destination === "DASHBOARD" || destination === "SELF" || destination === "ENROLLMENT") {
            $scope.model.savingRegistration = true;
         }
 
@@ -489,10 +489,12 @@ trackerCapture.controller('RegistrationController',
                         }
 
                         EnrollmentService.enroll(enrollment).then(function (enrollmentResponse) {
-                            $scope.model.savingRegistration = false;
                             if(enrollmentResponse) {
                                 var en = enrollmentResponse.response;
                                 if (en.status === 'SUCCESS') {
+                                    if($scope.registrationMode !== 'ENROLLMENT') {
+                                        $scope.model.savingRegistration = false;
+                                    }
                                     enrollment.enrollment = en.importSummaries[0].reference;
                                     $scope.selectedEnrollment = enrollment;
                                     var avilableEvent = $scope.currentEvent && $scope.currentEvent.event ? $scope.currentEvent : null;
@@ -507,6 +509,7 @@ trackerCapture.controller('RegistrationController',
                                 }
                                 else {
                                     //enrollment has failed
+                                    $scope.model.savingRegistration = false;
                                     NotificationService.showNotifcationDialog($translate.instant("enrollment_error"), enrollmentResponse.message);
                                     return;
                                 }
