@@ -88,7 +88,7 @@
 
         <div class="vertical-spacing btn-group" ng-if="registrationMode === 'ENROLLMENT'">            
             <button type="button" class="btn btn-primary" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" ng-click="registerEntity('ENROLLMENT')">{{'enroll'| translate}}</button>
-            <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="selectedOrgUnit.closedStatus" ng-click="cancelRegistrationWarning(showNewEnrollment)">{{'cancel'| translate}}</button>
+            <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" ng-click="cancelRegistrationWarning(showNewEnrollment)">{{'cancel'| translate}}</button>
             <span ng-show="model.savingRegistration" style="margin-left: 25px;"><i class="fa fa-spinner fa-spin fa-3x"></i></span>
         </div>
 
