@@ -54,11 +54,13 @@
                         class="form-control"
                         dh-required="true"
                         dh-value="completeEventOnRegistration"
-                        dh-name="foo"
+                        dh-name="completeStage"
                         dh-click="setCompleteStage(value)"
                         dh-field="innerForm.foo">
                     </d2-radio-button>
-                </div>         
+                    <div ng-messages="outerDataEntryForm.completeStage.$error" ng-if="interacted(outerDataEntryForm.completeStage, outerDataEntryForm)" class="error-text" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
+                    </div> 
+                </div>        
             </td>
         </tr>
     </table>
@@ -138,10 +140,11 @@
                                 class="form-control"
                                 dh-required="true"
                                 dh-value="completeEventOnRegistration"
-                                dh-name="foo"
+                                dh-name="completeStage"
                                 dh-click="setCompleteStage(value)"
                                 dh-field="innerForm.foo">
                             </d2-radio-button>
+                            <div ng-messages="outerDataEntryForm.completeStage.$error" ng-if="interacted(outerDataEntryForm.completeStage, outerDataEntryForm)" class="error-text" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></div>
                         </div>             
                     </td>
                 </tr>
