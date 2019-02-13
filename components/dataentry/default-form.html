@@ -35,7 +35,36 @@
                 </div>
             </td>
         </tr>
+        <tr ng-if="registrationMode === 'REGISTRATION'">
+            <td>
+                <span d2-pop-over
+                    class="popover-label hideInPrint small-horizontal-spacing"
+                    details="{{'details'| translate}}"
+                    content="completeStageInfo"
+                    template="dataelement-details.html"
+                    trigger="click"
+                    placement="right">
+                    <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{'complete_stage'|translate}}</a>
+                </span>
+                <span class="required">*</span>
+            </td>            
+            <td class="absorbing-column">
+                <div class="hideInPrint">
+                    <d2-radio-button
+                        class="form-control"
+                        dh-required="true"
+                        dh-value="completeEventOnRegistration"
+                        dh-name="completeStage"
+                        dh-click="setCompleteStage(value)"
+                        dh-field="innerForm.foo">
+                    </d2-radio-button>
+                    <div ng-messages="outerDataEntryForm.completeStage.$error" ng-if="interacted(outerDataEntryForm.completeStage, outerDataEntryForm)" class="error-text" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
+                    </div> 
+                </div>        
+            </td>
+        </tr>
     </table>
+    
     <div ng-if='currentEvent && currentStage.programStageSections.length'>
         <accordion close-others='false'>
             <!-- The inline style was needed to override overflow:hidden in the css. Can possibly be replaced with a CSS update. -->
@@ -89,9 +118,37 @@
                         </tr>
                     </table>
                 </div>
-                
-            </accordion-group> 
+            </accordion-group>
+            <br ng-if="registrationMode === 'REGISTRATION'">
+            <table class="dhis2-list-table-striped default-form-table" ng-if="registrationMode === 'REGISTRATION'">
+                <tr ng-if="registrationMode === 'REGISTRATION'">
+                    <td>
+                        <span d2-pop-over
+                            class="popover-label hideInPrint small-horizontal-spacing"
+                            details="{{'details'| translate}}"
+                            content="completeStageInfo"
+                            template="dataelement-details.html"
+                            trigger="click"
+                            placement="right">
+                            <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{'complete_stage'|translate}}</a>
+                        </span>
+                        <span class="required">*</span>
+                    </td>            
+                    <td class="absorbing-column">
+                        <div class="hideInPrint">
+                            <d2-radio-button
+                                class="form-control"
+                                dh-required="true"
+                                dh-value="completeEventOnRegistration"
+                                dh-name="completeStage"
+                                dh-click="setCompleteStage(value)"
+                                dh-field="innerForm.foo">
+                            </d2-radio-button>
+                            <div ng-messages="outerDataEntryForm.completeStage.$error" ng-if="interacted(outerDataEntryForm.completeStage, outerDataEntryForm)" class="error-text" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html"></div>
+                        </div>             
+                    </td>
+                </tr>
+            </table>
         </accordion>
     </div>
-    
 </form>
