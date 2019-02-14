@@ -2333,8 +2333,13 @@ trackerCapture.controller('DataEntryController',
         return true;
     }
 
+    $scope.canDeleteEvent = function() {
+        if(!$scope.currentStage || !$scope.currentStage.access || !$scope.currentStage.access.data.write) return false;
+        return true;
+    };
+
     $scope.deleteEvent = function () {
-        if(!$scope.eventEditable()){
+        if(!$scope.canDeleteEvent()){
             var bodyText = $translate.instant('you_do_not_have_the_necessary_authorities_to_delete') +' '+ $translate.instant('this') +' '+$translate.instant('event').toLowerCase();
             var headerText = $translate.instant('delete_failed');
             return NotificationService.showNotifcationDialog(headerText, bodyText);
