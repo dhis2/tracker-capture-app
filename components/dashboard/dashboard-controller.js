@@ -498,6 +498,8 @@ trackerCapture.controller('DashboardController',
     $scope.applySelectedProgram = function (pr) {
         if (pr) {
             $scope.selectedProgram = pr;
+        } else {
+            $location.path('/dashboard').search({ou: $scope.selectedOrgUnit.id, tei: $scope.selectedTei.trackedEntityInstance});
         }
         $location.path('/dashboard').search({program: pr.id, ou: $scope.selectedOrgUnit.id, tei: $scope.selectedTei.trackedEntityInstance});
     };
