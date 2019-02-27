@@ -500,11 +500,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 /* service to deal with TEI registration and update */
 .service('RegistrationService', function(TEIService, $q){
     return {
-        registerOrUpdate: function(tei, optionSets, attributesById){
+        registerOrUpdate: function(tei, optionSets, attributesById, programId){
             if(tei){
                 var def = $q.defer();
                 if(tei.trackedEntityInstance){
-                    TEIService.update(tei, optionSets, attributesById).then(function(response){
+                    TEIService.update(tei, optionSets, attributesById, programId).then(function(response){
                         def.resolve(response);
                     });
                 }
@@ -922,14 +922,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return deferred.promise;
         },
-        update: function(tei, optionSets, attributesById){
+        update: function(tei, optionSets, attributesById, programId){
             var formattedTei = angular.copy(tei);
             var attributes = [];
             angular.forEach(formattedTei.attributes, function(att){
                 attributes.push({attribute: att.attribute, value: CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API')});
             });
             formattedTei.attributes = attributes;
-            var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + formattedTei.trackedEntityInstance , formattedTei ).then(function(response){
+            var programFilter = programId ? "?program=" + programId : "";
+            var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + formattedTei.trackedEntityInstance + programFilter, formattedTei ).then(function(response){
                 return response.data;
             }, function(response){
                 NotificationService.showNotifcationDialog($translate.instant('update_error'), $translate.instant('failed_to_update_tei'), response);
