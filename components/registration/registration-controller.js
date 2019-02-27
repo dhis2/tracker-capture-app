@@ -466,7 +466,7 @@ trackerCapture.controller('RegistrationController',
 
         $scope.tei.attributes = tempAttributes;
 
-        RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function (regResponse) {
+        RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById, $scope.selectedEnrollment.program).then(function (regResponse) {
             var reg = regResponse.response.responseType ==='ImportSummaries' ? regResponse.response.importSummaries[0] : regResponse.response.responseType === 'ImportSummary' ? regResponse.response : {};
             if (reg.status === 'SUCCESS') {
                 $scope.tei.trackedEntityInstance = reg.reference;
