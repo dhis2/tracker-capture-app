@@ -816,6 +816,11 @@ table.table-striped tr td.optionset {
     height: 100%;
 }
 
+.modal-new-event-window .modal-dialog {
+    width: 75%;
+    height: 100%;
+}
+
 .modal-map-window .modal-content {
   width: 100%;
   height: 100%;
