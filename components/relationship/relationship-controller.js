@@ -65,10 +65,7 @@ trackerCapture.controller('RelationshipController',
                 $scope.relationships[rel.id] = rel;
             });
 
-            TEIService.getRelationships($scope.selectedTei.trackedEntityInstance).then(function(relationships){
-                $scope.selectedTei.relationships = relationships;
-                setRelationships();
-            });
+            setRelationships();
         });
         $scope.selectedOrgUnit = $scope.selections.orgUnit;
     });
