@@ -355,7 +355,7 @@ trackerCapture.controller('EnrollmentController',
                     if(data.httpStatus === 'OK' || data.httpStatusCode === 200) {
                         angular.forEach($scope.enrollments, function(enrollment, index){
                             if(enrollment.enrollment === $scope.selectedEnrollment.enrollment){
-                                $scope.enrollments.splice(index, 1); 
+                                $scope.enrollments.splice(index, 1);
                             }
                         });
 
@@ -365,8 +365,8 @@ trackerCapture.controller('EnrollmentController',
 
                         $scope.currentEnrollment = null;
                         $scope.selectedEnrollment = null;
-                        NotificationService.showNotifcationDialog($translate.instant('success'), $translate.instant('enrollment') + ' ' + $translate.instant('deleted'));   
-                    }             
+                        NotificationService.showNotifcationDialog($translate.instant('success'), $translate.instant('enrollment') + ' ' + $translate.instant('deleted'));
+                    }
                 });
             });
         };

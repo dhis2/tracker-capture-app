@@ -457,6 +457,7 @@ trackerCapture.controller('DashboardController',
 
     $scope.$on('ErollmentDeleted', function (args, data) {
         $scope.allEnrollments = data.enrollments;
+        updateDashboard();
     });
 
     $scope.$on('DataEntryMainMenuVisibilitySet', function (event, data) {
