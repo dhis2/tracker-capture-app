@@ -929,12 +929,12 @@ trackerCapture.controller('RegistrationController',
         var refetch;
         if($scope.programSearchScope){
             var tetSearchGroup = SearchGroupService.findValidTetSearchGroup($scope.matchingTeisSearchGroup, $scope.tetSearchConfig, $scope.attributesById);
-            refetch = function() {
-                SearchGroupService.programScopeSearch($scope.matchingTeisSearchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);
+            refetch = function(pager) {
+                return SearchGroupService.programScopeSearch($scope.matchingTeisSearchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);
             }
         }else{
-            refetch = function(){
-                SearchGroupService.tetScopeSearch($scope.matchingTeisSearchGroup,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager)
+            refetch = function(pager){
+                return SearchGroupService.tetScopeSearch($scope.matchingTeisSearchGroup,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);
             }
         }
         getMatches($scope.matchingTeisSearchGroup).then(function(matches){
