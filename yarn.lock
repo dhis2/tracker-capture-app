@@ -1263,9 +1263,9 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-d2-tracker@31.0.16:
-  version "31.0.16"
-  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-31.0.16.tgz#0274e835ef929dab3b05acea1e5b9d0f35aa5a07"
+d2-tracker@31.0.17:
+  version "31.0.17"
+  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-31.0.17.tgz#b1b6754b6ed59517210969089d3b967ede949c1e"
   dependencies:
     angular-vs-repeat "^2.0.9"
     gulp "^3.9.1"
