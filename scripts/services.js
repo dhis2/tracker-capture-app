@@ -924,7 +924,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var pg = pager ? pager.page : 1;
             pgSize = pgSize > 1 ? pgSize  : 1;
             pg = pg > 1 ? pg : 1;
-            url = url + '&pageSize=' + pgSize + '&page=' + pg + '&totalPages=true';
+            url = url + '&pageSize=' + pgSize + '&page=' + pg;
+            if(pager && pager.skipTotalPages) {
+                url+= '&totalPages=false';
+            }else{
+                url+= '&totalPages=true';
+            }
         }
         else{
             url = url + '&paging=false';
@@ -2936,7 +2941,7 @@ i
                         else{
                             if(query.url){
                                 numberOfSetAttributes++;
-                                if(attr.operator === "Eq"){
+                                if(attr.operator === textOperators[0]){
                                     query.url = query.url + '&filter=' + attr.id + ':EQ:' + value;
                                 }else{
                                     query.url = query.url + '&filter=' + attr.id + ':LIKE:' + value;
@@ -2945,7 +2950,7 @@ i
                             }
                             else{
                                 numberOfSetAttributes++;
-                                if(attr.operator === "Eq"){
+                                if(attr.operator === textOperators[0]){
                                     query.url = 'filter=' + attr.id + ':EQ:' + value;
                                 }else{
                                     query.url = 'filter=' + attr.id + ':LIKE:' + value;
@@ -2961,7 +2966,7 @@ i
             var programOrTETUrl = searchScope === searchScopes.PROGRAM ? "program="+program.id :"trackedEntityType="+trackedEntityType.id;
 
             var searchOrgUnit = searchGroup.orgUnit ? searchGroup.orgUnit : orgUnit;
-            return { orgUnit: searchOrgUnit, ouMode: searchGroup.ouMode.name, programOrTETUrl: programOrTETUrl, queryUrl: query.url, pager: pager, uniqueSearch: uniqueSearch };
+            return { orgUnit: searchOrgUnit, ouMode: searchGroup.ouMode.name, programOrTETUrl: programOrTETUrl, queryUrl: query.url, pager: pager, paging: !uniqueSearch, uniqueSearch: uniqueSearch };
         }
     }
     
@@ -2994,14 +2999,14 @@ i
         return def.promise;
     }
 
-    this.programScopeSearchCount = function(searchGroup,tetSearchGroup, program, trackedEntityType, orgUnit, pager){
-        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.PROGRAM);
+    this.programScopeSearchCount = function(searchGroup,tetSearchGroup, program, trackedEntityType, orgUnit){
+        var params = getSearchParams(searchGroup, program, trackedEntityType, orgUnit, null, searchScopes.PROGRAM);
         if(params){
-            return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+            return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, null, false).then(function(response){
                 if(response || response === 0){
                     return response;
                 }else{
-                    return tetScopeSearchCount(tetSearchGroup, trackedEntityType, orgUnit, pager);
+                    return tetScopeSearchCount(tetSearchGroup, trackedEntityType, orgUnit);
                 }
                 return 0;
             },function(error){
@@ -3013,10 +3018,10 @@ i
             return def.promise;
         }
     }
-    var tetScopeSearchCount = this.tetScopeSearchCount = function(tetSearchGroup, trackedEntityType, orgUnit, pager){
-        var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET);
+    var tetScopeSearchCount = this.tetScopeSearchCount = function(tetSearchGroup, trackedEntityType, orgUnit){
+        var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, null, searchScopes.TET);
         if(params){
-            return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+            return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, null, false).then(function(response){
                 if(response){
                     return response;
                 }
@@ -3067,7 +3072,7 @@ i
         if(params){
 
         }
-        return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+        return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, params.paging).then(function(response){
                 if(response && response.rows && response.rows.length > 0){
                     var result = { data: response, callingScope: searchScopes.PROGRAM, resultScope: searchScopes.PROGRAM };
                     var def = $q.defer();
@@ -3108,7 +3113,7 @@ i
     var tetScopeSearch = this.tetScopeSearch = function(tetSearchGroup,trackedEntityType, orgUnit, pager){
         var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET);
         if(params){
-            return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, true).then(function(response){
+            return TEIService.search(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, params.pager, params.paging).then(function(response){
                 var result = {data: response, callingScope: searchScopes.TET, resultScope: searchScopes.TET };
                 if(response && response.rows && response.rows.length > 0){
                     if(params.uniqueSearch){
