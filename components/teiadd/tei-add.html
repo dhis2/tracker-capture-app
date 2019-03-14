@@ -6,7 +6,7 @@
         <div class='col-md-12'>
             <select ng-model="relationship.selected"
                     class="form-control"
-                    ng-options="rel as rel.displayName for rel in relationshipTypes | orderBy: 'displayName'"
+                    ng-options="rel as rel.displayName for rel in relationshipTypesForSelector | orderBy: 'displayName'"
                     ng-disabled="relatedProgramRelationship">
                 <option value="">{{'please_select_a_relationship'| translate}}</option>
             </select>

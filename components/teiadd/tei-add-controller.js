@@ -156,6 +156,7 @@ trackerCapture.controller('TEIAddController',
     
     $scope.today = DateUtils.getToday();
     $scope.relationshipTypes = relationshipTypes;
+    $scope.relationshipTypesForSelector = relationshipTypes.filter(function(relationshipType) { return relationshipType.access.data.write });
     $scope.addingRelationship = addingRelationship;
     $scope.selectedAttribute = selectedAttribute;
     $scope.selectedProgram = selectedProgram;
