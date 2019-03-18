@@ -1634,7 +1634,7 @@ trackerCapture.controller('DataEntryController',
             }
         }
         
-        if (field && field.$invalid) {
+        if (field && field.$invalid && prStDe.dataElement.valueType !== "ORGANISATION_UNIT") {
             $scope.currentEvent[prStDe.dataElement.id] = oldValue;
             $scope.currentElement = {id: prStDe.dataElement.id, saved: false, event: eventToSave.event};
             return false;
