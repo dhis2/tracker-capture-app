@@ -28,14 +28,14 @@
                             {{'relationshipTo' | translate}}
                         </th>
                         <!-- ng-if checks if the displayInListNoProgram is true and if that spesific attribute shold be displayed for the current program. -->
-                        <th ng-repeat="att in trackedEntityType.trackedEntityTypeAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
+                        <th ng-repeat="att in relationshipAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
                             {{att.displayName}}
                         </th>
                         <th ng-if="!selectedTei.inactive && selectedProgram.access.data.write"></th>
                     </tr>
                     <tr ng-repeat="rel in relatedTeisTo">
                         <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)">{{rel.relName}}</td> 
-                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)" ng-repeat="att in trackedEntityType.trackedEntityTypeAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
+                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)" ng-repeat="att in relationshipAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
                             {{rel.attributes[att.trackedEntityAttribute.id]}}
                         </td>
                         <td ng-click="removeRelationship(rel)" ng-attr-title="{{'delete_relationship'| translate}}" ng-if="!selectedTei.inactive && selectedProgram.access.data.write && rel.relationshipType.access.data.write">
@@ -54,14 +54,14 @@
                             {{'relationshipFrom' | translate}}
                         </th>
                         <!-- ng-if checks if the displayInListNoProgram is true and if that spesific attribute shold be displayed for the current program. -->
-                        <th ng-repeat="att in trackedEntityType.trackedEntityTypeAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
+                        <th ng-repeat="att in relationshipAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
                             {{att.displayName}}
                         </th>
                         <th ng-if="!selectedTei.inactive && selectedProgram.access.data.write"></th>
                     </tr>
                     <tr ng-repeat="rel in relatedTeisFrom">
                         <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)">{{rel.relName}}</td> 
-                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)" ng-repeat="att in trackedEntityType.trackedEntityTypeAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
+                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)" ng-repeat="att in relationshipAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
                             {{rel.attributes[att.trackedEntityAttribute.id]}}
                         </td>
                         <td ng-click="removeRelationship(rel)" ng-attr-title="{{'delete_relationship'| translate}}" ng-if="!selectedTei.inactive && selectedProgram.access.data.write && rel.relationshipType.access.data.write">
