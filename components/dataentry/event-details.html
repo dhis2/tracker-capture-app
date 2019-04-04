@@ -71,6 +71,17 @@
 </div>
 <!-- coordinates end -->
 
+<div class="row" ng-if="currentStage.enableUserAssignment">
+    <div class="col-sm-12">
+        {{'assigned_user' | translate}}
+        <d2-assign-users-input d2-model="currentEvent"
+                        d2-disabled="!currentStage.access.data.write"
+                        d2-save-methode="saveAssignedUser"
+                        d2-saved="assignedUserSaved">
+        </d2-assign-users-input>
+    </div>
+</div>
+
 <!-- attribute category options begin -->
 <div class="row" ng-if="selectedProgram.categoryCombo && !selectedProgram.categoryCombo.isDefault && currentEvent && currentEvent.attributeCategoryOptions && currentEvent.attributeOptionCombo">
     <div class="col-sm-12">
