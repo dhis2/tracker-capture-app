@@ -14,7 +14,8 @@ trackerCapture.controller('RelationshipController',
                 ProgramFactory,
                 EnrollmentService,
                 ModalService,
-                CommonUtils) {
+                CommonUtils,
+                TEService) {
     $rootScope.showAddRelationshipDiv = false;
     $scope.relatedProgramRelationship = false;
     var ENTITYNAME = "TRACKED_ENTITY_INSTANCE";
@@ -54,11 +55,9 @@ trackerCapture.controller('RelationshipController',
         });
         
         RelationshipFactory.getAll().then(function(relTypes){
-            //Supports only TEI-TEI of same type.
             $scope.relationshipTypes = relTypes.filter(function(relType){
-                return relType.fromConstraint && relType.fromConstraint.relationshipEntity === ENTITYNAME
-                    && relType.toConstraint.relationshipEntity === ENTITYNAME
-                    && relType.fromConstraint.trackedEntityType && relType.fromConstraint.trackedEntityType.id === $scope.trackedEntityType.id;  
+                return (relType.fromConstraint.trackedEntityType && relType.fromConstraint.trackedEntityType.id === $scope.trackedEntityType.id)
+                       || (relType.toConstraint.trackedEntityType && relType.toConstraint.trackedEntityType.id === $scope.trackedEntityType.id);  
             });
 
             angular.forEach($scope.relationshipTypes, function(rel){
@@ -160,35 +159,67 @@ trackerCapture.controller('RelationshipController',
         $scope.relatedTeisTo = [];
         $scope.relatedTeisFrom = [];
         $scope.relationshipPrograms = [];
+        $scope.relationshipAttributes = [];
         var relationshipProgram = {};
         var relationshipType = {};
-        //Loop through all relationships.      
-        angular.forEach($scope.selectedTei.relationships, function(rel){
-            if(rel.to && rel.to.trackedEntityInstance && rel.to.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance){  
-                var teiId = rel.to.trackedEntityInstance.trackedEntityInstance;
-                var relName = rel.relationshipName;
-                TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
-                    relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
-                    relationshipProgram = relationshipType.toConstraint.program;
-                    if(!relationshipProgram && $scope.selectedProgram) {
-                        relationshipProgram = {id: $scope.selectedProgram.id};
-                    }
-                    var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
-                    $scope.relatedTeisTo.push(relative);
-                });
-            } else if(rel.from && rel.from.trackedEntityInstance && rel.from.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance){  
-                var teiId = rel.from.trackedEntityInstance.trackedEntityInstance;
-                var relName = rel.relationshipName;
-                TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
-                    relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
-                    relationshipProgram = relationshipType.toConstraint.program;
-                    if(!relationshipProgram && $scope.selectedProgram) {
-                        relationshipProgram = {id: $scope.selectedProgram.id};
-                    }
-                    var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
-                    $scope.relatedTeisFrom.push(relative);
-                });
-            }
+
+        TEService.getAll().then(function(teiTypes){
+            //Loop through all relationships.      
+            angular.forEach($scope.selectedTei.relationships, function(rel){
+                if(rel.to && rel.to.trackedEntityInstance && rel.to.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance){  
+                    var teiId = rel.to.trackedEntityInstance.trackedEntityInstance;
+                    var relName = rel.relationshipName;
+                    TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
+                        relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
+
+                        if(relationshipType && teiTypes.filter(function(teiType) { return teiType.id === tei.trackedEntityType ; }).length > 0) {
+                            var teiType = teiTypes.find(function(teiType) { return teiType.id === tei.trackedEntityType ; });
+                            angular.forEach(teiType.trackedEntityTypeAttributes, function(attribute){
+                                if($scope.relationshipAttributes.length > 0 && $scope.relationshipAttributes.filter(function(att) { return att.id === attribute.id ; }).length === 0) {
+                                    $scope.relationshipAttributes.push(attribute);
+                                } else if($scope.relationshipAttributes.length === 0) {
+                                    $scope.relationshipAttributes.push(attribute);
+                                }
+                            });
+                        }
+
+                        relationshipProgram = relationshipType.toConstraint.program;
+
+                        if(!relationshipProgram && $scope.selectedProgram) {
+                            relationshipProgram = {id: $scope.selectedProgram.id};
+                        }
+
+                        var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
+                        $scope.relatedTeisTo.push(relative);
+                    });
+                } else if(rel.from && rel.from.trackedEntityInstance && rel.from.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance){  
+                    var teiId = rel.from.trackedEntityInstance.trackedEntityInstance;
+                    var relName = rel.relationshipName;
+                    TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
+                        relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
+
+                        if(relationshipType && teiTypes.filter(function(teiType) { return teiType.id === tei.trackedEntityType ; }).length > 0) {
+                            var teiType = teiTypes.find(function(teiType) { return teiType.id === tei.trackedEntityType ; });
+                            angular.forEach(teiType.trackedEntityTypeAttributes, function(attribute){
+                                if($scope.relationshipAttributes.length > 0 && $scope.relationshipAttributes.filter(function(att) { return att.id === attribute.id ; }).length === 0) {
+                                    $scope.relationshipAttributes.push(attribute);
+                                } else if($scope.relationshipAttributes.length === 0) {
+                                    $scope.relationshipAttributes.push(attribute);
+                                }
+                            });
+                        }
+
+                        relationshipProgram = relationshipType.fromConstraint.program;
+
+                        if(!relationshipProgram && $scope.selectedProgram) {
+                            relationshipProgram = {id: $scope.selectedProgram.id};
+                        }
+
+                        var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
+                        $scope.relatedTeisFrom.push(relative);
+                    });
+                }
+            });
         });
 
         var selections = CurrentSelection.get();
