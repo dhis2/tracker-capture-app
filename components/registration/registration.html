@@ -3,7 +3,7 @@
         <table class="table table-bordered">
             <tr>
                 <td class="bold">{{'description' | translate}}</td>
-                <td>{{content.description ? content.description : 'not_available' | translate}}</td>
+                <td>{{content.displayDescription ? (content.displayDescription ? content.displayDescription : content.description) : 'not_available' | translate}}</td>
             </tr>
         </table>
     </script>
