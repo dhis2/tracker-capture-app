@@ -1909,6 +1909,23 @@ trackerCapture.controller('DataEntryController',
         });
     };
 
+    $scope.saveAssignedUser = function () {
+        var dhis2Event = $scope.makeDhis2EventToUpdate();
+        $scope.assignedUserSaved = false;
+
+        DHIS2EventFactory.update(dhis2Event).then(function (response) {
+            if( response ){
+                $scope.assignedUserSaved = true;
+                $scope.currentEventOriginal = angular.copy($scope.currentEvent);
+                $scope.currentStageEventsOriginal = angular.copy($scope.currentStageEvents);
+            }
+            else{                
+                $scope.currentEvent = angular.copy( $scope.currentEventOriginal );
+            }            
+            $scope.currentElement = {};            
+        }); 
+    };
+
     $scope.addNote = function () {
         
         if(!$scope.note.value){

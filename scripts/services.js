@@ -2321,7 +2321,8 @@ i
             trackedEntityInstance: dhis2Event.trackedEntityInstance,
             status: dhis2Event.status,
             dueDate: DateUtils.formatFromUserToApi(dhis2Event.dueDate),
-            geometry: dhis2Event.geometry
+            geometry: dhis2Event.geometry,
+            assignedUser: dhis2Event.assignedUser
         };
 
         angular.forEach(programStage.programStageDataElements, function(prStDe){
@@ -2508,6 +2509,10 @@ i
             partial.push({id: 'orgUnitName', valueType: 'TEXT', name: $translate.instant('org_unit')});
             allColumns.push({id: 'sortingDate', valueType: 'DATE', name: stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date')});
             allColumns.push({id: 'orgUnitName', valueType: 'TEXT', name: $translate.instant('org_unit')});
+            if(stage.enableUserAssignment) {
+                partial.push({id: 'assignedUserUsername', valueType: 'TEXT', name: $translate.instant('assigned_user')});
+                allColumns.push({id: 'assignedUserUsername', valueType: 'TEXT', name: $translate.instant('assigned_user')});
+            }
 
             var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});
             if( displayInReports.length > 0 ){

@@ -22,7 +22,11 @@
                 <tr>
                     <td>{{'date' | translate}}</td>
                     <td>{{content.eventDate ? content.eventDate : content.dueDate}}</td>
-                </tr>        
+                </tr>
+                <tr ng-if="content.assignedUser && content.assignedUserUsername">
+                    <td>{{'assigned_user' | translate}}</td>
+                    <td>{{content.assignedUserUsername}}</td>
+                </tr>      
                 <tr ng-if="program.categoryCombo && !program.categoryCombo.isDefault && content && content.attributeCategoryOptions && content.attributeOptionCombo" 
                     ng-repeat="category in program.categoryCombo.categories" ng-init="catIndex = $index">
                     <td>
@@ -42,7 +46,7 @@
                  template="event-details.html"  
                  placement="top" 
                  ng-class="getEventStyle(dhis2Event)" 
-                 ng-click="showDataEntry(dhis2Event, false, true)">                
+                 ng-click="showDataEntry(dhis2Event, false, true)">
                 <div class="event-container-item">
                     {{dhis2Event.eventDate ? dhis2Event.eventDate : dhis2Event.dueDate}}
                 </div>
@@ -52,7 +56,9 @@
                 <div class="event-container-item">
                         <img class="icon-program" ng-style="{'background-color': (dhis2Event.style.color ? dhis2Event.style.color : 'none')}" ng-if="dhis2Event.style.icon" ng-src="{{APIURL}}/icons/{{dhis2Event.style.icon}}/icon.svg"> {{dhis2Event.name}}
                 </div>
-                <div class="event-container-footer">{{getEventStyleLabel(dhis2Event)}}</div>
+                <div class="event-container-footer">
+                    <span ng-if="dhis2Event.assignedUser" class="fa fa-user footer-item-left"></span><span class="footer-item-right">{{getEventStyleLabel(dhis2Event)}}</span>
+                </div>
             </div>
             <div class="arrow-container" ng-if="$index + 1 < filteredEvents.length">
                 <i class="fa fa-arrow-right"></i>

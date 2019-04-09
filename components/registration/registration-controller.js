@@ -1141,6 +1141,11 @@ trackerCapture.controller('RegistrationController',
     $scope.saveEventDate = function(){
         $scope.saveDatavalue();
     }
+
+    $scope.saveAssignedUser = function () {
+        $scope.saveDatavalue();
+    };
+
     $scope.verifyEventExpiryDate = function(field) {
         if(!$scope.userAuthority.canEditExpiredStuff){
             var date = $scope.currentEvent[field];

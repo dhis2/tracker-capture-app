@@ -253,8 +253,16 @@ input.option {
 }
 
 .event-container-footer{
-    align-self:flex-end;
+    width: 100%;
     font-size:9px;
+}
+
+.footer-item-left{
+    float: left;
+}
+
+.footer-item-right{
+    float: right;
 }
 
 .event-container.event-container-navigation{
