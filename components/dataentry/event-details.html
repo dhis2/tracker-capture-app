@@ -75,7 +75,7 @@
     <div class="col-sm-12">
         {{'assigned_user' | translate}}
         <d2-assign-users-input d2-model="currentEvent"
-                        d2-disabled="!currentStage.access.data.write"
+                        d2-disabled="!eventEditable()"
                         d2-save-methode="saveAssignedUser"
                         d2-saved="assignedUserSaved">
         </d2-assign-users-input>
