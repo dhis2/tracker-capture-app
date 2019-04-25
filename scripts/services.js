@@ -1519,6 +1519,18 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        getEventWithoutRegistration: function(eventId) {
+            var url = DHIS2URL + '/events/' + eventId;
+
+            var promise = $http.get( url ).then(function(response){
+                return response.data;
+            }, function(response){
+                var errorBody = $translate.instant('failed_to_update_event');
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
+                return null;
+            });
+            return promise;
+        },
         create: function(dhis2Event){
             var contextEvent = getContextEvent(dhis2Event);
             var promise = TeiAccessApiService.post(contextEvent.trackedEntityInstance, contextEvent.program, DHIS2URL + '/events.json', dhis2Event).then(function(response){
