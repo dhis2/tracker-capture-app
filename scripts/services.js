@@ -412,9 +412,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }else{
                 TCStorageService.currentStore.open().done(function(){
                     TCStorageService.currentStore.getAll('programAccess').done(function(programAccess){
-                        access = { programsById: {}, programStagesById: {}};
+                        access = { programsById: {}, programStagesById: {}, programIdNameMap: {}};
                         angular.forEach(programAccess, function(program){
                             access.programsById[program.id] = program.access;
+                            access.programIdNameMap[program.id] = program.displayName;
                             angular.forEach(program.programStages, function(programStage){
                                 access.programStagesById[programStage.id] = programStage.access;
                             });

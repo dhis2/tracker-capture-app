@@ -57,6 +57,9 @@
                             {{'org_unit' | translate}}
                         </th>
                         <th>
+                            {{'program' | translate}}
+                        </th>
+                        <th>
                             {{'report_date' | translate}}
                         </th>
                         <th>
@@ -68,6 +71,9 @@
                         <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showEventInCaptureApp(rel.eventId)">{{rel.relName}}</td>
                         <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showEventInCaptureApp(rel.eventId)">
                             {{rel.orgUnit}}
+                        </td>
+                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showEventInCaptureApp(rel.eventId)">
+                            {{rel.program}}
                         </td>
                         <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showEventInCaptureApp(rel.eventId)">
                             {{rel.eventDate}}

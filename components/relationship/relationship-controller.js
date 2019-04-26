@@ -51,6 +51,10 @@ trackerCapture.controller('RelationshipController',
         $scope.selectedProgram = $scope.selections.pr;
         $scope.programs = $scope.selections.prs;
         $scope.programsById = {};
+        $scope.allProgramNames = {};
+        ProgramFactory.getAllAccesses().then(function(programs) {
+            $scope.allProgramNames = programs.programIdNameMap;
+        });
         angular.forEach($scope.programs, function(program){
             $scope.programsById[program.id] = program;
         });
@@ -239,7 +243,7 @@ trackerCapture.controller('RelationshipController',
 
                         var convertedEventDate = DateUtils.formatFromApiToUser(event.eventDate);
 
-                        var eventToDisplay = {eventId: rel.from.event.event, eventDate: convertedEventDate, status: event.status, orgUnit: event.orgUnitName, relName: relName, relId: rel.relationship, relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
+                        var eventToDisplay = {eventId: rel.from.event.event, eventDate: convertedEventDate, program: $scope.allProgramNames[event.program], status: event.status, orgUnit: event.orgUnitName, relName: relName, relId: rel.relationship, relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
                         $scope.relatedEvents.push(eventToDisplay);
                     });
                 }
