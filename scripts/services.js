@@ -412,9 +412,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }else{
                 TCStorageService.currentStore.open().done(function(){
                     TCStorageService.currentStore.getAll('programAccess').done(function(programAccess){
-                        access = { programsById: {}, programStagesById: {}};
+                        access = { programsById: {}, programStagesById: {}, programIdNameMap: {}};
                         angular.forEach(programAccess, function(program){
                             access.programsById[program.id] = program.access;
+                            access.programIdNameMap[program.id] = program.displayName;
                             angular.forEach(program.programStages, function(programStage){
                                 access.programStagesById[programStage.id] = programStage.access;
                             });
@@ -1516,6 +1517,18 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     var errorBody = $translate.instant('failed_to_fetch_events');
                     NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 }
+            });
+            return promise;
+        },
+        getEventWithoutRegistration: function(eventId) {
+            var url = DHIS2URL + '/events/' + eventId;
+
+            var promise = $http.get( url ).then(function(response){
+                return response.data;
+            }, function(response){
+                var errorBody = $translate.instant('failed_to_update_event');
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
+                return null;
             });
             return promise;
         },
