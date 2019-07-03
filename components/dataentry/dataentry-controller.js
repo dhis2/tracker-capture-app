@@ -486,8 +486,10 @@ trackerCapture.controller('DataEntryController',
                     }
                 }
             }
-            else if (effect.action === "SETMANDATORYFIELD"){                    
-                $scope.mandatoryFields[event][effect.dataElement.id] = effect.ineffect;
+            else if (effect.action === "SETMANDATORYFIELD"){
+                if (effect.dataElement){
+                    $scope.mandatoryFields[event][effect.dataElement.id] = effect.ineffect;
+                }
             }
             else if (effect.action === "HIDEPROGRAMSTAGE") {
                 if (effect.programStage) {
