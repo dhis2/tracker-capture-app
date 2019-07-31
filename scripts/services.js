@@ -412,9 +412,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }else{
                 TCStorageService.currentStore.open().done(function(){
                     TCStorageService.currentStore.getAll('programAccess').done(function(programAccess){
-                        access = { programsById: {}, programStagesById: {}};
+                        access = { programsById: {}, programStagesById: {}, programIdNameMap: {}};
                         angular.forEach(programAccess, function(program){
                             access.programsById[program.id] = program.access;
+                            access.programIdNameMap[program.id] = program.displayName;
                             angular.forEach(program.programStages, function(programStage){
                                 access.programStagesById[programStage.id] = programStage.access;
                             });
@@ -1519,6 +1520,18 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        getEventWithoutRegistration: function(eventId) {
+            var url = DHIS2URL + '/events/' + eventId;
+
+            var promise = $http.get( url ).then(function(response){
+                return response.data;
+            }, function(response){
+                var errorBody = $translate.instant('failed_to_update_event');
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
+                return null;
+            });
+            return promise;
+        },
         create: function(dhis2Event){
             var contextEvent = getContextEvent(dhis2Event);
             var promise = TeiAccessApiService.post(contextEvent.trackedEntityInstance, contextEvent.program, DHIS2URL + '/events.json', dhis2Event).then(function(response){
@@ -2321,7 +2334,8 @@ i
             trackedEntityInstance: dhis2Event.trackedEntityInstance,
             status: dhis2Event.status,
             dueDate: DateUtils.formatFromUserToApi(dhis2Event.dueDate),
-            geometry: dhis2Event.geometry
+            geometry: dhis2Event.geometry,
+            assignedUser: dhis2Event.assignedUser
         };
 
         angular.forEach(programStage.programStageDataElements, function(prStDe){
@@ -2508,6 +2522,10 @@ i
             partial.push({id: 'orgUnitName', valueType: 'TEXT', name: $translate.instant('org_unit')});
             allColumns.push({id: 'sortingDate', valueType: 'DATE', name: stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date')});
             allColumns.push({id: 'orgUnitName', valueType: 'TEXT', name: $translate.instant('org_unit')});
+            if(stage.enableUserAssignment) {
+                partial.push({id: 'assignedUserUsername', valueType: 'TEXT', name: $translate.instant('assigned_user')});
+                allColumns.push({id: 'assignedUserUsername', valueType: 'TEXT', name: $translate.instant('assigned_user')});
+            }
 
             var displayInReports = $filter('filter')(stage.programStageDataElements, {displayInReports: true});
             if( displayInReports.length > 0 ){

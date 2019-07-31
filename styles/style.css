@@ -253,8 +253,16 @@ input.option {
 }
 
 .event-container-footer{
-    align-self:flex-end;
+    width: 100%;
     font-size:9px;
+}
+
+.footer-item-left{
+    float: left;
+}
+
+.footer-item-right{
+    float: right;
 }
 
 .event-container.event-container-navigation{
@@ -2413,4 +2421,12 @@ button.list-group-item-danger.active:focus {
  #headerBanner {
     top: 0px;
     left: 0px;
+ }
+
+ .bidirectional-bar {
+    text-align: center;
+    border: 1px solid #c2c2c2;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 15px;
  }

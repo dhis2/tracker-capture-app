@@ -15,7 +15,9 @@ trackerCapture.controller('RelationshipController',
                 EnrollmentService,
                 ModalService,
                 CommonUtils,
-                TEService) {
+                TEService,
+                DHIS2EventFactory,
+                DateUtils) {
     $rootScope.showAddRelationshipDiv = false;
     $scope.relatedProgramRelationship = false;
     var ENTITYNAME = "TRACKED_ENTITY_INSTANCE";
@@ -29,8 +31,7 @@ trackerCapture.controller('RelationshipController',
     $scope.$on('dashboardWidgets', function(event, args) { 
         $scope.relationshipTypes = []; 
         $scope.relationships = [];
-        $scope.relatedTeisTo = [];
-        $scope.relatedTeisFrom = [];
+        $scope.relatedTeis = [];
         $scope.selections = CurrentSelection.get();
         $scope.optionSets = $scope.selections.optionSets;
         $scope.selectedTei = angular.copy($scope.selections.tei);        
@@ -50,6 +51,10 @@ trackerCapture.controller('RelationshipController',
         $scope.selectedProgram = $scope.selections.pr;
         $scope.programs = $scope.selections.prs;
         $scope.programsById = {};
+        $scope.allProgramNames = {};
+        ProgramFactory.getAllAccesses().then(function(programs) {
+            $scope.allProgramNames = programs.programIdNameMap;
+        });
         angular.forEach($scope.programs, function(program){
             $scope.programsById[program.id] = program;
         });
@@ -154,10 +159,14 @@ trackerCapture.controller('RelationshipController',
     $scope.showDashboard = function(teiId, program){    
         $location.path('/dashboard').search({tei: teiId, program: program, ou: $scope.selectedOrgUnit.id});
     };
+
+    $scope.showEventInCaptureApp = function(eventId){
+        location.href = '../dhis-web-capture/index.html#/viewEvent/' + eventId;
+    };
     
     var setRelationships = function(){
-        $scope.relatedTeisTo = [];
-        $scope.relatedTeisFrom = [];
+        $scope.relatedTeis = [];
+        $scope.relatedEvents = [];
         $scope.relationshipPrograms = [];
         $scope.relationshipAttributes = [];
         var relationshipProgram = {};
@@ -168,9 +177,9 @@ trackerCapture.controller('RelationshipController',
             angular.forEach($scope.selectedTei.relationships, function(rel){
                 if(rel.to && rel.to.trackedEntityInstance && rel.to.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance){  
                     var teiId = rel.to.trackedEntityInstance.trackedEntityInstance;
-                    var relName = rel.relationshipName;
                     TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
                         relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
+                        var relName = relationshipType.bidirectional ? relationshipType.toFromName : relationshipType.displayName;
 
                         if(relationshipType && teiTypes.filter(function(teiType) { return teiType.id === tei.trackedEntityType ; }).length > 0) {
                             var teiType = teiTypes.find(function(teiType) { return teiType.id === tei.trackedEntityType ; });
@@ -190,13 +199,13 @@ trackerCapture.controller('RelationshipController',
                         }
 
                         var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
-                        $scope.relatedTeisTo.push(relative);
+                        $scope.relatedTeis.push(relative);
                     });
-                } else if(rel.from && rel.from.trackedEntityInstance && rel.from.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance){  
+                } else if(rel.from && rel.bidirectional && rel.from.trackedEntityInstance && rel.from.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance){  
                     var teiId = rel.from.trackedEntityInstance.trackedEntityInstance;
-                    var relName = rel.relationshipName;
                     TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
                         relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
+                        var relName = relationshipType.fromToName;
 
                         if(relationshipType && teiTypes.filter(function(teiType) { return teiType.id === tei.trackedEntityType ; }).length > 0) {
                             var teiType = teiTypes.find(function(teiType) { return teiType.id === tei.trackedEntityType ; });
@@ -216,7 +225,26 @@ trackerCapture.controller('RelationshipController',
                         }
 
                         var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
-                        $scope.relatedTeisFrom.push(relative);
+                        $scope.relatedTeis.push(relative);
+                    });
+                } else if(rel.from && rel.bidirectional && rel.from.event && rel.from.event.event) {
+                    var event = null;
+                    DHIS2EventFactory.getEventWithoutRegistration(rel.from.event.event).then(function(e){
+                        event = e;
+
+                        relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
+                        var relName = relationshipType.fromToName;
+
+                        relationshipProgram = relationshipType.fromConstraint.program;
+
+                        if(!relationshipProgram && $scope.selectedProgram) {
+                            relationshipProgram = {id: $scope.selectedProgram.id};
+                        }
+
+                        var convertedEventDate = DateUtils.formatFromApiToUser(event.eventDate);
+
+                        var eventToDisplay = {eventId: rel.from.event.event, eventDate: convertedEventDate, program: $scope.allProgramNames[event.program], status: event.status, orgUnit: event.orgUnitName, relName: relName, relId: rel.relationship, relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
+                        $scope.relatedEvents.push(eventToDisplay);
                     });
                 }
             });

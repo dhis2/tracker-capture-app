@@ -15,6 +15,7 @@
 
     <div class="row" ng-if="addingRelationship && relationship.selected || addingTeiAssociate">
         <hr ng-if="addingRelationship">
+        <h6 ng-if="addingRelationship && relationship.selected.bidirectional" class="bidirectional-bar">{{relationship.selected.fromToName}} <i class="fa fa-arrow-right"></i> {{relationship.selected.toFromName}}</h6>
         <h3 ng-if="!addingRelationship && selectedTeiForDisplay">
             <span class='col-sm-12'>
                 {{'existing_associate' | translate}}

@@ -72,6 +72,9 @@
                         <span class="bold">{{dhis2Event.eventDate ? 'event_date' : 'due_date'| translate}}:</span>    {{dhis2Event.eventDate ? dhis2Event.eventDate : dhis2Event.dueDate}}
                     </div>
                     <div class="col-sm-3">
+                        <span class="bold">Assigned user:</span>    {{dhis2Event.assignedUserUsername}}
+                    </div>
+                    <div class="col-sm-3">
                         <span class="bold">{{'status'| translate}}:</span>  {{dhis2Event.status}}
                     </div>
                     <div class='row vertical-spacing'></div>
