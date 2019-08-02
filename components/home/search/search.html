@@ -65,6 +65,23 @@
                     </div>
                 </span>
 
+                <span ng-switch-when="AGE">
+                    <div class="col-xs-12" ng-if="attribute.unique">
+                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].exactValue"/>
+                    </div>
+                    <div class="col-xs-3 no-padding" ng-if="!attribute.unique">
+                        <select ng-model="attribute.operator" ng-init="attribute.operator = defaultOperators[0]" class="form-control" ng-options="operator | translate for operator in defaultOperators">
+                        </select>
+                    </div>
+                    <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[0] && !attribute.unique">
+                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].exactValue"/>
+                    </div>
+                    <div class="col-xs-9 no-padding" ng-if="attribute.operator === defaultOperators[1] && !attribute.sunique">
+                        <div class="col-xs-6 no-padding"><input type="text" ng-attr-placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].startValue"/></div>
+                        <div class="col-xs-6 no-padding"><input type="text" ng-attr-placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="searchGroup[attribute.id].endValue"/></div>
+                    </div>
+                </span>
+
                 <span ng-switch-when="DATETIME">
                     <div class="col-xs-12 no-padding" ng-if="attribute.unique">
                         <select ng-model="attribute.operator" class="form-control" ng-options="operator | translate for operator in defaultOperators">
