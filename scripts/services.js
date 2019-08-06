@@ -2691,7 +2691,7 @@ i
         return moment().add(days,'days').format('YYYY-MM-DD');
     }
     var getEventUrl = function(eventFilter){
-        var eventUrl = null;
+        var eventUrl = "";
         if(eventFilter.eventStatus) eventUrl = "eventStatus="+eventFilter.eventStatus;
         if(eventFilter.eventCreatedPeriod){
             if(eventUrl) eventUrl+= "&";
@@ -2701,6 +2701,19 @@ i
         if(eventFilter.programStage){
             if(eventUrl) eventUrl+="&";
             eventUrl+="programStage="+eventFilter.programStage;
+        }
+        if(eventFilter.assignedUserMode){
+            if(eventUrl) eventUrl+="&";
+            eventUrl += "assignedUserMode="+eventFilter.assignedUserMode;
+        }
+        if(!eventFilter.assignedUserMode || eventFilter.assignedUserMode == "PROVIDED" 
+        && eventFilter.assignedUsers && eventFilter.assignedUsers.length > 0){
+            if(eventUrl) eventUrl+="&";
+            eventUrl += "assignedUser=";
+            for(var i = 0; i < eventFilter.assignedUsers.length; i++){
+                if(i > 0) eventUrl += ";";
+                eventUrl += eventFilter.assignedUsers[i];
+            }
         }
         return eventUrl;
     }

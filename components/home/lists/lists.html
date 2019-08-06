@@ -2,7 +2,8 @@
     <div class="hideInPrint" ng-if="selectedProgram" ng-cloak>
         <div class="btn-group hideInPrint">
             <button type="button" ng-repeat="workingList in selectedProgram.workingLists | orderBy: 'order'" class="btn btn-default small-vertical-spacing" ng-class="getWorkingListButtonClass(workingList)" ng-click="setWorkingList(workingList)" ng-attr-title="{{workingList.description | translate}}">
-                <span ng-class="workingList.style.icon"></span>
+                <span ng-if="workingList.style && workingList.style.icon" ng-class="workingList.style.icon"></span>
+                <span ng-if="!workingList.style || !workingList.style.icon">{{workingList.displayName}}</span>
             </button>
         </div>
         <div class="btn-group">
