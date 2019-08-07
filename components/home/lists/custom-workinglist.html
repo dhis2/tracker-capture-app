@@ -60,6 +60,18 @@
                     ng-model="customWorkingListValues.enrollment.programIncidentEndDate"/>
         </td>
     </tr>
+    <tr>
+        <td>{{'user_assignment' | translate}}</td>
+        <td>
+            <label><input type="radio" ng-model="customWorkingListValues.assignedUserMode" name="NOREQ" ng-attr-value=""> {{'no_requirement'| translate}}</label><br/>
+            <label><input type="radio" ng-model="customWorkingListValues.assignedUserMode" name="ANY" ng-attr-value="ANY"> {{'any'| translate}}</label><br/>
+            <label><input type="radio" ng-model="customWorkingListValues.assignedUserMode" name="NONE" ng-attr-value="NONE"> {{'none'| translate}}</label><br/>
+            <label><input type="radio" ng-model="customWorkingListValues.assignedUserMode" name="CURRENT" ng-attr-value="CURRENT"> {{'current'| translate}}</label><br/>
+            <label><input type="radio" ng-model="customWorkingListValues.assignedUserMode" name="PROVIDED" ng-attr-value="PROVIDED"> {{'specific_users'| translate}}</label><br/>
+
+            <input ng-if="customWorkingListValues.assignedUserMode == 'PROVIDED'" type="text" class="form-control" ng-attr-placeholder="{{'user1_uid;user2_uid;user3_uid'}}" ng-model="customWorkingListValues.assignedUsers">
+        </td>
+    </tr>
     <tr ng-repeat="attribute in customWorkingListValues.attributes | nonConfidential">
         <td>
             {{attribute.displayName}}
