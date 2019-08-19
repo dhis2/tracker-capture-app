@@ -179,451 +179,451 @@ trackerCapture.controller('TEIAddController',
     }
 
 
-        $scope.selectedOrgUnit = selection.orgUnit;
-        $scope.selectedEnrollment = {
-            enrollmentDate: $scope.today,
-            incidentDate: $scope.today,
-            orgUnitName: $scope.selectedOrgUnit.displayName,
-            orgUnit: $scope.selectedOrgUnit.id
-        };
+    $scope.selectedOrgUnit = selection.orgUnit;
+    $scope.selectedEnrollment = {
+        enrollmentDate: $scope.today,
+        incidentDate: $scope.today,
+        orgUnitName: $scope.selectedOrgUnit.displayName,
+        orgUnit: $scope.selectedOrgUnit.id
+    };
 
-        //Selections
-        $scope.selectedTeiForDisplay = angular.copy($scope.mainTei);
-        $scope.ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];
-        $scope.selectedOuMode = $scope.ouModes[0];
+    //Selections
+    $scope.selectedTeiForDisplay = angular.copy($scope.mainTei);
+    $scope.ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];
+    $scope.selectedOuMode = $scope.ouModes[0];
 
-        //Paging
-        $scope.pager = {pageSize: 50, page: 1, toolBarDisplay: 5};
+    //Paging
+    $scope.pager = {pageSize: 50, page: 1, toolBarDisplay: 5};
 
-        //Searching
-        $scope.showAdvancedSearchDiv = false;
-        $scope.searchText = {value: null};
-        $scope.emptySearchText = false;
-        $scope.searchFilterExists = false;
-        $scope.defaultOperators = OperatorFactory.defaultOperators;
-        $scope.boolOperators = OperatorFactory.boolOperators;
-        $scope.selectedTrackedEntity = null;
+    //Searching
+    $scope.showAdvancedSearchDiv = false;
+    $scope.searchText = {value: null};
+    $scope.emptySearchText = false;
+    $scope.searchFilterExists = false;
+    $scope.defaultOperators = OperatorFactory.defaultOperators;
+    $scope.boolOperators = OperatorFactory.boolOperators;
+    $scope.selectedTrackedEntity = null;
 
-        $scope.trackedEntityList = null;
-        $scope.enrollment = {programStartDate: '', programEndDate: '', operator: $scope.defaultOperators[0]};
+    $scope.trackedEntityList = null;
+    $scope.enrollment = {programStartDate: '', programEndDate: '', operator: $scope.defaultOperators[0]};
 
-        $scope.searchMode = {listAll: 'LIST_ALL', freeText: 'FREE_TEXT', attributeBased: 'ATTRIBUTE_BASED'};
-        $scope.selectedSearchMode = $scope.searchMode.listAll;
+    $scope.searchMode = {listAll: 'LIST_ALL', freeText: 'FREE_TEXT', attributeBased: 'ATTRIBUTE_BASED'};
+    $scope.selectedSearchMode = $scope.searchMode.listAll;
 
-        if ($scope.addingRelationship) {
-            $scope.teiAddLabel = $translate.instant('add_relationship');
-            $scope.programs = AccessUtils.toWritable(allPrograms);
-            CurrentSelection.setRelationshipOwner($scope.mainTei);
+    if ($scope.addingRelationship) {
+        $scope.teiAddLabel = $translate.instant('add_relationship');
+        $scope.programs = AccessUtils.toWritable(allPrograms);
+        CurrentSelection.setRelationshipOwner($scope.mainTei);
+    }
+    else {
+        $scope.teiAddLabel = $scope.selectedAttribute && $scope.selectedAttribute.displayName ? $scope.selectedAttribute.displayName : $translate.instant('tracker_associate');
+        $scope.addingTeiAssociate = true;
+        var programs = allPrograms;
+        if ($scope.selectedAttribute && $scope.selectedAttribute.trackedEntityType && $scope.selectedAttribute.trackedEntityType.id) {
+            programs = [];
+            angular.forEach(allPrograms, function (pr) {
+                if (pr.trackedEntityType && pr.trackedEntityType.id === $scope.selectedAttribute.trackedEntityType.id) {
+                    programs.push(pr);
+                }
+            });
+        }
+        $scope.relatedAvailablePrograms = AccessUtils.toWritable(programs);
+
+        if (existingAssociateUid) {
+            TEIService.get(existingAssociateUid, $scope.optionSets, $scope.attributesById).then(function (data) {
+                $scope.selectedTeiForDisplay = data;
+            });
         }
         else {
-            $scope.teiAddLabel = $scope.selectedAttribute && $scope.selectedAttribute.displayName ? $scope.selectedAttribute.displayName : $translate.instant('tracker_associate');
-            $scope.addingTeiAssociate = true;
-            var programs = allPrograms;
-            if ($scope.selectedAttribute && $scope.selectedAttribute.trackedEntityType && $scope.selectedAttribute.trackedEntityType.id) {
-                programs = [];
-                angular.forEach(allPrograms, function (pr) {
-                    if (pr.trackedEntityType && pr.trackedEntityType.id === $scope.selectedAttribute.trackedEntityType.id) {
-                        programs.push(pr);
-                    }
-                });
-            }
-            $scope.relatedAvailablePrograms = AccessUtils.toWritable(programs);
-
-            if (existingAssociateUid) {
-                TEIService.get(existingAssociateUid, $scope.optionSets, $scope.attributesById).then(function (data) {
-                    $scope.selectedTeiForDisplay = data;
-                });
-            }
-            else {
-                $scope.selectedTeiForDisplay = null;
-            }
-
-            CurrentSelection.setRelationshipOwner({});
-
-            if ($scope.selectedAttribute && $scope.selectedAttribute.trackedEntityType && $scope.selectedAttribute.trackedEntityType.id) {
-                $scope.selectedTrackedEntity = $scope.selectedAttribute.trackedEntityType;
-            }
+            $scope.selectedTeiForDisplay = null;
         }
 
-        if (angular.isObject($scope.programs) && $scope.programs.length === 1) {
-            $scope.base.selectedProgramForRelative = $scope.programs[0];
+        CurrentSelection.setRelationshipOwner({});
+
+        if ($scope.selectedAttribute && $scope.selectedAttribute.trackedEntityType && $scope.selectedAttribute.trackedEntityType.id) {
+            $scope.selectedTrackedEntity = $scope.selectedAttribute.trackedEntityType;
+        }
+    }
+
+    if (angular.isObject($scope.programs) && $scope.programs.length === 1) {
+        $scope.base.selectedProgramForRelative = $scope.programs[0];
+    }
+
+    if ($scope.selectedProgram) {
+        if ($scope.selectedProgram.relatedProgram && $scope.relatedProgramRelationship) {
+            angular.forEach($scope.programs, function (pr) {
+                if (pr.id === $scope.selectedProgram.relatedProgram.id) {
+                    $scope.base.selectedProgramForRelative = pr;
+                }
+            });
         }
 
-        if ($scope.selectedProgram) {
-            if ($scope.selectedProgram.relatedProgram && $scope.relatedProgramRelationship) {
-                angular.forEach($scope.programs, function (pr) {
-                    if (pr.id === $scope.selectedProgram.relatedProgram.id) {
-                        $scope.base.selectedProgramForRelative = pr;
-                    }
-                });
-            }
+        if ($scope.selectedProgram.relationshipType) {
+            angular.forEach($scope.relationshipTypes, function (rel) {
+                if (rel.id === $scope.selectedProgram.relationshipType.id) {
+                    $scope.relationship.selected = rel;
+                }
+            });
+        }
+    }
 
-            if ($scope.selectedProgram.relationshipType) {
-                angular.forEach($scope.relationshipTypes, function (rel) {
-                    if (rel.id === $scope.selectedProgram.relationshipType.id) {
-                        $scope.relationship.selected = rel;
-                    }
-                });
-            }
+    //watch for selection of relationship
+    $scope.$watch('relationship.selected', function () {
+        if (angular.isObject($scope.relationship.selected)) {
+            $scope.selectedConstraints.currentTei = "fromConstraint";
+            $scope.selectedConstraints.related = "toConstraint";
+            $scope.resetRelatedView();
+        }
+    });
+
+    function resetFields() {
+
+        $scope.teiForRelationship = null;
+        $scope.teiFetched = false;
+        $scope.emptySearchText = false;
+        $scope.emptySearchAttribute = false;
+        $scope.showAdvancedSearchDiv = false;
+        $scope.showRegistrationDiv = false;
+        $scope.showTrackedEntityDiv = false;
+        $scope.trackedEntityList = null;
+        $scope.teiCount = null;
+
+        $scope.queryUrl = null;
+        $scope.programUrl = null;
+        $scope.attributeUrl = {url: null, hasValue: false};
+        $scope.sortColumn = {};
+    }
+
+    //listen for selections
+    $scope.$on('relationship', function (event, args) {
+        if (args.result === 'SUCCESS') {
+            var relationshipInfo = CurrentSelection.getRelationshipInfo();
+            $scope.teiForRelationship = relationshipInfo.tei;
+            $scope.addRelationship();
         }
 
-        //watch for selection of relationship
-        $scope.$watch('relationship.selected', function () {
-            if (angular.isObject($scope.relationship.selected)) {
-                $scope.selectedConstraints.currentTei = "fromConstraint";
-                $scope.selectedConstraints.related = "toConstraint";
-                $scope.resetRelatedView();
-            }
-        });
+        if (args.result === 'CANCEL') {
+            $scope.showRegistration();
+        }
+    });
 
-        function resetFields() {
+    //sortGrid
+    $scope.sortGrid = function (gridHeader) {
+        if ($scope.sortColumn && $scope.sortColumn.id === gridHeader.id) {
+            $scope.reverse = !$scope.reverse;
+            return;
+        }
+        $scope.sortColumn = gridHeader;
+        if ($scope.sortColumn.valueType === 'date') {
+            $scope.reverse = true;
+        }
+        else {
+            $scope.reverse = false;
+        }
+    };
 
-            $scope.teiForRelationship = null;
-            $scope.teiFetched = false;
-            $scope.emptySearchText = false;
-            $scope.emptySearchAttribute = false;
-            $scope.showAdvancedSearchDiv = false;
-            $scope.showRegistrationDiv = false;
-            $scope.showTrackedEntityDiv = false;
-            $scope.trackedEntityList = null;
-            $scope.teiCount = null;
+    $scope.d2Sort = function (tei) {
+        if ($scope.sortColumn && $scope.sortColumn.valueType === 'date') {
+            var d = tei[$scope.sortColumn.id];
+            return DateUtils.getDate(d);
+        }
+        return tei[$scope.sortColumn.id];
+    };
 
-            $scope.queryUrl = null;
-            $scope.programUrl = null;
-            $scope.attributeUrl = {url: null, hasValue: false};
-            $scope.sortColumn = {};
+    $scope.search = function (mode) {
+
+        resetFields();
+
+        $scope.selectedSearchMode = mode;
+
+        if ($scope.base.selectedProgramForRelative) {
+            $scope.programUrl = 'program=' + $scope.base.selectedProgramForRelative.id;
         }
 
-        //listen for selections
-        $scope.$on('relationship', function (event, args) {
-            if (args.result === 'SUCCESS') {
-                var relationshipInfo = CurrentSelection.getRelationshipInfo();
-                $scope.teiForRelationship = relationshipInfo.tei;
-                $scope.addRelationship();
-            }
+        //check search mode
+        if ($scope.selectedSearchMode === $scope.searchMode.freeText) {
 
-            if (args.result === 'CANCEL') {
-                $scope.showRegistration();
-            }
-        });
-
-        //sortGrid
-        $scope.sortGrid = function (gridHeader) {
-            if ($scope.sortColumn && $scope.sortColumn.id === gridHeader.id) {
-                $scope.reverse = !$scope.reverse;
+            if (!$scope.searchText.value) {
+                $scope.emptySearchText = true;
+                $scope.teiFetched = false;
+                $scope.teiCount = null;
                 return;
             }
-            $scope.sortColumn = gridHeader;
-            if ($scope.sortColumn.valueType === 'date') {
-                $scope.reverse = true;
+
+            $scope.queryUrl = 'query=LIKE:' + $scope.searchText.value;
+        }
+
+        if ($scope.selectedSearchMode === $scope.searchMode.attributeBased) {
+            $scope.searchText.value = null;
+            $scope.attributeUrl = EntityQueryFactory.getAttributesQuery($scope.attributes, $scope.enrollment);
+
+            if (!$scope.attributeUrl.hasValue && !$scope.base.selectedProgramForRelative) {
+                $scope.emptySearchAttribute = true;
+                $scope.teiFetched = false;
+                $scope.teiCount = null;
+                return;
             }
-            else {
-                $scope.reverse = false;
-            }
-        };
+        }
 
-        $scope.d2Sort = function (tei) {
-            if ($scope.sortColumn && $scope.sortColumn.valueType === 'date') {
-                var d = tei[$scope.sortColumn.id];
-                return DateUtils.getDate(d);
-            }
-            return tei[$scope.sortColumn.id];
-        };
-
-        $scope.search = function (mode) {
-
-            resetFields();
-
-            $scope.selectedSearchMode = mode;
-
-            if ($scope.base.selectedProgramForRelative) {
-                $scope.programUrl = 'program=' + $scope.base.selectedProgramForRelative.id;
-            }
-
-            //check search mode
-            if ($scope.selectedSearchMode === $scope.searchMode.freeText) {
-
-                if (!$scope.searchText.value) {
-                    $scope.emptySearchText = true;
-                    $scope.teiFetched = false;
-                    $scope.teiCount = null;
-                    return;
-                }
-
-                $scope.queryUrl = 'query=LIKE:' + $scope.searchText.value;
-            }
-
-            if ($scope.selectedSearchMode === $scope.searchMode.attributeBased) {
-                $scope.searchText.value = null;
-                $scope.attributeUrl = EntityQueryFactory.getAttributesQuery($scope.attributes, $scope.enrollment);
-
-                if (!$scope.attributeUrl.hasValue && !$scope.base.selectedProgramForRelative) {
-                    $scope.emptySearchAttribute = true;
-                    $scope.teiFetched = false;
-                    $scope.teiCount = null;
-                    return;
-                }
-            }
-
-            if ($scope.addingTeiAssociate) {
-                if (!$scope.selectedProgram.trackedEntityType || !$scope.selectedProgram.trackedEntityType.id) {
-                    NotificationService.showNotifcationDialog($translate.instant("searching_error"),
-                        $translate.instant("no_entity_for_tracker_associate_attribute"));
-                    $scope.teiFetched = true;
-                    return;
-                }
-
-                //$scope.programUrl = 'trackedEntityType=' + $scope.selectedTrackedEntityType.id;
-            }
-
-            $scope.fetchTei();
-        };
-
-        $scope.fetchTei = function () {
-
-            //get events for the specified parameters
-            TEIService.search($scope.selectedOrgUnit.id,
-                $scope.selectedOuMode.name,
-                $scope.queryUrl,
-                $scope.programUrl,
-                $scope.attributeUrl.url,
-                $scope.pager,
-                true).then(function (data) {
-                //$scope.trackedEntityList = data;
-                if (data.rows) {
-                    $scope.teiCount = data.rows.length;
-                }
-
-                if (data.metaData.pager) {
-                    $scope.pager = data.metaData.pager;
-                    $scope.pager.toolBarDisplay = 5;
-
-                    Paginator.setPage($scope.pager.page);
-                    Paginator.setPageCount($scope.pager.pageCount);
-                    Paginator.setPageSize($scope.pager.pageSize);
-                    Paginator.setItemCount($scope.pager.total);
-                }
-
-                //process tei grid
-
-                $scope.trackedEntityList = TEIGridService.format($scope.selectedOrgUnit.id, data, false, $scope.optionSets, invalidTeis);
-                $scope.showTrackedEntityDiv = true;
+        if ($scope.addingTeiAssociate) {
+            if (!$scope.selectedProgram.trackedEntityType || !$scope.selectedProgram.trackedEntityType.id) {
+                NotificationService.showNotifcationDialog($translate.instant("searching_error"),
+                    $translate.instant("no_entity_for_tracker_associate_attribute"));
                 $scope.teiFetched = true;
-
-                if (!$scope.sortColumn.id) {
-                    $scope.sortGrid({
-                        id: 'created',
-                        name: $translate.instant('registration_date'),
-                        valueType: 'date',
-                        displayInListNoProgram: false,
-                        showFilter: false,
-                        show: false
-                    });
-                }
-            });
-        };
-
-        $scope.onSelectedProgram = function(program){
-            $scope.selectedProgramForRelative = program;
-            $scope.base.selectedProgram = program;
-            $scope.setAttributesForSearch(program);
-            TEService.get(selectedProgram.trackedEntityType.id).then(function(te){
-                $scope.canRegister = AccessUtils.isWritable(te) && AccessUtils.isWritable(selectedProgram);
-
-            });
-
-        }
-        //set attributes as per selected program
-        $scope.setAttributesForSearch = function (program) {
-
-            $scope.base.selectedProgramForRelative = program;
-            AttributesFactory.getByProgram($scope.base.selectedProgramForRelative).then(function (atts) {
-                $scope.attributes = atts;
-                $scope.attributes = AttributesFactory.generateAttributeFilters(atts);
-                $scope.gridColumns = TEIGridService.generateGridColumns($scope.attributes, null, false).columns;
-            });
-
-            $scope.search($scope.selectedSearchMode);
-        };
-
-        $scope.setAttributesForSearch($scope.base.selectedProgramForRelative);
-
-        $scope.jumpToPage = function () {
-            if ($scope.pager && $scope.pager.page && $scope.pager.pageCount && $scope.pager.page > $scope.pager.pageCount) {
-                $scope.pager.page = $scope.pager.pageCount;
+                return;
             }
 
-            $scope.search($scope.selectedSearchMode);
-        };
-
-        $scope.resetPageSize = function () {
-            $scope.pager.page = 1;
-            $scope.search($scope.selectedSearchMode);
-        };
-
-        $scope.getPage = function (page) {
-            $scope.pager.page = page;
-            $scope.search($scope.selectedSearchMode);
-        };
-
-        //generate grid columns from teilist attributes
-        $scope.generateGridColumns = function (attributes) {
-
-            var columns = attributes ? angular.copy(attributes) : [];
-
-            //also add extra columns which are not part of attributes (orgunit for example)
-            columns.push({id: 'orgUnitName', name: 'Organisation unit', type: 'TEXT', displayInListNoProgram: false});
-            columns.push({id: 'created', name: 'Registration date', type: 'TEXT', displayInListNoProgram: false});
-
-            //generate grid column for the selected program/attributes
-            angular.forEach(columns, function (column) {
-                if (column.id === 'orgUnitName' && $scope.selectedOuMode.name !== 'SELECTED') {
-                    column.show = true;
-                }
-
-                if (column.displayInListNoProgram) {
-                    column.show = true;
-                }
-
-                if (column.type === 'date') {
-                    $scope.filterText[column.id] = {start: '', end: ''};
-                }
-            });
-            return columns;
-        };
-
-        $scope.showHideSearch = function (simpleSearch) {
-            $scope.showAdvancedSearchDiv = simpleSearch ? false : !$scope.showAdvancedSearchDiv;
-            $scope.showTrackedEntityDiv = !$scope.showAdvancedSearchDiv;
-        };
-
-        $scope.showRegistration = function () {
-            $scope.showRegistrationDiv = !$scope.showRegistrationDiv;
-            $scope.showTrackedEntityDiv = !$scope.showRegistrationDiv;
-        };
-
-        $scope.hideRegistration = function(){
-            $scope.showRegistrationDiv = false;
+            //$scope.programUrl = 'trackedEntityType=' + $scope.selectedTrackedEntityType.id;
         }
 
-        $scope.close = function () {
-            $modalInstance.close($scope.mainTei.relationships ? $scope.mainTei.relationships : []);
-            $rootScope.showAddRelationshipDiv = !$rootScope.showAddRelationshipDiv;
-        };
+        $scope.fetchTei();
+    };
 
-        $scope.setRelationshipSides = function (side) {
-            if (side === 'A') {
-                $scope.selectedRelationship.bIsToA = $scope.selectedRelationship.aIsToB === $scope.relationship.selected.aIsToB ? $scope.relationship.selected.bIsToA : $scope.relationship.selected.aIsToB;
+    $scope.fetchTei = function () {
+
+        //get events for the specified parameters
+        TEIService.search($scope.selectedOrgUnit.id,
+            $scope.selectedOuMode.name,
+            $scope.queryUrl,
+            $scope.programUrl,
+            $scope.attributeUrl.url,
+            $scope.pager,
+            true).then(function (data) {
+            //$scope.trackedEntityList = data;
+            if (data.rows) {
+                $scope.teiCount = data.rows.length;
             }
-            if (side === 'B') {
-                $scope.selectedRelationship.aIsToB = $scope.selectedRelationship.bIsToA === $scope.relationship.selected.bIsToA ? $scope.relationship.selected.aIsToB : $scope.relationship.selected.bIsToA;
+
+            if (data.metaData.pager) {
+                $scope.pager = data.metaData.pager;
+                $scope.pager.toolBarDisplay = 5;
+
+                Paginator.setPage($scope.pager.page);
+                Paginator.setPageCount($scope.pager.pageCount);
+                Paginator.setPageSize($scope.pager.pageSize);
+                Paginator.setItemCount($scope.pager.total);
             }
-        };
 
-        $scope.assignRelationship = function (relativeTei) {
-            $scope.teiForRelationship = relativeTei;
-            $rootScope.showAddRelationshipDiv = !$rootScope.showAddRelationshipDiv;
-        };
+            //process tei grid
 
-        $scope.back = function () {
-            $scope.teiForRelationship = null;
-            $rootScope.showAddRelationshipDiv = !$rootScope.showAddRelationshipDiv;
-        };
+            $scope.trackedEntityList = TEIGridService.format($scope.selectedOrgUnit.id, data, false, $scope.optionSets, invalidTeis);
+            $scope.showTrackedEntityDiv = true;
+            $scope.teiFetched = true;
 
-        $scope.addRelationship = function () {
-            if ($scope.addingRelationship) {
-                if ($scope.mainTei && $scope.teiForRelationship && $scope.relationship.selected) {
-                    var tei = angular.copy($scope.mainTei);
-
-                    var relationship = { from: {trackedEntityInstance: {} }, to: {trackedEntityInstance: {}}};
-
-                    relationship.relationshipType = $scope.relationship.selected.id;
-                    
-                    relationship.from.trackedEntityInstance.trackedEntityInstance = $scope.selectedConstraints.currentTei === 'fromConstraint' ? $scope.mainTei.trackedEntityInstance : $scope.teiForRelationship.id;
-                    relationship.to.trackedEntityInstance.trackedEntityInstance = $scope.selectedConstraints.currentTei === 'toConstraint' ? $scope.mainTei.trackedEntityInstance : $scope.teiForRelationship.id;
-
-                    tei.relationships.push(relationship);
-
-                    TEIService.update(tei, $scope.optionSets, $scope.attributesById).then(function (response) {
-                        var relationshipResponse = response && response.response && response.response.relationships;
-                        var importSummary = relationshipResponse && relationshipResponse.importSummaries && relationshipResponse.importSummaries[0];
-                        if(!importSummary){
-                            NotificationService.showNotifcationDialog($translate.instant("unknown_error"), $translate.instant("unknown_error"));
-                            return;
-                        }
-                        if (importSummary && importSummary.status !== 'SUCCESS') {//update has failed
-                            var message = $translate.instant("saving_relationship_failed_conflicts");
-                            var conflictMessage = importSummary.conflicts.reduce(function(msg, conflict){
-                                msg += "["+conflict.value+"] ";
-                                return msg;
-                            },"");
-                            NotificationService.showNotifcationDialog($translate.instant("saving_relationship_failed"), message +": "+conflictMessage);
-                            return;
-                        }
-
-                        relationship.relationshipName = $scope.relationship.selected.displayName;
-                        relationship.relationship = importSummary.reference;
-
-                        if ($scope.mainTei.relationships) {
-                            $scope.mainTei.relationships.push(relationship);
-                        }
-                        else {
-                            $scope.mainTei.relationships = [relationship];
-                        }
-
-                        $modalInstance.close($scope.mainTei.relationships);
-                    });
-                }
-                else {
-                    NotificationService.showNotifcationDialog($translate.instant("relationship_error"), $translate.instant("selected_tei_is_invalid"));
-                    return;
-                }
-            }
-            else {
-                if ($scope.teiForRelationship && $scope.teiForRelationship.id) {
-                    $modalInstance.close($scope.teiForRelationship);
-                }
-                else {
-                    NotificationService.showNotifcationDialog($translate.instant("tracker_associate_error"), $translate.instant("selected_tei_is_invalid"));
-                    return;
-                }
-
-            }
-        };
-
-        //Get orgunits for the logged in user
-        OrgUnitFactory.getSearchTreeRoot().then(function (response) {
-            $scope.orgUnits = response.organisationUnits;
-            angular.forEach($scope.orgUnits, function (ou) {
-                ou.show = true;
-                angular.forEach(ou.children, function (o) {
-                    o.hasChildren = o.children && o.children.length > 0 ? true : false;
+            if (!$scope.sortColumn.id) {
+                $scope.sortGrid({
+                    id: 'created',
+                    name: $translate.instant('registration_date'),
+                    valueType: 'date',
+                    displayInListNoProgram: false,
+                    showFilter: false,
+                    show: false
                 });
-            });
+            }
+        });
+    };
+
+    $scope.onSelectedProgram = function(program){
+        $scope.selectedProgramForRelative = program;
+        $scope.base.selectedProgram = program;
+        $scope.setAttributesForSearch(program);
+        TEService.get(selectedProgram.trackedEntityType.id).then(function(te){
+            $scope.canRegister = AccessUtils.isWritable(te) && AccessUtils.isWritable(selectedProgram);
+
         });
 
-        //expand/collapse of search orgunit tree
-        $scope.expandCollapse = function (orgUnit) {
-            if (orgUnit.hasChildren) {
-                //Get children for the selected orgUnit
-                OrgUnitFactory.get(orgUnit.id).then(function (ou) {
-                    orgUnit.show = !orgUnit.show;
-                    orgUnit.hasChildren = false;
-                    orgUnit.children = ou.organisationUnits[0].children;
-                    angular.forEach(orgUnit.children, function (ou) {
-                        ou.hasChildren = ou.children && ou.children.length > 0 ? true : false;
-                    });
+    }
+    //set attributes as per selected program
+    $scope.setAttributesForSearch = function (program) {
+
+        $scope.base.selectedProgramForRelative = program;
+        AttributesFactory.getByProgram($scope.base.selectedProgramForRelative).then(function (atts) {
+            $scope.attributes = atts;
+            $scope.attributes = AttributesFactory.generateAttributeFilters(atts);
+            $scope.gridColumns = TEIGridService.generateGridColumns($scope.attributes, null, false).columns;
+        });
+
+        $scope.search($scope.selectedSearchMode);
+    };
+
+    $scope.setAttributesForSearch($scope.base.selectedProgramForRelative);
+
+    $scope.jumpToPage = function () {
+        if ($scope.pager && $scope.pager.page && $scope.pager.pageCount && $scope.pager.page > $scope.pager.pageCount) {
+            $scope.pager.page = $scope.pager.pageCount;
+        }
+
+        $scope.search($scope.selectedSearchMode);
+    };
+
+    $scope.resetPageSize = function () {
+        $scope.pager.page = 1;
+        $scope.search($scope.selectedSearchMode);
+    };
+
+    $scope.getPage = function (page) {
+        $scope.pager.page = page;
+        $scope.search($scope.selectedSearchMode);
+    };
+
+    //generate grid columns from teilist attributes
+    $scope.generateGridColumns = function (attributes) {
+
+        var columns = attributes ? angular.copy(attributes) : [];
+
+        //also add extra columns which are not part of attributes (orgunit for example)
+        columns.push({id: 'orgUnitName', name: 'Organisation unit', type: 'TEXT', displayInListNoProgram: false});
+        columns.push({id: 'created', name: 'Registration date', type: 'TEXT', displayInListNoProgram: false});
+
+        //generate grid column for the selected program/attributes
+        angular.forEach(columns, function (column) {
+            if (column.id === 'orgUnitName' && $scope.selectedOuMode.name !== 'SELECTED') {
+                column.show = true;
+            }
+
+            if (column.displayInListNoProgram) {
+                column.show = true;
+            }
+
+            if (column.type === 'date') {
+                $scope.filterText[column.id] = {start: '', end: ''};
+            }
+        });
+        return columns;
+    };
+
+    $scope.showHideSearch = function (simpleSearch) {
+        $scope.showAdvancedSearchDiv = simpleSearch ? false : !$scope.showAdvancedSearchDiv;
+        $scope.showTrackedEntityDiv = !$scope.showAdvancedSearchDiv;
+    };
+
+    $scope.showRegistration = function () {
+        $scope.showRegistrationDiv = !$scope.showRegistrationDiv;
+        $scope.showTrackedEntityDiv = !$scope.showRegistrationDiv;
+    };
+
+    $scope.hideRegistration = function(){
+        $scope.showRegistrationDiv = false;
+    }
+
+    $scope.close = function () {
+        $modalInstance.close($scope.mainTei.relationships ? $scope.mainTei.relationships : []);
+        $rootScope.showAddRelationshipDiv = !$rootScope.showAddRelationshipDiv;
+    };
+
+    $scope.setRelationshipSides = function (side) {
+        if (side === 'A') {
+            $scope.selectedRelationship.bIsToA = $scope.selectedRelationship.aIsToB === $scope.relationship.selected.aIsToB ? $scope.relationship.selected.bIsToA : $scope.relationship.selected.aIsToB;
+        }
+        if (side === 'B') {
+            $scope.selectedRelationship.aIsToB = $scope.selectedRelationship.bIsToA === $scope.relationship.selected.bIsToA ? $scope.relationship.selected.aIsToB : $scope.relationship.selected.bIsToA;
+        }
+    };
+
+    $scope.assignRelationship = function (relativeTei) {
+        $scope.teiForRelationship = relativeTei;
+        $rootScope.showAddRelationshipDiv = !$rootScope.showAddRelationshipDiv;
+    };
+
+    $scope.back = function () {
+        $scope.teiForRelationship = null;
+        $rootScope.showAddRelationshipDiv = !$rootScope.showAddRelationshipDiv;
+    };
+
+    $scope.addRelationship = function () {
+        if ($scope.addingRelationship) {
+            if ($scope.mainTei && $scope.teiForRelationship && $scope.relationship.selected) {
+                var tei = angular.copy($scope.mainTei);
+
+                var relationship = { from: {trackedEntityInstance: {} }, to: {trackedEntityInstance: {}}};
+
+                relationship.relationshipType = $scope.relationship.selected.id;
+                
+                relationship.from.trackedEntityInstance.trackedEntityInstance = $scope.selectedConstraints.currentTei === 'fromConstraint' ? $scope.mainTei.trackedEntityInstance : $scope.teiForRelationship.id;
+                relationship.to.trackedEntityInstance.trackedEntityInstance = $scope.selectedConstraints.currentTei === 'toConstraint' ? $scope.mainTei.trackedEntityInstance : $scope.teiForRelationship.id;
+
+                tei.relationships.push(relationship);
+
+                TEIService.update(tei, $scope.optionSets, $scope.attributesById).then(function (response) {
+                    var relationshipResponse = response && response.response && response.response.relationships;
+                    var importSummary = relationshipResponse && relationshipResponse.importSummaries && relationshipResponse.importSummaries[0];
+                    if(!importSummary){
+                        NotificationService.showNotifcationDialog($translate.instant("unknown_error"), $translate.instant("unknown_error"));
+                        return;
+                    }
+                    if (importSummary && importSummary.status !== 'SUCCESS') {//update has failed
+                        var message = $translate.instant("saving_relationship_failed_conflicts");
+                        var conflictMessage = importSummary.conflicts.reduce(function(msg, conflict){
+                            msg += "["+conflict.value+"] ";
+                            return msg;
+                        },"");
+                        NotificationService.showNotifcationDialog($translate.instant("saving_relationship_failed"), message +": "+conflictMessage);
+                        return;
+                    }
+
+                    relationship.relationshipName = $scope.relationship.selected.displayName;
+                    relationship.relationship = importSummary.reference;
+
+                    if ($scope.mainTei.relationships) {
+                        $scope.mainTei.relationships.push(relationship);
+                    }
+                    else {
+                        $scope.mainTei.relationships = [relationship];
+                    }
+
+                    $modalInstance.close($scope.mainTei.relationships);
                 });
             }
             else {
-                orgUnit.show = !orgUnit.show;
+                NotificationService.showNotifcationDialog($translate.instant("relationship_error"), $translate.instant("selected_tei_is_invalid"));
+                return;
             }
-        };
+        }
+        else {
+            if ($scope.teiForRelationship && $scope.teiForRelationship.id) {
+                $modalInstance.close($scope.teiForRelationship);
+            }
+            else {
+                NotificationService.showNotifcationDialog($translate.instant("tracker_associate_error"), $translate.instant("selected_tei_is_invalid"));
+                return;
+            }
 
-        //load programs for the selected orgunit (from tree)
-        $scope.setSelectedSearchingOrgUnit = function (orgUnit) {
-            $scope.selectedSearchingOrgUnit = orgUnit;
-        };
+        }
+    };
+
+    //Get orgunits for the logged in user
+    OrgUnitFactory.getSearchTreeRoot().then(function (response) {
+        $scope.orgUnits = response.organisationUnits;
+        angular.forEach($scope.orgUnits, function (ou) {
+            ou.show = true;
+            angular.forEach(ou.children, function (o) {
+                o.hasChildren = o.children && o.children.length > 0 ? true : false;
+            });
+        });
+    });
+
+    //expand/collapse of search orgunit tree
+    $scope.expandCollapse = function (orgUnit) {
+        if (orgUnit.hasChildren) {
+            //Get children for the selected orgUnit
+            OrgUnitFactory.get(orgUnit.id).then(function (ou) {
+                orgUnit.show = !orgUnit.show;
+                orgUnit.hasChildren = false;
+                orgUnit.children = ou.organisationUnits[0].children;
+                angular.forEach(orgUnit.children, function (ou) {
+                    ou.hasChildren = ou.children && ou.children.length > 0 ? true : false;
+                });
+            });
+        }
+        else {
+            orgUnit.show = !orgUnit.show;
+        }
+    };
+
+    //load programs for the selected orgunit (from tree)
+    $scope.setSelectedSearchingOrgUnit = function (orgUnit) {
+        $scope.selectedSearchingOrgUnit = orgUnit;
+    };
 })
 
 .controller('TEIRegistrationController', 
