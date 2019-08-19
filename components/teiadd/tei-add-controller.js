@@ -267,11 +267,27 @@ trackerCapture.controller('TEIAddController',
         }
     }
 
+    var validConstraintForTei = function( tei, constraint ) {
+        return constraint.relationshipEntity === "TRACKED_ENTITY_INSTANCE" &&
+            tei.trackedEntityType === constraint.trackedEntityType.id;
+    }
+
     //watch for selection of relationship
     $scope.$watch('relationship.selected', function () {
         if (angular.isObject($scope.relationship.selected)) {
-            $scope.selectedConstraints.currentTei = "fromConstraint";
-            $scope.selectedConstraints.related = "toConstraint";
+            if ( validConstraintForTei( $scope.mainTei, $scope.relationship.selected.fromConstraint ) ) {
+                $scope.selectedConstraints.currentTei = "fromConstraint";
+                $scope.selectedConstraints.related = "toConstraint";
+            }
+            else if ( validConstraintForTei( $scope.mainTei, $scope.relationship.selected.toConstraint ) ) {
+                $scope.selectedConstraints.currentTei = "toConstraint";
+                $scope.selectedConstraints.related = "fromConstraint";
+            }
+            else {
+                $log.warn("Tracked entity instance selected(" + $scope.mainTei.trackedEntityType + 
+                    ") does not match any side of the relationship type " + $scope.relationship.selected.id );
+            }
+            
             $scope.resetRelatedView();
         }
     });
