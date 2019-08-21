@@ -1,5 +1,6 @@
 [main]
 host = https://www.transifex.com
+lang_map = fa_AF: prs
 
 [app-tracker-capture-app.i18n-app-properties--v30]
 file_filter = i18n/i18n_app_<lang>.properties
