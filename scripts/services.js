@@ -1025,6 +1025,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        markPotentialDuplicate: function(tei) {
+            var promise = $http.post( DHIS2URL + '/potentialDuplicates/',{teiA:tei.id}).then(function(response){
+                return response.data;
+            });
+            return promise;
+        },
         delete: function(entityUid){
             var promise = $http.delete(DHIS2URL + '/trackedEntityInstances/' + entityUid).then(function(response){
                 return response.data;

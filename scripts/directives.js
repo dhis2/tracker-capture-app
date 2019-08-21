@@ -554,6 +554,7 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             gridColumns: "=?teiGridColumns",
             refetchData: "&teiRefetchData",
             onTeiClicked: "&onTeiClicked",
+            onMarkDuplicate: "&onMarkDuplicate"
         },
 
         
@@ -602,8 +603,13 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             };
 
             $scope.onTeiClickedInternal = function(tei){
-                $scope.onTeiClicked({tei : tei});
+                $scope.onTeiClicked({tei: tei});
             }
+
+            $scope.onMarkDuplicateInternal = function(tei){
+                $scope.onMarkDuplicate({tei: tei});
+            }
+            
             
             $scope.getPage = function(page){
                 $scope.pager.page = page;

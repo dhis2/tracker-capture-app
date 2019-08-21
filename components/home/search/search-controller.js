@@ -283,6 +283,10 @@ trackerCapture.controller('SearchController',function(
                         $modalInstance.close({action: "OPENREGISTRATION"});
                     }
 
+                    $scope.markPotentialDuplicate = function(tei){
+                        TEIService.markPotentialDuplicate(tei);
+                    }
+
                     $scope.openTei = function(tei){
                         if(internalService.base.selectedProgram && internalService.base.selectedProgram.id){
                             TEIService.getWithProgramData(tei.id, internalService.base.selectedProgram.id, internalService.base.optionSets, internalService.base.attributesById).then(function(resultTei){
