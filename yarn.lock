@@ -1303,10 +1303,10 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-d2-tracker@31.0.27:
-  version "31.0.27"
-  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-31.0.27.tgz#44e85d2ac529af37c00441448968e9ba745b968a"
-  integrity sha512-SxcDQBsnpZ5pDTBfU61cx6kD2odwXkihD4Ye8WGfOhh9u6rIvdBiF6KeH8dGMyO3MC21yC8yiklrl4mAaNgvow==
+d2-tracker@31.0.28:
+  version "31.0.28"
+  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-31.0.28.tgz#c31e030c3abb83d725875c3d8f8e9f241d6dd77b"
+  integrity sha512-g/O36WPpi0WyssR+r0MHOhPabku3TZHvBcaQGnUQmwnj2JknPDqlXr6DnTSBR42X6EtR+/2PUz1IMICKgm0SIg==
   dependencies:
     angular-vs-repeat "^2.0.9"
     gulp "^3.9.1"
