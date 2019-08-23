@@ -19,7 +19,7 @@
                ng-disabled="!reportDateEditable()"
                ng-required="true"
                blur-or-change="saveEventDate()"
-               ng-focus="setDateOnFocus(currentEvent.eventDate)"/>
+               ng-focus="setDateOnFocus(currentEvent.eventDate, selectedEnrollment.enrollmentDate)"/>
         <input type="text"
                class="form-control not-for-screen"
                ng-class="{'input-success': eventDateSaved}"
