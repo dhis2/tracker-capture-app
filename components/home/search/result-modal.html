@@ -30,9 +30,13 @@
                 <tracker-tei-list
                     tei-data="gridData"
                     on-tei-clicked="openTei(tei)"
+                    allow-flag-duplicates="true"
                     tei-refetch-data="refetchData(pager, sortColumn)"
+                    on-mark-duplicate="markPotentialDuplicate(tei)"
+                    on-un-mark-duplicate="unMarkPotentialDuplicate(tei)"
+                    on-get-duplicate="getPotentialDuplicate(tei)"
                     tei-pager="pager"
-            >
+                >
             </tracker-tei-list>
         </div>
 

@@ -1993,6 +1993,11 @@ a.disable-link-effects:focus {
     color: #000;
 }
 
+.alert-compact {
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
 .alert-danger-darker {
     background-color: #c67070 !important;
     color: #000;

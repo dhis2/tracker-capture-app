@@ -1025,6 +1025,39 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        getPotentialDuplicates: function(uidList) {
+            var uidUrl = "";
+            if(uidList.length > 0)
+            {
+                uidUrl += "?teis=";
+                for(var i = 0; i < uidList.length; i ++){
+                    if(i > 0) uidUrl += ",";
+                    uidUrl += uidList[i];
+                }
+            }
+            var promise = $http.get( DHIS2URL + '/potentialDuplicates' + uidUrl ).then(function(response){
+                return response.data;
+            });
+            return promise;
+        },
+        getPotentialDuplicatesForTei: function(uid) {
+            var promise = $http.get( DHIS2URL + '/potentialDuplicates?teis=' + uid ).then(function(response){
+                return response.data;
+            });
+            return promise;
+        },
+        markPotentialDuplicate: function(tei) {
+            var promise = $http.post( DHIS2URL + '/potentialDuplicates/',{teiA:tei.id}).then(function(response){
+                return response.data;
+            });
+            return promise;
+        },
+        deletePotentialDuplicate: function(duplicate) {
+            var promise = $http.delete( DHIS2URL + '/potentialDuplicates/' + duplicate.id).then(function(response){
+                return response.data;
+            });
+            return promise;
+        },
         delete: function(entityUid){
             var promise = $http.delete(DHIS2URL + '/trackedEntityInstances/' + entityUid).then(function(response){
                 return response.data;
@@ -2028,7 +2061,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             if (!ouId) {
                 ouId = selectedOrgUnitId;
             }
-
 
             invalidTeis = !invalidTeis ? [] : invalidTeis;
             if (!grid || !grid.rows) {

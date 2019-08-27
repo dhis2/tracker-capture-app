@@ -49,6 +49,8 @@ trackerCapture.controller('DashboardController',
             window.location.reload();
         }
     });
+
+    $scope.duplicateExists = false;
     $rootScope.hasAccess = false;
     $scope.APIURL = DHIS2URL;
     //selections
@@ -148,6 +150,11 @@ trackerCapture.controller('DashboardController',
 
             if ($scope.selectedTeiId) {
 
+                TEIService.getPotentialDuplicatesForTei($scope.selectedTeiId).then(function(duplicates){
+                    $scope.potentialDuplicates = duplicates.identifiableObjects;
+                    $scope.duplicateExists = $scope.potentialDuplicates.length > 0 ? true : false;
+                });
+                
                 //get option sets
                 $scope.optionSets = [];
                 MetaDataFactory.getAll('optionGroups').then(function(optionGroups){
