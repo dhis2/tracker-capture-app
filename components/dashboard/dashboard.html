@@ -76,7 +76,8 @@
             </div>
         </div>
         <div class="row">
-            
+            <div ng-if="duplicateExists" class="alert alert-warning alert-compact" style="margin-left:15px;margin-right:15px;margin-bottom:15px">{{'possible_duplicate_info_start' | translate}} {{trackedEntityType.displayName | lowercase}} {{'possible_duplicate_info_end' | translate}}
+            </div>
         </div>
         <div class="row">
             <div height-change-target class="vertical-spacing" ng-show="topBarConfig.settings && topBarConfig.settings.active" style="margin-bottom:0px;"></div>
