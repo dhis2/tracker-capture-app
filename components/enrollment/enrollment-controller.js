@@ -14,6 +14,7 @@ trackerCapture.controller('EnrollmentController',
                 CurrentSelection,
                 EnrollmentService,
                 ModalService,
+                OrgUnitFactory,
                 NotificationService,
                 AuthorityService) {
     
@@ -118,6 +119,11 @@ trackerCapture.controller('EnrollmentController',
                 $scope.stagesById = [];
                 angular.forEach($scope.selectedProgram.programStages, function (stage) {
                     $scope.stagesById[stage.id] = stage;
+                });
+
+                var owningOrgUnitId = $scope.selectedTei.programOwnersById[$scope.selectedProgram.id];
+                OrgUnitFactory.getFromStoreOrServer(owningOrgUnitId).then(function(orgUnit){
+                    $scope.owningOrgUnitName = orgUnit.displayName;
                 });
 
                 angular.forEach($scope.enrollments, function (enrollment) {

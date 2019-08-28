@@ -179,7 +179,7 @@ trackerCapture.controller('DashboardController',
                                 $rootScope.hasAccess = true;
                                 if (response) {
                                     $scope.selectedTei = response;
-    
+
                                     //get the entity type
                                     loadTrackedEntityType().then(function () {
                                         var enrollments = ($scope.selectedTei && $scope.selectedTei.enrollments) || [];
