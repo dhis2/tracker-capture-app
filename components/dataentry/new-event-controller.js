@@ -4,6 +4,7 @@
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('EventCreationController',
         function ($scope,
+                $rootScope,
                 $modalInstance,
                 $timeout,
                 $translate,
@@ -343,6 +344,7 @@ trackerCapture.controller('EventCreationController',
 
             TEIService.changeTeiProgramOwner($scope.tei.trackedEntityInstance, $scope.selectedProgram.id, dummyEvent.orgUnit).then(function(response){
                 $scope.save();
+                $rootScope.$broadcast('selectedItems', {programExists: true});
             });
         });
     };
