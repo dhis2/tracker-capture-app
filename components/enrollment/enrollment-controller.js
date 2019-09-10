@@ -75,6 +75,18 @@ trackerCapture.controller('EnrollmentController',
                 $scope.enrollmentGeometryState.geometry = $scope.selectedEnrollment.geometry;
             }
         }
+
+        var setOwnerOrgUnit = function() {
+            var owningOrgUnitId = CurrentSelection.currentSelection.tei.programOwnersById[$scope.selectedProgram.id];
+            OrgUnitFactory.getFromStoreOrServer(owningOrgUnitId).then(function(orgUnit){
+                $scope.owningOrgUnitName = orgUnit.displayName;
+            });
+        }
+
+        $scope.$on('ownerUpdated', function(event, args){
+            setOwnerOrgUnit();
+        });
+
         //listen for the selected items
         $scope.$on('selectedItems', function (event, args) {
             currentReportDate = null;
@@ -121,10 +133,7 @@ trackerCapture.controller('EnrollmentController',
                     $scope.stagesById[stage.id] = stage;
                 });
 
-                var owningOrgUnitId = $scope.selectedTei.programOwnersById[$scope.selectedProgram.id];
-                OrgUnitFactory.getFromStoreOrServer(owningOrgUnitId).then(function(orgUnit){
-                    $scope.owningOrgUnitName = orgUnit.displayName;
-                });
+                setOwnerOrgUnit();
 
                 angular.forEach($scope.enrollments, function (enrollment) {
                     if (enrollment.program === $scope.selectedProgram.id) {

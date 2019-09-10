@@ -344,7 +344,7 @@ trackerCapture.controller('EventCreationController',
 
             TEIService.changeTeiProgramOwner($scope.tei.trackedEntityInstance, $scope.selectedProgram.id, dummyEvent.orgUnit).then(function(response){
                 $scope.save();
-                $rootScope.$broadcast('selectedItems', {programExists: true});
+                $rootScope.$broadcast('ownerUpdated', {programExists: true});
             });
         });
     };
