@@ -315,12 +315,18 @@ trackerCapture.controller('SearchController',function(
 
                     $scope.unMarkPotentialDuplicate = function(tei){
                         var newExistingDuplicatesList = [];
+                        var duplicateToDelete = {};
                         angular.forEach($scope.existingDuplicates, function(duplicate){
                             if(duplicate.teiA != tei.id && duplicate.teiB != tei.id) {
                                 newExistingDuplicatesList.push(duplicate);
                             }
+                            else {
+                                duplicateToDelete = duplicate;
+                            }
                         });
-                        TEIService.deletePotentialDuplicate(tei);
+                        if(duplicateToDelete) {
+                            TEIService.deletePotentialDuplicate(duplicateToDelete);
+                        }                     
                         $scope.existingDuplicates = newExistingDuplicatesList;
                     }
 
