@@ -175,7 +175,7 @@ trackerCapture.controller('RelationshipController',
                     var teiId = rel.to.trackedEntityInstance.trackedEntityInstance;
                     TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
                         relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
-                        var relName = relationshipType.bidirectional ? relationshipType.toFromName : relationshipType.displayName;
+                        var relName = relationshipType.fromToName;
 
                         if(relationshipType && teiTypes.filter(function(teiType) { return teiType.id === tei.trackedEntityType ; }).length > 0) {
                             var teiType = teiTypes.find(function(teiType) { return teiType.id === tei.trackedEntityType ; });
@@ -201,7 +201,7 @@ trackerCapture.controller('RelationshipController',
                     var teiId = rel.from.trackedEntityInstance.trackedEntityInstance;
                     TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
                         relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
-                        var relName = relationshipType.fromToName;
+                        var relName = relationshipType.toFromName;
 
                         if(relationshipType && teiTypes.filter(function(teiType) { return teiType.id === tei.trackedEntityType ; }).length > 0) {
                             var teiType = teiTypes.find(function(teiType) { return teiType.id === tei.trackedEntityType ; });
@@ -229,7 +229,7 @@ trackerCapture.controller('RelationshipController',
                         event = e;
 
                         relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
-                        var relName = relationshipType.fromToName;
+                        var relName = relationshipType.toFromName;
 
                         relationshipProgram = relationshipType.fromConstraint.program;
 
