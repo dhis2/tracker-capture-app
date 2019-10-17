@@ -355,8 +355,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     };
 })
 
-/* Factory to fetch relationships */
-.factory('RelationshipFactory', function($q, $rootScope, TCStorageService) {
+/* Factory to fetch relationships */ 
+.factory('RelationshipFactory', function($q, $http, $rootScope, $translate, TCStorageService, NotificationService) {
+    var errorHeader = $translate.instant("error");
     return {
         getAll: function(){
 
@@ -384,6 +385,23 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 });
             });
             return def.promise;
+        },
+        delete: function(uid){
+            var promise = $http
+                .delete( DHIS2URL + '/relationships/' +  uid)
+                .then(function(response){
+                    if(!response || !response.data || response.data.status !== 'OK'){
+                        var errorBody = $translate.instant('failed_to_delete_relationship');
+                        NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                        return $q.reject(errorBody);
+                    }
+                    return response && response.data;
+                }, function(error) {
+                    var errorBody = $translate.instant('failed_to_delete_relationship');
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                    return $q.reject(error);
+                });
+            return promise;
         }
     };
 })
@@ -412,9 +430,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }else{
                 TCStorageService.currentStore.open().done(function(){
                     TCStorageService.currentStore.getAll('programAccess').done(function(programAccess){
-                        access = { programsById: {}, programStagesById: {}};
+                        access = { programsById: {}, programStagesById: {}, programIdNameMap: {}};
                         angular.forEach(programAccess, function(program){
                             access.programsById[program.id] = program.access;
+                            access.programIdNameMap[program.id] = program.displayName;
                             angular.forEach(program.programStages, function(programStage){
                                 access.programStagesById[programStage.id] = programStage.access;
                             });
@@ -1473,6 +1492,18 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     var errorBody = $translate.instant('failed_to_fetch_events');
                     NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
                 }
+            });
+            return promise;
+        },
+        getEventWithoutRegistration: function(eventId) {
+            var url = DHIS2URL + '/events/' + eventId;
+
+            var promise = $http.get( url ).then(function(response){
+                return response.data;
+            }, function(response){
+                var errorBody = $translate.instant('failed_to_update_event');
+                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
+                return null;
             });
             return promise;
         },
