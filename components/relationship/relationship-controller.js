@@ -52,8 +52,9 @@ trackerCapture.controller('RelationshipController',
         $scope.programs = $scope.selections.prs;
         $scope.programsById = {};
         $scope.allProgramNames = {};
-        ProgramFactory.getAllAccesses().then(function(programs) {
-            $scope.allProgramNames = programs.programIdNameMap;
+        ProgramFactory.getAllAccesses().then(function(data) {
+            $scope.allProgramNames = data.programIdNameMap;
+            $scope.accessByProgramId = data.programsById;
         });
         angular.forEach($scope.programs, function(program){
             $scope.programsById[program.id] = program;
@@ -237,8 +238,22 @@ trackerCapture.controller('RelationshipController',
                         }
 
                         var convertedEventDate = DateUtils.formatFromApiToUser(event.eventDate);
+                        
+                        debugger;
+                        var isDeleteable = !$scope.selectedTei.inactive && relationshipType.access.data.write && $scope.trackedEntityType.access.data.write && $scope.accessByProgramId[event.program].data.write;
 
-                        var eventToDisplay = {eventId: rel.from.event.event, eventDate: convertedEventDate, program: $scope.allProgramNames[event.program], status: event.status, orgUnit: event.orgUnitName, relName: relName, relId: rel.relationship, relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
+                        var eventToDisplay = {
+                            eventId: rel.from.event.event,
+                            eventDate: convertedEventDate,
+                            program: $scope.allProgramNames[event.program],
+                            status: event.status,
+                            orgUnit: event.orgUnitName,
+                            relName: relName,
+                            relId: rel.relationship,
+                            relationshipProgramConstraint: relationshipProgram,
+                            relationshipType: relationshipType,
+                            isDeleteable: isDeleteable
+                        };            
                         $scope.relatedEvents.push(eventToDisplay);
                     });
                 }
