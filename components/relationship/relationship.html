@@ -81,10 +81,10 @@
                         <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showEventInCaptureApp(rel.eventId)">
                             {{rel.status}}
                         </td>
-                        <td ng-click="removeRelationship(rel)" ng-attr-title="{{'delete_relationship'| translate}}" ng-if="!selectedTei.inactive && selectedProgram.access.data.write && rel.relationshipType.access.data.write">
+                        <td ng-click="removeRelationship(rel)" ng-attr-title="{{'delete_relationship'| translate}}" ng-if="rel.isDeleteable">
                             <i class="fa fa-trash-o red"></i>
                         </td>
-                        <td ng-if="!rel.relationshipType.access.data.write" ng-attr-title="{{'can_not_delete_relationship'| translate}}">
+                        <td ng-if="!rel.isDeleteable" ng-attr-title="{{'can_not_delete_relationship'| translate}}">
                             <i class="fa fa-trash-o grey"></i>
                         </td>
                     </tr>
