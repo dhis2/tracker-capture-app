@@ -19,7 +19,7 @@
     </div>
     <div ng-show="relationshipsWidget.expand" class="panel-body dashboard-widget-container">
         <div>
-            <div ng-show="selectedTei && !selectedTei.relationships || selectedTei.relationships.length < 1 || relatedTeis.length < 1" class="alert alert-warning">{{noRelationshipLabel}}</div> 
+            <div ng-show="selectedTei && !selectedTei.relationships || selectedTei.relationships.length < 1 || (relatedTeis.length < 1 && relatedEvents.length < 1)" class="alert alert-warning">{{noRelationshipLabel}}</div> 
             <div ng-show="!selectedTei" class="alert alert-danger">{{'relationship_not_possible'| translate}}</div> 
             <div ng-if="relatedTeis.length > 0">
                 <table class="table table-striped dhis2-table-hover table-bordered">
@@ -42,6 +42,49 @@
                             <i class="fa fa-trash-o red"></i>
                         </td>
                         <td ng-if="!rel.relationshipType.access.data.write" ng-attr-title="{{'can_not_delete_relationship'| translate}}">
+                            <i class="fa fa-trash-o grey"></i>
+                        </td>
+                    </tr>
+                </table>           
+            </div>
+            <div ng-if="relatedEvents.length > 0">
+                <table class="table table-striped dhis2-table-hover table-bordered">
+                    <tr>
+                        <th>
+                            {{'linked_events' | translate}}
+                        </th>
+                        <th>
+                            {{'org_unit' | translate}}
+                        </th>
+                        <th>
+                            {{'program' | translate}}
+                        </th>
+                        <th>
+                            {{'report_date' | translate}}
+                        </th>
+                        <th>
+                            {{'status' | translate}}
+                        </th>
+                        <th ng-if="!selectedTei.inactive && selectedProgram.access.data.write"></th>
+                    </tr>
+                    <tr ng-repeat="rel in relatedEvents">
+                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showEventInCaptureApp(rel.eventId)">{{rel.relName}}</td>
+                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showEventInCaptureApp(rel.eventId)">
+                            {{rel.orgUnit}}
+                        </td>
+                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showEventInCaptureApp(rel.eventId)">
+                            {{rel.program}}
+                        </td>
+                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showEventInCaptureApp(rel.eventId)">
+                            {{rel.eventDate}}
+                        </td>
+                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showEventInCaptureApp(rel.eventId)">
+                            {{rel.status}}
+                        </td>
+                        <td ng-click="removeRelationship(rel)" ng-attr-title="{{'delete_relationship'| translate}}" ng-if="rel.isDeleteable">
+                            <i class="fa fa-trash-o red"></i>
+                        </td>
+                        <td ng-if="!rel.isDeleteable" ng-attr-title="{{'can_not_delete_relationship'| translate}}">
                             <i class="fa fa-trash-o grey"></i>
                         </td>
                     </tr>
