@@ -356,7 +356,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Factory to fetch relationships */
-.factory('RelationshipFactory', function($q, $rootScope, TCStorageService) {
+.factory('RelationshipFactory', function($q, $http, $rootScope, $translate, TCStorageService, NotificationService) {
+    var errorHeader = $translate.instant("error");
     return {
         getAll: function(){
 
@@ -384,6 +385,23 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 });
             });
             return def.promise;
+        },
+        delete: function(uid){
+            var promise = $http
+                .delete( DHIS2URL + '/relationships/' +  uid)
+                .then(function(response){
+                    if(!response || !response.data || response.data.status !== 'OK'){
+                        var errorBody = $translate.instant('failed_to_delete_relationship');
+                        NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                        return $q.reject(errorBody);
+                    }
+                    return response && response.data;
+                }, function(error) {
+                    var errorBody = $translate.instant('failed_to_delete_relationship');
+                    NotificationService.showNotifcationDialog(errorHeader, errorBody);
+                    return $q.reject(error);
+                });
+            return promise;
         }
     };
 })
