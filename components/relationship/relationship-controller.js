@@ -140,17 +140,12 @@ trackerCapture.controller('RelationshipController',
                 }
             }
 
-            if( index !== -1 ){
-                $scope.selectedTei.relationships.splice(index,1);
-                var trimmedTei = angular.copy($scope.selectedTei);
-                angular.forEach(trimmedTei.relationships, function(rel){
-                    delete rel.relative;
-                });
-                TEIService.update(trimmedTei, $scope.optionSets, $scope.attributesById).then(function(response){
-                    if(!response || response.response && response.response.status !== 'SUCCESS'){//update has failed
-                        return;
-                    }
+             if( index !== -1 ){
+                var relationshipToDelete = $scope.selectedTei.relationships.splice(index,1);
+                RelationshipFactory.delete(rel.relId).then(function(response){
                     setRelationships();
+                }, function(error) {
+                    $scope.selectedTei.relationships.splice(index, 0, relationshipToDelete[0]);
                 });
             }
         });        
