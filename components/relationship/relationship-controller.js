@@ -238,8 +238,6 @@ trackerCapture.controller('RelationshipController',
                         }
 
                         var convertedEventDate = DateUtils.formatFromApiToUser(event.eventDate);
-                        
-                        debugger;
                         var isDeleteable = !$scope.selectedTei.inactive && relationshipType.access.data.write && $scope.trackedEntityType.access.data.write && $scope.accessByProgramId[event.program].data.write;
 
                         var eventToDisplay = {
