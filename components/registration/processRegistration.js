@@ -77,26 +77,24 @@ function verifyDefaultSearchGroup(searchGroups, {
     if(useProgramSearchScope) {
         tetSearchGroup = SearchGroupService.findTetSearchGroup(defaultSearchGroup, tetSearchConfig, attributesById);
     }
-
-    function fetch(pager, sortColumn) {
-        var promise;
-        if(useProgramSearchScope){
-            promise = SearchGroupService.programScopeSearch(defaultSearchGroup, tetSearchGroup, program, trackedEntityType, orgUnit, pager, sortColumn);
-        }else{
-            promise = SearchGroupService.tetScopeSearch(defaultSearchGroup, trackedEntityType, orgUnit, pager, sortColumn);
-        }
-        return promise;
+    
+    var promise;
+    if(useProgramSearchScope){
+        promise = SearchGroupService.programScopeSearch(defaultSearchGroup, tetSearchGroup, program, trackedEntityType, orgUnit, { skipTotalPages: true });
+    }else{
+        promise = SearchGroupService.tetScopeSearch(defaultSearchGroup, trackedEntityType, orgUnit, { skipTotalPages: true });
     }
 
-    return fetch().then(function(res){
-        if(res.status === "MATCHES"){
-            return {
-                potentialDuplicates: res.data,
-                onRefetch: fetch,
-            };
-        }
-        return {};
-    });
+    return promise
+        .then(function(res){
+            if(res.status === "MATCHES"){
+                return {
+                    potentialDuplicates: res.data,
+                    onRefetch: res.onRefetch,
+                };
+            }
+            return {};
+        });
 }
 
 function addValuesToSearchGroup(searchGroup, { tei }) {
