@@ -140,9 +140,9 @@ trackerCapture.controller('SearchController',function(
                 var promise;
                 if(currentSearchScope === searchScopes.PROGRAM){
                     var tetSearchGroup = SearchGroupService.findValidTetSearchGroup(searchGroup, $scope.tetSearchConfig, $scope.base.attributesById);
-                    promise = SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit)
+                    promise = SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, { skipTotalPages: true })
                 }else{
-                    promise = SearchGroupService.tetScopeSearch(searchGroup,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit);
+                    promise = SearchGroupService.tetScopeSearch(searchGroup,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, { skipTotalPages: true });
                 }
 
                 return promise.then(function(res){
@@ -239,19 +239,6 @@ trackerCapture.controller('SearchController',function(
                 base: $scope.base
             }
 
-            var refetch;
-            if(currentSearchScope === searchScopes.PROGRAM) {
-                var tetSearchGroup = SearchGroupService.findValidTetSearchGroup(searchGroup, $scope.tetSearchConfig, $scope.base.attributesById);
-                refetch = function(pager) {
-                    return SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, pager);
-                } 
-            } else {
-                refetch = function(pager) {
-                    return SearchGroupService.tetScopeSearch(searchGroup,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, pager);
-                };
-
-            }
-
             return $modal.open({
                 templateUrl: 'components/home/search/result-modal.html',
                 controller: function($scope,$modalInstance, TEIGridService,OrgUnitFactory, orgUnit, res, refetchDataFn, internalService, canOpenRegistration, TEIService,NotificationService)
@@ -266,7 +253,10 @@ trackerCapture.controller('SearchController',function(
                             $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, internalService.base.optionSets, null);
                         }
                         $scope.notInSameScope = res.callingScope != res.resultScope;
-                        $scope.pager = res.data && res.data.metaData ? res.data.metaData.pager : null;
+                        $scope.pager = {
+                            ...(res.data && res.data.metaData && res.data.metaData.pager),
+                            skipTotalPages: true
+                        };
     
                         if(res.status === "UNIQUE"){
                             $scope.isUnique = true;
@@ -310,18 +300,30 @@ trackerCapture.controller('SearchController',function(
                     }
 
                     $scope.refetchData = function(pager, sortColumn){
-                        refetchDataFn(pager, sortColumn).then(function(newRes)
-                        {
-                            res = newRes;
-                            loadData();
-                        });
+                        refetchDataFn(pager, sortColumn)
+                            .then(function(response){
+                                if(response && response.rows && response.rows.length > 0){
+                                    $scope.gridData = TEIGridService.format(orgUnit.id, response, false, internalService.base.optionSets, null);
+                                }
+                                else {
+                                    $scope.gridData = [];
+                                }
+                            })
+                            .catch(function(error){
+                                $scope.gridData = null;
+                                if(error && error.data && error.data.message === "maxteicountreached"){
+                                    $scope.tooManySearchResults = true;
+                                } else {
+                                    $scope.error = true;
+                                    console.log(error);
+                                }
+                            });
                     }
                 },
                 resolve: {
                     refetchDataFn: function(){
-                        return refetch;
+                        return res.onRefetch;
                     },
-
                     orgUnit: function(){
                         return $scope.selectedOrgUnit;
                     },
