@@ -1,0 +1,83 @@
+<div ng-if="data">
+    <div class="tei-list-scroll">
+        <table class="table table-striped dhis2-table-hover table-bordered">               
+            <thead>                        
+                <tr>
+                    <th ng-repeat="gridColumn in gridColumns| filter:{show: true}" class='mouse-pointer' ng-click="sortGrid(gridColumn)">                            
+                        <!-- sort icon begins -->                                
+                        <span ng-hide="gridColumn.showFilter" class="bold pointer" title="{{'sort'| translate}}" class="fa fa-sort">
+                            <span class="fa-stack">
+                                <span ng-class="{true: 'red'} [sortColumn.id === gridColumn.id && sortColumn.direction === 'asc']"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
+                                <span ng-class="{true: 'red'} [sortColumn.id === gridColumn.id && sortColumn.direction === 'desc']"><i class="fa fa-sort-desc fa-stack-1x"></i></span>
+                            </span>
+                            {{gridColumn.formName ? gridColumn.formName : gridColumn.displayName}}
+                        </span>
+                        <!-- sort icon ends -->                            
+                    </th>                              
+                </tr>                        
+            </thead>
+            <tbody id="list">
+                <tr ng-repeat="tei in data.rows.own" 
+                    ng-class="{true: 'inactive-tei'} [tei.inactive]">
+                    <td ng-click="onTeiClickedInternal(tei)" ng-repeat="gridColumn in gridColumns| filter:{show: true}" title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
+                        <span ng-switch="gridColumn.valueType">
+                            <span ng-switch-when="BOOLEAN">
+                                <span ng-if="tei[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
+                                <span ng-if="tei[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
+                            </span>
+                            <span ng-switch-when="TRUE_ONLY">
+                                <span ng-if="tei[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
+                            </span>
+                            <span ng-switch-when="ORGANISATION_UNIT">
+                                {{tei[gridColumn.id] && orgUnitNames[tei[gridColumn.id]] ? orgUnitNames[tei[gridColumn.id]] : tei[gridColumn.id]}}
+                            </span>
+                            <span ng-switch-when="IMAGE">
+                                <div ng-if="tei[gridColumn.id]">
+                                    <d2-image-in-list d2-tei="tei"
+                                            d2-attribute-id="gridColumn.id">
+                                    </d2-image-in-list>
+                                </div>
+                            </span>
+                            <span ng-switch-default>{{tei[gridColumn.id]}}</span>
+                        </span>
+                    </td>
+                    <td ng-if="allowFlagDuplicates">
+                        <a ng-if="!onGetDuplicateInternal(tei)" title="{{'the_record_has_is_possible_duplicate' | translate}}" ng-click="onMarkDuplicateInternal(tei)">{{'flag_possible_duplicate' | translate}}</a>
+                        <span ng-if="onGetDuplicateInternal(tei)"><div class="alert alert-warning alert-compact">{{'possible_duplicate' | translate}}</div>
+                            <a ng-click="onUnMarkDuplicateInternal(tei)">{{'unflag' | translate}}</a>
+                        </span>
+                    </td>
+                </tr>
+                <tr ng-repeat="tei in data.rows.other"
+                    ng-class="{true: 'inactive-tei'} [tei.inactive]"
+                    title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
+                    <td ng-click="onTeiClickedInternal(tei)" ng-repeat="gridColumn in gridColumns| filter:{show: true}">
+                        <span ng-switch="gridColumn.valueType">
+                            <span ng-switch-when="BOOLEAN">
+                                <span ng-if="tei[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
+                                <span ng-if="tei[gridColumn.id] === 'false'">{{ 'no' | translate}}</span>
+                            </span>
+                            <span ng-switch-when="TRUE_ONLY">
+                                <span ng-if="tei[gridColumn.id] === 'true'"><i class="fa fa-check"></i></span>
+                            </span>
+                            <span ng-switch-when="ORGANISATION_UNIT">
+                                {{tei[gridColumn.id] && orgUnitNames[tei[gridColumn.id]] ? orgUnitNames[tei[gridColumn.id]] : tei[gridColumn.id]}}
+                            </span>
+                            <span ng-switch-default>{{tei[gridColumn.id]}}</span>
+                        </span>
+                    </td>
+                    <td ng-if="allowFlagDuplicates">
+                        <a ng-if="!onGetDuplicateInternal(tei)" title="{{'the_record_has_is_possible_duplicate' | translate}}" ng-click="onMarkDuplicateInternal(tei)">{{'flag_possible_duplicate' | translate}}</a>
+                        <span ng-if="onGetDuplicateInternal(tei)"><div class="alert alert-warning alert-compact">{{'possible_duplicate' | translate}}</div>
+                            <a ng-click="onUnMarkDuplicateInternal(tei)">{{'unflag' | translate}}</a>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>        
+        </table>
+    </div>
+    <div class="hideInPrint" ng-if="pager">
+        <serverside-paginator-performant/>        
+    </div>
+</div>
+
