@@ -554,9 +554,7 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             gridColumns: "=?teiGridColumns",
             refetchData: "&teiRefetchData",
             onTeiClicked: "&onTeiClicked",
-        },
-
-        
+        },        
         controller: function($scope, Paginator,TEIGridService, CurrentSelection){
             var attributesById = CurrentSelection.getAttributesById();
             $scope.$watch("pager", function(){
@@ -623,6 +621,99 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                 }
                 $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
                 
+            };
+        }
+    }
+})
+.directive('trackerTeiListPerformant', function(){
+    return {
+        restrict: 'E',
+        templateUrl: 'views/tei-list-performant.html',
+        scope: {
+            data: "=teiData",
+            pager: "=?teiPager",
+            sortColumn: "=?teiSortColumn",
+            gridColumns: "=?teiGridColumns",
+            refetchData: "&teiRefetchData",
+            onTeiClicked: "&onTeiClicked"
+        },
+        controller: function($scope, Paginator,TEIGridService, CurrentSelection){
+            var attributesById = CurrentSelection.getAttributesById();
+            if (!$scope.pager) {
+                $scope.pager = {};
+            }
+
+            if (!$scope.pager.page) {
+                $scope.pager.page = 1;
+            }
+
+            if (!$scope.pager.pageSize) {
+                $scope.pager.pageSize = 50;
+            }
+
+            $scope.pager.recordsCount = ($scope.data && $scope.data.rows && $scope.data.rows.own && $scope.data.rows.own.length) || 0;
+
+            $scope.$watch("pager", function(){
+                if($scope.pager){
+                    Paginator.setPage($scope.pager.page);
+                    Paginator.setPageCount($scope.pager.pageCount);
+                    Paginator.setPageSize($scope.pager.pageSize);
+                    Paginator.setItemCount($scope.pager.total);
+                }
+            });
+
+            $scope.$watch("data", function(){
+                $scope.pager.recordsCount = ($scope.data && $scope.data.rows && $scope.data.rows.own && $scope.data.rows.own.length) || 0;
+                setGridColumns();
+            });
+
+            var setGridColumns = function(){
+                if($scope.data && !$scope.gridColumns){
+                    var columnAttributes = [];
+                    angular.forEach($scope.data.headers, function(header){
+                        if(attributesById[header.id]){
+                            var attr = angular.copy(attributesById[header.id]);
+                            attr.displayInListNoProgram = true;
+                            columnAttributes.push(attr);
+                        }
+                    });
+                    var gridColumnConfig = { showAll: true};
+                    $scope.gridColumns = TEIGridService.makeGridColumns(columnAttributes, gridColumnConfig);
+                }
+            }
+
+            setGridColumns();
+
+            $scope.sortGrid = function(gridHeader){
+                if ($scope.sortColumn && $scope.sortColumn.id === gridHeader.id){
+                    $scope.sortColumn.direction = $scope.sortColumn.direction === 'asc' ? 'desc' : 'asc';
+                }else if(!$scope.sortColumn){
+                    $scope.sortColumn = {id: gridHeader.id, direction: 'asc'};
+                }else{
+                    $scope.sortColumn.id = gridHeader.id;
+                    $scope.sortColumn.direction = 'asc';
+                }
+                $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
+            };
+
+            $scope.onTeiClickedInternal = function(tei){
+                $scope.onTeiClicked({tei: tei});
+            }
+            
+            $scope.onGetPage = function(page){
+                $scope.pager.page = page;
+                $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
+            };
+
+            $scope.onChangePageSize = function(newPageSize){
+                $scope.pager.page = 1;
+                $scope.pager.pageSize = newPageSize;
+                $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
+            };
+
+            $scope.onChangePage = function(newPage){
+                $scope.pager.page = newPage;
+                $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
             };
         }
     }
