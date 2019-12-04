@@ -986,20 +986,6 @@ trackerCapture.controller('RegistrationController',
             optionSets: $scope.optionSets
         }
 
-        var refetch;
-        if (!onRefetch) {
-            if($scope.programSearchScope){
-                var tetSearchGroup = SearchGroupService.findValidSearchGroup($scope.matchingTeisSearchGroup, $scope.tetSearchConfig, $scope.attributesById);
-                refetch = function(pager) {
-                    return SearchGroupService.programScopeSearch($scope.matchingTeisSearchGroup,tetSearchGroup, $scope.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);
-                }
-            }else{
-                refetch = function(pager){
-                    return SearchGroupService.tetScopeSearch($scope.matchingTeisSearchGroup,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit,pager);
-                }
-            }
-        }
-
         return $modal.open({
                 templateUrl: 'components/registration/matches-modal.html',
                 controller: function($scope, $modalInstance, TEIGridService, orgUnit, data, modalData, refetchDataFn)
@@ -1007,7 +993,10 @@ trackerCapture.controller('RegistrationController',
                     $scope.allowRegistration = modalData.allowRegistration;
                     $scope.translateWithTETName = modalData.translateWithTETName;
                     $scope.gridData = TEIGridService.format(orgUnit.id, data, false, modalData.optionSets, null);
-                    $scope.pager = data && data.metaData ? data.metaData.pager : null;
+                    $scope.pager = {
+                        ...(data && data.metaData && data.metaData.pager),
+                        skipTotalPages: true
+                    };
                     $scope.openTei = function(tei){
                         $modalInstance.close({ action: "OPENTEI", tei: tei});
                     }
@@ -1018,10 +1007,26 @@ trackerCapture.controller('RegistrationController',
                         $modalInstance.close({ action: "CANCEL"});
                     }
                     $scope.refetchData = function(pager, sortColumn){
-                        refetchDataFn(pager,sortColumn).then(function(res){
-                            $scope.pager = res.data && res.data.metaData ? res.data.metaData.pager : null;
-                            $scope.gridData = TEIGridService.format(orgUnit.id, res.data, false, modalData.optionSets, null);
-                        });
+                        $scope.error = false;
+                        $scope.tooManySearchResults = false;
+                        refetchDataFn(pager, sortColumn)
+                            .then(function(response){
+                                if(response && response.rows && response.rows.length > 0){
+                                    $scope.gridData = TEIGridService.format(orgUnit.id, response, false, modalData.optionSets, null);
+                                }
+                                else {
+                                    $scope.gridData = [];
+                                }
+                            })
+                            .catch(function(error){
+                                $scope.gridData = null;
+                                if(error && error.data && error.data.message === "maxteicountreached"){
+                                    $scope.tooManySearchResults = true;
+                                } else {
+                                    $scope.error = true;
+                                    console.log(error);
+                                }
+                            });
                     }
                 },
                 resolve: {
@@ -1032,7 +1037,7 @@ trackerCapture.controller('RegistrationController',
                         return matches;
                     },
                     refetchDataFn: function(){
-                        return onRefetch || refetch;
+                        return onRefetch;
                     },
                     modalData: function(){
                         return modalData;
