@@ -4,12 +4,12 @@
         <h3 ng-if="isUnique && gridData.length === 1">{{translateWithTETName('tracked_entity_instance_unique_found_header')}}</h3>
         <h3 ng-if="isUnique && gridData.length > 1">{{translateWithTETName('tracked_entity_instance_search_results_header')}}</h3>
         <h3 ng-if="!isUnique && gridData">{{translateWithTETName('tracked_entity_instance_search_results_header')}}</h3>
-        <h3 ng-if="!gridData && !tooManySearchResults">{{translateWithTETName('no_tracked_entity_instance_found_header', true)}}</h3>
+        <h3 ng-if="!gridData && !tooManySearchResults && !error">{{translateWithTETName('no_tracked_entity_instance_found_header', true)}}</h3>
         <h3 ng-if="tooManySearchResults">{{'too_many_search_results' | translate}}</h3>
     </div>
     <div class="modal-body page">
         <div ng-if="!gridData">
-            <span ng-if="!gridData && !tooManySearchResults">
+            <span ng-if="!gridData && !tooManySearchResults && !error">
                     <span ng-if="canOpenRegistration">
                         {{translateWithTETName(translateWithTETName('no_tracked_entity_instance_found_go_to_registration_description',true),true)}}
                     </span>
@@ -21,13 +21,16 @@
             <span ng-if="tooManySearchResults">
                     {{translateWithTETName('large_number_of_search_results_warning')}}
             </span>
+            <span ng-if="error">
+                {{translateWithTETName('error')}}
+            </span>
         </div>
         <div ng-if="gridData && notInSameScope">
                 {{translateWithTETName('no_tracked_entity_instance_found_in_selected_program_showing_results_from_other_programs',true)}}
         </div>
         <br/>
         <div ng-if="gridData">
-                <tracker-tei-list
+                <tracker-tei-list-performant
                     tei-data="gridData"
                     on-tei-clicked="openTei(tei)"
                     allow-flag-duplicates="true"
@@ -37,7 +40,7 @@
                     on-get-duplicate="getPotentialDuplicate(tei)"
                     tei-pager="pager"
                 >
-            </tracker-tei-list>
+            </tracker-tei-list-performant>
         </div>
 
     </div>

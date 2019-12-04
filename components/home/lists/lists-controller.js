@@ -33,10 +33,18 @@ trackerCapture.controller('ListsController',function(
         $scope.defaultOperators = OperatorFactory.defaultOperators;
         $scope.boolOperators = OperatorFactory.boolOperators;
 
-        var setPager = function(pager){
-            $scope.pager = pager;
-            $scope.pager.toolBarDisplay = 5;
+        var initPager = function(){
+            $scope.defaultRequestProps = {
+                skipTotalPages: true
+            };
+
+            $scope.pager = {
+                ...$scope.defaultRequestProps,
+                pageSize: 50,
+                page: 1
+            };
         }
+        initPager();
 
         $scope.$watch('base.selectedProgram', function() {
             init();
@@ -44,6 +52,7 @@ trackerCapture.controller('ListsController',function(
 
         var init = function(){
             if( angular.isObject($scope.base.selectedProgram)){
+                initPager();
                 reset();
                 loadAttributesByProgram()
                 .then(loadGridColumns)
@@ -185,7 +194,6 @@ trackerCapture.controller('ListsController',function(
         }
 
         var setCurrentTrackedEntityListData = function(serverResponse){
-            if (serverResponse && serverResponse.metaData && serverResponse.metaData.pager) setPager(serverResponse.metaData.pager);
             $scope.currentTrackedEntityList.data = TEIGridService.format($scope.selectedOrgUnit.id, serverResponse, false, $scope.base.optionSets, null);
             $scope.currentTrackedEntityList.loading = false;
             //updateCurrentSelection();
@@ -363,9 +371,7 @@ trackerCapture.controller('ListsController',function(
                 }else{
                     promise = TEIService.search($scope.selectedOrgUnit.id, ouModes[0].name, config.url,program, attrIdList, false, false,format, attrNamesList, attrNamesIdMap,$scope.base.optionSets);
                 }
-                promise.then(function(data){
-                    if (data && data.metaData && data.metaData.pager) setPager(data.metaData.pager);
-    
+                promise.then(function(data){    
                     var fileName = "trackedEntityList." + format;// any file name with any extension
                     var a = document.createElement('a');
                     var blob, url;

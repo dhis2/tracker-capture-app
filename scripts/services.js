@@ -947,8 +947,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             url = url + '&' + attributeUrl;
         }
         if(paging){
-            var pgSize = pager ? pager.pageSize : 50;
-            var pg = pager ? pager.page : 1;
+            var pgSize = (pager && pager.pageSize) || 50;
+            var pg = (pager && pager.page) || 1;
             pgSize = pgSize > 1 ? pgSize  : 1;
             pg = pg > 1 ? pg : 1;
             url = url + '&pageSize=' + pgSize + '&page=' + pg;
@@ -2788,12 +2788,11 @@ i
     }
 
     this.getWorkingListsForProgram = function(program){
-        var def = $q.defer();
         if(!program){
-            def.resolve([]);
+            return $q.when([]);
         }
 
-        if(!workingListsByProgram){
+        var fetchPromise = workingListsByProgram ? $q.when() :
             $http.get(DHIS2URL+"/trackedEntityInstanceFilters?fields=*&paging=false").then(function(response){
                 workingListsByProgram = {};
                 if(response && response.data && response.data.trackedEntityInstanceFilters && response.data.trackedEntityInstanceFilters.length > 0){
@@ -2801,26 +2800,24 @@ i
                         if(!workingListsByProgram[workingList.program.id]) workingListsByProgram[workingList.program.id] = [];
                         workingListsByProgram[workingList.program.id].push(workingList);
                     });
-                }else{
-                    workingListsByProgram[program.id] = getDefaultWorkingLists(program);
-                }
-                for(var key in workingListsByProgram){
-                    if(angular.isArray(workingListsByProgram[key])){
-                        workingListsByProgram[key] = orderByKeyFilter(workingListsByProgram[key], 'sortOrder', 'asc');
+
+                    for(var key in workingListsByProgram){
+                        if(angular.isArray(workingListsByProgram[key])){
+                            workingListsByProgram[key] = orderByKeyFilter(workingListsByProgram[key], 'sortOrder', 'asc');
+                        }
                     }
-                }
-                var programWorkingLists = workingListsByProgram[program.id] ? workingListsByProgram[program.id] : [];
-                def.resolve(programWorkingLists);
+                }  
             });
-        }else{
-            var workingLists = workingListsByProgram[program.id];
-            if(!workingLists){
-                workingLists = orderByKeyFilter(getDefaultWorkingLists(program), 'sortOrder', 'asc');
-                workingListsByProgram[program.id] = workingLists;
-            } 
-            def.resolve(workingLists);
-        }
-        return def.promise;
+        
+        return fetchPromise
+            .then(() => {
+                var workingLists = workingListsByProgram[program.id];
+                if(!workingLists){
+                    workingLists = orderByKeyFilter(getDefaultWorkingLists(program), 'sortOrder', 'asc');
+                    workingListsByProgram[program.id] = workingLists;
+                }
+                return workingLists;
+            });
     }
 
     this.getWorkingListData = function(orgUnit, workingList, pager, sortColumn){
@@ -3166,10 +3163,15 @@ i
         });
         
         if(params){
-            var order = sortColumn && "order=" + sortColumn.id + ":" + sortColumn.direction;
-            return TEIService.search(params.orgUnit.id, params.ouMode, order, params.programOrTETUrl, params.queryUrl, params.pager, params.paging).then(function(response){
+            var programScopeFetchAsyncFn = (pager, sortColumn) => {
+                var order = sortColumn && "order=" + sortColumn.id + ":" + sortColumn.direction;
+                return TEIService
+                    .search(params.orgUnit.id, params.ouMode, order, params.programOrTETUrl, params.queryUrl, pager, params.paging);
+            };
+
+            return programScopeFetchAsyncFn(params.pager, sortColumn).then(function(response){
                     if(response && response.rows && response.rows.length > 0){
-                        var result = { data: response, callingScope: searchScopes.PROGRAM, resultScope: searchScopes.PROGRAM };
+                        var result = { data: response, callingScope: searchScopes.PROGRAM, resultScope: searchScopes.PROGRAM, onRefetch: programScopeFetchAsyncFn };
                         var def = $q.defer();
                         if(params.uniqueSearch){
                             result.status = "UNIQUE";
@@ -3180,12 +3182,13 @@ i
                         return def.promise;
                     }else{
                         if(tetSearchGroup){
-                            return tetScopeSearch(tetSearchGroup, trackedEntityType, orgUnit, pager).then(function(result){
-                                result.callingScope = searchScopes.PROGRAM;
-                                return result;
-                            },function(){
-                                return {status: "NOMATCH"};
-                            });
+                            return tetScopeSearch(tetSearchGroup, trackedEntityType, orgUnit, pager)
+                                .then(function(result){
+                                    result.callingScope = searchScopes.PROGRAM;
+                                    return result;
+                                },function(){
+                                    return {status: "NOMATCH"};
+                                });
                         }else{
                             var def = $q.defer();
                             def.resolve({status: "NOMATCH"});
@@ -3221,9 +3224,13 @@ i
                 }, '');
         });
         if(params){
-            var order = sortColumn && "order=" + sortColumn.id + ":" + sortColumn.direction;
-            return TEIService.search(params.orgUnit.id, params.ouMode, order, params.programOrTETUrl, params.queryUrl, params.pager, params.paging).then(function(response){
-                var result = {data: response, callingScope: searchScopes.TET, resultScope: searchScopes.TET };
+            var tetScopeFetchAsyncFn = (pager, sortColumn) => {
+                var order = sortColumn && "order=" + sortColumn.id + ":" + sortColumn.direction;
+                return TEIService.search(params.orgUnit.id, params.ouMode, order, params.programOrTETUrl, params.queryUrl, pager, params.paging);
+            }
+            
+            return tetScopeFetchAsyncFn(params.pager, sortColumn).then(function(response){
+                var result = {data: response, callingScope: searchScopes.TET, resultScope: searchScopes.TET, onRefetch: tetScopeFetchAsyncFn };
                 if(response && response.rows && response.rows.length > 0){
                     if(params.uniqueSearch){
                         result.status = "UNIQUE";
