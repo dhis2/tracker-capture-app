@@ -33,9 +33,20 @@ trackerCapture.controller('ListsController',function(
         $scope.defaultOperators = OperatorFactory.defaultOperators;
         $scope.boolOperators = OperatorFactory.boolOperators;
 
-        var setPager = function(pager){
-            $scope.pager = pager;
-            $scope.pager.toolBarDisplay = 5;
+        var initPager = function(){
+            var pageSize = 25;
+            $scope.pager = {
+                pageSize: pageSize,
+                page: 1,
+                skipTotalPages: true,
+                recordsCount: 0,
+                pageSizeEdit: pageSize,
+                pageEdit: 1
+            };
+        }
+
+        var setPagerRecordsCount = function(recordsCount){
+            $scope.pager.recordsCount = recordsCount;
         }
 
         $scope.$watch('base.selectedProgram', function() {
@@ -51,6 +62,7 @@ trackerCapture.controller('ListsController',function(
                 .then(loadCachedData)
                 .then(setDefault);
             }
+            initPager();
         }
 
         var reset = function(){
@@ -165,6 +177,7 @@ trackerCapture.controller('ListsController',function(
         var fetchWorkingList = function(){
             if($scope.currentTrackedEntityList.type === $scope.trackedEntityListTypes.WORKINGLIST){
                 $scope.currentTrackedEntityList.loading = true;
+                setPagerRecordsCount(0);
                 ProgramWorkingListService.getWorkingListData($scope.selectedOrgUnit, $scope.currentTrackedEntityList.config, $scope.pager, $scope.currentTrackedEntityList.sortColumn).then(setCurrentTrackedEntityListData);
             }
         }
@@ -185,7 +198,8 @@ trackerCapture.controller('ListsController',function(
         }
 
         var setCurrentTrackedEntityListData = function(serverResponse){
-            if (serverResponse && serverResponse.metaData && serverResponse.metaData.pager) setPager(serverResponse.metaData.pager);
+            var recordsCount = (serverResponse.rows && serverResponse.rows.length) || 0;
+            setPagerRecordsCount(recordsCount);
             $scope.currentTrackedEntityList.data = TEIGridService.format($scope.selectedOrgUnit.id, serverResponse, false, $scope.base.optionSets, null);
             $scope.currentTrackedEntityList.loading = false;
             //updateCurrentSelection();
@@ -346,9 +360,7 @@ trackerCapture.controller('ListsController',function(
                 }else{
                     promise = TEIService.search($scope.selectedOrgUnit.id, ouModes[0].name, config.url,null, attrIdList, false, false,format, attrNamesList, attrNamesIdMap,$scope.base.optionSets);
                 }
-                promise.then(function(data){
-                    if (data && data.metaData && data.metaData.pager) setPager(data.metaData.pager);
-    
+                promise.then(function(data){    
                     var fileName = "trackedEntityList." + format;// any file name with any extension
                     var a = document.createElement('a');
                     var blob, url;
