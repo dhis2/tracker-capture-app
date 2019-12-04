@@ -50,7 +50,7 @@
     </div>    
     
     <!--- Error display for search ends -->    
-    <tracker-tei-list 
+    <tracker-tei-list-performant 
         tei-data="currentTrackedEntityList.data" 
         tei-pager="pager" 
         tei-sort-column="currentTrackedEntityList.sortColumn"
@@ -58,5 +58,5 @@
         tei-refetch-data="fetchTeis(pager, sortColumn)"
         on-tei-clicked="openTei(tei)"
         >
-    </tracker-tei-list>
+    </tracker-tei-list-performant>
 </div>
