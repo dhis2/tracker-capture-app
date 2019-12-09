@@ -1,0 +1,60 @@
+{
+  "name": "angular-css",
+  "filename": "angular-css.js",
+  "description": "CSS on-demand for AngularJS",
+  "version": "1.0.8",
+  "homepage": "http://castillo.github.io/angular-css",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/castillo-io/angular-css"
+  },
+  "npmName": "angular-css",
+  "npmFileMap": [
+    {
+      "basePath": "/",
+      "files": [
+        "*.js"
+      ]
+    }
+  ],
+  "files": [
+    "angular-css.js",
+    "angular-css.min.js"
+  ],
+  "author": "Alex Castillo <alex@castillo.io> (http://castillo.io)",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/castillo-io/angular-css/blob/master/LICENSE.txt"
+    }
+  ],
+  "keywords": [
+    "angularjs",
+    "ng-route",
+    "ui-router",
+    "css"
+  ],
+  "autoupdate": {
+    "source": "git",
+    "target": "git://github.com/castillo-io/angular-css",
+    "basePath": "/",
+    "files": [
+      "*.js"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/castillo-io/angular-css/issues"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.4",
+    "grunt-karma": "~0.7.1",
+    "karma-mocha": "~0.1.0",
+    "grunt-cli": "~0.1.11"
+  }
+}
