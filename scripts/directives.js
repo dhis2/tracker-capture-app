@@ -602,6 +602,7 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                     $scope.sortColumn.id = gridHeader.id;
                     $scope.sortColumn.direction = 'asc';
                 }
+                $scope.pager = undefined;
                 $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
             };
 
