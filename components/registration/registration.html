@@ -93,12 +93,11 @@
         </div>
 
         <div class="vertical-spacing hideInPrint btn-group" ng-if="showRegistrationButtons()">
-            <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-primary" ng-if="matchingTeisCount && matchingTeisCount > 0" ng-click="showMatchesModal(true)">{{ 'continue' | translate}}</button>
-            <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-primary" ng-if="!matchingTeisCount || matchingTeisCount === 0" ng-click="registerEntity('DASHBOARD')">{{'save_and_continue'| translate}}</button>
-            <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" class="btn btn-success" ng-if="!matchingTeisCount || matchingTeisCount === 0" ng-click="registerEntity('SELF')">{{'save_and_add_new'| translate}}</button>
+            <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus || validatingRegistration" class="btn btn-primary" ng-click="processRegistration('DASHBOARD')">{{'save_and_continue'| translate}}</button>
+            <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus || validatingRegistration" class="btn btn-success" ng-click="processRegistration('SELF')">{{'save_and_add_new'| translate}}</button>  
             <button type="button" class="btn btn-info" onclick="javascript:window.print()">{{'print_form'| translate}}</button>
-            <button type="button"  ng-disabled="model.savingRegistration" class="btn btn-default" ng-click="setCurrentView(null)">{{'cancel'| translate}}</button>
-            <i ng-if="model.savingRegistration" class="fa fa-spinner fa-spin" style="font-size:28px;margin-left:15px"></i>
+            <button type="button"  ng-disabled="model.savingRegistration || validatingRegistration" class="btn btn-default" ng-click="setCurrentView(null)">{{'cancel'| translate}}</button>
+            <i ng-if="model.savingRegistration || validatingRegistration" class="fa fa-spinner fa-spin" style="font-size:28px;margin-left:15px"></i>
         </div>
 
         <div class="vertical-spacing hideInPrint" ng-if="showTetRegistrationWarning()">
