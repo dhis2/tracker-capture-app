@@ -2380,3 +2380,8 @@ button.list-group-item-danger.active:focus {
     padding-bottom: 0px!important;
     line-height: 44px;
 }
+
+.btn-tei-search {
+    width: 40px;
+    height: 34px;
+}
