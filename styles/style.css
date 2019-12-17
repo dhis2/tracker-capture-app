@@ -2414,3 +2414,16 @@ button.list-group-item-danger.active:focus {
     top: 0px;
     left: 0px;
  }
+
+ .bidirectional-bar {
+    text-align: center;
+    border: 1px solid #c2c2c2;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 15px;
+ }
+
+ .btn-tei-search {
+    width: 40px;
+    height: 34px;
+ }
