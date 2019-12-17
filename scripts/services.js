@@ -2945,7 +2945,6 @@ i
     var tetScopeSearch = this.tetScopeSearch = function(tetSearchGroup,trackedEntityType, orgUnit, pager, sortColumn){
         var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET, (filteredAttributes) => {
             var tetAttributes = trackedEntityType.trackedEntityTypeAttributes;
-            debugger;
             return tetAttributes
                 .map(tetAttribute => tetAttribute.displayInList && tetAttribute.trackedEntityAttribute && tetAttribute.trackedEntityAttribute.id)
                 .filter(attributeId => attributeId && !filteredAttributes[attributeId])
