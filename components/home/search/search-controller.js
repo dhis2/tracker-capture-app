@@ -153,14 +153,13 @@ trackerCapture.controller('SearchController',function(
 
                         //Open TEI if unique and in same search scope and in selected org unit
                         if(gridData.rows.own.length ===1 && res.callingScope === res.resultScope && searchGroup.uniqueGroup){
+                            $scope.searching = false;
                             openTei(gridData.rows.own[0]);
                             return;
                         }
-                    } 
-                    return showResultModal(res, searchGroup);
-                })
-                .then(function() {
+                    }
                     $scope.searching = false;
+                    return showResultModal(res, searchGroup);
                 })
                 .catch(function(error){
                     console.log("could not execute search");
