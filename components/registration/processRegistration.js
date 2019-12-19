@@ -114,7 +114,7 @@ function addValuesToSearchGroups(programSearchGroups, tetSearchGroups, addValues
     });
 }
 
-export function processRegistration(destination, { SearchGroupService, tei, searchGroups, useProgramSearchScope, tetSearchConfig, attributesById, program, trackedEntityType, orgUnit, showMatchesModal, showDuplicateModal, registerEntity, $q }) {
+export function processRegistration(destination, { SearchGroupService, tei, searchGroups, useProgramSearchScope, tetSearchConfig, attributesById, program, trackedEntityType, orgUnit, showMatchesModal, showDuplicateModal, registerEntity, $q, onOpenModal }) {
     // 1. do not verify unique search groups with generated value
     var verificationSearchGroups = searchGroups && searchGroups
         .filter(group => !group.uniqueGroup || (group.attributes && group.attributes.length > 0 && !group.attributes[0].generated));    
@@ -136,6 +136,7 @@ export function processRegistration(destination, { SearchGroupService, tei, sear
     })
         .then(result => {
             if (!result.isUnique) {
+                onOpenModal();
                 showDuplicateModal(result.duplicateInfo.data, result.duplicateInfo.id);
                 return {
                     duplicateUniqueAttributeId: result.duplicateInfo.id,
@@ -155,6 +156,7 @@ export function processRegistration(destination, { SearchGroupService, tei, sear
                 .then(({ potentialDuplicates, onRefetch }) => {
                     if (potentialDuplicates) {
                         // show modal
+                        onOpenModal();
                         return showMatchesModal(true, potentialDuplicates, onRefetch);
                     }
                     // perform registration

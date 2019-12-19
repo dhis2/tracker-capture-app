@@ -581,6 +581,9 @@ trackerCapture.controller('RegistrationController',
             showDuplicateModal,
             registerEntity: $scope.registerEntity,
             $q,
+            onOpenModal: () => {
+                $scope.validatingRegistration = false;    
+            }
         })
         .then(result => {
             if(result && result.duplicateUniqueAttributeId) {
