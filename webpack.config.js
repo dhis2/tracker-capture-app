@@ -86,7 +86,7 @@ module.exports = {
             ]),
             scripts: makeScriptTags([
                 'core/tracker-capture.js',
-                '../main.js',
+                'vendor/main/main.js',
             ]),
         }),
     ],
