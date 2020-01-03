@@ -101,7 +101,7 @@ trackerCapture.controller('SearchController',function(
             deferred.resolve();
             return deferred.promise;
         }
-        $scope.searching = false;
+        $scope.searching = null;
 
         var programScopeSearch =  function(programSearchGroup){
             return SearchGroupService.search(programSearchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, searchScopes.PROGRAM).then(function(res)
@@ -131,10 +131,10 @@ trackerCapture.controller('SearchController',function(
 
         $scope.search = function(searchGroup){
             if(!$scope.searching){
-                $scope.searching = true;
+                $scope.searching = searchGroup.id;
                 if(!SearchGroupService.isValidSearchGroup(searchGroup, $scope.base.attributesById)){
                     searchGroup.error = true;
-                    $scope.searching = false; 
+                    $scope.searching = null; 
                     return;
                 }
                 
@@ -145,7 +145,7 @@ trackerCapture.controller('SearchController',function(
                 }else{
                     promise = SearchGroupService.tetScopeSearch(searchGroup,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit);
                 }
-                
+
                 return promise.then(function(res){
                     //If only one tei found and in selectedOrgUnit, go straight to dashboard
                     var rowsCnt = (res && res.data && res.data.rows && res.data.rows.length) || 0;
@@ -154,6 +154,7 @@ trackerCapture.controller('SearchController',function(
 
                         //Open TEI if unique and in same search scope and in selected org unit
                         if(gridData.rows.own.length ===1 && res.callingScope === res.resultScope && searchGroup.uniqueGroup){
+                            $scope.searching = null;
                             openTei(gridData.rows.own[0]);
                             return;
                         }
@@ -169,17 +170,16 @@ trackerCapture.controller('SearchController',function(
 
                         var potentialDuplicatesPromise = TEIService.getPotentialDuplicates(teiList);
                         return potentialDuplicatesPromise.then(function(duplicates) {
+                            $scope.searching = null;
                             return showResultModal(res, searchGroup, duplicates.identifiableObjects ? duplicates.identifiableObjects : []);
                         });
                     }
+                    $scope.searching = null;
                     return showResultModal(res, searchGroup);
-                })
-                .then(function() {
-                    $scope.searching = false;
                 })
                 .catch(function(error){
                     console.log("could not execute search");
-                    $scope.searching = false;
+                    $scope.searching = null;
                 });
             }
         }
