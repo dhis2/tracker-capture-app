@@ -2788,12 +2788,11 @@ i
     }
 
     this.getWorkingListsForProgram = function(program){
-        var def = $q.defer();
         if(!program){
-            def.resolve([]);
+            return $q.when([]);
         }
 
-        if(!workingListsByProgram){
+        var fetchPromise = workingListsByProgram ? $q.when() :
             $http.get(DHIS2URL+"/trackedEntityInstanceFilters?fields=*&paging=false").then(function(response){
                 workingListsByProgram = {};
                 if(response && response.data && response.data.trackedEntityInstanceFilters && response.data.trackedEntityInstanceFilters.length > 0){
@@ -2801,26 +2800,24 @@ i
                         if(!workingListsByProgram[workingList.program.id]) workingListsByProgram[workingList.program.id] = [];
                         workingListsByProgram[workingList.program.id].push(workingList);
                     });
-                }else{
-                    workingListsByProgram[program.id] = getDefaultWorkingLists(program);
-                }
-                for(var key in workingListsByProgram){
-                    if(angular.isArray(workingListsByProgram[key])){
-                        workingListsByProgram[key] = orderByKeyFilter(workingListsByProgram[key], 'sortOrder', 'asc');
+
+                    for(var key in workingListsByProgram){
+                        if(angular.isArray(workingListsByProgram[key])){
+                            workingListsByProgram[key] = orderByKeyFilter(workingListsByProgram[key], 'sortOrder', 'asc');
+                        }
                     }
-                }
-                var programWorkingLists = workingListsByProgram[program.id] ? workingListsByProgram[program.id] : [];
-                def.resolve(programWorkingLists);
+                }  
             });
-        }else{
-            var workingLists = workingListsByProgram[program.id];
-            if(!workingLists){
-                workingLists = orderByKeyFilter(getDefaultWorkingLists(program), 'sortOrder', 'asc');
-                workingListsByProgram[program.id] = workingLists;
-            } 
-            def.resolve(workingLists);
-        }
-        return def.promise;
+        
+        return fetchPromise
+            .then(() => {
+                var workingLists = workingListsByProgram[program.id];
+                if(!workingLists){
+                    workingLists = orderByKeyFilter(getDefaultWorkingLists(program), 'sortOrder', 'asc');
+                    workingListsByProgram[program.id] = workingLists;
+                }
+                return workingLists;
+            });
     }
 
     this.getWorkingListData = function(orgUnit, workingList, pager, sortColumn){

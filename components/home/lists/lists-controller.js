@@ -34,20 +34,17 @@ trackerCapture.controller('ListsController',function(
         $scope.boolOperators = OperatorFactory.boolOperators;
 
         var initPager = function(){
-            var pageSize = 25;
+            $scope.defaultRequestProps = {
+                skipTotalPages: true
+            };
+
             $scope.pager = {
-                pageSize: pageSize,
-                page: 1,
-                skipTotalPages: true,
-                recordsCount: 0,
-                pageSizeEdit: pageSize,
-                pageEdit: 1
+                ...$scope.defaultRequestProps,
+                pageSize: 50,
+                page: 1
             };
         }
-
-        var setPagerRecordsCount = function(recordsCount){
-            $scope.pager.recordsCount = recordsCount;
-        }
+        initPager();
 
         $scope.$watch('base.selectedProgram', function() {
             init();
@@ -55,6 +52,7 @@ trackerCapture.controller('ListsController',function(
 
         var init = function(){
             if( angular.isObject($scope.base.selectedProgram)){
+                initPager();
                 reset();
                 loadAttributesByProgram()
                 .then(loadGridColumns)
@@ -62,7 +60,6 @@ trackerCapture.controller('ListsController',function(
                 .then(loadCachedData)
                 .then(setDefault);
             }
-            initPager();
         }
 
         var reset = function(){
@@ -177,7 +174,6 @@ trackerCapture.controller('ListsController',function(
         var fetchWorkingList = function(){
             if($scope.currentTrackedEntityList.type === $scope.trackedEntityListTypes.WORKINGLIST){
                 $scope.currentTrackedEntityList.loading = true;
-                setPagerRecordsCount(0);
                 ProgramWorkingListService.getWorkingListData($scope.selectedOrgUnit, $scope.currentTrackedEntityList.config, $scope.pager, $scope.currentTrackedEntityList.sortColumn).then(setCurrentTrackedEntityListData);
             }
         }
@@ -198,8 +194,6 @@ trackerCapture.controller('ListsController',function(
         }
 
         var setCurrentTrackedEntityListData = function(serverResponse){
-            var recordsCount = (serverResponse.rows && serverResponse.rows.length) || 0;
-            setPagerRecordsCount(recordsCount);
             $scope.currentTrackedEntityList.data = TEIGridService.format($scope.selectedOrgUnit.id, serverResponse, false, $scope.base.optionSets, null);
             $scope.currentTrackedEntityList.loading = false;
             //updateCurrentSelection();

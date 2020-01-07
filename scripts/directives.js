@@ -661,10 +661,22 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             onUnMarkDuplicate: "&onUnMarkDuplicate",
             onGetDuplicate: "&onGetDuplicate"
         },
-
-        
         controller: function($scope, Paginator,TEIGridService, CurrentSelection){
             var attributesById = CurrentSelection.getAttributesById();
+            if (!$scope.pager) {
+                $scope.pager = {};
+            }
+
+            if (!$scope.pager.page) {
+                $scope.pager.page = 1;
+            }
+
+            if (!$scope.pager.pageSize) {
+                $scope.pager.pageSize = 50;
+            }
+
+            $scope.pager.recordsCount = ($scope.data && $scope.data.rows && $scope.data.rows.own && $scope.data.rows.own.length) || 0;
+
             $scope.$watch("pager", function(){
                 if($scope.pager){
                     Paginator.setPage($scope.pager.page);
@@ -675,6 +687,7 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             });
 
             $scope.$watch("data", function(){
+                $scope.pager.recordsCount = ($scope.data && $scope.data.rows && $scope.data.rows.own && $scope.data.rows.own.length) || 0;
                 setGridColumns();
             });
 
@@ -728,47 +741,20 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                 }
             }
             
-            $scope.getPage = function(page){
+            $scope.onGetPage = function(page){
                 $scope.pager.page = page;
-                $scope.pager.pageEdit = page;
-
                 $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
             };
 
-            $scope.resetPageSize = function(){
+            $scope.onChangePageSize = function(newPageSize){
                 $scope.pager.page = 1;
-
-                var pageSizeEdit = $scope.pager.pageSizeEdit;
-                if(isNaN(pageSizeEdit)){
-                    $scope.pager.pageSizeEdit = $scope.pager.pageSize;
-                    return;
-                }
-
-                var pageSizeEditNumber = Number(pageSizeEdit);
-                if (!Number.isSafeInteger(pageSizeEditNumber)){
-                    $scope.page.pageSizeEdit = $scope.pager.pageSize;
-                    return;
-                }
-
-                $scope.pager.pageSize = pageSizeEditNumber;
+                $scope.pager.pageSize = newPageSize;
                 $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
             };
 
-            $scope.jumpToPage = function(){
-                var pageEdit = $scope.pager.pageEdit;
-                if(isNaN(pageEdit)){
-                    $scope.pager.pageEdit = $scope.pager.page;
-                    return;
-                }
-
-                var pageEditNumber = Number(pageEdit);
-                if (!Number.isSafeInteger(pageEditNumber)){
-                    $scope.page.pageEdit = $scope.pager.page;
-                    return;
-                }
-
-                $scope.pager.page = pageEditNumber;
-                $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});                
+            $scope.onChangePage = function(newPage){
+                $scope.pager.page = newPage;
+                $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
             };
         }
     }
