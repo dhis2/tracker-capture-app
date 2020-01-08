@@ -4,14 +4,20 @@
         <h3 ng-if="allowRegistration">{{translateWithTETName('review_possible_duplicates_before_registration')}}</h3>
         <h3 ng-if="!allowRegistration">{{translateWithTETName('possible_duplicates_found')}}</h3>
     </div>
-    <div class="modal-body page">   
-        <tracker-tei-list
+    <div class="modal-body" ng-if="error">
+        {{'error' | translate}}
+    </div>
+    <div class="modal-body" ng-if="tooManySearchResults">
+        {{'large_number_of_search_results_warning' | translate}}
+    </div>
+    <div class="modal-body page" ng-if="gridData">
+        <tracker-tei-list-performant
             tei-data="gridData" 
             on-tei-clicked="openTei(tei)"
             tei-pager="pager"
             tei-refetch-data="refetchData(pager,sortColumn)"
         >
-        </tracker-tei-list>
+        </tracker-tei-list-performant>
     </div>
     <div class="modal-footer page modal-search-bottom">
         <div class="modal-search-bottom-text">

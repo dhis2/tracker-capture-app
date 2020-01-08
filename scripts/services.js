@@ -3163,10 +3163,15 @@ i
         });
         
         if(params){
-            var order = sortColumn && "order=" + sortColumn.id + ":" + sortColumn.direction;
-            return TEIService.search(params.orgUnit.id, params.ouMode, order, params.programOrTETUrl, params.queryUrl, params.pager, params.paging).then(function(response){
+            var programScopeFetchAsyncFn = (pager, sortColumn) => {
+                var order = sortColumn && "order=" + sortColumn.id + ":" + sortColumn.direction;
+                return TEIService
+                    .search(params.orgUnit.id, params.ouMode, order, params.programOrTETUrl, params.queryUrl, pager, params.paging);
+            };
+
+            return programScopeFetchAsyncFn(params.pager, sortColumn).then(function(response){
                     if(response && response.rows && response.rows.length > 0){
-                        var result = { data: response, callingScope: searchScopes.PROGRAM, resultScope: searchScopes.PROGRAM };
+                        var result = { data: response, callingScope: searchScopes.PROGRAM, resultScope: searchScopes.PROGRAM, onRefetch: programScopeFetchAsyncFn };
                         var def = $q.defer();
                         if(params.uniqueSearch){
                             result.status = "UNIQUE";
@@ -3177,12 +3182,13 @@ i
                         return def.promise;
                     }else{
                         if(tetSearchGroup){
-                            return tetScopeSearch(tetSearchGroup, trackedEntityType, orgUnit, pager).then(function(result){
-                                result.callingScope = searchScopes.PROGRAM;
-                                return result;
-                            },function(){
-                                return {status: "NOMATCH"};
-                            });
+                            return tetScopeSearch(tetSearchGroup, trackedEntityType, orgUnit, pager)
+                                .then(function(result){
+                                    result.callingScope = searchScopes.PROGRAM;
+                                    return result;
+                                },function(){
+                                    return {status: "NOMATCH"};
+                                });
                         }else{
                             var def = $q.defer();
                             def.resolve({status: "NOMATCH"});
@@ -3218,9 +3224,13 @@ i
                 }, '');
         });
         if(params){
-            var order = sortColumn && "order=" + sortColumn.id + ":" + sortColumn.direction;
-            return TEIService.search(params.orgUnit.id, params.ouMode, order, params.programOrTETUrl, params.queryUrl, params.pager, params.paging).then(function(response){
-                var result = {data: response, callingScope: searchScopes.TET, resultScope: searchScopes.TET };
+            var tetScopeFetchAsyncFn = (pager, sortColumn) => {
+                var order = sortColumn && "order=" + sortColumn.id + ":" + sortColumn.direction;
+                return TEIService.search(params.orgUnit.id, params.ouMode, order, params.programOrTETUrl, params.queryUrl, pager, params.paging);
+            }
+            
+            return tetScopeFetchAsyncFn(params.pager, sortColumn).then(function(response){
+                var result = {data: response, callingScope: searchScopes.TET, resultScope: searchScopes.TET, onRefetch: tetScopeFetchAsyncFn };
                 if(response && response.rows && response.rows.length > 0){
                     if(params.uniqueSearch){
                         result.status = "UNIQUE";
