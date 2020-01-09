@@ -676,7 +676,7 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                 $scope.pager.pageSize = 50;
             }
 
-            $scope.pager.recordsCount = ($scope.data && $scope.data.rows && $scope.data.rows.own && $scope.data.rows.own.length) || 0;
+            $scope.pager.recordsCount = ($scope.data && $scope.data.length) || 0;
 
             $scope.$watch("pager", function(){
                 if($scope.pager){
@@ -688,7 +688,7 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             });
 
             $scope.$watch("data", function(){
-                $scope.pager.recordsCount = ($scope.data && $scope.data.rows && $scope.data.rows.own && $scope.data.rows.own.length) || 0;
+                $scope.pager.recordsCount = ($scope.data && $scope.data.length) || 0;
                 setGridColumns();
             });
 
