@@ -17,9 +17,9 @@
                 </tr>                        
             </thead>
             <tbody id="list">
-                <tr ng-repeat="tei in data.rows.own" 
+                <tr ng-repeat="tei in data.rows.own"
                     ng-class="{true: 'inactive-tei'} [tei.inactive]">
-                    <td ng-click="onTeiClickedInternal(tei)" ng-repeat="gridColumn in gridColumns| filter:{show: true}" title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
+                    <td ng-click="onTeiClickedInternal(tei)" ng-repeat="gridColumn in gridColumns | filter:{show: true}" title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">
                                 <span ng-if="tei[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
