@@ -136,13 +136,41 @@ trackerCapture.controller('SearchController',function(
                     $scope.searching = null; 
                     return;
                 }
+
+                const showOnlyDisplayInListAttributes = (headers, attributesContainer) => {
+                    const attributeHeaders = headers.slice(7);
+                    attributeHeaders
+                        .forEach(attributeHeader => {
+                            const foundAttributeContainer = attributesContainer.find(attributeContainer => (attributeContainer.trackedEntityAttribute && attributeContainer.trackedEntityAttribute.id)  === attributeHeader.name);
+                            if (foundAttributeContainer && !foundAttributeContainer.displayInList) {
+                                attributeHeader.hideInList = true;
+                            }
+                        });
+                    return headers;
+                };
                 
                 var promise;
                 if(currentSearchScope === searchScopes.PROGRAM){
                     var tetSearchGroup = SearchGroupService.findValidTetSearchGroup(searchGroup, $scope.tetSearchConfig, $scope.base.attributesById);
-                    promise = SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, { skipTotalPages: true })
+                    promise = SearchGroupService.programScopeSearch(
+                        searchGroup,
+                        tetSearchGroup,
+                        $scope.base.selectedProgram,
+                        $scope.trackedEntityTypes.selected,
+                        $scope.selectedOrgUnit,
+                        { skipTotalPages: true },
+                        undefined,
+                        showOnlyDisplayInListAttributes,
+                    );
                 }else{
-                    promise = SearchGroupService.tetScopeSearch(searchGroup,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit, { skipTotalPages: true });
+                    promise = SearchGroupService.tetScopeSearch(
+                        searchGroup,
+                        $scope.trackedEntityTypes.selected,
+                        $scope.selectedOrgUnit,
+                        { skipTotalPages: true },
+                        undefined,
+                        showOnlyDisplayInListAttributes,
+                    );
                 }
 
                 return promise.then(function(res){
