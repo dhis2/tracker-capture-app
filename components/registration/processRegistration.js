@@ -1,10 +1,39 @@
+function showOnlyDisplayInListAttributes(headers, attributesContainer) {
+    const attributeHeaders = headers.slice(7);
+    attributeHeaders
+        .forEach(attributeHeader => {
+            const foundAttributeContainer = attributesContainer.find(attributeContainer => (attributeContainer.trackedEntityAttribute && attributeContainer.trackedEntityAttribute.id)  === attributeHeader.name);
+            if (foundAttributeContainer && !foundAttributeContainer.displayInList) {
+                attributeHeader.hideInList = true;
+            }
+        });
+    return headers;
+};
+
+
 function verifyUniqueSearchGroup(searchGroup, { useProgramSearchScope, SearchGroupService, tetSearchConfig, attributesById, program, trackedEntityType, orgUnit }){
     var promise;
     if(useProgramSearchScope){
         var tetSearchGroup = SearchGroupService.findTetSearchGroup(searchGroup, tetSearchConfig);
-        promise = SearchGroupService.programScopeSearch(searchGroup, tetSearchGroup, program, trackedEntityType, orgUnit);
+        promise = SearchGroupService.programScopeSearch(
+            searchGroup,
+            tetSearchGroup,
+            program,
+            trackedEntityType,
+            orgUnit,
+            undefined,
+            undefined,
+            showOnlyDisplayInListAttributes,
+        );
     }else{
-        promise = SearchGroupService.tetScopeSearch(searchGroup, trackedEntityType, orgUnit);
+        promise = SearchGroupService.tetScopeSearch(
+            searchGroup,
+            trackedEntityType,
+            orgUnit,
+            undefined,
+            undefined,
+            showOnlyDisplayInListAttributes,
+        );
     }
 
     return promise.then(function(res){
@@ -80,9 +109,25 @@ function verifyDefaultSearchGroup(searchGroups, {
     
     var promise;
     if(useProgramSearchScope){
-        promise = SearchGroupService.programScopeSearch(defaultSearchGroup, tetSearchGroup, program, trackedEntityType, orgUnit, { skipTotalPages: true });
+        promise = SearchGroupService.programScopeSearch(
+            defaultSearchGroup,
+            tetSearchGroup,
+            program,
+            trackedEntityType,
+            orgUnit,
+            { skipTotalPages: true },
+            undefined,
+            showOnlyDisplayInListAttributes,
+        );
     }else{
-        promise = SearchGroupService.tetScopeSearch(defaultSearchGroup, trackedEntityType, orgUnit, { skipTotalPages: true });
+        promise = SearchGroupService.tetScopeSearch(
+            defaultSearchGroup,
+            trackedEntityType,
+            orgUnit,
+            { skipTotalPages: true },
+            undefined,
+            showOnlyDisplayInListAttributes,
+        );
     }
 
     return promise
