@@ -2049,7 +2049,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 attributes.push({
                     id: grid.headers[i].name,
                     displayName: grid.headers[i].column,
-                    type: grid.headers[i].type
+                    type: grid.headers[i].type,
+                    hideInList: grid.headers[i].hideInList,
                 });
             }
 
@@ -2111,7 +2112,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
 
             var len = entityList.own.length + entityList.other.length;
-            return {headers: attributes, rows: entityList, pager: grid.metaData.pager, length: len};
+            return {headers: attributes.filter(a => !a.hideInList), rows: entityList, pager: grid.metaData.pager, length: len};
         },
         generateGridColumns: function(attributes, ouMode, nonConfidential){
 
@@ -3150,17 +3151,8 @@ i
         return true;
     }
 
-    this.programScopeSearch = function(programSearchGroup, tetSearchGroup, program, trackedEntityType, orgUnit, pager, sortColumn){
-        var params = getSearchParams(programSearchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.PROGRAM, (filteredAttributes) => {
-            var programAttributes = program.programTrackedEntityAttributes;
-            return programAttributes
-                .map(programAttribute => programAttribute.displayInList && programAttribute.trackedEntityAttribute && programAttribute.trackedEntityAttribute.id)
-                .filter(attributeId => attributeId && !filteredAttributes[attributeId])
-                .reduce((acc, attributeId) => {
-                    acc += "&attribute=" + attributeId;
-                    return acc;
-                }, '');
-        });
+    this.programScopeSearch = function(programSearchGroup, tetSearchGroup, program, trackedEntityType, orgUnit, pager, sortColumn, onEditHeadersFromReponse){
+        var params = getSearchParams(programSearchGroup, program, trackedEntityType, orgUnit, pager, searchScopes.PROGRAM);
         
         if(params){
             var programScopeFetchAsyncFn = (pager, sortColumn) => {
@@ -3171,7 +3163,11 @@ i
 
             return programScopeFetchAsyncFn(params.pager, sortColumn).then(function(response){
                     if(response && response.rows && response.rows.length > 0){
+                        if (onEditHeadersFromReponse) {
+                            response.headers = onEditHeadersFromReponse(response.headers, program.programTrackedEntityAttributes);
+                        }
                         var result = { data: response, callingScope: searchScopes.PROGRAM, resultScope: searchScopes.PROGRAM, onRefetch: programScopeFetchAsyncFn };
+
                         var def = $q.defer();
                         if(params.uniqueSearch){
                             result.status = "UNIQUE";
@@ -3182,7 +3178,7 @@ i
                         return def.promise;
                     }else{
                         if(tetSearchGroup){
-                            return tetScopeSearch(tetSearchGroup, trackedEntityType, orgUnit, pager)
+                            return tetScopeSearch(tetSearchGroup, trackedEntityType, orgUnit, pager, undefined, onEditHeadersFromReponse)
                                 .then(function(result){
                                     result.callingScope = searchScopes.PROGRAM;
                                     return result;
@@ -3212,17 +3208,8 @@ i
             return def.promise;
         }
     }
-    var tetScopeSearch = this.tetScopeSearch = function(tetSearchGroup,trackedEntityType, orgUnit, pager, sortColumn){
-        var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET, (filteredAttributes) => {
-            var tetAttributes = trackedEntityType.trackedEntityTypeAttributes;
-            return tetAttributes
-                .map(tetAttribute => tetAttribute.displayInList && tetAttribute.trackedEntityAttribute && tetAttribute.trackedEntityAttribute.id)
-                .filter(attributeId => attributeId && !filteredAttributes[attributeId])
-                .reduce((acc, attributeId) => {
-                    acc += "&attribute=" + attributeId;
-                    return acc;
-                }, '');
-        });
+    var tetScopeSearch = this.tetScopeSearch = function(tetSearchGroup,trackedEntityType, orgUnit, pager, sortColumn, onEditHeadersFromReponse){
+        var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, pager, searchScopes.TET);
         if(params){
             var tetScopeFetchAsyncFn = (pager, sortColumn) => {
                 var order = sortColumn && "order=" + sortColumn.id + ":" + sortColumn.direction;
@@ -3230,6 +3217,9 @@ i
             }
             
             return tetScopeFetchAsyncFn(params.pager, sortColumn).then(function(response){
+                if (onEditHeadersFromReponse) {
+                    response.headers = onEditHeadersFromReponse(response.headers, trackedEntityType.trackedEntityTypeAttributes);
+                }
                 var result = {data: response, callingScope: searchScopes.TET, resultScope: searchScopes.TET, onRefetch: tetScopeFetchAsyncFn };
                 if(response && response.rows && response.rows.length > 0){
                     if(params.uniqueSearch){
