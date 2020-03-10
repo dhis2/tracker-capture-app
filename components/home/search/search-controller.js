@@ -136,13 +136,41 @@ trackerCapture.controller('SearchController',function(
                     $scope.searching = false; 
                     return;
                 }
+
+                const showOnlyDisplayInListAttributes = (headers, attributesContainer) => {
+                    const attributeHeaders = headers.slice(7);
+                    attributeHeaders
+                        .forEach(attributeHeader => {
+                            const foundAttributeContainer = attributesContainer.find(attributeContainer => (attributeContainer.trackedEntityAttribute && attributeContainer.trackedEntityAttribute.id)  === attributeHeader.name);
+                            if (foundAttributeContainer && !foundAttributeContainer.displayInList) {
+                                attributeHeader.hideInList = true;
+                            }
+                        });
+                    return headers;
+                };
                 
                 var promise;
                 if(currentSearchScope === searchScopes.PROGRAM){
                     var tetSearchGroup = SearchGroupService.findValidTetSearchGroup(searchGroup, $scope.tetSearchConfig, $scope.base.attributesById);
-                    promise = SearchGroupService.programScopeSearch(searchGroup,tetSearchGroup, $scope.base.selectedProgram,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit)
+                    promise = SearchGroupService.programScopeSearch(
+                        searchGroup,
+                        tetSearchGroup,
+                        $scope.base.selectedProgram,
+                        $scope.trackedEntityTypes.selected,
+                        $scope.selectedOrgUnit,
+                        undefined,
+                        undefined,
+                        showOnlyDisplayInListAttributes,
+                    )
                 }else{
-                    promise = SearchGroupService.tetScopeSearch(searchGroup,$scope.trackedEntityTypes.selected, $scope.selectedOrgUnit);
+                    promise = SearchGroupService.tetScopeSearch(
+                        searchGroup,
+                        $scope.trackedEntityTypes.selected,
+                        $scope.selectedOrgUnit,
+                        undefined,
+                        undefined,
+                        showOnlyDisplayInListAttributes,
+                    );
                 }
                 
                 return promise.then(function(res){
