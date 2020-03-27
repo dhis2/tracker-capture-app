@@ -38,6 +38,7 @@ trackerCapture.controller('TEIAddController',
     $scope.selectedConstraints = { currentTei: null, related: null};
     $scope.tempSelectedConstraints = { currentTei: null, related: null};
     $scope.attributesById = CurrentSelection.getAttributesById();
+    $scope.base.attributesById = $scope.attributesById;
     if(!$scope.attributesById){
         $scope.attributesById = [];
         AttributesFactory.getAll().then(function(atts){
@@ -46,6 +47,7 @@ trackerCapture.controller('TEIAddController',
             });
             
             CurrentSelection.setAttributesById($scope.attributesById);
+            
         });
     }    
     
@@ -459,7 +461,7 @@ trackerCapture.controller('TEIAddController',
             $scope.gridColumns = TEIGridService.generateGridColumns($scope.attributes, null, false).columns;
         });
 
-        $scope.search($scope.selectedSearchMode);
+        //$scope.search($scope.selectedSearchMode);
     };
 
     $scope.setAttributesForSearch($scope.base.selectedProgramForRelative);
@@ -536,10 +538,15 @@ trackerCapture.controller('TEIAddController',
         }
     };
 
-    $scope.assignRelationship = function (relativeTei) {
-        $scope.teiForRelationship = relativeTei;
+    $scope.$on('assignRelationshipTei', function(args, data) {
+        $scope.teiForRelationship = data;
         $rootScope.showAddRelationshipDiv = !$rootScope.showAddRelationshipDiv;
-    };
+    });
+
+    $scope.goToRegistrationWithData = function(registrationPrefill) {
+        $scope.registrationPrefill = registrationPrefill;
+        $scope.showRegistration();
+    }
 
     $scope.back = function () {
         $scope.teiForRelationship = null;

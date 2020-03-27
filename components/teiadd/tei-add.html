@@ -35,7 +35,6 @@
                 </table>
             </div>
         </div>
-        
         <div ng-class="{true: 'col-xs-9 pull-right', false: 'col-xs-12'} [addingRelationship || selectedTeiForDisplay]">  
             <div class='relationship-container' ng-class="{true: '', false: 'col-xs-6'} [addingRelationship]" ng-if="teiForRelationship">
                 <button class="btn btn-warning" type="button" ng-click="back()">{{'back' | translate}}</button>
@@ -50,7 +49,6 @@
                     </tr>
                 </table>                
             </div>
-            
             <div class='relationship-container' ng-if="!teiForRelationship">
                 <div class="row">                    
                     <div ng-controller="ListsController" style="padding:20px;padding-top:0px;">
@@ -67,31 +65,13 @@
                                 </div>
                             <div style="margin-bottom:5px;display: inline-block;">
                                 <div class="btn-group" ng-if="base.selectedProgramForRelative">
-                                    <button type="button" ng-repeat="workingList in base.selectedProgramForRelative.workingLists | orderBy: 'order'" class="btn btn-default" ng-class="getWorkingListButtonClass(workingList)" ng-click="setWorkingList(workingList);hideRegistration();" title="{{workingList.description | translate}}">
-                                        <span ng-class="workingList.style.icon"></span>
-                                    </button>
-                                </div>
-                                <div class="btn-group" ng-if="base.selectedProgramForRelative">
-                                    <button type="button" class="btn btn-default" ng-if="base.selectedProgramForRelative" ng-class="getWorkingListButtonClass({ name: 'custom'})" ng-click="toggleShowCustomWorkingListInline()"><span class="fa fa-search"></span><span style="margin-left:12px" class="fa fa-caret-down"></span></button>
-                                </div>
-                                <div class="btn-group" ng-if="base.selectedProgramForRelative">
                                     <button class="btn btn-success" type="button" title="{{'register'| translate}}" ng-click="showRegistration();currentTrackedEntityList = null;showCustomWorkingListInline = false;" ng-if="canRegister">{{'register' | translate}}</button>
                                 </div>
                             </div>
                         </div>
                         
                         <div ng-if="base.selectedProgramForRelative">
-                            <div ng-include="'components/home/lists/custom-workinglist.html'" ng-if="showCustomWorkingListInline" style="padding:10px;margin-bottom:10px;border-bottom:1px solid lightgray;"></div>
-
-                            <tracker-tei-list ng-if="!showRegistrationDiv"
-                                tei-data="currentTrackedEntityList.data" 
-                                tei-pager="pager" 
-                                tei-sort-column="currentTrackedEntityList.sortColumn"
-                                tei-grid-columns="gridColumns"
-                                tei-refetch-data="fetchTeis(pager, sortColumn)"
-                                on-tei-clicked="assignRelationship(tei)"
-                                >
-                            </tracker-tei-list>
+                            <div ng-if="!showRegistrationDiv" ng-include="'components/home/search/search.html'"></div>
                         </div>
 
                     </div>                   
