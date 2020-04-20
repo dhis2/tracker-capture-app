@@ -835,6 +835,8 @@ trackerCapture.controller('TEIAddController',
         if($scope.formEmpty){//registration form is empty
             return false;
         }
+
+        $rootScope.showAddRelationshipDiv = false;
         
         RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById).then(function(registrationResponse){
             var reg = registrationResponse.response.responseType ==='ImportSummaries' ? registrationResponse.response.importSummaries[0] : registrationResponse.response.responseType === 'ImportSummary' ? registrationResponse.response : {};
