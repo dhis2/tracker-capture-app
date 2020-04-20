@@ -43,7 +43,9 @@ trackerCapture.controller('TEIAddController',
         angular.forEach(atts, function(att){
             $scope.attributesById[att.id] = att;
         });
+        $scope.base.attributesById = $scope.attributesById;
     });
+    
     
     $scope.optionSets = CurrentSelection.getOptionSets();        
     if(!$scope.optionSets){
