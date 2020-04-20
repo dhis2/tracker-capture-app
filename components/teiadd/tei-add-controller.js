@@ -37,19 +37,13 @@ trackerCapture.controller('TEIAddController',
     $scope.base = {};
     $scope.selectedConstraints = { currentTei: null, related: null};
     $scope.tempSelectedConstraints = { currentTei: null, related: null};
-    $scope.attributesById = CurrentSelection.getAttributesById();
-    $scope.base.attributesById = $scope.attributesById;
-    if(!$scope.attributesById){
-        $scope.attributesById = [];
-        AttributesFactory.getAll().then(function(atts){
-            angular.forEach(atts, function(att){
-                $scope.attributesById[att.id] = att;
-            });
-            
-            CurrentSelection.setAttributesById($scope.attributesById);
-            
+    
+    $scope.attributesById = [];
+    AttributesFactory.getAll().then(function(atts){
+        angular.forEach(atts, function(att){
+            $scope.attributesById[att.id] = att;
         });
-    }    
+    });
     
     $scope.optionSets = CurrentSelection.getOptionSets();        
     if(!$scope.optionSets){
@@ -164,7 +158,6 @@ trackerCapture.controller('TEIAddController',
     $scope.selectedProgram = selectedProgram;
     $scope.relatedProgramRelationship = relatedProgramRelationship;
     $scope.mainTei = selectedTei;    
-    $scope.attributesById = CurrentSelection.getAttributesById();
     $scope.addingTeiAssociate = false;
     
     $scope.searchOuTree = false;
@@ -674,8 +667,7 @@ trackerCapture.controller('TEIAddController',
                 TEIGridService,
                 AttributeUtils) {
     $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
-    $scope.enrollment = {enrollmentDate: '', incidentDate: ''};    
-    $scope.attributesById = CurrentSelection.getAttributesById();
+    $scope.enrollment = {enrollmentDate: '', incidentDate: ''};
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
     $scope.customRegistrationForm = null;
@@ -690,17 +682,12 @@ trackerCapture.controller('TEIAddController',
     var selections = CurrentSelection.get();
     $scope.selectedOrgUnit = selections.orgUnit;
 
-    $scope.attributesById = CurrentSelection.getAttributesById();
-    if(!$scope.attributesById){
-        $scope.attributesById = [];
-        AttributesFactory.getAll().then(function(atts){
-            angular.forEach(atts, function(att){
-                $scope.attributesById[att.id] = att;
-            });
-            
-            CurrentSelection.setAttributesById($scope.attributesById);
+    $scope.attributesById = [];
+    AttributesFactory.getAll().then(function(atts){
+        angular.forEach(atts, function(att){
+            $scope.attributesById[att.id] = att;
         });
-    }    
+    });  
 
     $scope.getTrackerAssociate = function(selectedAttribute, existingAssociateUid){
         return $scope.getTrackerAssociateInternal(selectedAttribute, existingAssociateUid, $scope.selectedTei).then(function(res){
@@ -778,7 +765,7 @@ trackerCapture.controller('TEIAddController',
         $scope.customRegistrationForm = null;
         $scope.customFormExists = false;        
         AttributesFactory.getByProgram($scope.base.selectedProgramForRelative).then(function(atts){
-            $scope.attributes = TEIGridService.generateGridColumns(atts, null,false).columns;                      
+            $scope.attributes = TEIGridService.generateGridColumns(atts, null,false).columns;        
             if($scope.base.selectedProgramForRelative && $scope.base.selectedProgramForRelative.id && $scope.base.selectedProgramForRelative.dataEntryForm && $scope.base.selectedProgramForRelative.dataEntryForm.htmlCode){
                 $scope.customFormExists = true;
                 $scope.trackedEntityForm = $scope.base.selectedProgramForRelative.dataEntryForm;  
@@ -836,6 +823,7 @@ trackerCapture.controller('TEIAddController',
         //registration form comes empty, in this case enforce at least one value
         $scope.selectedTei.trackedEntityType = $scope.tei.trackedEntityType = selectedTrackedEntity; 
         $scope.selectedTei.orgUnit = $scope.tei.orgUnit = $scope.selectedOrgUnit.id;
+        $scope.tei.geometry = $scope.selectedTei.geometry;
         $scope.selectedTei.attributes = $scope.tei.attributes = [];
         
         var result = RegistrationService.processForm($scope.tei, $scope.selectedTei, $scope.teiOriginal, $scope.attributesById);
