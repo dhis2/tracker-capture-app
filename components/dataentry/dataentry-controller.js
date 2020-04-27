@@ -1660,6 +1660,8 @@ trackerCapture.controller('DataEntryController',
                 program: eventToSave.program,
                 programStage: eventToSave.programStage,
                 status: eventToSave.status,
+                geometry: eventToSave.geometry,
+                assignedUser: eventToSave.assignedUser,
                 trackedEntityInstance: eventToSave.trackedEntityInstance,
                 dataValues: [
                     {
