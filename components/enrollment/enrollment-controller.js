@@ -173,6 +173,7 @@ trackerCapture.controller('EnrollmentController',
             $scope.selectedEnrollment = enrollment;
             $scope.enrollmentDateState.date = enrollment.enrollmentDate;
             $scope.incidentDateState.date = enrollment.incidentDate;
+            $scope.enrollmentGeometryState.geometry = $scope.selectedEnrollment.geometry;
 
             if ($scope.selectedEnrollment.enrollment && $scope.selectedEnrollment.orgUnit) {
                 $scope.broadCastSelections('dashboardWidgets');
