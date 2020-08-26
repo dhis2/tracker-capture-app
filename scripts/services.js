@@ -1043,6 +1043,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        saveRelationship: function(relationship) {
+            var promise = $http.post( DHIS2URL + '/relationships', relationship).then(function(response){
+                return response.data;
+            });
+            return promise;
+        },
         getPotentialDuplicates: function(uidList) {
             var uidUrl = "";
             if(uidList.length > 0)
