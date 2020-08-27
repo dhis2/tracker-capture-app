@@ -311,6 +311,7 @@ trackerCapture.controller('SearchController',function(
 
             return $modal.open({
                 templateUrl: 'components/home/search/result-modal.html',
+                windowClass: 'modal-full-window',
                 controller: function($scope,$modalInstance, TEIGridService,OrgUnitFactory, orgUnit, res, refetchDataFn, internalService, canOpenRegistration, TEIService, NotificationService)
                 {
                     $scope.existingDuplicates = res.existingDuplicates;
