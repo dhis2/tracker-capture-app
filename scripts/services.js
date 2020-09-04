@@ -1194,7 +1194,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var formattedTei = convertFromUserToApi(angular.copy(tei));
             var attributes = [];
             angular.forEach(formattedTei.attributes, function(att){
-                attributes.push({attribute: att.attribute, value: CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API')});
+                //attributes.push({attribute: att.attribute, value: CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API')});
+                if( attributesById[att.attribute].valueType === 'TRUE_ONLY'){
+                    if(att.value === true){
+                        attributes.push({attribute: att.attribute, value: CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API')});
+                    }
+				}else{
+                    attributes.push({attribute: att.attribute, value: CommonUtils.formatDataValue(null, att.value, attributesById[att.attribute], optionSets, 'API')});
+                }
+                
             });
             formattedTei.attributes = attributes;
             var programFilter = programId ? "?program=" + programId : "";
