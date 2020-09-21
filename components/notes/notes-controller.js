@@ -9,9 +9,10 @@ trackerCapture.controller('NotesController',
                 CurrentSelection,
                 NotificationService,
                 SessionStorageService,
-                orderByFilter) {
+                orderByFilter,
+                UsersService) {
     var userProfile = SessionStorageService.get('USER_PROFILE');
-    var storedBy = userProfile && userProfile.username ? userProfile.username : '';
+    var storedBy = userProfile && userProfile.userCredentials && userProfile.userCredentials.username ? userProfile.userCredentials.username : '';
 
     var today = DateUtils.getToday();
     
@@ -28,12 +29,21 @@ trackerCapture.controller('NotesController',
             if (!angular.isUndefined($scope.selectedEnrollment.notes)) {
                 $scope.selectedEnrollment.notes = orderByFilter($scope.selectedEnrollment.notes, '-storedDate');
                 angular.forEach($scope.selectedEnrollment.notes, function (note) {
+                    $scope.updateNoteWithRealName(note);
                     note.displayDate = DateUtils.formatFromApiToUser(note.storedDate);
                     note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
                 });
             }
         }
     });
+
+    $scope.updateNoteWithRealName = function(note) {
+        UsersService.getByQuery(note.storedBy).then( function(users) {
+            if(users.length === 1) {
+                note.storedBy = users[0].firstName + ' ' + users[0].lastName;
+            }
+        }); 
+    }
        
     $scope.addNote = function(){
         if(!$scope.note.value){
@@ -41,14 +51,16 @@ trackerCapture.controller('NotesController',
             return;
         }
 
-        var newNote = {value: $scope.note.value};
+        var newNote = {value: $scope.note.value, storedDate: DateUtils.formatFromUserToApi(today), displayDate: today, storedBy: storedBy};
+
+        $scope.updateNoteWithRealName(newNote);
 
         if(angular.isUndefined( $scope.selectedEnrollment.notes) ){
-            $scope.selectedEnrollment.notes = [{value: newNote.value, storedDate: DateUtils.formatFromUserToApi(today), displayDate: today, storedBy: storedBy}];
+            $scope.selectedEnrollment.notes = [newNote];
 
         }
         else{
-            $scope.selectedEnrollment.notes.splice(0,0,{value: newNote.value, storedDate: DateUtils.formatFromUserToApi(today),displayDate: today, storedBy: storedBy});
+            $scope.selectedEnrollment.notes.splice(0,0,newNote);
         }
 
         var e = angular.copy($scope.selectedEnrollment);
@@ -56,7 +68,7 @@ trackerCapture.controller('NotesController',
         if(e.incidentDate){
             e.incidentDate = DateUtils.formatFromUserToApi(e.incidentDate);
         }
-        e.notes = [newNote];
+        e.notes = [{value: newNote.value}];
         EnrollmentService.updateForNote(e).then(function(){
             $scope.clear();
         });
