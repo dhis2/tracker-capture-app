@@ -33,7 +33,8 @@ trackerCapture.controller('DataEntryController',
                 EventCreationService,
                 AuthorityService,
                 AccessUtils,
-                TCOrgUnitService) {
+                TCOrgUnitService,
+                UsersService) {
     
     //Unique instance id for the controller:
     $scope.APIURL = DHIS2URL;
@@ -1415,6 +1416,12 @@ trackerCapture.controller('DataEntryController',
         
                         if ($scope.currentEvent.notes) {
                             angular.forEach($scope.currentEvent.notes, function (note) {
+                                UsersService.getByQuery(note.storedBy).then( function(users) {
+                                    if(users.length === 1) {
+                                        note.storedBy = users[0].firstName + ' ' + users[0].lastName;
+                                    }
+                                });
+                                
                                 note.displayDate = DateUtils.formatFromApiToUser(note.storedDate);
                                 note.storedDate = DateUtils.formatToHrsMins(note.storedDate);
                             });
@@ -1938,13 +1945,20 @@ trackerCapture.controller('DataEntryController',
             NotificationService.showNotifcationDialog(headerText, bodyText);
             return;
         }
-        var newNote = {value: $scope.note.value};
-            
+
+        var newNote = {value: $scope.note.value, storedDate: today, displayDate: today, storedBy: storedBy};
+        
+        UsersService.getByQuery(storedBy).then( function(users) {
+            if(users.length === 1) {
+                newNote.storedBy = users[0].firstName + ' ' + users[0].lastName;
+            }
+        });   
+
         if (angular.isUndefined($scope.currentEvent.notes)) {
-            $scope.currentEvent.notes = [{value: newNote.value, storedDate: today, displayDate: today, storedBy: storedBy}];
+            $scope.currentEvent.notes = [newNote];
         }
         else {
-            $scope.currentEvent.notes.splice(0, 0, {value: newNote.value, storedDate: today, displayDate: today, storedBy: storedBy});
+            $scope.currentEvent.notes.splice(0, 0, newNote);
         }
 
         var e = {event: $scope.currentEvent.event,
@@ -1952,7 +1966,7 @@ trackerCapture.controller('DataEntryController',
             programStage: $scope.currentEvent.programStage,
             orgUnit: $scope.currentEvent.orgUnit,
             trackedEntityInstance: $scope.currentEvent.trackedEntityInstance,
-            notes: [newNote]
+            notes: [{value: newNote.value}]
         };
 
         DHIS2EventFactory.updateForNote(e).then(function (data) {
