@@ -1,12 +1,13 @@
 {
-  "name": "tracker-capture-app",
-  "version": "31.0.16",
-  "description": "DHIS2 tracker capture app",
+  "name": "tracker-capture-app-ks",
+  "version": "1.0",
+  "description": "DHIS2 tracker capture app forked for KS",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild": "(rm -r build && mkdir build) || mkdir build",
-    "build": "webpack && cp -r i18n build/i18n && cp -r core build/core && cp -r vendor build/vendor && cp -r views build/views && cp -r styles build/styles && find ./components -iname \"*.html\" -exec rsync -R '{}' ./build/ \\;",
+    "build": "webpack && cp -r i18n build/i18n && cp -r core build/core && cp -r vendor build/vendor && cp -r views build/views && cp -r styles build/styles && cp manifest.webapp build/ && find ./components -iname \"*.html\" -exec rsync -R '{}' ./build/ \\;",
+    "postbuild": "mkdirp buildzip/ && pushd build && bestzip ../buildzip/smittesporing.zip * && popd",
     "start": "webpack-dev-server"
   },
   "repository": {
@@ -24,6 +25,7 @@
   "homepage": "https://github.com/dhis2/tracker-capture-app#readme",
   "dependencies": {
     "angular-vs-repeat": "^2.0.9",
+    "bestzip": "^2.1.7",
     "d2-tracker": "31.0.34",
     "file-loader": "^1.1.11",
     "leaflet": "^1.3.1",
