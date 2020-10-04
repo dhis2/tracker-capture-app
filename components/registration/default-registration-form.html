@@ -2,20 +2,6 @@
     {{'profile'| translate}}
 </div>
 <table class="dhis2-list-table-striped default-form-table">
-    <tr ng-if="trackedEntityTypes.selected && trackedEntityTypes.selected.featureType && ['POLYGON','POINT'].includes(trackedEntityTypes.selected.featureType) && !editingDisabled">
-        <td>
-            {{ trackedEntityTypes.selected.featureType.toLowerCase()+'_on_map' | translate }}
-        </td>
-        <td class="absorbing-column">
-            <d2-geometry
-                d2-object-id="geometry"
-                d2-object="selectedTei"
-                d2-disabled=""
-                d2-geometry-type="trackedEntityTypes.selected.featureType"
-                >
-            </d2-geometry>
-        </td>
-    </tr>
     <tr ng-if="trackedEntityTypes.selected && !hiddenFields[attribute.id] && ((editingDisabled  && attribute.show) || !editingDisabled)" ng-repeat="attribute in attributes | filter: {attribute: 'true'} ">
         <td>
             <span d2-pop-over
@@ -363,6 +349,9 @@
                                ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                            <div ng-if="attribute.id == 'ZSt07qyq6Pt'">
+                                <button type="button" ng-disabled="selectedTei[attribute.id].length != 11" class="btn btn-primary" ng-click="registryLookup(selectedTei[attribute.id])">Slå opp og hent profildata</button>
+                            </div>
                     </span>
                     <span ng-switch-when="PHONE_NUMBER">
                         <input type="text"
@@ -383,6 +372,7 @@
                             {{'unsupported_value_type' | translate}}:  {{attribute.valueType}}
                         </span>
                     </span>
+
                 </span>
                 <div ng-messages="innerForm.foo.$error" ng-if="interacted(innerForm.foo)" class="required hideInPrint" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
                     <div class="alert alert-warning alert-dismissible" role="alert" ng-if="warningMessages[attribute.id]">
@@ -399,7 +389,22 @@
                     <!-- URL error message is temporarily placed here. Should be placed with the other error messages in the core. -->
                     <span ng-message="urlValidator">{{'url_error' | translate}}</span>
                 </div>
+
             </ng-form>            
         </td>
-    </tr>           
+    </tr>        
+    <tr ng-if="trackedEntityTypes.selected && trackedEntityTypes.selected.featureType && ['POLYGON','POINT'].includes(trackedEntityTypes.selected.featureType) && !editingDisabled">
+        <td>
+            {{ trackedEntityTypes.selected.featureType.toLowerCase()+'_on_map' | translate }}
+        </td>
+        <td class="absorbing-column">
+            <d2-geometry
+                d2-object-id="geometry"
+                d2-object="selectedTei"
+                d2-disabled=""
+                d2-geometry-type="trackedEntityTypes.selected.featureType"
+                >
+            </d2-geometry>
+        </td>
+    </tr>   
 </table>

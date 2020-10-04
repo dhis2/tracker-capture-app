@@ -12,6 +12,7 @@ import 'd2-tracker/src/styles/style.css';
 
 // App files
 import '../scripts/services.js';
+import '../scripts/external-lookup-services.js';
 import '../scripts/filters.js';
 import '../scripts/directives.js';
 import '../scripts/leftbar-menu-controller.js';
@@ -72,7 +73,7 @@ import 'leaflet-contextmenu/dist/leaflet.contextmenu.css';
 /* App Module */
 angular.module('trackerCapture')
 
-.value('DHIS2URL', '../api/30')
+.value('DHIS2URL', '../api')
 
 .value('DHIS2COORDINATESIZE', 6)
 

@@ -36,7 +36,8 @@ trackerCapture.controller('RegistrationController',
                 SessionStorageService,
                 AttributeUtils,
                 TCOrgUnitService,
-                ProgramFactory) {
+                ProgramFactory,
+                FNrLookupService) {
     var prefilledTet = null;
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
@@ -1388,6 +1389,21 @@ trackerCapture.controller('RegistrationController',
             return false;
         }
         return attributeMandatory || $scope.mandatoryFields[attributeId];
+    }
+
+    $scope.registryLookup = function(attributeId) {
+        FNrLookupService.lookupFnr($scope.selectedTei.ZSt07qyq6Pt).then(function(response){
+            if(response) {
+                $scope.selectedTei["sB1IHYu2xQT"] = response.firstName;
+                $scope.selectedTei["ENRjVGxVL6l"] = response.lastName;
+                $scope.selectedTei["Xhdn49gUd52"] = "Ulvollsjordet 13, 2670 Otta";
+                $scope.selectedTei["NI0QRzJvQ0k"] = "1981-08-01";
+                $scope.selectedTei["Rv8WM2mTuS5"] = "39";
+                $scope.selectedTei["oindugucx72"] = "Mann";
+    
+                $scope.executeRules();
+            }
+        });
     }
 
     var showTetRegistrationButtons = function(){

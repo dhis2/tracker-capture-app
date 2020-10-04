@@ -6,6 +6,7 @@ export default angular.module('trackerCapture', [
     'ngCsv',
     'ngMessages',
     'trackerCaptureServices',
+    'externalLookupServices',
     'trackerCaptureFilters',
     'trackerCaptureDirectives',
     'd2Directives',
