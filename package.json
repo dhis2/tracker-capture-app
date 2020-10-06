@@ -1,13 +1,12 @@
 {
   "name": "tracker-capture-app-ks",
-  "version": "34.1.0",
+  "version": "34.1.1",
   "description": "DHIS2 tracker capture app forked for KS",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild": "(rm -r build && mkdir build) || mkdir build",
     "build": "webpack && cp -r i18n build/i18n && cp -r core build/core && cp -r vendor build/vendor && cp -r views build/views && cp -r styles build/styles && cp manifest.webapp build/ && find ./components -iname \"*.html\" -exec rsync -R '{}' ./build/ \\;",
-    "postbuild": "mkdirp buildzip/ && pushd build && bestzip ../buildzip/smittesporing.zip * && popd",
     "start": "webpack-dev-server"
   },
   "repository": {
