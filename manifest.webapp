@@ -1,7 +1,7 @@
 {
-    "version": "34.1.0",
-    "name": "Smittesporing",
-    "description": "Smittesporing - Tracker Capture App",
+    "version": "34.1",
+    "name": "Tracker Capture",
+    "description": "Tracker Capture App",
     "launch_path": "index.html",
     "icons": {
         "16": "/img/icons/mortar-16.png",
