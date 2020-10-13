@@ -2752,45 +2752,41 @@ i
     }
     var getWorkingListDataWithMultipleEventFilters = function(searchParams, workingList, pager, sortColumn){
         var def = $q.defer();
-        if(workingList.cachedSorting === searchParams.sortUrl && workingList.cachedOrgUnit === searchParams.orgUnitId){
-            var data = getCachedMultipleEventFiltersData(workingList,pager);
+
+        var promises = [];
+        angular.forEach(workingList.eventFilters, function(eventFilter){
+            var eventUrl = getEventUrl(eventFilter);
+            var tempPager = {
+                pageSize:1000,
+                page: 1
+            }
+            promises.push(TEIService.search(searchParams.orgUnitId, "SELECTED", searchParams.sortUrl, searchParams.programUrl, eventUrl,tempPager, true));
+        });
+        $q.all(promises).then(function(response){
+            var data = { height: 0, width: 0, rows: []};
+            var existingTeis = {};
+            var allRows = [];
+            angular.forEach(response, function(responseData){
+                data.headers = data.headers && data.headers.length > responseData.headers.length ? data.headers : responseData.headers;
+                data.width  = data.width > responseData.width ? data.width : responseData.width;
+                allRows = allRows.concat(responseData.rows);
+            });
+            //Getting distinct list
+            var existing = {};
+            data.rows = allRows.filter(function(d){
+                if(existing[d[0]])return false;
+                existing[d[0]] = true;
+                return true;
+            });
+            var sortColumnIndex = data.headers.findIndex(function(h){ return h.name === sortColumn.id});
+            if(sortColumnIndex) data.rows = orderByKeyFilter(data.rows, sortColumnIndex, sortColumn.direction);
+            //order list
+            cachedMultipleEventFiltersData[workingList.name] = data;
+            workingList.cachedSorting = searchParams.sortUrl;
+            workingList.cachedOrgUnit = searchParams.orgUnitId;
+            var data = getCachedMultipleEventFiltersData(workingList, pager, sortColumn);
             def.resolve(data);
-        }else{
-            var promises = [];
-            angular.forEach(workingList.eventFilters, function(eventFilter){
-                var eventUrl = getEventUrl(eventFilter);
-                var tempPager = {
-                    pageSize:1000,
-                    page: 1
-                }
-                promises.push(TEIService.search(searchParams.orgUnitId, "SELECTED", searchParams.sortUrl, searchParams.programUrl, eventUrl,tempPager, true));
-            });
-            $q.all(promises).then(function(response){
-                var data = { height: 0, width: 0, rows: []};
-                var existingTeis = {};
-                var allRows = [];
-                angular.forEach(response, function(responseData){
-                    data.headers = data.headers && data.headers.length > responseData.headers.length ? data.headers : responseData.headers;
-                    data.width  = data.width > responseData.width ? data.width : responseData.width;
-                    allRows = allRows.concat(responseData.rows);
-                });
-                //Getting distinct list
-                var existing = {};
-                data.rows = allRows.filter(function(d){
-                    if(existing[d[0]])return false;
-                    existing[d[0]] = true;
-                    return true;
-                });
-                var sortColumnIndex = data.headers.findIndex(function(h){ return h.name === sortColumn.id});
-                if(sortColumnIndex) data.rows = orderByKeyFilter(data.rows, sortColumnIndex, sortColumn.direction);
-                //order list
-                cachedMultipleEventFiltersData[workingList.name] = data;
-                workingList.cachedSorting = searchParams.sortUrl;
-                workingList.cachedOrgUnit = searchParams.orgUnitId;
-                var data = getCachedMultipleEventFiltersData(workingList, pager, sortColumn);
-                def.resolve(data);
-            });
-        }
+        });
         return def.promise;
     }
 
