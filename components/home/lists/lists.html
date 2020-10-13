@@ -34,7 +34,7 @@
             <button type="button" class="btn btn-default" onclick="javascript:window.print()" ng-attr-title="{{'print' | translate}}"><span class="fa fa-print"></span></button>
             <button class="btn btn-default"ng-click="showHideListColumns()" ng-attr-title="{{'show_hide_columns'| translate}}"><span class="fa fa-table"></span></button>
         </div>
-    
+
         <span ng-if="currentTrackedEntityList.data && pager.total">
             {{'total'| translate}}:  {{pager.total}}
         </span>
@@ -42,12 +42,19 @@
         
         <i ng-if="currentTrackedEntityList.loading" class="fa fa-spinner fa-spin fa-2x"></i>
     </div>
+
+    <div class="row" ng-if="currentTrackedEntityList && currentTrackedEntityList.config && currentTrackedEntityList.config.description">
+        <div class="vertical-spacing" >
+            <div class="alert alert-info" style="margin-left:12px;margin-right:12px">{{currentTrackedEntityList.config.description}}</div>
+        </div>
+    </div>
+
     <!--- Error display for search begins -->
     <div class="row" ng-if="currentTrackedEntityList && currentTrackedEntityList.type == trackedEntityListTypes.CUSTOM">
         <div class="vertical-spacing" ng-if="emptyCustomWorkingListValues">
             <div class="alert alert-warning">{{'search_input_required'| translate}}</div>
         </div>
-    </div>    
+    </div>
     
     <!--- Error display for search ends -->    
     <tracker-tei-list-performant 
