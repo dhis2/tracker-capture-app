@@ -244,9 +244,6 @@ function getOrgUnitLevels()
 function getRelationships()
 {    
     dhis2.tc.store.getKeys( 'relationshipTypes').done(function(res){        
-        if(res.length > 0){
-            return;
-        }
         return dhis2.tracker.getTrackerObjects('relationshipTypes', 'relationshipTypes', DHIS2URL + '/relationshipTypes.json', 'paging=false&fields=id,code,displayName,bidirectional,fromToName,toFromName,fromConstraint[*],toConstraint[*],access[*]', 'idb', dhis2.tc.store);
     });    
 }
