@@ -94,8 +94,8 @@
 
         <div class="vertical-spacing hideInPrint btn-group" ng-if="showRegistrationButtons()">
             <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus || validatingRegistration" class="btn btn-primary" ng-click="processRegistration('DASHBOARD')">{{'save_and_continue'| translate}}</button>
-            <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus || validatingRegistration" class="btn btn-success" ng-click="processRegistration('SELF')">{{'save_and_add_new'| translate}}</button>  
-            <button type="button" class="btn btn-info" onclick="javascript:window.print()">{{'print_form'| translate}}</button>
+            <!--<button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus || validatingRegistration" class="btn btn-success" ng-click="processRegistration('SELF')">{{'save_and_add_new'| translate}}</button>  -->
+            <!--<button type="button" class="btn btn-info" onclick="javascript:window.print()">{{'print_form'| translate}}</button>-->
             <button type="button"  ng-disabled="model.savingRegistration || validatingRegistration" class="btn btn-default" ng-click="setCurrentView(null)">{{'cancel'| translate}}</button>
             <i ng-if="model.savingRegistration || validatingRegistration" class="fa fa-spinner fa-spin" style="font-size:28px;margin-left:15px"></i>
         </div>
@@ -112,7 +112,7 @@
     </div>   
     <div>
         <div ng-if="registrationMode === 'REGISTRATION'" ng-hide="!matchingTeisCount || matchingTeisCount === 0 || hideMatchingTeis" class="col-sm-5 vertical-spacing hidden-xs">
-            
+
             <div class="alert alert-info vertical-spacing" style="position: fixed; width:230px; top: 200px">
                 <span class="fa fa-times" style="position:absolute; right:3px;top:3px;cursor:pointer" ng-click="hideMatchingTeis = !hideMatchingTeis"></span>
                 <div class="row small-vertical-spacing">

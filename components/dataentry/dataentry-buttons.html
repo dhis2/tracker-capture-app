@@ -4,11 +4,11 @@
         <a href ng-click="completeIncompleteEvent(null, outerDataEntryForm)" 
             class="btn btn-warning" 
             ng-disabled="!eventEditable(true)"
-            ng-if="currentEvent.eventDate && (currentEvent.status === 'SCHEDULE' || currentEvent.status === 'ACTIVE' || currentEvent.status === 'VISITED')">{{'complete'| translate}}</a>
+            ng-if="currentEvent.eventDate && (currentEvent.status === 'SCHEDULE' || currentEvent.status === 'ACTIVE' || currentEvent.status === 'VISITED')">{{'complete'| translate}} {{currentEvent.name}}</a>
         <a href ng-click="completeIncompleteEvent(null, outerDataEntryForm)" 
             class="btn btn-warning"
             ng-disabled="!eventEditable(true)"
-            ng-if="currentEvent.eventDate && currentEvent.status === 'COMPLETED'">{{'incomplete'| translate}}</a>    
+            ng-if="currentEvent.eventDate && currentEvent.status === 'COMPLETED'">{{'incomplete'| translate}} {{currentEvent.name}}</a>    
         <a href ng-click="skipUnskipEvent()" 
             class="btn btn-warning" 
             ng-disabled="!eventEditable(true)"
@@ -17,8 +17,8 @@
         <div class="pull-right">
             <a href ng-click="deleteEvent()" 
                 ng-disabled="!eventEditable(true)"
-                class="btn btn-danger horizontal-spacing">{{'delete'| translate}}</a>
-            <a href class="btn btn-info" ng-click="print('print-div');">{{'print_form'| translate}}</a>
+                class="btn btn-danger horizontal-spacing">{{'delete'| translate}} {{currentEvent.name}}</a>
+            <!--<a href class="btn btn-info" ng-click="print('print-div');">{{'print_form'| translate}}</a>-->
         </div>
     </div>
 </div>

@@ -131,9 +131,9 @@
                                             ng-if="selectedProgram.access.data.write && selectedEnrollment.status !== 'CANCELLED'"
                                             ng-disabled="!canUseEnrollment() || selectedOrgUnit.closedStatus"
                                             ng-click="completeReopenEnrollment()">
-                                        {{selectedEnrollment.status === 'ACTIVE' ? 'complete' : 'reopen' | translate}}
+                                        {{selectedEnrollment.status === 'ACTIVE' ? 'complete_and_move' : 'reopen_for_followup' | translate}}
                                     </button>
-                                    <button type="button" 
+                                    <!--<button type="button" 
                                             class="btn btn-warning"
                                             ng-if="selectedProgram.access.data.write && selectedEnrollment.status !== 'COMPLETED'"
                                             ng-disabled="!canUseEnrollment() || selectedOrgUnit.closedStatus"
@@ -148,13 +148,13 @@
                                             ng-disabled="selectedEnrollment.status !== 'ACTIVE' || selectedTei.inactive || selectedOrgUnit.closedStatus"
                                             ng-click="markForFollowup()">
                                         <i class="fa fa-exclamation-triangle"></i>
-                                    </button>                                    
+                                    </button>-->                                   
                                     <button type="button" 
                                             class="btn btn-danger pull-right"
                                             ng-disabled="selectedOrgUnit.closedStatus"
                                             ng-if="selectedProgram.access.data.write"
                                             ng-click="deleteEnrollment()">
-                                        {{'delete' | translate}}
+                                        {{'remove_enrollment' | translate}}
                                     </button>
                                 </div>
                             </div>
@@ -208,8 +208,8 @@
                     
                 </div>
                 
-                <div class="col-sm-6 border-left" ng-if="!showEnrollmentDiv && hasOtherPrograms">
-                    <div class="title small-vertical-spacing">{{'other_programs'| translate}}</div>
+                <div class="col-sm-6 border-left" ng-if="!showEnrollmentDiv && activeEnrollments.length > 0">
+                    <div class="title small-vertical-spacing">{{'active_enrollments_in_other_programs'| translate}}</div>
                     <div class="vertical-spacing">
                         <div ng-if="activeEnrollments.length > 0">
                             <table class="table table-striped dhis2-table-hover table-bordered">
@@ -220,9 +220,9 @@
                                 </tr>
                             </table> 
                         </div>
-                        <div ng-if="activeEnrollments.length === 0">
+                        <!--<div ng-if="activeEnrollments.length === 0">
                             <div class="alert alert-warning">{{'no_active_enrollments_exist'| translate}}</div>
-                        </div>
+                        </div>-->
                     </div>
                                     
                 </div>
