@@ -430,14 +430,6 @@ trackerCapture.controller('DataEntryController',
                                 //TODO: Alerts is going to be replaced with a proper display mecanism.
                                 alert(effect.content);
                             }
-                            else {
-                                //TODO: Alerts is going to be replaced with a proper display mecanism.
-                                //alert($scope.prStDes[effect.dataElement.id].dataElement.displayFormName + " was blanked out and hidden by your last action");
-                            }
-
-                            //Blank out the value:
-                            //affectedEvent[effect.dataElement.id] = "";
-                            //$scope.saveDataValueForEvent($scope.prStDes[effect.dataElement.id], null, affectedEvent, true);
                         }
                     }
 
