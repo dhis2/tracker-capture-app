@@ -114,7 +114,10 @@ trackerCapture.controller('ListsController',function(
 
         var loadCachedData = function(){
             var frontPageData = CurrentSelection.getFrontPageData();
-            if(frontPageData && frontPageData.viewData && frontPageData.viewData.name.toLowerCase() === 'lists'){
+            if(frontPageData && frontPageData.viewData && frontPageData.viewData.name.toLowerCase() === 'lists'
+            && frontPageData.selectedProgram && frontPageData.selectedProgram.id 
+            && $scope.base.selectedProgram && $scope.base.selectedProgram.id 
+            && frontPageData.selectedProgram.id === $scope.base.selectedProgram.id ){
                 var viewData = frontPageData.viewData;
                 $scope.pager = viewData.pager;
                 $scope.customWorkingListValues = viewData.customWorkingListValues;
