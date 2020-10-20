@@ -1,6 +1,6 @@
 {
   "name": "tracker-capture-app",
-  "version": "34.1.1",
+  "version": "34.1.2",
   "description": "DHIS2 tracker capture app forked for KS",
   "main": "index.js",
   "scripts": {
