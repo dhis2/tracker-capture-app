@@ -660,7 +660,8 @@ trackerCapture.controller('TEIAddController',
                 SessionStorageService,
                 TrackerRulesExecutionService,
                 TEIGridService,
-                AttributeUtils) {
+                AttributeUtils,
+                FNrLookupService) {
     $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
     $scope.enrollment = {enrollmentDate: '', incidentDate: ''};
     $scope.today = DateUtils.getToday();
@@ -952,4 +953,32 @@ trackerCapture.controller('TEIAddController',
         }
         return status;        
     };
+
+    $scope.registryLookup = function(attributeId) {
+        FNrLookupService.lookupFnr($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code).then(function(response){
+            if(response) {
+                var fieldMappings = [
+                    {field:"sB1IHYu2xQT", data:response.fornavn},
+                    {field:"ENRjVGxVL6l", data:response.etternavn},
+                    {field:"Xhdn49gUd52", data:response.adresse ? response.adresse + ', ' + response.postnummer + ' ' + response.poststed: null},
+                    //fødselsdatoformat DDMMYYYY
+                    {field:"NI0QRzJvQ0k", data:response.fodselsdato ? DateUtils.formatFromApiToUser(response.fodselsdato.substring(4,8) + response.fodselsdato.substring(2,4) + response.fodselsdato.substring(0,2)): ''},
+                    {field:"Ym6yIceP4RO", data:response.epost},
+                    //Kjønn: U/K/M
+                    {field:"oindugucx72", data:response.kjonn == 'M' ? 'Mann' : response.kjonn == 'K' ? 'Kvinne' : response.kjonn == 'U' ? 'Ikke kjent' : '' },
+                    {field:"fctSQp5nAYl", data:response.telefonnummer ? parseInt(response.telefonnummer.replace('+47','')) : null}
+                ];
+
+                angular.forEach(fieldMappings, function(fieldMapping) {
+                    if(fieldMapping.data) {
+                        if(!$scope.selectedTei[fieldMapping.field] || (angular.isString($scope.selectedTei[fieldMapping.field]) && !$scope.selectedTei[fieldMapping.field].trim())) {
+                            $scope.selectedTei[fieldMapping.field] = fieldMapping.data;
+                        }
+                    }
+                });
+    
+                $scope.executeRules();
+            }
+        });
+    }
 });
