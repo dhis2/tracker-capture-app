@@ -555,7 +555,7 @@ trackerCapture.controller('TEIAddController',
                 var relationship = { from: {trackedEntityInstance: {} }, to: {trackedEntityInstance: {}}};
 
                 relationship.relationshipType = $scope.relationship.selected.id;
-                
+                relationship.bidirectional = $scope.relationship.selected.bidirectional;
                 relationship.from.trackedEntityInstance.trackedEntityInstance = $scope.selectedConstraints.currentTei === 'fromConstraint' ? $scope.mainTei.trackedEntityInstance : $scope.teiForRelationship.id;
                 relationship.to.trackedEntityInstance.trackedEntityInstance = $scope.selectedConstraints.currentTei === 'toConstraint' ? $scope.mainTei.trackedEntityInstance : $scope.teiForRelationship.id;
 
