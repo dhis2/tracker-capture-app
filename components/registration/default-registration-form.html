@@ -350,7 +350,8 @@
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
                             <div ng-if="attribute.id == 'ZSt07qyq6Pt'">
-                                <button type="button" ng-disabled="selectedTei[attribute.id].length != 11" class="btn btn-primary" ng-click="registryLookup(selectedTei[attribute.id])">Slå opp og hent profildata</button>
+                                <button type="button" style="margin-bottom: 5px;" ng-disabled="selectedTei[attribute.id].length != 11 || showFetchingDataSpinner" class="btn btn-primary" ng-click="registryLookup(selectedTei[attribute.id])">Slå opp og hent profildata</button>
+                                <i ng-show="showFetchingDataSpinner" class="fa fa-spinner fa-spin fa-2x" style="margin-left:5px"></i>
                             </div>
                     </span>
                     <span ng-switch-when="PHONE_NUMBER">

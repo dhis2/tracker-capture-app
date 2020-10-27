@@ -955,6 +955,7 @@ trackerCapture.controller('TEIAddController',
     };
 
     $scope.registryLookup = function(attributeId) {
+        $scope.showFetchingDataSpinner = true;
         FNrLookupService.lookupFnr($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code).then(function(response){
             if(response) {
                 var fieldMappings = [
@@ -979,6 +980,7 @@ trackerCapture.controller('TEIAddController',
     
                 $scope.executeRules();
             }
+            $scope.showFetchingDataSpinner = false;
         });
     }
 });
