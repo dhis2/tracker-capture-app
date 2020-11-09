@@ -19,16 +19,16 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     var errorMsgHdr, errorMsgBody;
                     errorMsgHdr = $translate.instant('error');
 
-                    if(response.statusFolkeregister == 'NOT_SUPPORTED') {
+                    if(response.data.statusFolkeregister == 'NOT_SUPPORTED') {
                         errorMsgHdr = "Folkeregisteroppslag må aktiveres for din kommune"
                         errorMsgBody = 'For å hente data fra folkeregisteret må din kommune delegere rettigheter til KS. Se mer informasjon i endringslogg, eller kontakt oss på smittesporing@ks.no for å komme videre.';
                     }
 
-                    if(response.statusFolkeregister == 'NONE') {
+                    if(response.data.statusFolkeregister == 'NONE') {
                         errorMsgBody = 'Fant ingen data på det angitte personnummeret i folkeregisteret: ' + fNr + ' Data om personen må legges inn manuelt i skjemaet under.';
                     }
 
-                    if(response.statusFolkeregister == 'FAILED') {
+                    if(response.data.statusFolkeregister == 'FAILED') {
                         errorMsgBody = 'Noe gikk galt i tjenesten for uthenting av data om person fra folkeregisteret. '
                             + 'Prøv igjen senere eller fyll inn persondata manuelt.';
                     }
