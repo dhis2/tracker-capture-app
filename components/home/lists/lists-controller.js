@@ -122,14 +122,10 @@ trackerCapture.controller('ListsController',function(
                 $scope.pager = viewData.pager;
                 $scope.customWorkingListValues = viewData.customWorkingListValues;
                 $scope.gridColumns = viewData.gridColumns;
-                if(viewData.trackedEntityList && viewData.trackedEntityList.refresh){
-                    if(viewData.trackedEntityList.type == $scope.trackedEntityListTypes.CUSTOM){
-                        $scope.setCustomWorkingList();
-                    }else{
-                        $scope.setWorkingList(viewData.trackedEntityList.config);
-                    }
+                if(viewData.trackedEntityList.type == $scope.trackedEntityListTypes.CUSTOM){
+                    $scope.setCustomWorkingList();
                 }else{
-                    $scope.currentTrackedEntityList = viewData.trackedEntityList;
+                    $scope.setWorkingList(viewData.trackedEntityList.config);
                 }
             }else{
                 CurrentSelection.setFrontPageData(null);
