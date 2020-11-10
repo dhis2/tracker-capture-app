@@ -1013,6 +1013,42 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return def.promise;
             });
         },
+        getListWithProgramData: function(entityUidList,programUid, dataElementId, programStageId, orgUnitId){
+            if(entityUidList && entityUidList.length > 0){
+                return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&program='+programUid+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,enrollments[enrollment,events[dataValues,programStage]]').then(function(response){
+                    var teiDictionary = {};
+                    if(response.data && response.data.trackedEntityInstances && response.data.trackedEntityInstances.length > 0){
+                        response.data.trackedEntityInstances.forEach(function(tei) {
+                            if(tei.enrollments){
+                                tei.enrollments.forEach(function(enrollment) {
+                                    if(enrollment.events && enrollment.events.length > 0){
+                                        enrollment.events.forEach(function(event){
+                                            if(event.programStage == programStageId && event.dataValues && event.dataValues.length > 0) {
+                                                event.dataValues.forEach(function(dataValue){
+                                                    if(dataValue.dataElement == dataElementId) {
+                                                        teiDictionary[tei.trackedEntityInstance] = dataValue.value;
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+    
+                    return teiDictionary;
+                }, function(error){
+                    var def = $q.defer();
+                    def.reject(error);
+                    return def.promise;
+                });
+            } else {
+                var def = $q.defer();
+                def.resolve([]);
+                return def.promise;
+            }
+        },
         get: function(entityUid, optionSets, attributesById){
             var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
                 var tei = response.data;
@@ -2077,6 +2113,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     entity.inactive = row[6] !== "" ? row[6] : false;
                     entity.followUp = isFollowUp;
 
+                    if(grid.headers[grid.headers.length-1].name == 'lastdate'){
+                        entity.lastdate = row[row.length-1];
+                    }
+                    
                     for (var i = 7; i < row.length; i++) {
                         if (row[i] && row[i] !== '') {
                             var val = row[i];
@@ -2162,7 +2202,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return {columns: columns, filterTypes: filterTypes, filterText: filterText};
         },
-        makeGridColumns: function(attributes,config, savedGridColumnsKeyMap){
+        makeGridColumns: function(attributes,config, savedGridColumnsKeyMap,lastDateName){
             var gridColumns = [
                 {id: 'orgUnitName', displayName: $translate.instant('registering_unit'), show: false, valueType: 'TEXT'},
                 {id: 'created', displayName: $translate.instant('registration_date'), show: true, valueType: 'DATE'},
@@ -2182,6 +2222,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     gridColumns.push(gridColumn);
                 }
             });
+
+            if(lastDateName) {
+                gridColumns.push({id: 'last_date', displayName: $translate.instant(lastDateName), show: true, valueType: 'DATE'});
+            }
+
             return gridColumns;
         },
         generateGridColumnsForSearch: function(existedColumns, attributes, ouMode, nonConfidential){

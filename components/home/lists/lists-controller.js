@@ -77,7 +77,9 @@ trackerCapture.controller('ListsController',function(
             if($scope.base.selectedProgram){
                 return UserDataStoreService.get(gridColumnsContainer, $scope.base.selectedProgram.id).then(function(savedGridColumns){
                     var gridColumnConfig = { defaultRange: {start: 3, end: 7}};
-                    $scope.gridColumns = TEIGridService.makeGridColumns($scope.programAttributes,gridColumnConfig, savedGridColumns);
+                    var lastDateName = $scope.base.selectedProgram.id == 'uYjxkTbwRNf' ? 'last_date_in_isolation' : $scope.base.selectedProgram.id == 'DM9n1bUw8W8' ? 'last_date_in_quarantine' : '';
+
+                    $scope.gridColumns = TEIGridService.makeGridColumns($scope.programAttributes,gridColumnConfig, savedGridColumns, lastDateName);
                     /*
                     $scope.gridColumns = [];
                     angular.forEach($scope.programAttributes, function(attr){
@@ -193,12 +195,44 @@ trackerCapture.controller('ListsController',function(
         }
 
         var setCurrentTrackedEntityListData = function(serverResponse){
+            if(serverResponse.rows && serverResponse.rows.length > 0
+                && ($scope.base.selectedProgram.id == 'uYjxkTbwRNf'
+                || $scope.base.selectedProgram.id == 'DM9n1bUw8W8')) {
+                var allTeis = [];
+                serverResponse.rows.forEach(function(row){
+                    allTeis.push(row[0]);
+                });
+
+                var dataElement = 'BoUcoEx9sVl';
+                var programStage = 'LpWNjNGvCO5';
+                
+                if($scope.base.selectedProgram.id == 'DM9n1bUw8W8') {
+                    dataElement = 'JNF44zBaNqn';
+                    programStage = 'sAV9jAajr8x';
+                }
+                TEIService.getListWithProgramData(allTeis,$scope.base.selectedProgram.id,dataElement,programStage,$scope.selectedOrgUnit.id).then(function(dateDictionary){
+                    serverResponse.rows.forEach(function(row){
+                        if(dateDictionary[row[0]]){
+                            row.push(dateDictionary[row[0]]);
+                        }
+                        else {
+                            row.push('');
+                        }
+                    });
+
+                    serverResponse.headers.push( {column: "LastDate", hidden: false, meta: false, name: "last_date", type:"java.lang.String" });
+                    $scope.setServerResponse(serverResponse);
+                });
+            }
+            else {
+                $scope.setServerResponse(serverResponse);
+            }
+        }
+
+        $scope.setServerResponse = function(serverResponse) {
             $scope.currentTrackedEntityList.data = TEIGridService.format($scope.selectedOrgUnit.id, serverResponse, false, $scope.base.optionSets, null);
             $scope.currentTrackedEntityList.loading = false;
-            //updateCurrentSelection();
-        }
-    
-
+        };
 
         $scope.fetchTeis = function(pager, sortColumn){
             var s = 1;
