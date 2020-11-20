@@ -388,9 +388,13 @@ trackerCapture.controller('SearchController',function(
                                 $modalInstance.close({ action: "OPENTEI", tei: tei, fromAudit: true});
                             }, function(error){
                                 if(error && !error.auditDismissed && error.data && error.data.message){
-                                    var headerText = $translate.instant('open_tei_error');
-                                    var bodyText = $translate.instant(error.data.message);
-                                    NotificationService.showNotifcationDialog(headerText, bodyText);
+                                    if(error.data.message == 'PROGRAM_ACCESS_CLOSED'){
+                                        $modalInstance.close({ action: "OPENTEI", tei: tei, fromAudit: true, programClosed: true });
+                                    } else {
+                                        var headerText = $translate.instant('open_tei_error');
+                                        var bodyText = $translate.instant(error.data.message);
+                                        NotificationService.showNotifcationDialog(headerText, bodyText);
+                                    }
                                 }
                             });
                         }else{
