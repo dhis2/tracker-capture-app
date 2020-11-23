@@ -2603,7 +2603,7 @@ i
             return {partial: partial, all: allColumns};
         },
         getEditingStatus: function(dhis2Event, stage, orgUnit, tei, enrollment,program, searchOrgUnits){
-            return dhis2Event.orgUnit !== orgUnit.id || (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || tei.inactive || enrollment.status !== 'ACTIVE';
+            return (stage.blockEntryForm && dhis2Event.status === 'COMPLETED') || tei.inactive || enrollment.status !== 'ACTIVE';
         },
         isExpired: function(program, event){
             var expired = !DateUtils.verifyExpiryDate(event.eventDate, program.expiryPeriodType, program.expiryDays, false);
