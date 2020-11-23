@@ -999,7 +999,7 @@ trackerCapture.controller('DataEntryController',
     function broadcastDataEntryControllerData(){
         $rootScope.$broadcast('dataEntryControllerData', {programStages: $scope.programStages,allEventsSorted: $scope.allEventsSorted, eventsByStage: $scope.eventsByStage, addNewEvent: $scope.addNewEvent, openEvent: $scope.openEventExternal, deleteScheduleOverDueEvents: $scope.deleteScheduleAndOverdueEvents, executeRules: $scope.executeRules });
     }
-    
+
     $scope.getEvents = function () {
 
         $scope.allEventsSorted = [];
@@ -1877,6 +1877,9 @@ trackerCapture.controller('DataEntryController',
             $scope.currentEventOriginal = angular.copy($scope.currentEvent);
             $scope.currentStageEventsOriginal = angular.copy($scope.currentStageEvents);
             $scope.executeRules();
+
+            //Needed by enrollment controller to keep referral button updated
+            broadcastDataEntryControllerData();
         });
     };
 

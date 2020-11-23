@@ -550,7 +550,7 @@ trackerCapture.controller('EnrollmentController',
             var eventToReturn = null;
             if($scope.selectedEnrollment && $scope.selectedEnrollment.events) {
                 angular.forEach($scope.selectedEnrollment.events, function(event) {
-                    if(event.event == $scope.referralConfig[$scope.selectedProgram.id].eventId
+                    if(event.programStage == $scope.referralConfig[$scope.selectedProgram.id].stageId
                         && event.status != 'COMPLETED')
                     eventToReturn = event;
                 });
