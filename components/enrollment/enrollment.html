@@ -21,7 +21,15 @@
                             {{'selected_program'| translate}}                           
                         </span>
                         <span ng-if="owningOrgUnitName">
-                            <div style="font-size: 10pt">{{'owned_by' | translate}} {{owningOrgUnitName}}</div>
+                            <div style="font-size: 10pt">{{'owned_by' | translate}} {{owningOrgUnitName}}
+                                <button type="button" 
+                                class="btn btn-danger pull-right"
+                                ng-disabled="selectedOrgUnit.closedStatus"
+                                ng-if="selectedProgram.access.data.write"
+                                ng-click="makeReferral(makeReferral('xK50EzZwHkn',true))">
+                            Overfør ansvar
+                        </button></div>
+                                    
                         </span>
                         <span class="nav-pills" ng-show="selectedProgram && currentEnrollment && currentEnrollment !== selectedEnrollment">
                             | <a href ng-click="loadEnrollmentDetails(currentEnrollment)" ng-attr-title="{{'current'| translate}}"><span ng-class="{true: 'widget-link-active bold', false: 'widget-link'} [showEnrollmentDiv]">{{'current'| translate}}</span></a>

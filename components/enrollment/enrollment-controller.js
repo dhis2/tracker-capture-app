@@ -521,4 +521,11 @@ trackerCapture.controller('EnrollmentController',
                 $scope.enrollmentLngSaved = true;
             });
         };
+
+        $scope.makeReferral = function(stageId,permanent){    
+            $rootScope.$broadcast('referralTriggered', {
+                stageId: stageId,
+                permanent: permanent
+            });
+        }
 });
