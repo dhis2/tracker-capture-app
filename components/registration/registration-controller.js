@@ -1253,8 +1253,6 @@ trackerCapture.controller('RegistrationController',
         if(!$scope.currentStage || !$scope.currentStage.access.data.write) return false;
         //Check if organisation unit is closed
         if($scope.selectedOrgUnit.closedStatus) return false;
-        //Check if event is the selected org unit or event is scheduled and org unit exists in users search org units
-        if($scope.currentEvent.orgUnit !== $scope.selectedOrgUnit.id && !($scope.currentEvent.status==='SCHEDULE' && isInSearchOrgUnits($scope.currentEvent.orgUnitPath, userSearchOrgUnits))) return false;
         // Check if currentProgramStage blocks entry form when status is completed
         if($scope.currentStage && $scope.currentStage.blockEntryForm && $scope.currentEvent.status ==='COMPLETED') return false;
         //Check if tei is inactive
