@@ -226,9 +226,14 @@ trackerCapture.controller('DataEntryController',
                     stageToUseForReferral = stage;
                 }
             });
-            //TODO: Add args.permanent as param
-            $scope.showCreateEvent(stageToUseForReferral, $scope.eventCreationActions.referral);
+
+            $scope.showCreateEvent(stageToUseForReferral, $scope.eventCreationActions.referral, args.referralMode);
         }
+    });
+
+    $scope.$on('confirmReferralEvent', function (event, args) {
+        args.event.status = 'COMPLETED';
+        $scope.saveEventDateForEvent(args.event,true);
     });
     
     //listen for new events created
@@ -1284,7 +1289,7 @@ trackerCapture.controller('DataEntryController',
         }
     };
     
-    $scope.showCreateEvent = function (stage, eventCreationAction, suggestedStage) {        
+    $scope.showCreateEvent = function (stage, eventCreationAction, referralMode) {        
         var availableStages = [];
         if(stage){
             if(!stage.access.data.write){
@@ -1341,7 +1346,7 @@ trackerCapture.controller('DataEntryController',
         
 
         var autoCreate = stage && stage.displayEventsInTable ? stage.displayEventsInTable : false;
-        EventCreationService.showModal($scope.eventsByStage, stage,availableStages, writableStages, $scope.programStages, $scope.selectedEntity, $scope.selectedProgram, $scope.selectedOrgUnit, $scope.selectedEnrollment, autoCreate, eventCreationAction, allApplicableEvents, $scope.selectedCategories)
+        EventCreationService.showModal($scope.eventsByStage, stage,availableStages, writableStages, $scope.programStages, $scope.selectedEntity, $scope.selectedProgram, $scope.selectedOrgUnit, $scope.selectedEnrollment, autoCreate, eventCreationAction, allApplicableEvents, $scope.selectedCategories, referralMode)
                 .then(function (eventContainer) {
                     $rootScope.referralInProgress = false;
                     if(angular.isDefined(eventContainer)){                

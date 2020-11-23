@@ -522,10 +522,39 @@ trackerCapture.controller('EnrollmentController',
             });
         };
 
-        $scope.makeReferral = function(stageId,permanent){    
+        //TODO: referral config hard coded. Could be made configurable.
+        $scope.referralConfig = {DM9n1bUw8W8:{stageId:'xK50EzZwHkn',referralMode:'PERMANENT_ONLY'},
+                                 uYjxkTbwRNf:{stageId:'zAstsy3slf9',referralMode:'PERMANENT_ONLY'}};
+                                 
+        $scope.makeReferral = function(stageId,referralMode){    
             $rootScope.$broadcast('referralTriggered', {
                 stageId: stageId,
-                permanent: permanent
+                referralMode: referralMode
             });
+        }
+
+        $scope.confirmTransferNeeded = function() {
+            return getTransferEvent() != null;
+        }
+
+        $scope.confirmTransfer = function() {
+            var event = getTransferEvent();
+            if(event) {
+                $rootScope.$broadcast('confirmReferralEvent', {
+                    event: event
+                }); 
+            }
+        }
+
+        var getTransferEvent = function() {
+            var eventToReturn = null;
+            if($scope.selectedEnrollment && $scope.selectedEnrollment.events) {
+                angular.forEach($scope.selectedEnrollment.events, function(event) {
+                    if(event.event == $scope.referralConfig[$scope.selectedProgram.id].eventId
+                        && event.status != 'COMPLETED')
+                    eventToReturn = event;
+                });
+            }
+            return eventToReturn;
         }
 });

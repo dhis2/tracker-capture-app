@@ -29,6 +29,7 @@ trackerCapture.controller('EventCreationController',
                 EventUtils,
                 events,
                 selectedCategories,
+                referralMode,
                 PeriodService,
                 ModalService,
                 CurrentSelection,
@@ -45,6 +46,7 @@ trackerCapture.controller('EventCreationController',
     $scope.isNewEvent = (eventCreationAction === $scope.eventCreationActions.add);
     $scope.isScheduleEvent = (eventCreationAction === $scope.eventCreationActions.schedule || eventCreationAction === $scope.eventCreationActions.referral);
     $scope.isReferralEvent = (eventCreationAction === $scope.eventCreationActions.referral);
+    $scope.referralMode = referralMode;
     $scope.model = {selectedStage: stage, dueDateInvalid: false, eventDateInvalid: false};
     $scope.stageSpecifiedOnModalOpen = angular.isObject(stage) ? true : false;
     $scope.suggestedStage = stage;

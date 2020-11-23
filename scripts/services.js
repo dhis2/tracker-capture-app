@@ -2621,7 +2621,7 @@ i
 
 .service('EventCreationService', function($modal){
 
-    this.showModal = function(eventsByStage, stage, availableStages, writableStages, programStages,selectedEntity,selectedProgram,selectedOrgUnit,selectedEnrollment, autoCreate, eventCreationAction,allEventsSorted, selectedCategories){
+    this.showModal = function(eventsByStage, stage, availableStages, writableStages, programStages,selectedEntity,selectedProgram,selectedOrgUnit,selectedEnrollment, autoCreate, eventCreationAction,allEventsSorted, selectedCategories, referralMode){
         var modalInstance = $modal.open({
             templateUrl: 'components/dataentry/new-event.html',
             controller: 'EventCreationController',
@@ -2665,6 +2665,9 @@ i
                 },
                 selectedCategories: function () {
                     return selectedCategories;
+                },
+                referralMode: function() {
+                    return referralMode;
                 }
             }
         }).result;

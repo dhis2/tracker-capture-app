@@ -169,7 +169,7 @@
     <button class="btn btn-default" data-ng-click="cancel()">{{'cancel'| translate}}</button>
 </div>
 <div class="modal-footer page" ng-if="isReferralEvent">        
-    <!--<button class="btn btn-primary" data-ng-click="onetimeReferral()">{{'onetime_referral'| translate}}</button>-->
-    <button class="btn btn-primary" data-ng-click="movePermanently()">{{'move_permanently'| translate}}</button>
+    <button ng-if="referralMode != 'PERMANENT_ONLY'" class="btn btn-primary" data-ng-click="onetimeReferral()">{{'onetime_referral'| translate}}</button>
+    <button ng-if="referralMode != 'ONE_TIME_ONLY'" class="btn btn-primary" data-ng-click="movePermanently()">{{'move_permanently'| translate}}</button>
     <button class="btn btn-default" data-ng-click="cancel()">{{'cancel'| translate}}</button>
 </div>
