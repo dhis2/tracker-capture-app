@@ -33,7 +33,7 @@
                         </th>
                         <th ng-if="!selectedTei.inactive && selectedProgram.access.data.write"></th>
                     </tr>
-                    <tr ng-repeat="rel in relatedTeis">
+                    <tr ng-repeat="rel in relatedTeis | orderBy:'-created'">
                         <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)">{{rel.relName}}</td>
                         <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)" ng-repeat="att in relationshipAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
                             {{rel.attributes[att.trackedEntityAttribute.id]}}

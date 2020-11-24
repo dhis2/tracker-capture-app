@@ -194,7 +194,7 @@ trackerCapture.controller('RelationshipController',
                             relationshipProgram = {id: $scope.selectedProgram.id};
                         }
 
-                        var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
+                        var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType, created: rel.created};
                         $scope.relatedTeis.push(relative);
                     });
                 } else if(rel.from && rel.bidirectional && rel.from.trackedEntityInstance && rel.from.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance){  
@@ -220,7 +220,7 @@ trackerCapture.controller('RelationshipController',
                             relationshipProgram = {id: $scope.selectedProgram.id};
                         }
 
-                        var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType};            
+                        var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType, created: rel.created};
                         $scope.relatedTeis.push(relative);
                     });
                 } else if(rel.from && rel.bidirectional && rel.from.event && rel.from.event.event) {
