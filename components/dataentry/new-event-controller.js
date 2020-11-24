@@ -10,6 +10,7 @@ trackerCapture.controller('EventCreationController',
                 $translate,
                 $filter,
                 removeFuturePeriodFilter,
+                $location,
                 DateUtils,
                 DHIS2EventFactory,
                 OrgUnitFactory,
@@ -347,6 +348,7 @@ trackerCapture.controller('EventCreationController',
             TEIService.changeTeiProgramOwner($scope.tei.trackedEntityInstance, $scope.selectedProgram.id, dummyEvent.orgUnit).then(function(response){
                 $scope.save();
                 $rootScope.$broadcast('ownerUpdated', {programExists: true});
+                $location.path('/').search({program: $scope.selectedProgram.id});
             });
         });
     };
