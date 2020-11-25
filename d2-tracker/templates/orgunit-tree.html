@@ -1,0 +1,38 @@
+<div class="modal-header page">
+    <h3>{{'org_unit'| translate}}</h3>
+</div>
+<div class="modal-body page">
+    <div class="input-group">    
+        <input type="text" 
+            name="orgUnitFilterText" 
+            d2-on-enter-blur
+            d2-on-blur-change="filterOrgUnits()"
+            ng-model="orgUnitFilterText" 
+            class="form-control" ng-attr-placeholder="{{'search' | translate}}"> 
+        <span class="input-group-btn"> 
+            <button class="btn btn-success hideInPrint trim" type="button" ng-attr-title="{{'search' | translate}}" ng-disabled="!orgUnitFilterText" ng-click="filterOrgUnits()"> 
+                <i class="fa fa-search"></i> 
+            </button> 
+            <button class="btn btn-danger hideInPrint trim" type="button" ng-attr-title="{{'clear' | translate}}" ng-disabled="!orgUnitFilterText" ng-click="filterOrgUnits(true)"> 
+                <i class="fa fa-trash-o"></i>
+            </button> 
+        </span> 
+    </div>
+    <div class="org-unit-tree" data-stop-propagation="true">
+        <script type="text/ng-template" id="orgUnitTree.html">
+            <span class="org-unit-tree-button" ng-click="expandCollapse(orgUnit)" ng-show="orgUnit.show && orgUnit.children.length > 0"><i class="fa fa-minus-square-o"></i></span>
+            <span class="org-unit-tree-button" ng-click="expandCollapse(orgUnit)" ng-show="(!orgUnit.show && orgUnit.children.length > 0) || (!orgUnit.show && orgUnit.hasChildren)"><i class="fa fa-plus-square-o"></i></span>
+            <span class="org-unit-tree-button" ng-click="setSelectedOrgUnit(orgUnit)" ng-class="{'selected-org-unit' : orgUnit.id === model.selectedOrgUnitId}">{{orgUnit.displayName}}</span>
+            <ul class="tree" id="tree" ng-show="orgUnit.show">
+                <li ng-repeat="orgUnit in orgUnit.children | orderBy:['level','displayName']" ng-include="'orgUnitTree.html'"></li>
+            </ul>
+        </script>
+        <ul class="tree" id="tree">
+            <li ng-repeat="orgUnit in orgUnitsDataElement | orderBy:['level','displayName']" ng-include="'orgUnitTree.html'"></li>
+        </ul>
+    </div>
+</div>
+<div class="modal-footer page">
+    <button class="btn btn-primary" data-ng-click="select()">{{'select'| translate}}</button>
+    <button class="btn btn-default" data-ng-click="close()">{{'close'| translate}}</button>
+</div>

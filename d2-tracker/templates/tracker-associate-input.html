@@ -1,0 +1,47 @@
+<div class="panel panel-default" style="margin-top: 5px; margin-bottom: 5px;">
+    <div class="panel-heading">
+        <span class="input-group">                            
+            <input type="text"
+                name="foo" 
+                class="form-control"
+                ng-model="d2SelectedTei[d2Attribute.id]" 
+                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                attribute-data={{d2Attribute}}
+                selected-program-id={{d2SelectedProgram.id}}  
+                selected-tei-id={{d2SelectedTei.trackedEntityInstance}}
+                ng-disabled="true" 
+                ng-blur="d2BlurMethode(d2SelectedTei, d2Attribute.id)"
+                ng-required="d2Attribute.mandatory"/>
+            <span class="input-group-btn">
+                <button class="btn btn-success hideInPrint trim"
+                        ng-if="!d2SelectedTei[d2Attribute.id] " 
+                        ng-class="{true: 'disable-clicks'} [editingDisabled]"
+                        ng-disabled="d2SelectedOrgunit.closedStatus"
+                        type="button" 
+                        ng-attr-title="{{'add'| translate}} {{d2Attribute.displayName}}"
+                        ng-click="getTa()">
+                        <i class="fa fa-external-link"></i>                             
+                </button>
+                <button class="btn btn-danger hideInPrint trim"
+                        ng-if="d2SelectedTei[d2Attribute.id]" 
+                        ng-class="{true: 'disable-clicks'} [editingDisabled]"
+                        ng-disabled="d2SelectedOrgunit.closedStatus"
+                        type="button" 
+                        ng-attr-title="{{'remove'| translate}} {{d2Attribute.displayName}}"
+                        ng-click="delete()">
+                        <i class="fa fa-trash-o"></i>                             
+                </button>
+            </span>
+        </span>
+    </div>
+    <div class="panel-body" style="max-height: 75px; overflow-y: scroll; padding: 0px;" ng-if="userDetailsName.length > 0">
+        <table class="table table-striped" style="margin-bottom: 0px;">
+            <tbody>
+                <tr ng-repeat="name in userDetailsName">
+                    <th scope="row">{{name}}</th>
+                    <td style="border-bottom: 1px solid #ddd;">{{userDetailsData[$index]}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

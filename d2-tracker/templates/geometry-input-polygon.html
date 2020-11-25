@@ -1,0 +1,14 @@
+<div>
+    <div class="input-group">
+        <div class="geometry-polygon-indicator" style="overflow-y: hidden;">{{polygonIndicator}}<span ng-show="hasPolygon" style="margin-left:2px;color:green;" class="fa fa-check"></span></div>
+        <span class="input-group-btn hideInPrint">
+            <button class="btn btn-grp trim hideInPrint" 
+                    type="button"
+                    ng-disabled="d2Disabled"
+                    ng-attr-title="{{'get_from_map'| translate}}"
+                    ng-click="showMap()"> 
+                <i class="fa fa-map-marker"></i>                             
+            </button>
+        </span>    
+    </div>
+</div>
