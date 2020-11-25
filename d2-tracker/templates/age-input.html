@@ -1,0 +1,75 @@
+<div ng-form="ageForm">
+    <div class="input-group" style="width: 100%; padding-top: 5px;">
+        <input type="text" 
+               d2-date name="dob" 
+               d2-date-validator
+               ng-model="age.dob"
+               blur-or-change="saveDOB()"
+               ng-required="d2Required"
+               ng-disabled="d2Disabled"
+               ng-attr-placeholder="{{'dob'| translate}}" 
+               ng-attr-title="{{'dob'| translate}}" 
+               class="form-control no-right-radius"
+               ng-class="{'input-success': d2AgeSaved}"/>
+        <span class="input-group-btn empty-span"></span>
+        <span class="has-float-label">
+            <input type="number" 
+                   name="years"
+                   ng-model="age.years" 
+                   ng-model-options="{updateOn: 'blur'}"
+                   ng-change="saveAge()"
+                   ng-disabled="d2Disabled"
+                   d2-number-validator
+                   number-type="INTEGER_ZERO_OR_POSITIVE"
+                   ng-attr-placeholder="{{'years'| translate}}"
+                   ng-attr-title="{{'years'| translate}}" 
+                   class="form-control no-right-radius no-left-radius"
+                   ng-class="{'input-success': d2AgeSaved}"
+                   id="year"/>
+            <label for="year">{{'years'| translate}}</label>
+        </span>
+        <span class="input-group-btn empty-span"></span>
+        <span class="has-float-label">
+            <input type="number" 
+                   name="months"
+                   ng-model="age.months" 
+                   ng-model-options="{updateOn: 'blur'}"
+                   ng-change="saveAge()"
+                   ng-disabled="d2Disabled"
+                   d2-number-validator
+                   number-type="INTEGER_ZERO_OR_POSITIVE"
+                   ng-attr-placeholder="{{'months'| translate}}"
+                   ng-attr-title="{{'months'| translate}}" 
+                   class="form-control no-right-radius no-left-radius"
+                   ng-class="{'input-success': d2AgeSaved}"
+                   id="month"/>
+            <label for="month">{{'months'| translate}}</label>
+        </span>
+        <span class="input-group-btn empty-span"></span>
+        <span class="has-float-label">
+            <input type="number" 
+                   name="days"
+                   ng-model="age.days" 
+                   ng-model-options="{updateOn: 'blur'}"
+                   ng-change="saveAge()"
+                   ng-disabled="d2Disabled"
+                   d2-number-validator
+                   number-type="INTEGER_ZERO_OR_POSITIVE"
+                   ng-attr-placeholder="{{'days'| translate}}"
+                   ng-attr-title="{{'days'| translate}}" 
+                   class="form-control no-left-radius no-right-radius"
+                   ng-class="{'input-success': d2AgeSaved}"
+                   id="day"/>
+            <label for="day">{{'days'| translate}}</label>
+        </span>
+        <span class="input-group-btn"> 
+            <button class="btn btn-danger hideInPrint trim" type="button" ng-attr-title="{{'remove'| translate}}" ng-click="removeAge()" ng-disabled="!age.dob || d2Disabled"> 
+                <i class="fa fa-trash-o"></i> 
+            </button>
+        </span>
+    </div>
+    <div ng-messages="ageForm.dob.$error" ng-if="ageInteracted(ageForm.dob, outerDataEntryForm)" class="required" ng-messages-include="d2-tracker/templates/error-messages.html"></div>
+    <div ng-messages="ageForm.years.$error" ng-if="ageInteracted(ageForm.years, outerDataEntryForm)" class="required" ng-messages-include="d2-tracker/templates/error-messages.html"></div>
+    <div ng-messages="ageForm.months.$error" ng-if="ageInteracted(ageForm.months, outerDataEntryForm)" class="required" ng-messages-include="d2-tracker/templates/error-messages.html"></div>
+    <div ng-messages="ageForm.days.$error" ng-if="ageInteracted(ageForm.days, outerDataEntryForm)" class="required" ng-messages-include="d2-tracker/templates/error-messages.html"></div>
+</div>

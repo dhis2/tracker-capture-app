@@ -1,0 +1,21 @@
+<span ng-repeat="option in displayOptions" 
+      class="col-sm-12 form-control cursor-pointer" 
+      ng-disabled="d2Disabled"
+      ng-class="{'input-success': d2ValueSaved && model.radio === option.displayName}"
+      ng-click="saveValue(option.displayName)">
+    <span class="fa fa-circle-thin fa-stack-custom-large" ng-if="option.displayName !== model.radio"></span> 
+    <span class="fa fa-dot-circle-o fa-stack-custom-large" ng-if="option.displayName === model.radio"></span> 
+    {{option.displayName}}
+</span>
+
+
+<span ng-show="false">
+    <label ng-repeat="option in displayOptions" class="radio-display-none">
+    <input type="radio" 
+           name="{{name}}"
+           ng-required="d2Required"
+           ng-disabled="d2Disabled"
+           ng-model="model.radio"
+           ng-attr-value="{{option.displayName}}"> {{option.displayName}}
+    </label>    
+</span>

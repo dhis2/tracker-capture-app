@@ -1,0 +1,36 @@
+<div ng-form="geometryForm">
+    <div class="input-group">
+        <input type="number" 
+               ng-model="geometry.coordinate.latitude" 
+               ng-attr-placeholder="{{'latitude'| translate}}"
+               ng-class="{'input-success': d2LatSaved}"
+               name="latitude" 
+               d2-coordinate-validator
+               ng-required="d2Required"
+               ng-disabled="d2Disabled"
+               ng-blur="updateLatLng(geometryForm)"
+               class="form-control no-right-radius"/>
+        <span class="input-group-btn empty-span"></span>
+        <input type="number" 
+               ng-model="geometry.coordinate.longitude" 
+               ng-attr-placeholder="{{'longitude'| translate}}"
+               ng-class="{'input-success': d2LngSaved}"
+               name="longitude" 
+               d2-coordinate-validator
+               ng-required="d2Required"
+               ng-disabled="d2Disabled"
+               ng-blur="updateLatLng(geometryForm)"
+               class="form-control no-left-radius no-right-radius"/>
+        <span class="input-group-btn hideInPrint">
+            <button class="btn btn-grp trim hideInPrint" 
+                    type="button"
+                    ng-disabled="d2Disabled"
+                    ng-attr-title="{{'get_from_map'| translate}}"
+                    ng-click="showMap()"> 
+                <i class="fa fa-map-marker"></i>                             
+            </button>
+        </span>    
+    </div>
+    <div ng-messages="geometryForm.latitude.$error" ng-if="geometryForm.$submitted || geometryForm.latitude.$dirty" class="required" ng-messages-include="d2-tracker/templates/error-messages.html"></div>
+    <div ng-messages="geometryForm.longitude.$error" ng-if="geometryForm.$submitted || geometryForm.longitude.$dirty" class="required" ng-messages-include="d2-tracker/templates/error-messages.html"></div>
+</div>

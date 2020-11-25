@@ -1,0 +1,40 @@
+<div class="hideInPrint input-group" ng-init="dateTimeInit()">
+        <input type="text"
+               ng-attr-placeholder="{{datetimeDatePlaceholder}}"
+               class="form-control no-right-radius ng-valid-date-validator"
+               ng-class="datetimeUseNotification ? getInputNotifcationClass(datetimeModelId, datetimeModel) : ''"
+               d2-date
+               d2-date-validator
+               max-date="datetimeMaxDate"
+               ng-model="dateTime.date"
+               ng-required="datetimeRequired"
+               ng-disabled="datetimeDisabled"
+               blur-or-change="saveDateTime(true, 'foo')"
+               name="foo">
+        <span class="input-group-btn empty-span"></span>
+        <input type="text"
+               ng-attr-placeholder="{{'hours_and_minutes' | translate}}"
+               class="form-control no-left-radius no-right-radius"
+               ng-class="datetimeUseNotification ? getInputNotifcationClass(datetimeModelId, datetimeModel) : ''"
+               d2-time-validator
+               d2-time-parser
+               ng-model="dateTime.time"
+               ng-required="datetimeRequired"
+               ng-disabled="datetimeDisabled"
+               ng-change="autoTimeFormat()"
+               ng-blur="saveDateTime(false, 'foo2')"
+               name="foo2">
+        <span class="input-group-btn hideInPrint">
+            <button class="btn btn-danger hideInPrint trim" type="button" ng-disabled="datetimeDisabled" ng-attr-title="Clear" ng-click="clearDateTime()"> 
+                <i class="fa fa-trash-o"></i>                             
+            </button>
+        </span>
+</div>
+
+<div class="not-for-screen">
+    <input type="text" class="form-control" ng-attr-value={{datetimeModel[datetimeModelId]}}>
+</div>
+
+<div ng-messages="datetimeField.foo2.$error" ng-if="interacted(datetimeField.foo2, datetimeOuterform)" class="required">
+    <span ng-message="timeValidator">{{'time_error' | translate}}</span>
+</div>

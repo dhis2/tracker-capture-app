@@ -1,0 +1,12 @@
+<ui-select ng-model="d2Model[d2ModelId]"
+           theme="select2"
+           ng-required="d2Required"                                  
+           ng-disabled="d2Disabled" 
+           on-select="saveOption()"
+           ng-style="{'width': '100%'}"
+           name="foo">
+    <ui-select-match allow-clear="true" ng-class="d2UseNotification ? getInputNotifcationClass(d2ModelId) : ''"  class="form-control-ui-select"  ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected.username ||  $select.selected}}</ui-select-match>
+    <ui-select-choices  repeat="user.username as user in allUsers | filter: $select.search | limitTo:d2MaxOptionSize">
+        <span ng-bind-html="user.username | highlight: $select.search"></span>
+    </ui-select-choices>
+</ui-select>

@@ -1,0 +1,44 @@
+<div class="paging-container">
+    <table style="background-color: #ebf0f6;" width='100%'>
+        <tr>
+            <td>
+            </td>
+            <td>
+                <span>{{'rows_per_page'| translate}}:</span> <input type="text" min="1" style="width:50px;" ng-model="pageSizeEdit" d2-enter="changePageSize()" ng-blur="changePageSize()"> 
+            </td>
+            <td>
+                <span>{{'jump_to_page'| translate}}:</span> <input type="text" min="1" style="width:50px;" ng-model="pageEdit" d2-enter="changePage()" ng-blur="changePage()"> 
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3"><hr/></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <div class="paging paging-navigation">
+                    <span ng-show="pager.page > 1">
+                        <a href ng-click="getPage(1)" ng-attr-title="{{'first'| translate}}"> 
+                            &laquo;&laquo;
+                        </a>
+                        <a href ng-click="getPage(pager.page - 1)" ng-attr-title="{{'previous'| translate}}"> 
+                            &laquo;
+                        </a>                    
+                    </span>
+                    <span ng-hide="pager.page > 1">
+                        <span ng-attr-title="{{'first'| translate}}">&laquo;&laquo;</span>
+                        <span ng-attr-title="{{'previous'| translate}}">&laquo;</span>
+                    </span>
+                    {{getDisplayPage()}}
+                    <span ng-show="hasNextPage()">
+                        <a href ng-click="getPage(pager.page + 1)" ng-attr-title="{{'next'| translate}}" > 
+                            &raquo;
+                        </a>
+                    </span>
+                    <span ng-hide="hasNextPage()">
+                            <span class="next" ng-attr-title="{{'next'| translate}}">&raquo; </span>
+                        </span>
+                </div>
+            </td>
+        </tr>
+    </table>   
+</div>
