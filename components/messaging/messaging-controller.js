@@ -23,7 +23,8 @@ trackerCapture.controller('MessagingController',
             var foundPhoneNumber = false;
             var foundEmailId = false;
             for (var i = 0; i < $scope.selectedTei.attributes.length; i++) {
-                if ($scope.selectedTei.attributes[i].valueType === 'PHONE_NUMBER') {
+                if ($scope.selectedTei.attributes[i].valueType === 'PHONE_NUMBER' ||
+                        $scope.selectedTei.attributes[i].code == "phone_local") {
                     $scope.message.phoneNumber = $scope.selectedTei.attributes[i].value;
                     foundPhoneNumber = true;
                 }

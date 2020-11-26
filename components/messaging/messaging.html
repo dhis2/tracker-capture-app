@@ -21,7 +21,7 @@
                     <ui-select ng-model="model.selectedMessageType"
                                theme="select2"
                                on-select=""
-                               ng-disabled="selectedOrgUnit.closedStatus"
+                               ng-disabled="true"
                                style="width:100%;">
                         <ui-select-match allow-clear="true" class="form-control-ui-select" ng-attr-placeholder="Message Type">{{model.selectedMessageType| translate}}</ui-select-match>
                         <ui-select-choices  repeat="messageType in model.messageTypes">
