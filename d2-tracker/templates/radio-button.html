@@ -25,9 +25,9 @@ POSSIBILITY OF SUCH DAMAGE.
 -->
  
 
-<div tabindex="0" ng-if="!disabled" class="custom-radio-group custom-radio-container">
+<div ng-if="!disabled" class="custom-radio-group custom-radio-container">
     <span ng-click="valueClicked('true')" class="cursor-pointer">
-        <span class="fa-stack">                                                                                                        
+        <span tabindex="0" d2-space-or-enter="valueClicked('true')" class="fa-stack">                                                                                                        
             <span class='fa fa-stack-1x fa-circle radio-default fa-stack-custom-large' ng-class='radioButtonColor("true")'></span>        
             <span class="fa fa-stack-1x fa-circle-thin fa-stack-custom-large"></span>
             <span class="fa-stack-custom-small" ng-class="radioButtonImage('true')"></span>
@@ -38,7 +38,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </span>
     &nbsp;&nbsp;    
     <span ng-click="valueClicked('false')" class="cursor-pointer">
-        <span class="fa-stack">                                                                                                        
+        <span tabindex="0" class="fa-stack" d2-space-or-enter="valueClicked('false')">                                                                                                        
             <span class='fa fa-stack-1x fa-circle fa-stack-custom-large' ng-class='radioButtonColor("false")'></span>                                                    
             <span class="fa fa-stack-1x fa-circle-thin fa-stack-custom-large"></span>
             <span class="fa-stack-custom-small" ng-class="radioButtonImage('false')"></span>
