@@ -25,14 +25,14 @@
                                 <button type="button" 
                                     class="btn btn-danger pull-right vertical-spacing"
                                     ng-disabled="selectedOrgUnit.closedStatus"
-                                    ng-if="selectedProgram.access.data.write && referralConfig[selectedProgram.id] && !confirmTransferNeeded()"
+                                    ng-if="selectedProgram.access.data.write && referralConfig[selectedProgram.id] && !confirmTransferNeeded() && hasAccessToRoot()"
                                     ng-click="makeReferral(referralConfig[selectedProgram.id].stageId,referralConfig[selectedProgram.id].referralMode)">
                                     {{'referral' | translate}}
                                 </button>
                                 <button type="button" 
                                     class="btn btn-warning pull-right vertical-spacing"
                                     ng-disabled="selectedOrgUnit.closedStatus"
-                                    ng-if="selectedProgram.access.data.write && referralConfig[selectedProgram.id] && confirmTransferNeeded()"
+                                    ng-if="selectedProgram.access.data.write && referralConfig[selectedProgram.id] && confirmTransferNeeded() && hasAccessToRoot()"
                                     ng-click="confirmTransfer()">
                                     {{'confirm_referral' | translate}}
                                 </button>

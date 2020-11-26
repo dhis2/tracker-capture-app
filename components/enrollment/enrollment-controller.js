@@ -18,8 +18,9 @@ trackerCapture.controller('EnrollmentController',
                 NotificationService,
                 AuthorityService) {
     
+        $scope.userProfile = SessionStorageService.get('USER_PROFILE');
         var selections;
-        $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
+        $scope.userAuthority = AuthorityService.getUserAuthorities($scope.userProfile);
         var currentReportDate;
         var inputNotificationClasses = { pending: 'input-pending', saved:'input-success', error: 'input-error', none: ''};
         var getDefaultReportDateState = function(){
@@ -531,6 +532,20 @@ trackerCapture.controller('EnrollmentController',
                 stageId: stageId,
                 referralMode: referralMode
             });
+        }
+
+        var accessToRoot = false;
+        var accessToRootChecked = false;
+        $scope.hasAccessToRoot = function() {
+            if($scope.userProfile.teiSearchOrganisationUnits && !accessToRootChecked) {
+                angular.forEach($scope.userProfile.teiSearchOrganisationUnits, function(searchOrgUnit) {
+                    if(searchOrgUnit.level == 1) {
+                        accessToRoot = true;
+                    }
+                });
+                accessToRootChecked = true;
+            }
+            return accessToRoot;
         }
 
         $scope.confirmTransferNeeded = function() {
