@@ -222,6 +222,8 @@ trackerCapture.controller('ListsController',function(
 
                     serverResponse.headers.push( {column: "LastDate", hidden: false, meta: false, name: "last_date", type:"java.lang.String" });
                     $scope.setServerResponse(serverResponse);
+                },function(error){
+                    $scope.setServerResponse(serverResponse);
                 });
             }
             else {
