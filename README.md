@@ -31,4 +31,3 @@ npm run build
 ```
 > **Note:** If you have problems running the app try running the dhis2-core server with TomCat.
 
-![](https://travis-ci.org/dhis2/tracker-capture-app.svg?branch=master)
