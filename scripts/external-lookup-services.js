@@ -72,6 +72,35 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     return null;
                 });
                 return promise;
+            },
+            lookupLabSvar: function(fNr, kommuneNr) {
+                var url = '../' + DHIS2URL + '/provesvar/sok';
+                var promise = $http({
+                    method: 'POST',
+                    url: url,
+                    data: {fnr:fNr, kommunenr:kommuneNr},
+                    headers: {'Content-Type': 'application/json'}
+                }).then(function(response){
+                    var errorMsgHdr, errorMsgBody;
+                    errorMsgHdr = $translate.instant('error');
+
+                    //TODO: Error handling
+                    
+                    if(errorMsgBody) {
+                        NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
+                    }                    
+
+                    return response.data;
+                },function(error){
+                    var errorMsgHdr, errorMsgBody;
+                    errorMsgHdr = $translate.instant('error');
+
+                    errorMsgBody =  'Feil ved henting av prøvesvar:' + fNr;
+
+                    //NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
+                    return null;
+                });
+                return promise;
             }
         }
     }

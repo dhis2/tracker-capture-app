@@ -1417,6 +1417,11 @@ trackerCapture.controller('RegistrationController',
             }
             $scope.showFetchingDataSpinner = false;
         });
+
+        
+        FNrLookupService.lookupLabSvar($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code).then(function(response){
+            var responseCheck = response;
+        });
     }
 
     var showTetRegistrationButtons = function(){
