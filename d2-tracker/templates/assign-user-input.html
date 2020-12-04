@@ -1,0 +1,21 @@
+<div class="optionListContainerAssignUser">
+    <div ng-if="d2Disabled"><input class="form-control" ng-model="d2Model.assignedUserUsername" disabled></div>
+    <div ng-click="toggleOptionList()" ng-if="!d2Disabled" class="optionListInput" ng-class="{ 'optionListInputOpen': optionListOpen, 'input-success': d2Saved }">
+        <div class="optionListInputText" >
+            <span ng-if="d2Model.assignedUser">{{userDisplayName}}</span>
+            <span ng-if="!d2Model.assignedUser" class="optionListInputTextPlaceholder">{{'select_or_search' | translate}}</span>
+        </div>
+        <div class="optionListInputDelete" ng-click="removeSelectedOption($event)"><i class="fa fa-times" ng-if="d2Model.assignedUser"></i></div>
+        <div class="optionListInputToggle"><i class="fa fa-caret-up" ng-show="optionListOpen"></i><i class="fa fa-caret-down" ng-hide="optionListOpen"></i></div>
+    </div>
+    <div ng-if="optionListOpen" class="optionListPopup">
+        <div class="optionListSearchInputContainer">
+            <input type="text" class="form-control" ng-model="searchText" ng-change="search(searchText)" ng-model-options="{ debounce: 600 }" placeholder="Search..."/>
+        </div>
+        <div vs-repeat class="optionListVsRepeater">
+            <div ng-repeat="option in displayOptions track by option.userid" class="optionListItem" ng-click="selectOption(option)" ng-class="{ 'optionListItemSelected': (option.userid===d2Model.assignedUser)}">
+                {{getNameForUserOject(option)}}
+            </div>
+        </div>
+    </div>
+</div>

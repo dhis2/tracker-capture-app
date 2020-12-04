@@ -1,14 +1,14 @@
 import './trackerCaptureModule';
 
 // Tracker core
-import 'd2-tracker/lib/dhis2.tracker-metadata.js';
-import 'd2-tracker/lib/dhis2.angular.services.js';
-import 'd2-tracker/lib/dhis2.angular.directives.js';
-import 'd2-tracker/lib/dhis2.angular.validations.js';
-import 'd2-tracker/lib/dhis2.angular.filters.js';
-import 'd2-tracker/lib/dhis2.angular.controllers.js';
-import 'd2-tracker/lib/dhis2.angular.templates.js';
-import 'd2-tracker/src/styles/style.css';
+import '../d2-tracker/dhis2.tracker-metadata.js';
+import '../d2-tracker/dhis2.angular.services.js';
+import '../d2-tracker/dhis2.angular.directives.js';
+import '../d2-tracker/dhis2.angular.validations.js';
+import '../d2-tracker/dhis2.angular.filters.js';
+import '../d2-tracker/dhis2.angular.controllers.js';
+import '../d2-tracker/style.css';
+
 
 // App files
 import '../scripts/services.js';
@@ -58,7 +58,7 @@ L.Icon.Default.mergeOptions({
 import 'angular-vs-repeat';
 
 import 'leaflet-contextmenu';
-import 'd2-tracker/lib/Google.js';
+import '../d2-tracker/Google.js';
 
 import 'leaflet-control-geocoder/dist/Control.Geocoder.css';
 import 'leaflet-control-geocoder/dist/Control.Geocoder.js';

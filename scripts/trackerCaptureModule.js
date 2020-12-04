@@ -12,7 +12,6 @@ export default angular.module('trackerCapture', [
     'd2Filters',
     'd2Services',
     'd2Controllers',
-    'd2Templates',
     'angularLocalStorage',
     'ui.select',
     'ui.select2',

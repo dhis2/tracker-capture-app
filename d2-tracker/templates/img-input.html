@@ -1,0 +1,65 @@
+<div style="margin-top: 5px; margin-bottom: 5px;">
+    <accordion>
+        <accordion-group is-open="d2DisplayOpen">
+            <accordion-heading>
+                <span ng-if="!d2Event[d2DataElementId]"> {{'please_select_an_image'| translate}} <i class="pull-right" ng-class="{'fa fa-chevron-up vertical-center': d2DisplayOpen, 'fa fa-chevron-down vertical-center': !d2DisplayOpen}"></i></span>
+                <span ng-if="d2Event[d2DataElementId]"> {{d2FileNames[d2Event.event][d2DataElementId].length > 20 ? d2FileNames[d2Event.event][d2DataElementId].substring(0,20).concat('...') : d2FileNames[d2Event.event][d2DataElementId]}} <i class="pull-right" ng-class="{'fa fa-chevron-up vertical-center': d2DisplayOpen, 'fa fa-chevron-down vertical-center': !d2DisplayOpen}"></i></span>
+            </accordion-heading>
+            <div class="preview clearfix" ng-if="d2Event[d2DataElementId]">
+                <div class="previewData clearfix" ng-init="fetch()">
+                    <img ng-if="!d2HideImage" class="img" ng-src={{path}} style="max-width:100%;"></img>
+                </div>	
+            </div>
+            <div ng-if="!d2Event[d2DataElementId]">
+                <div class="form-group inputDnD">
+                    <input type="file"
+                           name="foo"
+                           ng-disabled="d2Disabled"
+                           input-field-id={{d2DataElementId}}
+                           d2-file-input-ps="d2Ps"
+                           d2-file-input="d2Event"
+                           d2-file-input-current-name="d2CurrentImageName"
+                           d2-file-input-name="d2FileNames"
+                           accept="image/*"
+                           class="form-control-file text-primary font-weight-bold"
+                           id="inputFile"
+                           data-title="{{'drop_image'| translate}}">
+                </div>
+            </div>
+            <div class="input-group" ng-show="d2CanEdit" style="margin-top: 5px;">
+                <div class="form-control">
+                    <a href ng-click="d2IsAttribute ? d2DownloadMethode(d2Tei, d2DataElementId) : d2DownloadMethode(d2Event.event, d2DataElementId)" ng-attr-title="{{d2FileNames[d2Event.event][d2DataElementId]}}">{{d2FileNames[d2Event.event][d2DataElementId].length > 20 ? d2FileNames[d2Event.event][d2DataElementId].substring(0,20).concat('...') : d2FileNames[d2Event.event][d2DataElementId]}}</a>
+                </div>
+                <span class="input-group-btn">
+                    <span class="btn btn-grp btn-file" ng-click="delete()" ng-disabled="d2Disabled" ng-if="d2Event[d2DataElementId]" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
+                        <span ng-attr-title="{{'delete' | translate}}"
+                              d2-file-input-name="d2FileNames[d2Event.event][d2DataElementId]"
+                              d2-file-input-delete="d2Event[d2DataElementId]">
+                            <i class="fa fa-trash"></i>
+                        </span>
+                    </span>
+                    <span class="btn btn-grp btn-file" ng-if="!d2Event[d2DataElementId]" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
+                        <span ng-attr-title="{{'upload' | translate}}">
+                            <i class="fa fa-upload"></i>
+                            <input type="file"
+                                    ng-required="d2Required"
+                                    ng-disabled="d2Disabled"
+                                    name="foo"
+                                    input-field-id={{d2DataElementId}}
+                                    d2-file-input-ps="d2Ps"
+                                    d2-file-input="d2Event"
+                                    d2-file-input-current-name="d2CurrentImageName"
+                                    d2-file-input-name="d2FileNames"
+                                    accept="image/*">
+                        </span>
+                    </span>
+                </span>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-disabled="!d2Event[d2DataElementId]" ng-click="fetch()" style="border-radius: 4px; margin-left: 10px;">
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </button>
+                </span>
+            </div>               
+        </accordion-group> 
+    </accordion>
+</div>

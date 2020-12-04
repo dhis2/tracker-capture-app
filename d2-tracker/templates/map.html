@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h2>
+        {{'point_and_click_for_coordinate'| translate}}        
+    </h2>
+    <div class="align-center">
+        <span id='polygon-label'></span>
+    </div>
+</div>
+<div class="modal-body map-area">
+    <span ng-switch="selectedTileKey">        
+        <span ng-switch-when="openstreetmap">
+            <leaflet id="openstreetmap" lf-center="center" defaults="mapDefaults" markers="marker" tiles="tilesDictionary[selectedTileKey]"></leaflet>
+        </span>
+        <span ng-switch-when="googlemap">
+            <leaflet id="googlemap" lf-center="center" defaults="mapDefaults" markers="marker" layers="tilesDictionary[selectedTileKey].layers"></leaflet>
+        </span>
+    </span>
+</div>
+<div class="modal-footer">
+    
+    <div class="pull-left">
+        <ul class="nav nav-pills">
+            <li ng-class="{true: 'active'} [selectedTileKey === key]" ng-repeat="key in tilesDictionaryKeys">
+                <a href ng-click="setTile(key)">{{key | translate}}</a>
+            </li>
+        </ul>
+    </div>
+    
+    <button class="btn btn-primary" data-ng-click="captureCoordinate()">{{'capture'| translate}}</button>
+    <button class="btn btn-default" data-ng-click="close()">{{'cancel'| translate}}</button>        
+</div>

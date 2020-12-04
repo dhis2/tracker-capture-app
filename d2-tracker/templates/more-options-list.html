@@ -1,0 +1,22 @@
+<div class="optionListContainer">
+    <div ng-if="d2Disabled"><input class="form-control" ng-model="d2Model[d2ModelId]" disabled></div>
+    <div tabindex="0" d2-space-or-enter="openOptionList()" ng-click="toggleOptionList()" ng-if="!d2Disabled" class="optionListInput" ng-class="{ 'optionListInputOpen': optionListOpen }">
+        <div class="optionListInputText" id="optionListInputField" >
+            <span ng-if="d2Model[d2ModelId]">{{d2Model[d2ModelId]}}</span>
+            <span ng-if="!d2Model[d2ModelId]" class="optionListInputTextPlaceholder">{{'select_or_search' | translate}}</span>
+            <input ng-show="false" ng-required="d2Required" name="foo" type="text" ng-model="valueForValidation" />
+        </div>
+        <div class="optionListInputDelete" ng-click="removeSelectedOption($event)"><i class="fa fa-times" ng-if="d2Model && d2Model[d2ModelId]"></i></div>
+        <div class="optionListInputToggle"><i class="fa fa-caret-up" ng-show="optionListOpen"></i><i class="fa fa-caret-down" ng-hide="optionListOpen"></i></div>
+    </div>
+    <div ng-if="optionListOpen" class="optionListPopup">
+        <div class="optionListSearchInputContainer">
+            <input type="text" class="form-control" ng-model="searchText" ng-change="search(searchText)" ng-model-options="{ debounce: 600 }" placeholder="Search..."/>
+        </div>
+        <div vs-repeat class="optionListVsRepeater">
+            <div tabindex="0" ng-repeat="option in displayOptions track by option.id" class="optionListItem" d2-space-or-enter="selectOption(option)" ng-click="selectOption(option)" ng-class="{ 'optionListItemSelected': (option.displayName===d2Model[d2ModelId])}">
+                {{option.displayName}}
+            </div>
+        </div>
+    </div>
+</div>
