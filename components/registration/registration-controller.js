@@ -1389,7 +1389,55 @@ trackerCapture.controller('RegistrationController',
         return attributeMandatory || $scope.mandatoryFields[attributeId];
     }
 
-    $scope.registryLookup = function(attributeId) {
+    $scope.labTestLookup = function () {
+        return FNrLookupService.lookupLabSvar($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code);
+    }
+
+    $scope.showLabTest = function() {
+        $scope.showFetchingDataSpinner = true;
+        $scope.labTestLookup().then(function(response){
+            $scope.showFetchingDataSpinner = false;
+            var modalData = response.provesvarliste;
+
+            return $modal.open({
+                templateUrl: 'components/registration/lab-test-modal.html',
+                controller: function($scope,$modalInstance,modalData,orderByFilter)
+                {
+                    $scope.gridData = orderByFilter(modalData,'-provedato');
+
+
+
+                    $scope.dateFromItem = function(item){
+                        var date = '';
+                        date = item.provedato[2] + '-' + item.provedato[1] + '-' + item.provedato[0];
+                        return date;
+                    }
+
+                    $scope.cancel = function(){
+                        $modalInstance.close({ action: "OK"});
+                    }
+                },
+                resolve: {
+                    modalData: function(){
+                        return modalData;
+                    }
+                }
+            }).result.then(function(res){
+                var def = $q.defer();
+                if(res.action === "OPENTEI"){
+                    def.resolve();
+                    openTei(res.tei);
+                    return def.promise;
+                }else{
+                    def.reject();
+                    return def.promise;
+                }
+            });
+            
+        });
+    }
+
+    $scope.registryLookup = function() {
         $scope.showFetchingDataSpinner = true;
         FNrLookupService.lookupFnr($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code).then(function(response){
             if(response) {
@@ -1416,11 +1464,6 @@ trackerCapture.controller('RegistrationController',
                 $scope.executeRules();
             }
             $scope.showFetchingDataSpinner = false;
-        });
-
-        
-        FNrLookupService.lookupLabSvar($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code).then(function(response){
-            var responseCheck = response;
         });
     }
 

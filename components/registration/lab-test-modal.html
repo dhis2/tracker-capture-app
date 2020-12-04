@@ -1,0 +1,19 @@
+<div class="modal-header page">
+    <h3>Labsvar</h3>
+</div>
+<div class="modal-body page">   
+    <table class="dhis2-list-table-striped default-form-table">
+        <tr ng-repeat="labtest in gridData">
+            <td>{{dateFromItem(labtest)}}<br>
+                {{labtest.labNavn}}<div ng-if="labtest.meldingskommentar"><br>{{labtest.meldingskommentar}}</div></td>
+            <td><div style="padding-bottom:5px" ng-repeat="funn in labtest.funn">{{funn.kodebeskrivelse}}({{funn.kodeverdi}}):<br>{{funn.resultat}}({{funn.status}})
+                <button style="padding-left:5px" ng-if="funn.kommentar && !funn.showText" title="{{funn.kommentar}}" class="fa fa-comment vertical-center" ng-click="funn.showText = true"></button>
+                <p ng-if="funn.showText">{{funn.kommentar}}</p></div></td>
+        </tr>
+    </table>
+</div>
+<div class="modal-footer page modal-search-bottom">
+    <div class="modal-search-bottom-buttons">
+        <button class="btn btn-default" data-ng-click="cancel()">{{'back'| translate}}</button>
+    </div>
+</div>
