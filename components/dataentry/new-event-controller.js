@@ -13,6 +13,7 @@ trackerCapture.controller('EventCreationController',
                 $location,
                 DateUtils,
                 DHIS2EventFactory,
+                EnrollmentService,
                 OrgUnitFactory,
                 NotificationService,
                 EventCreationService,
@@ -346,9 +347,56 @@ trackerCapture.controller('EventCreationController',
             $scope.tei = currSelections.tei;
 
             TEIService.changeTeiProgramOwner($scope.tei.trackedEntityInstance, $scope.selectedProgram.id, dummyEvent.orgUnit).then(function(response){
-                $scope.save();
-                $rootScope.$broadcast('ownerUpdated', {programExists: true});
-                $location.path('/').search({program: $scope.selectedProgram.id});
+
+                //enroll TEI in transfer program
+                var enrollment = {};
+                enrollment.trackedEntityInstance = $scope.tei.trackedEntityInstance;
+                enrollment.program = "WcCmRtfQjAu";
+                enrollment.status = 'ACTIVE';
+                enrollment.orgUnit = $scope.selectedEnrollment.orgUnit;
+                enrollment.enrollmentDate = DateUtils.getToday();
+
+                if( $scope.selectedEnrollment.geometry ){
+                    enrollment.geometry = $scope.selectedEnrollment.geometry;
+                }
+
+                EnrollmentService.enroll(enrollment).then(function (enrollmentResponse) {
+                    if(enrollmentResponse) {
+                        var event =
+                        {
+                            "program": "WcCmRtfQjAu",
+                            "programStage": "w41mE4kmqnK",
+                            "orgUnit": $scope.selectedEnrollment.orgUnit,
+                            "enrollment": enrollmentResponse.response.importSummaries[0].reference,
+                            "status": "ACTIVE",
+                            "trackedEntityInstance": $scope.tei.trackedEntityInstance,
+                            "eventDate": DateUtils.getToday(),
+                            "dataValues": [
+                                {
+                                    "dataElement": "ipPJ37f57Wx",
+                                    "value": dummyEvent.orgUnit,
+                                },
+                                {
+                                    "dataElement": "Jq2plkf1cFr",
+                                    "value": $scope.selectedEnrollment.orgUnit,
+                                }
+                            ]
+                        };
+
+                        DHIS2EventFactory.create(event).then(function () {
+                            $scope.save();
+                            $rootScope.$broadcast('ownerUpdated', {programExists: true});
+
+                            $location.path('/').search({program: $scope.selectedProgram.id});
+                        });
+                    }
+                    else {
+                        $scope.save();
+                        $rootScope.$broadcast('ownerUpdated', {programExists: true});
+
+                        $location.path('/').search({program: $scope.selectedProgram.id});
+                    }
+                });
             });
         });
     };
