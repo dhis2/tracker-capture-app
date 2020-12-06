@@ -1397,43 +1397,44 @@ trackerCapture.controller('RegistrationController',
         $scope.showFetchingDataSpinner = true;
         $scope.labTestLookup().then(function(response){
             $scope.showFetchingDataSpinner = false;
-            var modalData = response.provesvarliste;
+            if(reponse) {
+                var modalData = response.provesvarliste;
 
-            return $modal.open({
-                templateUrl: 'components/registration/lab-test-modal.html',
-                controller: function($scope,$modalInstance,modalData,orderByFilter)
-                {
-                    $scope.gridData = orderByFilter(modalData,'-provedato');
+                return $modal.open({
+                    templateUrl: 'components/registration/lab-test-modal.html',
+                    controller: function($scope,$modalInstance,modalData,orderByFilter)
+                    {
+                        $scope.gridData = orderByFilter(modalData,'-provedato');
 
 
 
-                    $scope.dateFromItem = function(item){
-                        var date = '';
-                        date = item.provedato[2] + '-' + item.provedato[1] + '-' + item.provedato[0];
-                        return date;
+                        $scope.dateFromItem = function(item){
+                            var date = '';
+                            date = item.provedato[2] + '-' + item.provedato[1] + '-' + item.provedato[0];
+                            return date;
+                        }
+
+                        $scope.cancel = function(){
+                            $modalInstance.close({ action: "OK"});
+                        }
+                    },
+                    resolve: {
+                        modalData: function(){
+                            return modalData;
+                        }
                     }
-
-                    $scope.cancel = function(){
-                        $modalInstance.close({ action: "OK"});
+                }).result.then(function(res){
+                    var def = $q.defer();
+                    if(res.action === "OPENTEI"){
+                        def.resolve();
+                        openTei(res.tei);
+                        return def.promise;
+                    }else{
+                        def.reject();
+                        return def.promise;
                     }
-                },
-                resolve: {
-                    modalData: function(){
-                        return modalData;
-                    }
-                }
-            }).result.then(function(res){
-                var def = $q.defer();
-                if(res.action === "OPENTEI"){
-                    def.resolve();
-                    openTei(res.tei);
-                    return def.promise;
-                }else{
-                    def.reject();
-                    return def.promise;
-                }
-            });
-            
+                });
+            }
         });
     }
 
