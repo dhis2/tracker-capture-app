@@ -1397,7 +1397,7 @@ trackerCapture.controller('RegistrationController',
         $scope.showFetchingDataSpinner = true;
         $scope.labTestLookup().then(function(response){
             $scope.showFetchingDataSpinner = false;
-            if(reponse) {
+            if(response) {
                 var modalData = response.provesvarliste;
 
                 return $modal.open({
