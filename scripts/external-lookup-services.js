@@ -97,7 +97,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
 
                     errorMsgBody =  'Feil ved henting av prøvesvar:' + fNr;
 
-                    //NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
+                    NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
                     return null;
                 });
                 return promise;
