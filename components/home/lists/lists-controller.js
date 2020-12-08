@@ -205,22 +205,48 @@ trackerCapture.controller('ListsController',function(
 
                 var dataElement = 'BoUcoEx9sVl';
                 var programStage = 'LpWNjNGvCO5';
+                var transferStage = 'zAstsy3slf9';
                 
                 if($scope.base.selectedProgram.id == 'DM9n1bUw8W8') {
                     dataElement = 'JNF44zBaNqn';
                     programStage = 'sAV9jAajr8x';
+                    transferStage = 'xK50EzZwHkn';
                 }
-                TEIService.getListWithProgramData(allTeis,$scope.base.selectedProgram.id,dataElement,programStage,$scope.selectedOrgUnit.id).then(function(dateDictionary){
-                    serverResponse.rows.forEach(function(row){
-                        if(dateDictionary[row[0]]){
-                            row.push(dateDictionary[row[0]]);
+                TEIService.getListWithProgramData(allTeis,$scope.base.selectedProgram.id,dataElement,programStage,$scope.selectedOrgUnit.id,transferStage).then(function(dateDictionary){
+                    serverResponse.rows.forEach(async function(row){
+                        if(dateDictionary[row[0]] && dateDictionary[row[0]].enrollmentDate){
+                            //Set enrollment date instead of created date:
+                            row[1] = (dateDictionary[row[0]].enrollmentDate);
+                        }
+
+                        if(dateDictionary[row[0]] && dateDictionary[row[0]].dataValue){
+                            row.push(dateDictionary[row[0]].dataValue);
                         }
                         else {
                             row.push('');
                         }
+
+                        if(dateDictionary[row[0]] && dateDictionary[row[0]].transferStatus){
+                            row.push(dateDictionary[row[0]].transferStatus);
+                        }
+                        else {
+                            row.push('');
+                        }
+
+                        if(dateDictionary[row[0]] && dateDictionary[row[0]].orgUnit && dateDictionary[row[0]].orgUnit != $scope.selectedOrgUnit.id){
+                            //var orgUnitPromise = OrgUnitFactory.getOrgUnit(dateDictionary[row[0]].orgUnit);
+                            //let orgUnit = await orgUnitPromise;
+                            //if (orgUnit) {
+                            //    row[3] = orgUnit.id;
+                            //    row[4] = orgUnit.name;
+                            //}
+                            row[4] = "Overført"
+                        }
                     });
 
                     serverResponse.headers.push( {column: "LastDate", hidden: false, meta: false, name: "last_date", type:"java.lang.String" });
+                    serverResponse.headers.push( {column: "TransferStatus", hidden: true, meta: false, name: "Overføringsstatus", type:"java.lang.String" });
+
                     $scope.setServerResponse(serverResponse);
                 },function(error){
                     $scope.setServerResponse(serverResponse);
