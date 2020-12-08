@@ -370,7 +370,7 @@ trackerCapture.controller('EventCreationController',
                             "enrollment": enrollmentResponse.response.importSummaries[0].reference,
                             "status": "ACTIVE",
                             "trackedEntityInstance": $scope.tei.trackedEntityInstance,
-                            "eventDate": DateUtils.formatFromApiToUser(DateUtils.getToday()),
+                            "eventDate": DateUtils.formatFromUserToApi(DateUtils.getToday()),
                             "dataValues": [
                                 {
                                     "dataElement": "ipPJ37f57Wx",
