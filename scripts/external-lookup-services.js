@@ -9,12 +9,12 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
 .service('FNrLookupService', function($http, DHIS2URL, $translate, NotificationService) {
         var not_supported_message_shown_previously = false;
         return {
-            lookupFnr: function(fNr,kommuneNr) {
+            lookupFnr: function(fNr,kommuneNr,userId) {
                 var url = '../' + DHIS2URL + '/person/sok';
                 var promise = $http({
                     method: 'POST',
                     url: url,
-                    data: {fnr:fNr, kommunenr:kommuneNr},
+                    data: {fnr:fNr, kommunenr:kommuneNr, userid:userId},
                     headers: {'Content-Type': 'application/json'}
                 }).then(function(response){
                     var errorMsgHdr, errorMsgBody;
@@ -73,29 +73,28 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 });
                 return promise;
             },
-            lookupLabSvar: function(fNr, kommuneNr) {
+            lookupLabSvar: function(fNr, kommuneNr, userId) {
                 var url = '../' + DHIS2URL + '/provesvar/sok';
                 var promise = $http({
                     method: 'POST',
                     url: url,
-                    data: {fnr:fNr, kommunenr:kommuneNr},
+                    data: {fnr:fNr, kommunenr:kommuneNr, userid:userId},
                     headers: {'Content-Type': 'application/json'}
-                }).then(function(response){
-                    var errorMsgHdr, errorMsgBody;
-                    errorMsgHdr = $translate.instant('error');
-
-                    //TODO: Error handling
-                    
-                    if(errorMsgBody) {
-                        NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
-                    }                    
-
+                }).then(function(response){                  
                     return response.data;
                 },function(error){
                     var errorMsgHdr, errorMsgBody;
                     errorMsgHdr = $translate.instant('error');
 
                     errorMsgBody =  'Feil ved henting av prøvesvar:' + fNr;
+
+                    if(error.status == 403) {
+                        errorMsgBody = `Tjenesten for Fiks prøvesvar er ikke aktivert i din kommune, les mer om hvordan komme i gang her:
+                        <a target="_blank" href="https://portal.fiks.ks.no/fiks/fiks-provesvar/">https://portal.fiks.ks.no/fiks/fiks-provesvar/</a>`;
+                    }
+                    else if(error.status == 401) {
+                        errorMsgBody = "Kunne ikke nå tjeneste for prøvesvar, prøv å logge inn på nytt.";
+                    }
 
                     NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
                     return null;

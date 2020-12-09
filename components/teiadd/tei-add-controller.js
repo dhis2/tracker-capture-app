@@ -956,7 +956,13 @@ trackerCapture.controller('TEIAddController',
 
     $scope.registryLookup = function(attributeId) {
         $scope.showFetchingDataSpinner = true;
-        FNrLookupService.lookupFnr($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code).then(function(response){
+        var userId;
+        try{
+            userId = JSON.parse(sessionStorage.USER_PROFILE).id
+        }
+        finally {}
+
+        FNrLookupService.lookupFnr($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code, userId).then(function(response){
             if(response) {
                 var fieldMappings = [
                     {field:"sB1IHYu2xQT", data:response.fornavn},

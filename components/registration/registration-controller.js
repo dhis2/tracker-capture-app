@@ -1390,7 +1390,12 @@ trackerCapture.controller('RegistrationController',
     }
 
     $scope.labTestLookup = function () {
-        return FNrLookupService.lookupLabSvar($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code);
+        var userId;
+        try{
+            userId = JSON.parse(sessionStorage.USER_PROFILE).id
+        }
+        finally {}
+        return FNrLookupService.lookupLabSvar($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code, userId);
     }
 
     $scope.showLabTest = function() {
@@ -1440,7 +1445,13 @@ trackerCapture.controller('RegistrationController',
 
     $scope.registryLookup = function() {
         $scope.showFetchingDataSpinner = true;
-        FNrLookupService.lookupFnr($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code).then(function(response){
+        var userId;
+        try{
+            userId = JSON.parse(sessionStorage.USER_PROFILE).id
+        }
+        finally {}
+
+        FNrLookupService.lookupFnr($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code, userId).then(function(response){
             if(response) {
                 var fieldMappings = [
                     {field:"sB1IHYu2xQT", data:response.fornavn},
