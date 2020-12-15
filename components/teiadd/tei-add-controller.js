@@ -661,7 +661,8 @@ trackerCapture.controller('TEIAddController',
                 TrackerRulesExecutionService,
                 TEIGridService,
                 AttributeUtils,
-                FNrLookupService) {
+                FNrLookupService,
+                ModalService) {
     $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
     $scope.enrollment = {enrollmentDate: '', incidentDate: ''};
     $scope.today = DateUtils.getToday();
@@ -976,17 +977,46 @@ trackerCapture.controller('TEIAddController',
                     {field:"fctSQp5nAYl", data:response.telefonnummer ? parseInt(response.telefonnummer.replace('+47','')) : null}
                 ];
 
+                var errorMessage = "";
                 angular.forEach(fieldMappings, function(fieldMapping) {
                     if(fieldMapping.data) {
-                        if(!$scope.selectedTei[fieldMapping.field] || (angular.isString($scope.selectedTei[fieldMapping.field]) && !$scope.selectedTei[fieldMapping.field].trim())) {
-                            $scope.selectedTei[fieldMapping.field] = fieldMapping.data;
+                        if((angular.isString($scope.selectedTei[fieldMapping.field]) && $scope.selectedTei[fieldMapping.field].trim()) 
+                                && $scope.selectedTei[fieldMapping.field] != fieldMapping.data) {
+                            errorMessage += $scope.selectedTei[fieldMapping.field] + " erstattes med " + fieldMapping.data + ". ";
                         }
                     }
                 });
-    
-                $scope.executeRules();
+                if(errorMessage) {
+                    var modalOptions = {
+                        closeButtonText: 'Avbryt',
+                        actionButtonText: 'Erstatt med nye verdier',
+                        headerText: 'Felter overskrives',
+                        bodyText: 'Følgende verdier var allerede fylt ut, men kan erstattes med nye fra Folkeregisteret. ' + errorMessage
+                    };
+        
+                    ModalService.showModal({}, modalOptions).then(function (result) {
+                        updateValues(fieldMappings, true);
+                    });
+                }
+                else {
+                    updateValues(fieldMappings, false);
+                }
             }
             $scope.showFetchingDataSpinner = false;
         });
     }
+
+    var updateValues = function(fieldMappings, replaceValues) {
+        angular.forEach(fieldMappings, function(fieldMapping) {
+            if(fieldMapping.data) {
+                if(replaceValues || !$scope.selectedTei[fieldMapping.field] || (angular.isString($scope.selectedTei[fieldMapping.field]) && !$scope.selectedTei[fieldMapping.field].trim())) {
+                    $scope.selectedTei[fieldMapping.field] = fieldMapping.data;
+                }
+            }
+        });
+
+        $scope.executeRules();
+    }
 });
+
+
