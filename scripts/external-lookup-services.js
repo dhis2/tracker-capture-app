@@ -88,9 +88,13 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
 
                     errorMsgBody =  'Feil ved henting av prøvesvar:' + fNr;
 
-                    if(error.status == 403) {
-                        errorMsgBody = `Tjenesten for Fiks prøvesvar er ikke aktivert i din kommune, les mer om hvordan komme i gang her:
-                        <a target="_blank" href="https://portal.fiks.ks.no/fiks/fiks-provesvar/">https://portal.fiks.ks.no/fiks/fiks-provesvar/</a>`;
+                    if(error.status != 403) {
+                        errorMsgBody = `Tjenesten Fiks prøvesvar er ikke tilgjengelig for deg.
+                        Det kan være to årsaker til dette
+                        <ol>
+                        <li>Din kommune har ikke aktivert tjenesten Fiks prøvesvar. Les mer om aktivering av Fiks prøvesvar her: <a target="_blank" href="https://portal.fiks.ks.no/fiks/fiks-provesvar/">https://portal.fiks.ks.no/fiks/fiks-provesvar/</a></li>
+                        <li>Tjenesten er aktivert, men du har ikke fått rettigheter til å gjøre oppslag. Ta kontakt med Fiks administrator i din kommune.</li>
+                        </ol>`;
                     }
                     else if(error.status == 401) {
                         errorMsgBody = "Kunne ikke nå tjeneste for prøvesvar, prøv å logge inn på nytt.";
