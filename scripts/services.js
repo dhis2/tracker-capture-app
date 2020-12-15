@@ -2217,7 +2217,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         makeGridColumns: function(attributes,config, savedGridColumnsKeyMap,lastDateName){
             var gridColumns = [
-                {id: 'orgUnitName', displayName: $translate.instant('registering_unit'), show: false, valueType: 'TEXT'},
+                {id: 'orgUnitName', displayName: $translate.instant('registering_unit'), show: true, valueType: 'TEXT'},
                 {id: 'created', displayName: $translate.instant('registration_date'), show: true, valueType: 'DATE'},
                 {id: 'inactive', displayName: $translate.instant('inactive'), show: false, valueType: 'BOOLEAN'}
             ];
