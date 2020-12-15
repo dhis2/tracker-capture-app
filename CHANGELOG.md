@@ -1,3 +1,10 @@
+## [31.1.2](https://github.com/dhis2/tracker-capture-app/compare/v31.1.1...v31.1.2) (2020-12-15)
+
+
+### Bug Fixes
+
+* include d2-tracker in build ([#872](https://github.com/dhis2/tracker-capture-app/issues/872)) ([f80248d](https://github.com/dhis2/tracker-capture-app/commit/f80248dcad00a7f6ac715639809db11e60c8aa50))
+
 ## [31.1.1](https://github.com/dhis2/tracker-capture-app/compare/v31.1.0...v31.1.1) (2020-12-09)
 
 
