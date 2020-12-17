@@ -88,7 +88,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
 
                     errorMsgBody =  'Feil ved henting av prøvesvar:' + fNr;
 
-                    if(error.status != 403) {
+                    if(error.status == 403) {
                         errorMsgBody = `Tjenesten Fiks prøvesvar er ikke tilgjengelig for deg.
                         Det kan være to årsaker til dette
                         <ol>
