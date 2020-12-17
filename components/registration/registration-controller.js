@@ -1468,8 +1468,7 @@ trackerCapture.controller('RegistrationController',
                 var errorMessage = "";
                 angular.forEach(fieldMappings, function(fieldMapping) {
                     if(fieldMapping.data) {
-                        if((angular.isString($scope.selectedTei[fieldMapping.field]) && $scope.selectedTei[fieldMapping.field].trim()) 
-                                && $scope.selectedTei[fieldMapping.field] != fieldMapping.data) {
+                        if( $scope.selectedTei[fieldMapping.field] && $scope.selectedTei[fieldMapping.field] != fieldMapping.data) {
                             errorMessage += $scope.selectedTei[fieldMapping.field] + " erstattes med " + fieldMapping.data + ". ";
                         }
                     }
@@ -1497,7 +1496,7 @@ trackerCapture.controller('RegistrationController',
     var updateValues = function(fieldMappings, replaceValues) {
         angular.forEach(fieldMappings, function(fieldMapping) {
             if(fieldMapping.data) {
-                if(replaceValues || !$scope.selectedTei[fieldMapping.field] || (angular.isString($scope.selectedTei[fieldMapping.field]) && !$scope.selectedTei[fieldMapping.field].trim())) {
+                if(replaceValues || !$scope.selectedTei[fieldMapping.field]) {
                     $scope.selectedTei[fieldMapping.field] = fieldMapping.data;
                 }
             }
