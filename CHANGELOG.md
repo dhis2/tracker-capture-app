@@ -1,3 +1,10 @@
+# [31.2.0](https://github.com/dhis2/tracker-capture-app/compare/v31.1.11...v31.2.0) (2021-01-15)
+
+
+### Features
+
+* [DHIS2-10266] only download orgs in capture scope ([#948](https://github.com/dhis2/tracker-capture-app/issues/948)) ([1c721f9](https://github.com/dhis2/tracker-capture-app/commit/1c721f906e07c56167f96b6d9957041dd4d6f9a9))
+
 ## [31.1.11](https://github.com/dhis2/tracker-capture-app/compare/v31.1.10...v31.1.11) (2021-01-15)
 
 
