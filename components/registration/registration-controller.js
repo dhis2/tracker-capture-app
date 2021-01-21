@@ -1443,6 +1443,22 @@ trackerCapture.controller('RegistrationController',
         });
     }
 
+    $scope.allEventsSorted = [];
+    $scope.$on('tei-report-widget', function(event, allEventsSorted) {
+        $scope.allEventsSorted = allEventsSorted.events;
+    });
+
+
+    $scope.sendNotification = function() {
+        var userId;
+        try{
+            userId = JSON.parse(sessionStorage.USER_PROFILE).id
+        }
+        finally {}
+
+        FNrLookupService.sendNotificationMessage(CurrentSelection.currentSelection.orgUnit.code, userId, $scope.selectedTei, $scope.allEventsSorted);
+    }
+
     $scope.registryLookup = function() {
         $scope.showFetchingDataSpinner = true;
         var userId;
