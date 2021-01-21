@@ -190,9 +190,9 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
 
         var constructNotificationMessage = function(tei,events,kommuneNr) {
 
-            var bakgrunnsUndersokelse = null;
-            var sisteHelseStatus = null;
-            var sistePositiveTest = null;
+            var bakgrunnsUndersokelse = {};
+            var sisteHelseStatus = {};
+            var sistePositiveTest = {};
             events.forEach(function(event) {
                 if (event.programStage == 'LpWNjNGvCO5') {
                     bakgrunnsUndersokelse = event;
@@ -319,6 +319,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 //smittemåte hardkodes for Covid
                 smittemate: {"id":3873,"verdi":"70","beskrivelse":"Luft/Dråpesmitte","oId":80018},
                 //smittesituasjon: string    <- MAPPING IKKE DISKUTERT
+                rekvirent: {}
                 },
                 smitteforhold: smitteforhold,
             }
