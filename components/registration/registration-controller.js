@@ -1456,7 +1456,17 @@ trackerCapture.controller('RegistrationController',
         }
         finally {}
 
-        FNrLookupService.sendNotificationMessage(CurrentSelection.currentSelection.orgUnit.code, userId, $scope.selectedTei, $scope.allEventsSorted);
+        FNrLookupService.sendNotificationMessage(CurrentSelection.currentSelection.orgUnit.code, userId, $scope.selectedTei, $scope.allEventsSorted).then(function(result){
+            
+            //TODO inspect response and only perform the following when successful:
+
+            //Store value indicating that notification is sent.
+            $scope.selectedTei.C225m3EOPRo = 'true';
+            $scope.registerEntity(null);
+
+            //TODO: Log result to note
+            //$rootScope.$broadcast('notificationSuccessful', result.message); 
+        });
     }
 
     $scope.registryLookup = function() {

@@ -431,7 +431,8 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     url: url,
                     data: {melding:melding, kommunenr:kommuneNr, userid:userId},
                     headers: {'Content-Type': 'application/json'}
-                }).then(function(response){                  
+                }).then(function(response){   
+                    response.data.melding = melding;               
                     return response.data;
                 },function(error){
                     var errorMsgHdr, errorMsgBody;
