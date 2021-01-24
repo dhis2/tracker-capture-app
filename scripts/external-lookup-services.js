@@ -6,7 +6,7 @@
 
 var externalLookupServices = angular.module('externalLookupServices', ['ngResource'])
 
-.service('FNrLookupService', function($http, DHIS2URL, $translate, NotificationService) {
+.service('FNrLookupService', function($http, DHIS2URL, $translate, NotificationService, DateUtils) {
         var not_supported_message_shown_previously = false;
 
         var land = [{"id":3526,"verdi":"204","beskrivelse":"Angola","oid":80007},{"id":3527,"verdi":"393","beskrivelse":"Burkina Faso","oid":80007},{"id":3528,"verdi":"216","beskrivelse":"Burundi","oid":80007},{"id":3529,"verdi":"229","beskrivelse":"Benin","oid":80007},{"id":3530,"verdi":"205","beskrivelse":"Botswana","oid":80007},{"id":3531,"verdi":"279","beskrivelse":"Kongo (Dem.Rep.)","oid":80007},{"id":3532,"verdi":"358","beskrivelse":"Sør-Sudan","oid":80007},{"id":3533,"verdi":"379","beskrivelse":"Tunisia","oid":80007},{"id":3534,"verdi":"369","beskrivelse":"Tanzania","oid":80007},{"id":3535,"verdi":"386","beskrivelse":"Uganda","oid":80007},{"id":3536,"verdi":"359","beskrivelse":"Sør-Afrika","oid":80007},{"id":3537,"verdi":"389","beskrivelse":"Zambia","oid":80007},{"id":3538,"verdi":"326","beskrivelse":"Zimbabwe","oid":80007},{"id":3539,"verdi":"336","beskrivelse":"Senegal","oid":80007},{"id":3540,"verdi":"346","beskrivelse":"Somalia","oid":80007},{"id":3541,"verdi":"333","beskrivelse":"Sao Tome og Principe","oid":80007},{"id":3542,"verdi":"357","beskrivelse":"Swaziland","oid":80007},{"id":3543,"verdi":"373","beskrivelse":"Tchad","oid":80007},{"id":3544,"verdi":"376","beskrivelse":"Togo","oid":80007},{"id":3545,"verdi":"309","beskrivelse":"Niger","oid":80007},{"id":3546,"verdi":"313","beskrivelse":"Nigeria","oid":80007},{"id":3547,"verdi":"329","beskrivelse":"Rwanda","oid":80007},{"id":3548,"verdi":"338","beskrivelse":"Seychellene","oid":80007},{"id":3549,"verdi":"356","beskrivelse":"Sudan","oid":80007},{"id":3550,"verdi":"339","beskrivelse":"Sierra Leone","oid":80007},{"id":3551,"verdi":"299","beskrivelse":"Mali","oid":80007},{"id":3552,"verdi":"306","beskrivelse":"Mauretania","oid":80007},{"id":3553,"verdi":"307","beskrivelse":"Mauritius","oid":80007},{"id":3554,"verdi":"296","beskrivelse":"Malawi","oid":80007},{"id":3555,"verdi":"319","beskrivelse":"Mosambik","oid":80007},{"id":3556,"verdi":"308","beskrivelse":"Namibia","oid":80007},{"id":3557,"verdi":"220","beskrivelse":"Comorene","oid":80007},{"id":3558,"verdi":"283","beskrivelse":"Liberia","oid":80007},{"id":3559,"verdi":"281","beskrivelse":"Lesotho","oid":80007},{"id":3560,"verdi":"286","beskrivelse":"Libya","oid":80007},{"id":3561,"verdi":"303","beskrivelse":"Marokko","oid":80007},{"id":3562,"verdi":"289","beskrivelse":"Madagaskar","oid":80007},{"id":3563,"verdi":"260","beskrivelse":"Ghana","oid":80007},{"id":3564,"verdi":"256","beskrivelse":"Gambia","oid":80007},{"id":3565,"verdi":"264","beskrivelse":"Guinea","oid":80007},{"id":3566,"verdi":"235","beskrivelse":"Ekvatorial Guinea","oid":80007},{"id":3567,"verdi":"266","beskrivelse":"Guinea-Bissau","oid":80007},{"id":3568,"verdi":"276","beskrivelse":"Kenya","oid":80007},{"id":3569,"verdi":"203","beskrivelse":"Algerie","oid":80007},{"id":3570,"verdi":"249","beskrivelse":"Egypt","oid":80007},{"id":3571,"verdi":"304","beskrivelse":"Vest Sahara","oid":80007},{"id":3572,"verdi":"241","beskrivelse":"Eritrea","oid":80007},{"id":3573,"verdi":"246","beskrivelse":"Etiopia","oid":80007},{"id":3574,"verdi":"254","beskrivelse":"Gabon","oid":80007},{"id":3575,"verdi":"337","beskrivelse":"Sentralafrikanske Republikk","oid":80007},{"id":3576,"verdi":"278","beskrivelse":"Kongo-Brazzaville","oid":80007},{"id":3577,"verdi":"239","beskrivelse":"Elfenbenskysten","oid":80007},{"id":3578,"verdi":"270","beskrivelse":"Kamerun","oid":80007},{"id":3579,"verdi":"273","beskrivelse":"Kapp Verde","oid":80007},{"id":3580,"verdi":"250","beskrivelse":"Djibouti","oid":80007},{"id":3581,"verdi":"426","beskrivelse":"Forente Arabiske Emirater","oid":80007},{"id":3582,"verdi":"404","beskrivelse":"Afghanistan","oid":80007},{"id":3583,"verdi":"410","beskrivelse":"Bangladesh","oid":80007},{"id":3584,"verdi":"409","beskrivelse":"Bahrain","oid":80007},{"id":3585,"verdi":"416","beskrivelse":"Brunei Darussalam","oid":80007},{"id":3586,"verdi":"412","beskrivelse":"Bhutan","oid":80007},{"id":3587,"verdi":"554","beskrivelse":"Usbekistan","oid":80007},{"id":3588,"verdi":"575","beskrivelse":"Vietnam","oid":80007},{"id":3589,"verdi":"578","beskrivelse":"Jemen","oid":80007},{"id":3590,"verdi":"564","beskrivelse":"Syria","oid":80007},{"id":3591,"verdi":"568","beskrivelse":"Thailand","oid":80007},{"id":3592,"verdi":"550","beskrivelse":"Tadsjikistan","oid":80007},{"id":3593,"verdi":"552","beskrivelse":"Turkmenistan","oid":80007},{"id":3594,"verdi":"537","beskrivelse":"Øst-Timor","oid":80007},{"id":3595,"verdi":"432","beskrivelse":"Taiwan","oid":80007},{"id":3596,"verdi":"428","beskrivelse":"Filippinene","oid":80007},{"id":3597,"verdi":"534","beskrivelse":"Pakistan","oid":80007},{"id":3598,"verdi":"524","beskrivelse":"Palestina","oid":80007},{"id":3599,"verdi":"540","beskrivelse":"Qatar","oid":80007},{"id":3600,"verdi":"544","beskrivelse":"Saudi-Arabia","oid":80007},{"id":3601,"verdi":"548","beskrivelse":"Singapore","oid":80007},{"id":3602,"verdi":"516","beskrivelse":"Mongolia","oid":80007},{"id":3603,"verdi":"513","beskrivelse":"Maldivene","oid":80007},{"id":3604,"verdi":"512","beskrivelse":"Malaysia","oid":80007},{"id":3605,"verdi":"528","beskrivelse":"Nepal","oid":80007},{"id":3606,"verdi":"520","beskrivelse":"Oman","oid":80007},{"id":3607,"verdi":"827","beskrivelse":"Papua Ny-Guinea","oid":80007},{"id":3608,"verdi":"492","beskrivelse":"Sør-Korea","oid":80007},{"id":3609,"verdi":"496","beskrivelse":"Kuwait","oid":80007},{"id":3610,"verdi":"504","beskrivelse":"Laos","oid":80007},{"id":3611,"verdi":"508","beskrivelse":"Libanon","oid":80007},{"id":3612,"verdi":"424","beskrivelse":"Sri Lanka","oid":80007},{"id":3613,"verdi":"420","beskrivelse":"Myanmar","oid":80007},{"id":3614,"verdi":"456","beskrivelse":"Iran","oid":80007},{"id":3615,"verdi":"476","beskrivelse":"Jordan","oid":80007},{"id":3616,"verdi":"464","beskrivelse":"Japan","oid":80007},{"id":3617,"verdi":"502","beskrivelse":"Kirgisistan","oid":80007},{"id":3618,"verdi":"478","beskrivelse":"Kambodsja","oid":80007},{"id":3619,"verdi":"488","beskrivelse":"Nord-Korea","oid":80007},{"id":3620,"verdi":"484","beskrivelse":"Kina","oid":80007},{"id":3621,"verdi":"436","beskrivelse":"Hongkong","oid":80007},{"id":3622,"verdi":"448","beskrivelse":"Indonesia","oid":80007},{"id":3623,"verdi":"460","beskrivelse":"Israel","oid":80007},{"id":3624,"verdi":"444","beskrivelse":"India","oid":80007},{"id":3625,"verdi":"452","beskrivelse":"Irak","oid":80007},{"id":3626,"verdi":"111","beskrivelse":"Albania","oid":80007},{"id":3627,"verdi":"406","beskrivelse":"Armenia","oid":80007},{"id":3628,"verdi":"153","beskrivelse":"Østerrike","oid":80007},{"id":3629,"verdi":"407","beskrivelse":"Aserbajdsjan","oid":80007},{"id":3630,"verdi":"155","beskrivelse":"Bosnia-Hercegovina","oid":80007},{"id":3631,"verdi":"112","beskrivelse":"Belgia","oid":80007},{"id":3632,"verdi":"510","beskrivelse":"Montenegro","oid":80007},{"id":3633,"verdi":"125","beskrivelse":"Jugoslavia","oid":80007},{"id":3635,"verdi":"160","beskrivelse":"Kosovo","oid":80007},{"id":3636,"verdi":"161","beskrivelse":"Andorra","oid":80007},{"id":3637,"verdi":"106","beskrivelse":"Sverige","oid":80007},{"id":3638,"verdi":"146","beskrivelse":"Slovenia","oid":80007},{"id":3639,"verdi":"157","beskrivelse":"Slovakia","oid":80007},{"id":3640,"verdi":"143","beskrivelse":"Tyrkia","oid":80007},{"id":3641,"verdi":"148","beskrivelse":"Ukraina","oid":80007},{"id":3642,"verdi":"159","beskrivelse":"Serbia","oid":80007},{"id":3643,"verdi":"127","beskrivelse":"Nederland","oid":80007},{"id":3644,"verdi":"100","beskrivelse":"Norge","oid":80007},{"id":3645,"verdi":"131","beskrivelse":"Polen","oid":80007},{"id":3646,"verdi":"132","beskrivelse":"Portugal","oid":80007},{"id":3647,"verdi":"133","beskrivelse":"Romania","oid":80007},{"id":3648,"verdi":"140","beskrivelse":"Russland","oid":80007},{"id":3649,"verdi":"129","beskrivelse":"Luxembourg","oid":80007},{"id":3650,"verdi":"124","beskrivelse":"Latvia","oid":80007},{"id":3651,"verdi":"130","beskrivelse":"Monaco","oid":80007},{"id":3652,"verdi":"138","beskrivelse":"Moldova","oid":80007},{"id":3653,"verdi":"156","beskrivelse":"Makedonia","oid":80007},{"id":3654,"verdi":"126","beskrivelse":"Malta","oid":80007},{"id":3655,"verdi":"121","beskrivelse":"Irland","oid":80007},{"id":3656,"verdi":"105","beskrivelse":"Island","oid":80007},{"id":3657,"verdi":"123","beskrivelse":"Italia","oid":80007},{"id":3658,"verdi":"480","beskrivelse":"Kasahkstan","oid":80007},{"id":3659,"verdi":"128","beskrivelse":"Liechtenstein","oid":80007},{"id":3660,"verdi":"136","beskrivelse":"Litauen","oid":80007},{"id":3661,"verdi":"139","beskrivelse":"Storbritannia","oid":80007},{"id":3662,"verdi":"430","beskrivelse":"Georgia","oid":80007},{"id":3663,"verdi":"102","beskrivelse":"Grønland","oid":80007},{"id":3664,"verdi":"119","beskrivelse":"Hellas","oid":80007},{"id":3665,"verdi":"122","beskrivelse":"Kroatia","oid":80007},{"id":3666,"verdi":"152","beskrivelse":"Ungarn","oid":80007},{"id":3667,"verdi":"101","beskrivelse":"Danmark","oid":80007},{"id":3668,"verdi":"115","beskrivelse":"Estland","oid":80007},{"id":3669,"verdi":"137","beskrivelse":"Spania","oid":80007},{"id":3670,"verdi":"103","beskrivelse":"Finland","oid":80007},{"id":3671,"verdi":"104","beskrivelse":"Færøyene","oid":80007},{"id":3672,"verdi":"117","beskrivelse":"Frankrike","oid":80007},{"id":3673,"verdi":"113","beskrivelse":"Bulgaria","oid":80007},{"id":3674,"verdi":"120","beskrivelse":"Hviterussland","oid":80007},{"id":3675,"verdi":"141","beskrivelse":"Sveits","oid":80007},{"id":3676,"verdi":"500","beskrivelse":"Kypros","oid":80007},{"id":3677,"verdi":"158","beskrivelse":"Tsjekkia","oid":80007},{"id":3678,"verdi":"144","beskrivelse":"Tyskland","oid":80007},{"id":3679,"verdi":"606","beskrivelse":"Bermuda","oid":80007},{"id":3680,"verdi":"612","beskrivelse":"Canada","oid":80007},{"id":3681,"verdi":"652","beskrivelse":"Mexico","oid":80007},{"id":3682,"verdi":"684","beskrivelse":"USA","oid":80007},{"id":3683,"verdi":"805","beskrivelse":"Australia","oid":80007},{"id":3684,"verdi":"811","beskrivelse":"Fiji","oid":80007},{"id":3685,"verdi":"817","beskrivelse":"Guam","oid":80007},{"id":3686,"verdi":"818","beskrivelse":"Nauru","oid":80007},{"id":3687,"verdi":"820","beskrivelse":"Ny Zealand","oid":80007},{"id":3688,"verdi":"813","beskrivelse":"Tonga","oid":80007},{"id":3689,"verdi":"812","beskrivelse":"Vanuatu","oid":80007},{"id":3690,"verdi":"830","beskrivelse":"Samoa","oid":80007},{"id":3691,"verdi":"656","beskrivelse":"Nederlandske Antiller","oid":80007},{"id":3692,"verdi":"705","beskrivelse":"Argentina","oid":80007},{"id":3693,"verdi":"602","beskrivelse":"Barbados","oid":80007},{"id":3694,"verdi":"710","beskrivelse":"Bolivia","oid":80007},{"id":3695,"verdi":"715","beskrivelse":"Brasil","oid":80007},{"id":3696,"verdi":"605","beskrivelse":"Bahamas","oid":80007},{"id":3697,"verdi":"607","beskrivelse":"Antigua og Barbuda","oid":80007},{"id":3698,"verdi":"831","beskrivelse":"St. Lucia","oid":80007},{"id":3699,"verdi":"755","beskrivelse":"Paraguay","oid":80007},{"id":3700,"verdi":"765","beskrivelse":"Surinam","oid":80007},{"id":3701,"verdi":"672","beskrivelse":"El Salvador","oid":80007},{"id":3702,"verdi":"680","beskrivelse":"Trinidad og Tobago","oid":80007},{"id":3703,"verdi":"770","beskrivelse":"Uruguay","oid":80007},{"id":3704,"verdi":"775","beskrivelse":"Venezuela","oid":80007},{"id":3705,"verdi":"636","beskrivelse":"Haiti","oid":80007},{"id":3706,"verdi":"648","beskrivelse":"Jamaica","oid":80007},{"id":3707,"verdi":"664","beskrivelse":"Nicaragua","oid":80007},{"id":3708,"verdi":"668","beskrivelse":"Panama","oid":80007},{"id":3709,"verdi":"760","beskrivelse":"Peru","oid":80007},{"id":3710,"verdi":"685","beskrivelse":"Puerto Rico","oid":80007},{"id":3711,"verdi":"735","beskrivelse":"Ecuador","oid":80007},{"id":3712,"verdi":"740","beskrivelse":"Falklandsøyene","oid":80007},{"id":3713,"verdi":"745","beskrivelse":"Fransk Guyana","oid":80007},{"id":3714,"verdi":"632","beskrivelse":"Guatemala","oid":80007},{"id":3715,"verdi":"720","beskrivelse":"Guyana","oid":80007},{"id":3716,"verdi":"644","beskrivelse":"Honduras","oid":80007},{"id":3717,"verdi":"604","beskrivelse":"Belize","oid":80007},{"id":3718,"verdi":"725","beskrivelse":"Chile","oid":80007},{"id":3719,"verdi":"730","beskrivelse":"Colombia","oid":80007},{"id":3720,"verdi":"616","beskrivelse":"Costa Rica","oid":80007},{"id":3721,"verdi":"620","beskrivelse":"Cuba","oid":80007},{"id":3722,"verdi":"624","beskrivelse":"Dominikanske Republikk","oid":80007}];
@@ -205,20 +205,32 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
 
             //------PASIENT
 
-            var pasient = {
-                fodselsnummer: tei.ZSt07qyq6Pt,
-                fodselsdato: tei.NI0QRzJvQ0k,
-                fornavn: tei.sB1IHYu2xQT,
-                etternavn: tei.ENRjVGxVL6l,
-                bosted: getBosted(kommuneNr),
-                arbeidsplass: tei.ooK7aSiAaGq,
-                //arbeidsplasskategori: {
-                //  id: 0,
-                //  verdi: string,
-                //  beskrivelse: string,
-                //  oid: 0
-                //}
-              };
+            var pasient = {};
+
+            if(tei.ZSt07qyq6Pt) {
+                pasient.fodselsnummer = tei.ZSt07qyq6Pt;
+            }
+
+            if(tei.NI0QRzJvQ0k) {
+                pasient.fodselsdato = DateUtils.formatFromUserToApi(tei.NI0QRzJvQ0k);
+            }
+
+            if(tei.sB1IHYu2xQT) {
+                pasient.fornavn = tei.sB1IHYu2xQT;
+            }
+
+            if(tei.ENRjVGxVL6l) {
+                pasient.etternavn = tei.ENRjVGxVL6l;
+            }
+
+            var bosted = getBosted(kommuneNr);
+            if(bosted) {
+                pasient.bosted = bosted;
+            }
+
+            if(tei.ooK7aSiAaGq) {
+                pasient.arbeidsplass = tei.ooK7aSiAaGq;
+            }
 
             var kjonn = getKjonn(tei.oindugucx72);
             if(kjonn) {
@@ -237,10 +249,15 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
 
             //------SMITTEFORHOLD
 
-            var smitteforhold = {
-                annetSmittested: bakgrunnsUndersokelse.VyaD2KGfpUA,
-                datoForHjemkomst: bakgrunnsUndersokelse.brUNizYRJ6i,
-              };
+            var smitteforhold = {};
+
+            if(bakgrunnsUndersokelse.VyaD2KGfpUA) {
+                smitteforhold.annetSmittested = bakgrunnsUndersokelse.VyaD2KGfpUA;
+            }
+
+            if(bakgrunnsUndersokelse.brUNizYRJ6i) {
+                smitteforhold.datoForHjemkomst = DateUtils.formatFromUserToApi(bakgrunnsUndersokelse.brUNizYRJ6i);
+            }
 
             var smittested = getSmittested(bakgrunnsUndersokelse, kommuneNr);
             if(smittested) {
@@ -266,10 +283,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             var diagnoseforhold = {
                 //hardkodes ved Covid19
                 diagnose: {"id":4734,"verdi":"713","beskrivelse":"Koronavirus med utbruddspotensial","oid":80012},
-                smittestoff: {"id":4735,"verdi":"713000","beskrivelse":"SARS-COV-2","oid":80000},
-                sykehjemNavn: sisteHelseStatus.SFaxZRvgnsg,
-                innsykningsdato: sisteHelseStatus.s3eoonJ8OJb,
-                provedato: sistePositiveTest.ylnZBwlN80w,
+                smittestoff: {"id":4735,"verdi":"713000","beskrivelse":"SARS-COV-2","oid":80000}
                 //annenIndikasjon: string,  <-- DENNE FINNES IKKE I FIKS
                 //annenKlinikk: string,    <-- DENNE ER IKKE DISKUTERT, FINNES IKKE I FIKS OG SER DEN IKKE I MSIS WEB
                 //utfallAvSykdommen: {      <-- DENNE ER IKKE DISKUTERT, FINNES IKKE I FIKS OG SER DEN IKKE I MSIS WEB
@@ -279,8 +293,24 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 //  oid: 0
                 //},
                 //folgetilstander: string,     <-- DENNE ER IKKE DISKUTERT, FINNES IKKE I FIKS OG SER DEN IKKE I MSIS WEB
-                dodsdato: sisteHelseStatus.dDEdmn8q3P1
               };
+
+
+            if(sisteHelseStatus.SFaxZRvgnsg) {
+                diagnoseforhold.sykehjemNavn = sisteHelseStatus.SFaxZRvgnsg;
+            }
+
+            if(sisteHelseStatus.s3eoonJ8OJb) {
+                diagnoseforhold.innsykningsdato = DateUtils.formatFromUserToApi(sisteHelseStatus.s3eoonJ8OJb);
+            }
+
+            if(sistePositiveTest.ylnZBwlN80w) {
+                diagnoseforhold.provedato = DateUtils.formatFromUserToApi(sistePositiveTest.ylnZBwlN80w);
+            }
+
+            if(sisteHelseStatus.dDEdmn8q3P1) {
+                diagnoseforhold.dodsdato = DateUtils.formatFromUserToApi(sisteHelseStatus.dDEdmn8q3P1);
+            }
 
             var erInnlagtPaaSykehjem = getInnlagtSykehjem(sisteHelseStatus);
             if(erInnlagtPaaSykehjem) {
