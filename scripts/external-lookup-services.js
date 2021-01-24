@@ -283,7 +283,8 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             var diagnoseforhold = {
                 //hardkodes ved Covid19
                 diagnose: {"id":4734,"verdi":"713","beskrivelse":"Koronavirus med utbruddspotensial","oid":80012},
-                smittestoff: {"id":4735,"verdi":"713000","beskrivelse":"SARS-COV-2","oid":80000}
+                smittestoff: {"id":4735,"verdi":"713000","beskrivelse":"SARS-COV-2","oid":80000},
+                rekvirent: {}
                 //annenIndikasjon: string,  <-- DENNE FINNES IKKE I FIKS
                 //annenKlinikk: string,    <-- DENNE ER IKKE DISKUTERT, FINNES IKKE I FIKS OG SER DEN IKKE I MSIS WEB
                 //utfallAvSykdommen: {      <-- DENNE ER IKKE DISKUTERT, FINNES IKKE I FIKS OG SER DEN IKKE I MSIS WEB
@@ -349,7 +350,6 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 //smittemåte hardkodes for Covid
                 smittemate: {"id":3873,"verdi":"70","beskrivelse":"Luft/Dråpesmitte","oid":80018},
                 //smittesituasjon: string    <- MAPPING IKKE DISKUTERT
-                rekvirent: {}
                 },
                 smitteforhold: smitteforhold,
             }
