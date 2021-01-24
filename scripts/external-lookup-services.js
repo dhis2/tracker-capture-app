@@ -349,9 +349,9 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     //smittemåte hardkodes for Covid
                     smittemate: {"id":3873,"verdi":"70","beskrivelse":"Luft/Dråpesmitte","oid":80018},
                     //smittesituasjon: string    <- MAPPING IKKE DISKUTERT
-                    rekvirent: {}
                 },
                 smitteforhold: smitteforhold,
+                rekvirent: {}
             }
             return melding;
         };
@@ -462,7 +462,10 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     data: {melding:melding, kommunenr:kommuneNr, userid:userId},
                     headers: {'Content-Type': 'application/json'}
                 }).then(function(response){   
-                    response.data.melding = melding;               
+                    response.data.melding = melding;
+                    if(response.data.status == 'ok'){
+                        NotificationService.showNotifcationDialog("Klinikermelding sendt", "Klinikermelding er sendt inn i MSIS.");
+                    }
                     return response.data;
                 },function(error){
                     var errorMsgHdr, errorMsgBody;
