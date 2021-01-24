@@ -170,20 +170,20 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
 
             if(bakgrunn.VwIcGOFyi3Q){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Astma'))};
             if(bakgrunn.coUb4QcuVKI){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Diabetes'))};
-            if(bakgrunn.geeY6wHrzA0){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Fedme'))};
-            if(bakgrunn.AaBuania9Ot){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Forhøyet blodtrykk'))};
+            if(bakgrunn.geeY6wHrzA0){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Fedme (KMI>30)'))};
+            if(bakgrunn.AaBuania9Ot){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Forhøyet blodtrykk (hypertensjon)'))};
             if(bakgrunn.K7uUiBkrkYB){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Hjertesykdom'))};
             if(bakgrunn.VIa8JayRQbA){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Kols'))};
             if(bakgrunn.rMRNPKj8FBS){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Kreft'))};
             if(bakgrunn.j6LrBVzW3k4){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Leversykdom'))};
             if(bakgrunn.vWzPVyomNL8){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Nedsatt immunforsvar'))};
-            if(bakgrunn.j6LrBVzW3k4){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Nevrologisk/nevromuskulær sykdom'))};
+            if(bakgrunn.j6LrBVzW3k4){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Nevrologisk/nevromuskulær'))};
             if(bakgrunn.rMRNPKj8FBS){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Nyresykdom'))};
-            if(bakgrunn.rtxSNjWcnxC){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Røyker?'))};
+            if(bakgrunn.rtxSNjWcnxC){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Røyker'))};
             if(bakgrunn.NrUvDud9C5g){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Kronisk lungesykdom'))};
             if(bakgrunn.Bt9xOiBUuDW){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Graviditet'))};
             if(bakgrunn.Blwor7jyBB9){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Annet'))};
-            if(bakgrunn.RUHPJ5GVvjb){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','ukjent'))};
+            if(bakgrunn.RUHPJ5GVvjb){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Ukjent'))};
             
             return sykdommer;
         }
@@ -283,8 +283,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             var diagnoseforhold = {
                 //hardkodes ved Covid19
                 diagnose: {"id":4734,"verdi":"713","beskrivelse":"Koronavirus med utbruddspotensial","oid":80012},
-                smittestoff: {"id":4735,"verdi":"713000","beskrivelse":"SARS-COV-2","oid":80000},
-                rekvirent: {}
+                smittestoff: {"id":4735,"verdi":"713000","beskrivelse":"SARS-COV-2","oid":80000}
                 //annenIndikasjon: string,  <-- DENNE FINNES IKKE I FIKS
                 //annenKlinikk: string,    <-- DENNE ER IKKE DISKUTERT, FINNES IKKE I FIKS OG SER DEN IKKE I MSIS WEB
                 //utfallAvSykdommen: {      <-- DENNE ER IKKE DISKUTERT, FINNES IKKE I FIKS OG SER DEN IKKE I MSIS WEB
@@ -347,9 +346,10 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 pasient: pasient,
                 diagnoseforhold: diagnoseforhold,
                 antattSmittemate: {
-                //smittemåte hardkodes for Covid
-                smittemate: {"id":3873,"verdi":"70","beskrivelse":"Luft/Dråpesmitte","oid":80018},
-                //smittesituasjon: string    <- MAPPING IKKE DISKUTERT
+                    //smittemåte hardkodes for Covid
+                    smittemate: {"id":3873,"verdi":"70","beskrivelse":"Luft/Dråpesmitte","oid":80018},
+                    //smittesituasjon: string    <- MAPPING IKKE DISKUTERT
+                    rekvirent: {}
                 },
                 smitteforhold: smitteforhold,
             }
