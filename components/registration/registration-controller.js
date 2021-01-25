@@ -1450,23 +1450,37 @@ trackerCapture.controller('RegistrationController',
 
 
     $scope.sendNotification = function() {
-        var userId;
-        try{
-            userId = JSON.parse(sessionStorage.USER_PROFILE).id
-        }
-        finally {}
 
-        FNrLookupService.sendNotificationMessage(CurrentSelection.currentSelection.orgUnit.code, userId, $scope.selectedTei, $scope.allEventsSorted).then(function(result){
-            
-            //TODO inspect response and only perform the following when successful:
+        var messageText = FNrLookupService.getNotificationMessageTextSummary(CurrentSelection.currentSelection.orgUnit.code, $scope.selectedTei, $scope.allEventsSorted);
 
-            //Store value indicating that notification is sent.
-            $scope.selectedTei.C225m3EOPRo = 'true';
-            $scope.registerEntity(null);
+        var modalOptions = {
+            closeButtonText: 'Avbryt',
+            actionButtonText: 'Send klinikermelding til MSIS',
+            headerText: 'Klinikermelding',
+            bodyText: 'Følgende verdier er klare for innsending.',
+            bodyList: messageText
+        };
 
-            //TODO: Log result to note
-            //$rootScope.$broadcast('notificationSuccessful', result.message); 
+        ModalService.showModal({}, modalOptions).then(function (result) {
+            var userId;
+            try{
+                userId = JSON.parse(sessionStorage.USER_PROFILE).id
+            }
+            finally {}
+
+            FNrLookupService.sendNotificationMessage(CurrentSelection.currentSelection.orgUnit.code, userId, $scope.selectedTei, $scope.allEventsSorted).then(function(result){
+                
+                if(result) {
+                    //Store value indicating that notification is sent.
+                    $scope.selectedTei.C225m3EOPRo = 'true';
+                    $scope.registerEntity(null);
+
+                    //TODO: Log result to note
+                    $rootScope.$broadcast('notificationSuccessful', messageText); 
+                }
+            });
         });
+        
     }
 
     $scope.registryLookup = function() {
