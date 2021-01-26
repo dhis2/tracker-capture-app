@@ -44,14 +44,22 @@ trackerCapture.controller('NotesController',
             }
         }); 
     }
-       
-    $scope.addNote = function(){
-        if(!$scope.note.value){
+
+    $scope.$on('notificationSuccessful', function(event,messageText) {
+        $scope.addNote(messageText);
+    });
+    
+    $scope.addNote = function(noteText){
+        if(!noteText) {
+            noteText = $scope.note.value;
+        }
+
+        if(!noteText){
             NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("please_add_some_text"));
             return;
         }
 
-        var newNote = {value: $scope.note.value, storedDate: DateUtils.formatFromUserToApi(today), displayDate: today, storedBy: storedBy};
+        var newNote = {value: noteText, storedDate: DateUtils.formatFromUserToApi(today), displayDate: today, storedBy: storedBy};
 
         $scope.updateNoteWithRealName(newNote);
 

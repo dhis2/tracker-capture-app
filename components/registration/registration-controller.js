@@ -1474,9 +1474,9 @@ trackerCapture.controller('RegistrationController',
                     //Store value indicating that notification is sent.
                     $scope.selectedTei.C225m3EOPRo = 'true';
                     $scope.registerEntity(null);
-
-                    //TODO: Log result to note
-                    $rootScope.$broadcast('notificationSuccessful', messageText); 
+                    
+                    var note = "Klinikermelding innsendt til MSIS med følgende verdier: " + messageText.join(', ');
+                    $rootScope.$broadcast('notificationSuccessful', note); 
                 }
             });
         });
