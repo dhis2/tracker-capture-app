@@ -29,6 +29,111 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
 
         var underliggendeSykdommer = [{"id":4736,"verdi":"01","beskrivelse":"Kreft","oid":80099},{"id":4737,"verdi":"02","beskrivelse":"Kols","oid":80099},{"id":4738,"verdi":"03","beskrivelse":"Nedsatt immunforsvar","oid":80099},{"id":4739,"verdi":"04","beskrivelse":"Diabetes","oid":80099},{"id":4740,"verdi":"05","beskrivelse":"Hjertesykdom","oid":80099},{"id":4741,"verdi":"06","beskrivelse":"Fedme (KMI>30)","oid":80099},{"id":4742,"verdi":"07","beskrivelse":"Astma","oid":80099},{"id":4743,"verdi":"08","beskrivelse":"Kronisk lungesykdom","oid":80099},{"id":4744,"verdi":"09","beskrivelse":"Nyresykdom","oid":80099},{"id":4745,"verdi":"10","beskrivelse":"Leversykdom","oid":80099},{"id":4746,"verdi":"11","beskrivelse":"Nevrologisk/nevromuskulær","oid":80099},{"id":4747,"verdi":"12","beskrivelse":"Graviditet","oid":80099},{"id":4748,"verdi":"13","beskrivelse":"Røyker","oid":80099},{"id":4749,"verdi":"14","beskrivelse":"Opphold med risikofaktorer","oid":80099},{"id":4750,"verdi":"15","beskrivelse":"Forhøyet blodtrykk (hypertensjon)","oid":80099},{"id":4751,"verdi":"97","beskrivelse":"Annet","oid":80099},{"id":4752,"verdi":"98","beskrivelse":"Ingen underliggende sykdom","oid":80099},{"id":4753,"verdi":"99","beskrivelse":"Ukjent","oid":80099}];
 
+        var indikasjoner = [
+            {
+              "id": 3798,
+              "verdi": "80",
+              "beskrivelse": "Annen indikasjon",
+              "oid": 80014
+            },
+            {
+              "id": 3799,
+              "verdi": "45",
+              "beskrivelse": "Arbeid med pasienter eller barn",
+              "oid": 80014
+            },
+            {
+              "id": 3800,
+              "verdi": "11",
+              "beskrivelse": "Immunsvekkende tilstand/behandling",
+              "oid": 80014
+            },
+            {
+              "id": 3801,
+              "verdi": "50",
+              "beskrivelse": "Obduksjon",
+              "oid": 80014
+            },
+            {
+              "id": 3802,
+              "verdi": "30",
+              "beskrivelse": "Pasientens ønske",
+              "oid": 80014
+            },
+            {
+              "id": 3803,
+              "verdi": "70",
+              "beskrivelse": "PrEP-kontroll",
+              "oid": 80014
+            },
+            {
+              "id": 3804,
+              "verdi": "42",
+              "beskrivelse": "Rutineundersøkelse av blodgiver",
+              "oid": 80014
+            },
+            {
+              "id": 3805,
+              "verdi": "43",
+              "beskrivelse": "Rutineundersøkelse av bløder",
+              "oid": 80014
+            },
+            {
+              "id": 3806,
+              "verdi": "40",
+              "beskrivelse": "Rutineundersøkelse av gravid",
+              "oid": 80014
+            },
+            {
+              "id": 3807,
+              "verdi": "41",
+              "beskrivelse": "Rutineundersøkelse av innvandrer",
+              "oid": 80014
+            },
+            {
+              "id": 3808,
+              "verdi": "49",
+              "beskrivelse": "Rutineundersøkelse ikke nærmere angitt",
+              "oid": 80014
+            },
+            {
+              "id": 3809,
+              "verdi": "46",
+              "beskrivelse": "Rutineus, kontakt med helsevesenet i utlandet",
+              "oid": 80014
+            },
+            {
+              "id": 3810,
+              "verdi": "44",
+              "beskrivelse": "Rutineus.i forbindelse m/sykehusopphold",
+              "oid": 80014
+            },
+            {
+              "id": 3811,
+              "verdi": "20",
+              "beskrivelse": "Smitteoppsporing (miljøundersøkelse)",
+              "oid": 80014
+            },
+            {
+              "id": 3812,
+              "verdi": "10",
+              "beskrivelse": "Symptomer eller tegn",
+              "oid": 80014
+            },
+            {
+              "id": 3813,
+              "verdi": "60",
+              "beskrivelse": "Tilfeldig funn",
+              "oid": 80014
+            },
+            {
+              "id": 3814,
+              "verdi": "99",
+              "beskrivelse": "Ukjent",
+              "oid": 80014
+            }
+          ];
+
         var codeLookup = function(codes,field,value) {
             var codeFound = null;
             codes.forEach(function (code){
@@ -145,8 +250,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
         }
 
         var getIndikasjon = function(indikasjon){
-            return null;
-            //TODO Mangler kodeliste
+            return codeLookup(indikasjoner,'beskrivelse',indikasjon);
         }
 
         var getSykdomsBilde = function(helseutfall) {
@@ -326,7 +430,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             }
 
             if(sistePositiveTest.ylnZBwlN80w) {
-                textMessages.push("Prøvedato: " + sisteHelseStatus.ylnZBwlN80w);
+                textMessages.push("Prøvedato: " + sistePositiveTest.ylnZBwlN80w);
                 diagnoseforhold.provedato = DateUtils.formatFromUserToApi(sistePositiveTest.ylnZBwlN80w);
             }
 
@@ -349,7 +453,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
 
             var sykehus = getSykehus(sisteHelseStatus.yBUxbX079to);
             if(sykehus) {
-                textMessages.push("Sykehus: " + erInnlagtPaaSykehus.beskrivelse);
+                textMessages.push("Sykehus: " + sykehus.navn);
                 diagnoseforhold.sykehus = sykehus;
             }
 
