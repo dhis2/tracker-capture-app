@@ -227,25 +227,16 @@ trackerCapture.controller('ListsController',function(
                         }
 
                         if(dateDictionary[row[0]] && dateDictionary[row[0]].transferStatus){
+                            row[4] = "Overført";
                             row.push(dateDictionary[row[0]].transferStatus);
                         }
                         else {
                             row.push('');
                         }
-
-                        if(dateDictionary[row[0]] && dateDictionary[row[0]].orgUnit && dateDictionary[row[0]].orgUnit != $scope.selectedOrgUnit.id){
-                            //var orgUnitPromise = OrgUnitFactory.getOrgUnit(dateDictionary[row[0]].orgUnit);
-                            //let orgUnit = await orgUnitPromise;
-                            //if (orgUnit) {
-                            //    row[3] = orgUnit.id;
-                            //    row[4] = orgUnit.name;
-                            //}
-                            row[4] = "Overført"
-                        }
                     });
 
                     serverResponse.headers.push( {column: "LastDate", hidden: false, meta: false, name: "last_date", type:"java.lang.String" });
-                    serverResponse.headers.push( {column: "TransferStatus", hidden: true, meta: false, name: "Overføringsstatus", type:"java.lang.String" });
+                    serverResponse.headers.push( {column: "TransferStatus", hidden: false, meta: false, name: "Overføringsstatus", type:"java.lang.String" });
 
                     if( $scope.currentTrackedEntityList.sortColumn.id == 'created' ) {
                         serverResponse.rows = $filter('orderBy')(serverResponse.rows, function(tei) {

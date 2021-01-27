@@ -1015,7 +1015,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         getListWithProgramData: function(entityUidList,programUid, dataElementId, programStageId, orgUnitId, transferStageId){
             if(entityUidList && entityUidList.length > 0){
-                return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&program='+programUid+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,orgUnit,enrollments[enrollment,program,enrollmentDate,events[dataValues,programStage]]').then(function(response){
+                return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&program='+programUid+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,orgUnit,enrollments[enrollment,program,enrollmentDate,events[status,dataValues,programStage]]').then(function(response){
                     var teiDictionary = {};
                     if(response.data && response.data.trackedEntityInstances && response.data.trackedEntityInstances.length > 0){
                         response.data.trackedEntityInstances.forEach(function(tei) {
@@ -2126,8 +2126,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         entity.lastdate = row[row.length-2];
                     }
 
-                    if(grid.headers[grid.headers.length-1].name == 'TransferStatus'){
-                        entity.followUp =  followUp || row[row.length-1] == "ACTIVE";
+                    if(grid.headers[grid.headers.length-1].column == 'TransferStatus'){
+                        //entity.followUp =  entity.followUp || row[row.length-1] == "ACTIVE";
                     }
                     
                     for (var i = 7; i < row.length; i++) {
