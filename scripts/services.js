@@ -2899,6 +2899,9 @@ i
         if(sortColumn){
             searchParams.sortUrl = "&order="+sortColumn.id+':'+sortColumn.direction;
         }
+        if(workingList.id == 'vo6JLWsbyMj') {
+            searchParams.programUrl += '&filter=C225m3EOPRo:IN:false';
+        }
         if(workingList.enrollmentCreatedPeriod){
             var enrollmentStartDate = moment().add(workingList.enrollmentCreatedPeriod.periodFrom, 'days').format("YYYY-MM-DD");
             var enrollmentEndDate = moment().add(workingList.enrollmentCreatedPeriod.periodTo, 'days').format("YYYY-MM-DD");
