@@ -621,10 +621,15 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     errorMsgBody =  'Feil ved innsending av klinikermelding til MSIS';
 
                     if(error.status == 403) {
-                        errorMsgBody = `...`;
+                        errorMsgBody = `Tjenesten Fiks klinikermelding er ikke tilgjengelig for deg.
+                        Det kan være to årsaker til dette
+                        <ol>
+                        <li>Din kommune har ikke aktivert tjenesten Fiks klinikermelding. Les mer om aktivering av Fiks klinikermelding her: <a target="_blank" href="https://portal.fiks.ks.no/">https://portal.fiks.ks.no/</a></li>
+                        <li>Tjenesten er aktivert, men du har ikke fått rettigheter til å gjøre oppslag. Ta kontakt med Fiks administrator i din kommune.</li>
+                        </ol>`;
                     }
                     else if(error.status == 401) {
-                        errorMsgBody = "...";
+                        errorMsgBody = "Kunne ikke nå tjeneste for klinikermelding, prøv å logge inn på nytt.";
                     }
 
                     NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
