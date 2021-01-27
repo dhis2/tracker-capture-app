@@ -624,7 +624,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                         errorMsgBody = `Tjenesten Fiks klinikermelding er ikke tilgjengelig for deg.
                         Det kan være to årsaker til dette
                         <ol>
-                        <li>Din kommune har ikke aktivert tjenesten Fiks klinikermelding. Les mer om aktivering av Fiks klinikermelding her: <a target="_blank" href="https://portal.fiks.ks.no/">https://portal.fiks.ks.no/</a></li>
+                        <li>Din kommune har ikke aktivert tjenesten Fiks klinikermelding. Les mer om aktivering av Fiks klinikermelding her: <a target="_blank" href="https://portal.fiks.ks.no/fiks/fiks-klinikermelding/">https://portal.fiks.ks.no/fiks/fiks-klinikermelding</a></li>
                         <li>Tjenesten er aktivert, men du har ikke fått rettigheter til å gjøre oppslag. Ta kontakt med Fiks administrator i din kommune.</li>
                         </ol>`;
                     }
