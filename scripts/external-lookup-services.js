@@ -4525,7 +4525,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             if(bakgrunn.Bt9xOiBUuDW){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Graviditet'))};
             if(bakgrunn.Blwor7jyBB9){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Annet'))};
             if(bakgrunn.RUHPJ5GVvjb){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Ukjent'))};
-            if(bakgrunn.zzlA5JFfLCR){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Ingen underliggende sykdom'))};
+            if(!bakgrunn.zzlA5JFfLCR){sykdommer.push(codeLookup(underliggendeSykdommer,'beskrivelse','Ingen underliggende sykdom'))};
 
             return sykdommer;
         }
