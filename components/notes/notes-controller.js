@@ -89,4 +89,11 @@ trackerCapture.controller('NotesController',
     $scope.showNotes = function(){
         $scope.showNotesDiv = !$scope.showNotesDiv;
     };
+
+    $scope.printNote = function(note){
+        var w=window.open();
+        w.document.write('Dato: ' + note.displayDate + '(' + note.storedBy + ')<br>' + note.value);
+        w.print();
+        w.close();
+    }
 });
