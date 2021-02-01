@@ -4513,7 +4513,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
         }
 
         var getArbeidsplassKategori = function(kategori) {
-            return codeLookup(arbeidsplassKategori, "beskrivelse", value);
+            return codeLookup(arbeidsplassKategori, "beskrivelse", kategori);
         }
 
         var constructNotificationMessage = function(tei,events,kommuneNr,getTextMessage) {
