@@ -39,7 +39,7 @@
                 <table class="table table-striped table-bordered dhis2-table-hover table-borderless">
                     <tr ng-repeat="note in selectedEnrollment.notes| filter:noteSearchText" d2-pop-over content="note" template="popover.html" details="{{'details'| translate}}">
                         <td class="notes-heading-column">
-                            <span>{{note.value}} <button type="button" class="btn btn-default small-horizontal-spacing"  ng-click="printNote(note)">Utskrift</button> </span>
+                            <span><button type="button" class="btn btn-default small-horizontal-spacing"  ng-click="printNote(note)">Utskrift</button> {{note.value}}</span>
                         </td>
                         <td class="notes-date-column">
                             <span class="pull-right">{{note.displayDate}}</span>
