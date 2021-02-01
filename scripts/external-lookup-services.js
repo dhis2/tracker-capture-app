@@ -4441,7 +4441,11 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
         }
 
         var getEksponeringssted = function(value) {
-            return codeLookup(eksponeringssteder,"beskrivelse",value)
+          if( value == 'Sykehjem' ) {
+            value = 'Helseinstitusjon - pasient';
+          }
+
+          return codeLookup(eksponeringssteder,"beskrivelse",value)
         }
 
         var getInnlagtSykehus = function(sisteHelseStatus) {
