@@ -4391,7 +4391,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
         var codeLookup = function(codes,field,value) {
             var codeFound = null;
             codes.forEach(function (code){
-                if(code[field] && value && (code[field].toLower() == value.toLower())) {
+                if(code[field] && value && (code[field].toLowerCase() == value.toLowerCase())) {
                     codeFound = code;
                 }
             });
