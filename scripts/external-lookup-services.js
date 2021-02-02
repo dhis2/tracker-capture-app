@@ -4527,10 +4527,15 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             var bakgrunnsUndersokelse = {};
             var sisteHelseStatus = {};
             var sistePositiveTest = {};
+            var symptomStart = '';
             events.forEach(function(event) {
                 if (event.programStage == 'LpWNjNGvCO5') {
                     bakgrunnsUndersokelse = event;
                 } else if (event.programStage == 'oqsk2Jv4k3s') {
+                    if( event.s3eoonJ8OJb ) {
+                        symptomStart = event.s3eoonJ8OJb;
+                    } 
+                    
                     sisteHelseStatus = event;
                 } else if (event.programStage == 'dDHkBd3X8Ce' && event.ovY6E8BSdto == 'Positiv') {
                     sistePositiveTest = event;
@@ -4657,9 +4662,9 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 diagnoseforhold.sykehjemNavn = sisteHelseStatus.SFaxZRvgnsg;
             }
 
-            if(sisteHelseStatus.s3eoonJ8OJb) {
-                textMessages.push("Innsykningsdato: " + sisteHelseStatus.s3eoonJ8OJb);
-                diagnoseforhold.innsykningsdato = DateUtils.formatFromUserToApi(sisteHelseStatus.s3eoonJ8OJb);
+            if(symptomStart != '') {
+                textMessages.push("Innsykningsdato: " + symptomStart);
+                diagnoseforhold.innsykningsdato = DateUtils.formatFromUserToApi(symptomStart);
             }
 
             if(sistePositiveTest.ylnZBwlN80w) {
