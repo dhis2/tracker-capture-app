@@ -921,7 +921,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service for getting tracked entity instances */
-.factory('TEIService', function($http, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService, TeiAccessApiService) {
+.factory('TEIService', function($http, orderByFilter, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService, TeiAccessApiService) {
     var cachedTeiWithProgramData = null;
     var errorHeader = $translate.instant("error");
     var getSearchUrl = function(type,ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
@@ -1015,12 +1015,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         getListWithProgramData: function(entityUidList,programUid, dataElementId, programStageId, orgUnitId, transferStageId){
             if(entityUidList && entityUidList.length > 0){
-                return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&program='+programUid+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,orgUnit,enrollments[enrollment,program,enrollmentDate,events[status,dataValues,programStage]]').then(function(response){
+                return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&program='+programUid+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,orgUnit,enrollments[enrollment,program,enrollmentDate,events[status,dataValues,programStage,eventDate]]').then(function(response){
                     var teiDictionary = {};
                     if(response.data && response.data.trackedEntityInstances && response.data.trackedEntityInstances.length > 0){
                         response.data.trackedEntityInstances.forEach(function(tei) {
                             teiDictionary[tei.trackedEntityInstance] = {orgUnit: tei.orgUnit};
                             if(tei.enrollments){
+                                tei.enrollments = orderByFilter(tei.enrollments, '+enrollmentDate');
                                 tei.enrollments.forEach(function(enrollment) {
 
                                     if(enrollment.program == programUid) {
@@ -1028,6 +1029,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                     }
 
                                     if(enrollment.events && enrollment.events.length > 0){
+                                        enrollment.events = orderByFilter(enrollment.events, '+eventDate');
                                         enrollment.events.forEach(function(event){
                                             if(event.programStage == programStageId && event.dataValues && event.dataValues.length > 0) {
                                                 event.dataValues.forEach(function(dataValue){
