@@ -4466,22 +4466,22 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
           return codeLookup(eksponeringssteder,"beskrivelse",value)
         }
 
-        var getInnlagtSykehus = function(sisteHelseStatus) {
-            if(sisteHelseStatus.bOYWVEBaWy6 == 'Innlagt på sykehus - fortsatt i isolasjon') {
+        var getInnlagtSykehus = function(helseStatus) {
+            if(helseStatus.bOYWVEBaWy6 == 'Innlagt på sykehus - fortsatt i isolasjon') {
                 return getJaNeiUkjent("Ja");
-            } else if(sisteHelseStatus == "Ukjent") {
+            } else if(helseStatus.bOYWVEBaWy6 == "Ukjent") {
                 return getJaNeiUkjent("Ukjent");
-            } else if(sisteHelseStatus != "Ukjent") {
+            } else if(helseStatus.bOYWVEBaWy6 != "Ukjent") {
                 return getJaNeiUkjent("Nei");
             }
         }
 
-        var getInnlagtSykehjem = function(sisteHelseStatus) {
-            if(sisteHelseStatus.bOYWVEBaWy6 == 'Innlagt på sykehjem - fortsatt i isolasjon') {
+        var getInnlagtSykehjem = function(helseStatus) {
+            if(helseStatus.bOYWVEBaWy6 == 'Innlagt på sykehjem - fortsatt i isolasjon') {
                 return getJaNeiUkjent("Ja");
-            } else if(sisteHelseStatus == "Ukjent") {
+            } else if(helseStatus.bOYWVEBaWy6 == "Ukjent") {
                 return getJaNeiUkjent("Ukjent");
-            } else if(sisteHelseStatus != "Ukjent") {
+            } else if(helseStatus.bOYWVEBaWy6 != "Ukjent") {
                 return getJaNeiUkjent("Nei");
             }
         }
@@ -4543,7 +4543,8 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             var textMessages = [];
 
             var bakgrunnsUndersokelse = {};
-            var sisteHelseStatus = {};
+            var helseStatus = {};
+            var helseStatusFound = false;
             var sistePositiveTest = {};
             var symptomStart = '';
             events.forEach(function(event) {
@@ -4552,9 +4553,11 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 } else if (event.programStage == 'oqsk2Jv4k3s') {
                     if( event.s3eoonJ8OJb ) {
                         symptomStart = event.s3eoonJ8OJb;
-                    } 
-                    
-                    sisteHelseStatus = event;
+                    }
+                    if(!helseStatusFound) {
+                        helseStatus = event;
+                        helseStatusFound = true;
+                    }
                 } else if (event.programStage == 'dDHkBd3X8Ce' && event.ovY6E8BSdto == 'Positiv') {
                     sistePositiveTest = event;
                 }
@@ -4675,9 +4678,9 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             textMessages.push("Diagnose: Koronavirus med utbruddspotensial");
             textMessages.push("Smittestoff: SARS-COV-2");
 
-            if(sisteHelseStatus.SFaxZRvgnsg) {
-                textMessages.push("Sykehjemsnavn: " + sisteHelseStatus.SFaxZRvgnsg);
-                diagnoseforhold.sykehjemNavn = sisteHelseStatus.SFaxZRvgnsg;
+            if(helseStatus.SFaxZRvgnsg) {
+                textMessages.push("Sykehjemsnavn: " + helseStatus.SFaxZRvgnsg);
+                diagnoseforhold.sykehjemNavn = helseStatus.SFaxZRvgnsg;
             }
 
             if(symptomStart != '') {
@@ -4690,24 +4693,24 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 diagnoseforhold.provedato = DateUtils.formatFromUserToApi(sistePositiveTest.ylnZBwlN80w);
             }
 
-            if(sisteHelseStatus.dDEdmn8q3P1) {
-                textMessages.push("Dødsdato: " + sisteHelseStatus.dDEdmn8q3P1);
-                diagnoseforhold.dodsdato = DateUtils.formatFromUserToApi(sisteHelseStatus.dDEdmn8q3P1);
+            if(helseStatus.dDEdmn8q3P1) {
+                textMessages.push("Dødsdato: " + helseStatus.dDEdmn8q3P1);
+                diagnoseforhold.dodsdato = DateUtils.formatFromUserToApi(helseStatus.dDEdmn8q3P1);
             }
 
-            var erInnlagtPaaSykehjem = getInnlagtSykehjem(sisteHelseStatus);
+            var erInnlagtPaaSykehjem = getInnlagtSykehjem(helseStatus);
             if(erInnlagtPaaSykehjem) {
                 textMessages.push("Er innlagt på sykehjem: " + erInnlagtPaaSykehjem.beskrivelse);
                 diagnoseforhold.erInnlagtPaaSykehjem = erInnlagtPaaSykehjem;
             }
 
-            var erInnlagtPaaSykehus = getInnlagtSykehus(sisteHelseStatus);
+            var erInnlagtPaaSykehus = getInnlagtSykehus(helseStatus);
             if(erInnlagtPaaSykehus) {
                 textMessages.push("Er innlagt på sykehys: " + erInnlagtPaaSykehus.beskrivelse);
                 diagnoseforhold.erInnlagtPaaSykehus = erInnlagtPaaSykehus;
             }
 
-            var sykehus = getSykehus(sisteHelseStatus.yBUxbX079to);
+            var sykehus = getSykehus(helseStatus.yBUxbX079to);
             if(sykehus) {
                 textMessages.push("Sykehus: " + sykehus.navn);
                 diagnoseforhold.sykehus = sykehus;
@@ -4719,9 +4722,9 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 diagnoseforhold.indikasjon = indikasjon;
             }
 
-            var sykdomsbilde = getSykdomsBilde(sisteHelseStatus);
+            var sykdomsbilde = getSykdomsBilde(helseStatus);
             if(sykdomsbilde) {
-                textMessages.push("Indikasjon: " + sykdomsbilde.beskrivelse);
+                textMessages.push("Sykdomsbilde: " + sykdomsbilde.beskrivelse);
                 diagnoseforhold.sykdomsbilde = sykdomsbilde;
             }
 
