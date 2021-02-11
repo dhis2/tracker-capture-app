@@ -4407,13 +4407,28 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             return codeLookup(kommunerOgBydeler,"verdi",kommuneNr);
         }
 
-        var getFodeland = function(fodeland) {
-            return codeLookup(land,"beskrivelse",fodeland);
+        var getLand = function(landnavn) {
+            if(landnavn == 'Karibisk Nederland') {
+                landnavn = 'Nederlandske Antiller';
+            }
+
+            return codeLookup(land,"beskrivelse",landnavn);
         }
 
         var getYrke = function(yrke) {
-            return codeLookup(yrkeKategori,"beskrivelse",yrke);
-        }
+            var map = {};
+            map['Ikke yrkesaktiv']='Annet';
+            map['Butikkansatt']='Annet';
+            map['Frisør og lignende']='Annet';
+            map['Laboratoriearbeider']='Annet';
+            map['Student']='Student/Elev';
+            map['Drosjesjåfør']='Persontransport';
+            map['Bussjåfør']='Persontransport';
+            map['Pensjonist']='Annet';
+            map['Elev']='Student/Elev';
+
+            return codeLookup(yrkeKategori,"beskrivelse",map[yrke] ? map[yrke] : yrke);
+      }
 
         var getSmittested = function(bakgrunn, kommuneNr) {
             var verdi = trim(bakgrunn.QPBQ6ha3KSU)
@@ -4422,7 +4437,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             } else if (verdi == 'Verdensdel') {
                 return codeLookup(verdensdeler, 'beskrivelse', bakgrunn.r9wly8yChCe );
             } else if (verdi == 'Land') {
-                return codeLookup(land, 'beskrivelse', bakgrunn.G2EbXQPYKUM );
+                return getLand(bakgrunn.G2EbXQPYKUM);
             } else if (verdi == 'Kommune') {
                 return codeLookup(kommunerOgBydeler, 'beskrivelse', bakgrunn.hYwdup3TdCH );
             } else if (verdi == 'Bydel') {
@@ -4441,8 +4456,11 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
         }
 
         var getEksponeringssted = function(value) {
-          if( value == 'Sykehjem' ) {
-            value = 'Helseinstitusjon - pasient';
+          if( value == 'Sykehjem' || value == 'Legekontor' || value == 'Sykehus') {
+              value = 'Helseinstitusjon - pasient';
+          }
+          if( value == 'Barnehage' || value == 'Skole') {
+              value = 'Barnehage/skole - barn/elev'
           }
 
           return codeLookup(eksponeringssteder,"beskrivelse",value)
@@ -4588,7 +4606,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 pasient.kjonn = kjonn;
             }
 
-            var fodeland = getFodeland(tei.hBcoBCZBWFb);
+            var fodeland = getLand(tei.hBcoBCZBWFb);
             if(fodeland) {
                 textMessages.push("Fodeland: " + tei.hBcoBCZBWFb);
                 pasient.fodeland = fodeland;
