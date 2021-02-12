@@ -1,3 +1,10 @@
+## [31.2.4](https://github.com/dhis2/tracker-capture-app/compare/v31.2.3...v31.2.4) (2021-02-12)
+
+
+### Bug Fixes
+
+* added null check ([d7a0c9b](https://github.com/dhis2/tracker-capture-app/commit/d7a0c9ba7549d96b8ffbaf795f83d4993e2cc809))
+
 ## [31.2.3](https://github.com/dhis2/tracker-capture-app/compare/v31.2.2...v31.2.3) (2021-02-12)
 
 
