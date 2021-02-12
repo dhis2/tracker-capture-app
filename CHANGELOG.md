@@ -1,3 +1,10 @@
+## [31.2.3](https://github.com/dhis2/tracker-capture-app/compare/v31.2.2...v31.2.3) (2021-02-12)
+
+
+### Bug Fixes
+
+*  [DHIS2-9335] allow multiple browser tabs to post relationships for the same TEI ([bd76077](https://github.com/dhis2/tracker-capture-app/commit/bd760770c594a0ceeba67221eb2dd3e5223197c4))
+
 ## [31.2.2](https://github.com/dhis2/tracker-capture-app/compare/v31.2.1...v31.2.2) (2021-01-26)
 
 
