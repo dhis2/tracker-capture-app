@@ -1,3 +1,10 @@
+## [31.2.5](https://github.com/dhis2/tracker-capture-app/compare/v31.2.4...v31.2.5) (2021-02-16)
+
+
+### Bug Fixes
+
+* [DHIS2-9628] always load selected program ([#964](https://github.com/dhis2/tracker-capture-app/issues/964)) ([4ac0763](https://github.com/dhis2/tracker-capture-app/commit/4ac07632f033ad89c0d66b68a6a779fb5863e45c))
+
 ## [31.2.4](https://github.com/dhis2/tracker-capture-app/compare/v31.2.3...v31.2.4) (2021-02-12)
 
 
