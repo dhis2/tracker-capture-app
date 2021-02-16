@@ -499,7 +499,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     TCStorageService.currentStore.getAll('programs').done(function(prs){
                         var programs = [];
                         angular.forEach(prs, function(pr){
-                            if(pr.organisationUnits.hasOwnProperty( ou.id ) && accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read){
+                            if( (loadSelectedProgram && selectedProgram && pr.id == selectedProgram.id) || 
+                                (pr.organisationUnits.hasOwnProperty( ou.id ) && accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read) ){
                                 if(pr.programTrackedEntityAttributes){
                                     pr.programTrackedEntityAttributes = pr.programTrackedEntityAttributes.filter(function(attr){
                                         return attr.access && attr.access.read;

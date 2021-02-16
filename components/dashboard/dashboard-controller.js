@@ -196,7 +196,8 @@ trackerCapture.controller('DashboardController',
                                             selectedEnrollment = enrollments.find(function(e){ return e.program === $scope.selectedProgramId && e.status === 'ACTIVE'; });
                                         }
 
-                                        ProgramFactory.getProgramsByOu($scope.selectedOrgUnit, false).then(function (response) {
+                                        ProgramFactory.getProgramsByOu($scope.selectedOrgUnit, selectedEnrollment ? true : false,
+                                            selectedEnrollment ? {id:selectedEnrollment.program} : null).then(function (response) {
                                             $scope.programs = [];
                                             $scope.programNames = [];
                                             $scope.programStageNames = [];
