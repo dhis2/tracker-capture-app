@@ -151,9 +151,18 @@ trackerCapture.controller('RelationshipController',
             }
         });        
     };
+
+    $scope.returnUrl;
+    if ( $location.search().returnUrl ) {
+        $scope.returnUrl = $location.search().returnUrl;
+    }
     
     $scope.showDashboard = function(teiId, program){    
-        $location.path('/dashboard').search({tei: teiId, program: program, ou: $scope.selectedOrgUnit.id});
+        var path = {tei: teiId, program: program, ou: $scope.selectedOrgUnit.id};
+        if($scope.returnUrl) {
+            path.returnUrl = $scope.returnUrl;
+        }
+        $location.path('/dashboard').search(path);
     };
 
     $scope.showEventInCaptureApp = function(eventId){
