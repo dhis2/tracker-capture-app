@@ -1,3 +1,10 @@
+## [31.2.6](https://github.com/dhis2/tracker-capture-app/compare/v31.2.5...v31.2.6) (2021-02-22)
+
+
+### Bug Fixes
+
+* [DHIS2-10548] remove hard coded ouMode and unused code ([#972](https://github.com/dhis2/tracker-capture-app/issues/972)) ([ccd0d48](https://github.com/dhis2/tracker-capture-app/commit/ccd0d4828f44ccb7936b2237d62aafed521466f1))
+
 ## [31.2.5](https://github.com/dhis2/tracker-capture-app/compare/v31.2.4...v31.2.5) (2021-02-16)
 
 
