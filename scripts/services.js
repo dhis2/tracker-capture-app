@@ -688,29 +688,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return null;
             });
         },
-        getByEntity: function( entity ){
-            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&fields=:all&paging=false').then(function(response){
-                return convertFromApiToUser(response.data);
-            },function(response){
-                var errorBody = $translate.instant('failed_to_fetch_enrollment');
-                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
-                return null;
-            });
-            return promise;
-        },
-        getByEntityAndProgram: function( entity, program ){
-            var url = DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&program=' + program + '&fields=:all&paging=false';
-            var promise = TeiAccessApiService.get(entity,program,url).then(function(response){
-                return convertFromApiToUser(response.data);
-            }, function(response){
-                var errorBody = $translate.instant('failed_to_fetch_enrollment');
-                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
-                return null;
-            });
-            return promise;
-        },
         getByStartAndEndDate: function( program, orgUnit, ouMode, startDate, endDate ){
-            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&program=' + program + '&orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&startDate=' + startDate + '&endDate=' + endDate + '&fields=:all&paging=false').then(function(response){
+            var promise = $http.get(  DHIS2URL + '/enrollments.json?program=' + program + '&ou=' + orgUnit + '&ouMode='+ ouMode + '&startDate=' + startDate + '&endDate=' + endDate + '&fields=:all&paging=false').then(function(response){
                 return convertFromApiToUser(response.data);
             }, function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
