@@ -3336,8 +3336,6 @@ i
 
             ruleBoundData.textInEffect = false;
             ruleBoundData.keyDataInEffect = false;
-
-            if(event === 'registration') return;
     
             //In case the 
             if(ruleBoundData.lastEventUpdated !== event) {
