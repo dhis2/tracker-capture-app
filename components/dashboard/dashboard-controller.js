@@ -6,6 +6,7 @@ trackerCapture.controller('DashboardController',
     function ($rootScope,
             $scope,
             $location,
+            $window,
             $modal,
             $timeout,
             $filter,
@@ -68,6 +69,11 @@ trackerCapture.controller('DashboardController',
     }
     else {
         updateDashboard();
+    }
+
+    $scope.returnUrl;
+    if ( $location.search().returnUrl ) {
+        $scope.returnUrl = $location.search().returnUrl;
     }
 
     function getOrgUnit() {
@@ -505,12 +511,16 @@ trackerCapture.controller('DashboardController',
     });
     
     $scope.applySelectedProgram = function (pr) {
+        var path = {ou: $scope.selectedOrgUnit.id, tei: $scope.selectedTei.trackedEntityInstance};
         if (pr) {
             $scope.selectedProgram = pr;
-        } else {
-            $location.path('/dashboard').search({ou: $scope.selectedOrgUnit.id, tei: $scope.selectedTei.trackedEntityInstance});
+            path.program = pr.id;
+        } 
+        if ($scope.returnUrl) {
+            path.returnUrl = $scope.returnUrl;
         }
-        $location.path('/dashboard').search({program: pr.id, ou: $scope.selectedOrgUnit.id, tei: $scope.selectedTei.trackedEntityInstance});
+
+        $location.path('/dashboard').search(path);
     };
 
     $scope.broadCastSelections = function (tei) {
@@ -624,7 +634,10 @@ trackerCapture.controller('DashboardController',
     };
 
     $scope.back = function () {
-        if (!$scope.dataEntryMainMenuItemSelected) {
+        if ( $scope.returnUrl ) {
+            var returnUrl = '../' + atob($scope.returnUrl).replace(/^\//,"");
+            $window.location.href = returnUrl;
+        } else if (!$scope.dataEntryMainMenuItemSelected) {
             //reload OU tree
             selection.load();
             $location.path('/').search({program: $scope.selectedProgramId});
