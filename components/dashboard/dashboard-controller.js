@@ -6,6 +6,8 @@ trackerCapture.controller('DashboardController',
     function ($rootScope,
             $scope,
             $location,
+            $window,
+            DHIS2URL,
             $modal,
             $timeout,
             $filter,
@@ -634,7 +636,8 @@ trackerCapture.controller('DashboardController',
 
     $scope.back = function () {
         if ( $scope.returnUrl ) {
-            $location.url(atob($scope.returnUrl));
+            var returnUrl = '../' + atob($scope.returnUrl).replace(/^\//,"");
+            $window.location.href = returnUrl;
         } else if (!$scope.dataEntryMainMenuItemSelected) {
             //reload OU tree
             selection.load();
