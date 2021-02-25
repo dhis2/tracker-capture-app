@@ -1,3 +1,10 @@
+# [31.3.0](https://github.com/dhis2/tracker-capture-app/compare/v31.2.6...v31.3.0) (2021-02-25)
+
+
+### Features
+
+* [DHIS2-10525] support returnUrl parameter for TEI dashboard ([#974](https://github.com/dhis2/tracker-capture-app/issues/974)) ([138abcb](https://github.com/dhis2/tracker-capture-app/commit/138abcb5ad6d18cdc653c3dda8b501696349b9a5))
+
 ## [31.2.6](https://github.com/dhis2/tracker-capture-app/compare/v31.2.5...v31.2.6) (2021-02-22)
 
 
