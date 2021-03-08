@@ -1,3 +1,10 @@
+## [31.3.1](https://github.com/dhis2/tracker-capture-app/compare/v31.3.0...v31.3.1) (2021-03-08)
+
+
+### Bug Fixes
+
+* program report start- and endDate filter ([#975](https://github.com/dhis2/tracker-capture-app/issues/975)) ([e11fadc](https://github.com/dhis2/tracker-capture-app/commit/e11fadc1499588c4792660f3e33f0becb08721e3))
+
 # [31.3.0](https://github.com/dhis2/tracker-capture-app/compare/v31.2.6...v31.3.0) (2021-02-25)
 
 
