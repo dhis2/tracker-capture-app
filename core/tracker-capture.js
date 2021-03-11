@@ -352,43 +352,53 @@ function getBatchPrograms( programs, batch )
     $.ajax( {
         url: DHIS2URL + '/programs.json',
         type: 'GET',
-        data: 'restrictToCaptureScope=true&fields=*,dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],featureType,trackedEntityType[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],organisationUnits[id,displayName],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,description,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique,orgunitScope]],minAttributesRequiredToSearch,maxTeiCountToReturn&paging=false&filter=id:in:' + ids
+        data: 'fields=id,displayFormName,version,displayEnrollmentDateLabel,enrollmentDateLabel,maxTeiCountToReturn,selectIncidentDatesInFuture,' +
+        'incidentDateLabel,selectEnrollmentDatesInFuture,registration,favorite,useFirstStageDuringRegistration,displayName,' +
+        'completeEventsExpiryDays,description,displayShortName,externalAccess,withoutRegistration,minAttributesRequiredToSearch' + 
+        'displayFrontPageList,programType,accessLevel,displayIncidentDate,expiryDays' +
+        'dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],featureType,trackedEntityType[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,description,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique,orgunitScope]],minAttributesRequiredToSearch,maxTeiCountToReturn&paging=false&filter=id:in:' + ids
     }).done( function( response ){
 
         if(response.programs){
             _.each(_.values( response.programs), function(program){
-                if( program.organisationUnits ){
-                    var ou = {};
-                    _.each(_.values( program.organisationUnits), function(o){
-                        ou[o.id] = o.displayName;
-                    });
-                    program.organisationUnits = ou;
-                }
-                
-                if( program.programStages ){
-                    program.programStages = _.sortBy( program.programStages, 'sortOrder' );
-                }
+                $.ajax( {
+                    url: DHIS2URL + '/programs/orgUnits.json',
+                    type: 'GET',
+                    data: 'programs=' + program.id
+                }).done( function( response ){
+                    if( response[program.id] ){
+                        var ou = {};
+                        _.each(_.values( response[program.id] ), function(o){
+                            ou[o] = {id:o};
+                        });
+                        program.organisationUnits = ou;
+                    }
+                    
+                    if( program.programStages ){
+                        program.programStages = _.sortBy( program.programStages, 'sortOrder' );
+                    }
 
-                if( program.categoryCombo && program.categoryCombo.categories ){
-                    _.each( _.values( program.categoryCombo.categories ), function ( ca ) {                            
-                        if( ca.categoryOptions ){
-                            _.each( _.values( ca.categoryOptions ), function ( co ) {
-                                var mappedOrganisationUnits = [];
-                                if( co.organisationUnits && co.organisationUnits.length > 0 ){                                        
-                                    mappedOrganisationUnits = $.map(co.organisationUnits, function(ou){return ou.id;});
-                                }                                
-                                co.organisationUnits = mappedOrganisationUnits;
-                            });
-                        }
-                    });
-                }
-
-
-                dhis2.tc.store.set( 'programs', program );
+                    if( program.categoryCombo && program.categoryCombo.categories ){
+                        _.each( _.values( program.categoryCombo.categories ), function ( ca ) {                            
+                            if( ca.categoryOptions ){
+                                _.each( _.values( ca.categoryOptions ), function ( co ) {
+                                    var mappedOrganisationUnits = [];
+                                    if( co.organisationUnits && co.organisationUnits.length > 0 ){                                        
+                                        mappedOrganisationUnits = $.map(co.organisationUnits, function(ou){return ou.id;});
+                                    }                                
+                                    co.organisationUnits = mappedOrganisationUnits;
+                                });
+                            }
+                        });
+                    }
+                    
+                    dhis2.tc.store.set( 'programs', program );
+                    def.resolve( programs, batch );
+                });
             });
+        } else {
+            def.resolve( null, null );
         }
-        
-        def.resolve( programs, batch );
     });
 
     return def.promise();
