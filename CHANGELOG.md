@@ -1,3 +1,10 @@
+# [31.4.0](https://github.com/dhis2/tracker-capture-app/compare/v31.3.1...v31.4.0) (2021-03-11)
+
+
+### Features
+
+* [TECH-541] download org unit associations ([#981](https://github.com/dhis2/tracker-capture-app/issues/981)) ([46664b9](https://github.com/dhis2/tracker-capture-app/commit/46664b9b7fb67185c2ce869c68ac1bb5aed6ff5f))
+
 ## [31.3.1](https://github.com/dhis2/tracker-capture-app/compare/v31.3.0...v31.3.1) (2021-03-08)
 
 
