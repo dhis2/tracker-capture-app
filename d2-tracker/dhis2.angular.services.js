@@ -497,7 +497,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 obj.valueType === 'INTEGER_NEGATIVE' ||
                 obj.valueType === 'INTEGER_ZERO_OR_POSITIVE')){
                 if( dhis2.validation.isNumber(val)){
-                    if(obj.valueType === 'NUMBER'){
+                    if(obj.valueType === 'NUMBER' || obj.valueType === 'PERCENTAGE'){
                         val = parseFloat(val);
                     }else{
                         val = parseInt(val);
