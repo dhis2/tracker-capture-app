@@ -23,6 +23,8 @@ trackerCapture.controller('RelationshipController',
     var ENTITYNAME = "TRACKED_ENTITY_INSTANCE";
     var allPrograms = [];
 
+    $scope.relationshipsWidget = $rootScope.getCurrentWidget($scope);
+
     ProgramFactory.getAll().then(function(result) {
         allPrograms = result.programs;
     });
