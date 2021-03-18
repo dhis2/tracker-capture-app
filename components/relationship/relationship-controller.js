@@ -1,5 +1,7 @@
 /* global trackerCapture, angular */
 
+const { program } = require("babel-types");
+
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RelationshipController',
         function($scope,
@@ -162,6 +164,43 @@ trackerCapture.controller('RelationshipController',
         location.href = '../dhis-web-capture/index.html#/viewEvent/' + eventId;
     };
     
+    var pushRelative = function(relative) {
+
+        if( $scope.relationshipsWidget.customRelationship == 'index' ) {
+            relative.relationshipProgramConstraint.id = 'uYjxkTbwRNf';
+            TEIService.getWithProgramData(relative.trackedEntityInstance, 'uYjxkTbwRNf', $scope.optionSets, $scope.attributesById).then(function(teiIndex){
+                angular.forEach(teiIndex.enrollments,function(enrollment) {
+                    if(enrollment.program == 'uYjxkTbwRNf') {
+                        relative.symptomsOnset = enrollment.incidentDate;
+                        relative.created = enrollment.incidentDate;
+                    };
+                });
+
+                if(relative.symptomsOnset) {
+                    $scope.relatedTeis.push(relative);
+                }
+            });
+        } else if( $scope.relationshipsWidget.customRelationship == 'contact' ) {
+            relative.relationshipProgramConstraint.id = 'DM9n1bUw8W8';
+            TEIService.getWithProgramData(relative.trackedEntityInstance, 'DM9n1bUw8W8', $scope.optionSets, $scope.attributesById).then(function(teiIndex){
+                angular.forEach(teiIndex.enrollments,function(enrollment) {
+                    if(enrollment.program == 'DM9n1bUw8W8') {
+                        relative.contactDate = enrollment.enrollmentDate;
+                        relative.created = enrollment.enrollmentDate;
+                    };
+                    if(enrollment.program == 'uYjxkTbwRNf') {
+                        relative.symptomsOnset = enrollment.incidentDate;
+                    }
+                });
+                if(!relative.symptomsOnset) {
+                    $scope.relatedTeis.push(relative);
+                }
+            });
+        } else {
+            $scope.relatedTeis.push(relative);
+        }
+    }
+
     var setRelationships = function(){
         $scope.relatedTeis = [];
         $scope.relatedEvents = [];
@@ -197,7 +236,7 @@ trackerCapture.controller('RelationshipController',
                         }
 
                         var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType, created: rel.created};
-                        $scope.relatedTeis.push(relative);
+                        pushRelative(relative);
                     });
                 } else if(rel.from && rel.bidirectional && rel.from.trackedEntityInstance && rel.from.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance){  
                     var teiId = rel.from.trackedEntityInstance.trackedEntityInstance;
@@ -223,7 +262,7 @@ trackerCapture.controller('RelationshipController',
                         }
 
                         var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType, created: rel.created};
-                        $scope.relatedTeis.push(relative);
+                        pushRelative(relative);
                     });
                 } else if(rel.from && rel.bidirectional && rel.from.event && rel.from.event.event) {
                     var event = null;

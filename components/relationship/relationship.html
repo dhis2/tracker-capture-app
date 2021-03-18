@@ -24,19 +24,31 @@
             <div ng-if="relatedTeis.length > 0">
                 <table class="table table-striped dhis2-table-hover table-bordered">
                     <tr>
-                        <th>
+                        <th ng-if="!relationshipsWidget.customRelationship">
                             {{'relationship' | translate}}
                         </th>
                         <!-- ng-if checks if the displayInListNoProgram is true and if that spesific attribute shold be displayed for the current program. -->
                         <th ng-repeat="att in relationshipAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
                             {{att.displayName}}
                         </th>
+                        <th ng-if="relationshipsWidget.customRelationship == 'index'">
+                            Symptomstart
+                        </th>
+                        <th ng-if="relationshipsWidget.customRelationship == 'contact'">
+                            Siste kontakt
+                        </th>
                         <th ng-if="!selectedTei.inactive && selectedProgram.access.data.write"></th>
                     </tr>
                     <tr ng-repeat="rel in relatedTeis | orderBy:'-created'">
-                        <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)">{{rel.relName}}</td>
+                        <td ng-if="!relationshipsWidget.customRelationship" ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)">{{rel.relName}}</td>
                         <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)" ng-repeat="att in relationshipAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
                             {{rel.attributes[att.trackedEntityAttribute.id]}}
+                        </td>
+                        <td ng-if="relationshipsWidget.customRelationship == 'index'">
+                            {{rel.symptomsOnset}}
+                        </td>
+                        <td ng-if="relationshipsWidget.customRelationship == 'contact'">
+                            {{rel.contactDate}}
                         </td>
                         <td ng-click="removeRelationship(rel)" ng-attr-title="{{'delete_relationship'| translate}}" ng-if="!selectedTei.inactive && selectedProgram.access.data.write && rel.relationshipType.access.data.write">
                             <i class="fa fa-trash-o red"></i>
