@@ -1765,7 +1765,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Returns a function for getting rules for a specific program */
-.factory('TrackerRulesFactory', function($q,MetaDataFactory,$filter){
+.factory('TrackerRulesFactory', function($q,MetaDataFactory,$filter,$rootScope){
     var staticReplacements =
         [{regExp:new RegExp("([^\w\d])(and)([^\w\d])","gi"), replacement:"$1&&$3"},
             {regExp:new RegExp("([^\w\d])(or)([^\w\d])","gi"), replacement:"$1||$3"},
@@ -1783,6 +1783,14 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         getRules : function(programUid){
             var def = $q.defer();
             MetaDataFactory.getAll('constants').then(function(constants) {
+                
+                if($rootScope.customConstants) {
+                    if(!constants) {
+                        constants = [];
+                    }
+                    constants = constants.concat($rootScope.customConstants);
+                }
+
                 MetaDataFactory.getByProgram('programIndicators',programUid).then(function(pis){
                     var variables = [];
                     var programRules = [];

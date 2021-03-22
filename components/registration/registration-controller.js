@@ -236,6 +236,12 @@ trackerCapture.controller('RegistrationController',
     });
 
 
+    $scope.$on('relationshipIndicatorsUpdated', function (event, args) {
+        TrackerRulesFactory.getRules($scope.selectedProgram.id).then(function(rules){
+            $scope.allProgramRules = rules;
+            $scope.executeRules();
+        });
+    });
 
     //listen to modes of registration
     $scope.$on('registrationWidget', function (event, args) {
