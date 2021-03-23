@@ -1,3 +1,10 @@
+# [31.5.0](https://github.com/dhis2/tracker-capture-app/compare/v31.4.0...v31.5.0) (2021-03-23)
+
+
+### Features
+
+* ordering of indicators ([687b65c](https://github.com/dhis2/tracker-capture-app/commit/687b65c74bc3e1be8a350f8d2b3151382ab3e338))
+
 # [31.4.0](https://github.com/dhis2/tracker-capture-app/compare/v31.3.1...v31.4.0) (2021-03-11)
 
 
