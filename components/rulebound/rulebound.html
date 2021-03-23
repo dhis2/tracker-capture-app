@@ -13,22 +13,22 @@
         </div>        
         <div ng-show="this.widget.expand" class="panel-body dashboard-widget-container">
             <div>
-                <div class="panel-body" ng-if="data && data.keyDataInEffect">
-                    <div ng-repeat="(key,item) in data.displayKeyDataEffects" ng-show="item.ineffect"  class="info-container">
-                        <div class="info-container-heading">{{item.content | trimquotes }}</div>
-                        <div class="info-container-text">{{item.data | trimquotes}}</div>          
+                <div class="panel-body" ng-if="displayKeyDataEffects">
+                    <div ng-repeat="item in displayKeyDataEffects | orderBy:'title'" class="info-container">
+                        <div class="info-container-heading">{{item.title | trimquotes }}</div>
+                        <div class="info-container-text">{{item.value | trimquotes}}</div>          
                     </div>
                 </div>
-                <table class="table table-striped dashboard-element-container" ng-if="data && data.textInEffect">
-                    <tr ng-repeat="(key,item) in data.displayTextEffects" ng-if="item.ineffect">
+                <table class="table table-striped dashboard-element-container" ng-if="displayTextEffects">
+                    <tr ng-repeat="item in displayTextEffects | orderBy:'title'">
                         <td>
                             <div>
-                                {{item.content | trimquotes}}<span ng-if="item.data">: {{item.data | trimquotes}}</span> 
+                                {{item.title | trimquotes}}<span ng-if="item.value">: {{item.value | trimquotes}}</span> 
                             </div>
                         </td>
                     </tr>
                 </table>
-                <div ng-show="!data || (!data.keyDataInEffect && !data.textInEffect)" class="alert alert-warning">{{widgetTitleLabel === "Indicators" ? emptyIndicatorListLabel : emptyFeedbackListLabel}}</div> 
+                <div ng-show="!displayTextEffects && !displayKeyDataEffects" class="alert alert-warning">{{widgetTitleLabel === "Indicators" ? emptyIndicatorListLabel : emptyFeedbackListLabel}}</div> 
             </div>
         </div>
     </div>

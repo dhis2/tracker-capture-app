@@ -1929,7 +1929,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
 
             //Push all constant values:
             angular.forEach(allProgramRules.constants, function(constant){
-                variables = pushVariable(variables, constant.id, constant.value, null, 'INTEGER', true, 'C', '', false);
+                variables = pushVariable(variables, constant.id, constant.value, null, constant.type ? constant.type : 'INTEGER', true, 'C', '', false);
             });
 
             if(selectedOrgUnit){
