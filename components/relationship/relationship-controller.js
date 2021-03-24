@@ -200,7 +200,7 @@ trackerCapture.controller('RelationshipController',
                 angular.forEach(teiIndex.enrollments,function(enrollment) {
                     if(enrollment.program == 'DM9n1bUw8W8') {
                         var contactDateMoment = moment(DateUtils.formatFromUserToApi(enrollment.enrollmentDate));
-                        if((!endDate || contactDateMoment.isBefore(endDate)) && contactDateMoment.isAfter(startDate)) {
+                        if(!endDate || contactDateMoment.isBefore(endDate)) {
                             relative.contactDateMoment = contactDateMoment
                             relative.contactDate = enrollment.enrollmentDate;
                             relative.created = enrollment.enrollmentDate;
@@ -234,7 +234,7 @@ trackerCapture.controller('RelationshipController',
                                     //Serious condition
                                     if(event.programStage == 'LpWNjNGvCO5'){
                                         angular.forEach(event.dataValues, function(dataValue){
-                                            if(dataValue.dataElement == 'bOYWVEBaWy6') {
+                                            if(dataValue.dataElement == 'uUIPBIznDZT') {
                                                 relative.condition = dataValue.value;
                                             }
                                         });
@@ -262,15 +262,15 @@ trackerCapture.controller('RelationshipController',
                     $scope.indicators.underlyingCondition++;
                 }
 
-                if(relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isAfter(startDate.add(9,'days')) && relative.symptomsOnsetMoment.isBefore(endDate)) {
+                if(relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isAfter(startDate.add(9,'days'))) {
                     $scope.indicators.positiveContact10++;
                 }
 
                 //Now indicators.
-                if(relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(endDate)) {
+                if(relative.symptomsOnsetMoment && (!endDate || relative.symptomsOnsetMoment.isBefore(endDate))) {
                     $scope.indicators.indexNow++;
                 }
-                else if(relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate)) && relative.contactDateMoment.isAfter(startDate) ) {
+                else if(relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
                     $scope.indicators.contactNow++;
                 }
 
@@ -278,7 +278,7 @@ trackerCapture.controller('RelationshipController',
                 if(relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(1,'days'))) {
                     $scope.indicators.index1++;
                 }
-                else if(relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate)) && relative.contactDateMoment.isAfter(startDate) ) {
+                else if(relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
                     $scope.indicators.contact1++;
                 }
 
@@ -286,7 +286,7 @@ trackerCapture.controller('RelationshipController',
                 if(relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(10,'days'))) {
                     $scope.indicators.index10++;
                 }
-                else if(relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate)) && relative.contactDateMoment.isAfter(startDate) ) {
+                else if(relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
                     $scope.indicators.contact10++;
                 }
 
@@ -294,7 +294,7 @@ trackerCapture.controller('RelationshipController',
                 if(relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(21,'days'))) {
                     $scope.indicators.index21++;
                 }
-                else if(relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate)) && relative.contactDateMoment.isAfter(startDate) ) {
+                else if(relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
                     $scope.indicators.contact21++;
                 }
 
@@ -302,7 +302,7 @@ trackerCapture.controller('RelationshipController',
                 if(relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(30,'days'))) {
                     $scope.indicators.index30++;
                 }
-                else if(relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate)) && relative.contactDateMoment.isAfter(startDate) ) {
+                else if(relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
                     $scope.indicators.contact30++;
                 }
 
