@@ -19,6 +19,7 @@ trackerCapture.controller('RelationshipController',
                 CommonUtils,
                 TEService,
                 $timeout,
+                $q,
                 DHIS2EventFactory,
                 DateUtils) {
     $rootScope.showAddRelationshipDiv = false;
@@ -167,6 +168,8 @@ trackerCapture.controller('RelationshipController',
     
     var pushRelative = function(relative) {
 
+        var promise = $q.defer();
+
         var startDate = moment(DateUtils.formatFromUserToApi($scope.selectedEnrollment.enrollmentDate));
         var endDate;
         angular.forEach($scope.selectedTei.attributes, function(attribute){
@@ -193,6 +196,7 @@ trackerCapture.controller('RelationshipController',
                 if(relative.symptomsOnset) {
                     $scope.relatedTeis.push(relative);
                 }
+                promise.resolve();
             });
         } else if( $scope.relationshipsWidget.customRelationship == 'contact' ) {
             relative.relationshipProgramConstraint.id = 'DM9n1bUw8W8';
@@ -309,10 +313,15 @@ trackerCapture.controller('RelationshipController',
                 if(!relative.symptomsOnset) {
                     $scope.relatedTeis.push(relative);
                 }
+
+                promise.resolve();
             });
         } else {
             $scope.relatedTeis.push(relative);
+            promise.resolve();
         }
+
+        return promise.promise;
     }
 
     var setRelationships = function(){
@@ -341,12 +350,16 @@ trackerCapture.controller('RelationshipController',
         var relationshipProgram = {};
         var relationshipType = {};
 
-        TEService.getAll().then(function(teiTypes){
+       
+
+        var teServicePromise = TEService.getAll().then(function(teiTypes){
             //Loop through all relationships.      
+            var queries = [];
+
             angular.forEach($scope.selectedTei.relationships, function(rel){
                 if(rel.to && rel.to.trackedEntityInstance && rel.to.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance){  
                     var teiId = rel.to.trackedEntityInstance.trackedEntityInstance;
-                    TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
+                    queries.push(TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
                         relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
                         var relName = relationshipType.fromToName;
 
@@ -368,11 +381,11 @@ trackerCapture.controller('RelationshipController',
                         }
 
                         var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType, created: rel.created};
-                        pushRelative(relative);
-                    });
+                        return pushRelative(relative);
+                    }));
                 } else if(rel.from && rel.bidirectional && rel.from.trackedEntityInstance && rel.from.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance){  
                     var teiId = rel.from.trackedEntityInstance.trackedEntityInstance;
-                    TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
+                    queries.push(TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function(tei){
                         relationshipType = $scope.relationshipTypes.find(function(relType) { return relType.id === rel.relationshipType });
                         var relName = relationshipType.toFromName;
 
@@ -394,8 +407,8 @@ trackerCapture.controller('RelationshipController',
                         }
 
                         var relative = {trackedEntityInstance: teiId, relName: relName, relId: rel.relationship, attributes: getRelativeAttributes(tei.attributes), relationshipProgramConstraint: relationshipProgram, relationshipType: relationshipType, created: rel.created};
-                        pushRelative(relative);
-                    });
+                        return pushRelative(relative);
+                    }));
                 } else if(rel.from && rel.bidirectional && rel.from.event && rel.from.event.event) {
                     var event = null;
                     DHIS2EventFactory.getEventWithoutRegistration(rel.from.event.event).then(function(e){
@@ -428,14 +441,16 @@ trackerCapture.controller('RelationshipController',
                         $scope.relatedEvents.push(eventToDisplay);
                     });
                 }
+                
             });
+            return $q.all(queries);
         });
 
         var selections = CurrentSelection.get();
         CurrentSelection.set({tei: $scope.selectedTei, te: $scope.trackedEntityType, prs: selections.prs, pr: $scope.selectedProgram, prNames: selections.prNames, prStNames: selections.prStNames, enrollments: selections.enrollments, selectedEnrollment: $scope.selectedEnrollment, optionSets: selections.optionSets, orgUnit:selections.orgUnit});
 
         //todo, collect promises and broadcase once done.
-        $timeout(function () {
+        teServicePromise.then(function () {
             if( $scope.relationshipsWidget.customRelationship == 'contact' ) {
                 $rootScope.customConstants = [];
             
@@ -470,7 +485,7 @@ trackerCapture.controller('RelationshipController',
 
                 $rootScope.$broadcast('relationshipIndicatorsUpdated', $scope.indicators);
             }
-        }, 2000);
+        });
     };
     
     var getRelativeAttributes = function(teiAttributes){
@@ -495,3 +510,7 @@ trackerCapture.controller('RelationshipController',
         return programAttributes;
     };
 });
+
+
+// WEBPACK FOOTER //
+// ./components/relationship/relationship-controller.js
