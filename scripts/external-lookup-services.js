@@ -4681,7 +4681,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             var antattSmittetDato = bakgrunnsUndersokelse.LS20ZSe0zAC;
             {
                 textMessages.push("Antatt smittet dato: " + antattSmittetDato);
-                diagnoseforhold.antattSmittetDato = antattSmittetDato;
+                diagnoseforhold.antattSmittetDato = DateUtils.formatFromUserToApi(antattSmittetDato);
             }
 
             if(helseStatus.SFaxZRvgnsg) {
