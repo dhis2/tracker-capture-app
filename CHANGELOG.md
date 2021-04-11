@@ -1,3 +1,10 @@
+# [31.6.0](https://github.com/dhis2/tracker-capture-app/compare/v31.5.2...v31.6.0) (2021-04-11)
+
+
+### Features
+
+* use tracked entity type supplied on URL ([#1002](https://github.com/dhis2/tracker-capture-app/issues/1002)) ([e9b3755](https://github.com/dhis2/tracker-capture-app/commit/e9b3755d962001fb3a10405a6bdfb0b691683e77))
+
 ## [31.5.2](https://github.com/dhis2/tracker-capture-app/compare/v31.5.1...v31.5.2) (2021-03-30)
 
 
