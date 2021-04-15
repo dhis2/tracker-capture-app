@@ -1,3 +1,10 @@
+## [31.6.1](https://github.com/dhis2/tracker-capture-app/compare/v31.6.0...v31.6.1) (2021-04-15)
+
+
+### Bug Fixes
+
+* download styles ([#1006](https://github.com/dhis2/tracker-capture-app/issues/1006)) ([42d44a0](https://github.com/dhis2/tracker-capture-app/commit/42d44a0438f0095a11801b79da30ba23a860f951))
+
 # [31.6.0](https://github.com/dhis2/tracker-capture-app/compare/v31.5.2...v31.6.0) (2021-04-11)
 
 
