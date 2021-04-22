@@ -1330,10 +1330,10 @@ csso@~2.2.1:
     clap "^1.0.9"
     source-map "^0.5.3"
 
-d2-tracker@35:
-  version "35.0.2"
-  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-35.0.2.tgz#af1819ad923a9a6abb15c47e015c3ed06dc19859"
-  integrity sha512-jniFXB8ieqCbOZv24TfMOJWHQCd5u5eEUYhhb7+JRW9Juuidb0VBSHdkisrFPUPaHpszbbYrEpHyWTcjUGgnOg==
+d2-tracker@35.0.5:
+  version "35.0.5"
+  resolved "https://registry.yarnpkg.com/d2-tracker/-/d2-tracker-35.0.5.tgz#fcfabeac490f3de5bb3c80c73fd965153acf0af7"
+  integrity sha512-+9Lz4LFFWeqGtCyngTzge4MZUrHHOjHFttZiLomcPb0ii1QRAZKOhDpAyFhnkV0T0tciu6Rug96ZQHT4GMGv9g==
   dependencies:
     angular-vs-repeat "^2.0.9"
     gulp "^3.9.1"
