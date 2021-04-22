@@ -1,3 +1,10 @@
+## [31.6.2](https://github.com/dhis2/tracker-capture-app/compare/v31.6.1...v31.6.2) (2021-04-22)
+
+
+### Bug Fixes
+
+* [DHIS2-10675] changed the representation of the >= symbol  ([#1011](https://github.com/dhis2/tracker-capture-app/issues/1011)) ([ed5e554](https://github.com/dhis2/tracker-capture-app/commit/ed5e554c0143f91b1706da1e3a02f61d9b928c5d))
+
 ## [31.6.1](https://github.com/dhis2/tracker-capture-app/compare/v31.6.0...v31.6.1) (2021-04-15)
 
 
