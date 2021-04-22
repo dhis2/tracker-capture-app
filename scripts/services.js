@@ -499,7 +499,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     TCStorageService.currentStore.getAll('programs').done(function(prs){
                         var programs = [];
                         angular.forEach(prs, function(pr){
-                            if(pr.organisationUnits.hasOwnProperty( ou.id ) && accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read){
+                            if( (loadSelectedProgram && selectedProgram && pr.id == selectedProgram.id) || 
+                                (pr.organisationUnits.hasOwnProperty( ou.id ) && accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read) ){
                                 if(pr.programTrackedEntityAttributes){
                                     pr.programTrackedEntityAttributes = pr.programTrackedEntityAttributes.filter(function(attr){
                                         return attr.access && attr.access.read;
@@ -687,29 +688,8 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return null;
             });
         },
-        getByEntity: function( entity ){
-            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&fields=:all&paging=false').then(function(response){
-                return convertFromApiToUser(response.data);
-            },function(response){
-                var errorBody = $translate.instant('failed_to_fetch_enrollment');
-                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
-                return null;
-            });
-            return promise;
-        },
-        getByEntityAndProgram: function( entity, program ){
-            var url = DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&program=' + program + '&fields=:all&paging=false';
-            var promise = TeiAccessApiService.get(entity,program,url).then(function(response){
-                return convertFromApiToUser(response.data);
-            }, function(response){
-                var errorBody = $translate.instant('failed_to_fetch_enrollment');
-                NotificationService.showNotifcationDialog(errorHeader, errorBody, response);
-                return null;
-            });
-            return promise;
-        },
         getByStartAndEndDate: function( program, orgUnit, ouMode, startDate, endDate ){
-            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&program=' + program + '&orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&startDate=' + startDate + '&endDate=' + endDate + '&fields=:all&paging=false').then(function(response){
+            var promise = $http.get(  DHIS2URL + '/enrollments.json?program=' + program + '&ou=' + orgUnit + '&ouMode='+ ouMode + '&programStartDate=' + startDate + '&programEndDate=' + endDate + '&fields=:all&paging=false').then(function(response){
                 return convertFromApiToUser(response.data);
             }, function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
@@ -1043,6 +1023,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        saveRelationship: function(relationship) {
+            var promise = $http.post( DHIS2URL + '/relationships', relationship).then(function(response){
+                return response.data;
+            });
+            return promise;
+        },
         getPotentialDuplicates: function(uidList) {
             var uidUrl = "";
             if(uidList.length > 0)
@@ -1286,8 +1272,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
                     angular.forEach(program.programTrackedEntityAttributes, function(pAttribute){
                         var att = attributes[pAttribute.trackedEntityAttribute.id];
-                        att.programTrackedEntityAttribute = pAttribute;
+                        
                         if (att) {
+                            att.programTrackedEntityAttribute = pAttribute;
                             att.mandatory = pAttribute.mandatory;
                             att.displayInListNoProgram = pAttribute.displayInList;
                             
