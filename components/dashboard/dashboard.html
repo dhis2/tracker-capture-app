@@ -67,7 +67,7 @@
                         <ul class="dropdown-menu pull-right" role="menu">
                             <li><a href ng-click="showHideWidgets()">{{showHideWidgetsLabel}}</a></li>
                             <li ng-if="userAuthority.canAdministerDashboard"><a href ng-click="saveDashboarLayoutAsDefault()">{{'save_layout_as_default' | translate}}</a></li>
-                            <li><a href ng-click="openTopBarSettings()">Top bar settings</a></li>
+                            <li><a href ng-click="openTopBarSettings()">{{'top_bar_settings' | translate}}</a></li>
                             <li ng-if="userAuthority.canAdministerDashboard && lockedList && !lockedList[selectedProgram.id]"><a href ng-click="toggleLockDashboard()"><i class="fa fa-lock" aria-hidden="true"></i> {{'lock_default_layout' | translate}}</a></li>
                             <li ng-if="userAuthority.canAdministerDashboard && lockedList && lockedList[selectedProgram.id]"><a href ng-click="toggleLockDashboard()"><i class="fa fa-unlock" aria-hidden="true"></i> {{'unlock_default_layout' | translate}}</a></li>
                         </ul>
