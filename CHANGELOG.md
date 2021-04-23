@@ -1,3 +1,11 @@
+## [31.6.4](https://github.com/dhis2/tracker-capture-app/compare/v31.6.3...v31.6.4) (2021-04-23)
+
+
+### Bug Fixes
+
+* [DHIS2-10996] do not strip leading zeros ([#1016](https://github.com/dhis2/tracker-capture-app/issues/1016)) ([baf9544](https://github.com/dhis2/tracker-capture-app/commit/baf9544ee2885be5d39b7a7911cf739a73b4dfba))
+* [DHIS2-8660] missing translations ([#1022](https://github.com/dhis2/tracker-capture-app/issues/1022)) ([9f428be](https://github.com/dhis2/tracker-capture-app/commit/9f428be608c192a98c2a058b73f37abe998b15d0))
+
 ## [31.6.3](https://github.com/dhis2/tracker-capture-app/compare/v31.6.2...v31.6.3) (2021-04-22)
 
 
