@@ -14,7 +14,16 @@
                 </td>
                 <td>
                     
-                    <span ng-if="defaultDashboardWidgetsByTitle[widget.title].canBeUsedAsTopBar"><input type="checkbox" ng-model="widget.useAsTopBar" ng-change="setUseAsTopBar(widget)"/> Use as top bar</span>
+                    <span ng-if="defaultDashboardWidgetsByTitle[widget.title].canBeUsedAsTopBar">
+                        <div ng-style="{display: 'flex', 'align-items': 'center'}">
+                            <div>
+                                <input type="checkbox" ng-model="widget.useAsTopBar" ng-change="setUseAsTopBar(widget)"/>
+                            </div>
+                            <div ng-style="{'margin-left': '4px'}">
+                                {{'use_as_top_bar'| translate}}
+                            </div>
+                        </div>
+                    </span>
                 </td>
             </tr>
         </table>
