@@ -189,7 +189,7 @@ trackerCapture.controller('ListsController',function(
             if(!$scope.currentTrackedEntityList.sortColumn){
                 $scope.currentTrackedEntityList.sortColumn = {
                     id: 'created',
-                    direction: 'desc',
+                    direction: 'asc',
                 }
             }
         }
