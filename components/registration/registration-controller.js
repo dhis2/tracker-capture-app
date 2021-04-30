@@ -1395,7 +1395,7 @@ trackerCapture.controller('RegistrationController',
         return attributeMandatory || $scope.mandatoryFields[attributeId];
     }
 
-    $scope.labTestLookup = function () {
+    $scope.labTestLookup = function() {
         var userId;
         try{
             userId = JSON.parse(sessionStorage.USER_PROFILE).id
@@ -1416,8 +1416,6 @@ trackerCapture.controller('RegistrationController',
                     controller: function($scope,$modalInstance,modalData,orderByFilter)
                     {
                         $scope.gridData = orderByFilter(modalData,'-provedato');
-
-
 
                         $scope.dateFromItem = function(item){
                             var date = '';
@@ -1441,6 +1439,59 @@ trackerCapture.controller('RegistrationController',
                         openTei(res.tei);
                         return def.promise;
                     }else{
+                        def.reject();
+                        return def.promise;
+                    }
+                });
+            }
+        });
+    }
+
+    $scope.vaccineLookup = function() {
+        var userId;
+        try{
+            userId = JSON.parse(sessionStorage.USER_PROFILE).id
+        }
+        finally {}
+        return FNrLookupService.lookupVaccine($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code, userId);
+    }
+
+    $scope.showVaccine = function() {
+        $scope.showFetchingDataSpinner = true;
+        $scope.vaccineLookup().then(function(response) {
+            $scope.showFetchingDataSpinner = false;
+            if(response) {
+                var modalData = response.immunizations;
+
+                return $modal.open({
+                    templateUrl: 'components/registration/vaccination-modal.html',
+                    controller: function($scope, $modalInstance, modalData, orderByFilter)
+                    {
+                        $scope.gridData = orderByFilter(modalData, '-vaccinationDate');
+
+                        $scope.dateFromItem = function(item) {
+                            var flippedDate = item.vaccinationDate.substring(0, 9).split('-');
+                            var date = '';
+                            date = flippedDate[2] + '-' + flippedDate[1] + '-' + flippedDate[0];
+                            return date;
+                        }
+
+                        $scope.cancel = function(){
+                            $modalInstance.close({ action: "OK" });
+                        }
+                    },
+                    resolve: {
+                        modalData: function(){
+                            return modalData;
+                        }
+                    }
+                }).result.then(function(res){
+                    var def = $q.defer();
+                    if(res.action === "OPENTEI") {
+                        def.resolve();
+                        openTei(res.tei);
+                        return def.promise;
+                    } else {
                         def.reject();
                         return def.promise;
                     }

@@ -4863,6 +4863,33 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 });
                 return promise;
             },
+            lookupVaccine: function(fNr, kommuneNr, userId) {
+                var url = '../' + DHIS2URL + '/vaksine/sok';
+                var promise = $http({
+                    method: 'POST',
+                    url: url,
+                    data: {fnr:fNr, kommunenr:kommuneNr, userid:userId},
+                    headers: {'Content-Type': 'application/json'}
+                }).then(function(response){
+                    return response.data;
+                },function(error){
+                    var errorMsgHdr, errorMsgBody;
+                    errorMsgHdr = $translate.instant('error');
+
+                    errorMsgBody =  'Feil ved henting av vaksinedata:' + fNr;
+
+                    if(error.status == 403) {
+                        errorMsgBody = `Tjenesten Fiks prøvesvar er ikke tilgjengelig for deg.`;
+                    }
+                    else if(error.status == 401) {
+                        errorMsgBody = "Kunne ikke nå tjeneste for vaksinedata, prøv å logge inn på nytt.";
+                    }
+
+                    NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
+                    return null;
+                });
+                return promise;
+            },
             getNotificationMessageTextSummary: function(kommuneNr, tei, allEvents) {
                 return constructNotificationMessage(tei, allEvents, kommuneNr, true);
             },

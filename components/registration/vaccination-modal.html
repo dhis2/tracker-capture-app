@@ -1,0 +1,20 @@
+<div class="modal-header page">
+    <h3>Vaksineringer</h3>
+</div>
+<div class="modal-body page">
+    <table class="dhis2-list-table-striped default-form-table">
+        <tr ng-repeat="vaccine in gridData">
+            <td>{{dateFromItem(vaccine)}}<br>
+                {{vaccine.recorder.name}}<div ng-if="!vaccine.performedByRecorder"><br>(Utført av en annen helseenhet)</div></td>
+            <td><div style="padding-bottom:5px">{{vaccine.atcCode}}({{vaccine.lotNumber}})
+        </tr>
+    </table>
+    <div ng-if="!gridData || gridData.length == 0">
+        Det er ingen registrerte vaksineringer på dette fødselsnummeret.
+    </div>
+</div>
+<div class="modal-footer page modal-search-bottom">
+    <div class="modal-search-bottom-buttons">
+        <button class="btn btn-default" data-ng-click="cancel()">{{'back'| translate}}</button>
+    </div>
+</div>
