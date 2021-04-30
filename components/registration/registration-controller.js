@@ -1470,10 +1470,7 @@ trackerCapture.controller('RegistrationController',
                         $scope.gridData = orderByFilter(modalData, '-vaccinationDate');
 
                         $scope.dateFromItem = function(item) {
-                            var flippedDate = item.vaccinationDate.substring(0, 9).split('-');
-                            var date = '';
-                            date = flippedDate[2] + '-' + flippedDate[1] + '-' + flippedDate[0];
-                            return date;
+                            return DateUtils.getDateFromUTCString(item.vaccinationDate);
                         }
 
                         $scope.cancel = function(){
@@ -1484,16 +1481,6 @@ trackerCapture.controller('RegistrationController',
                         modalData: function(){
                             return modalData;
                         }
-                    }
-                }).result.then(function(res){
-                    var def = $q.defer();
-                    if(res.action === "OPENTEI") {
-                        def.resolve();
-                        openTei(res.tei);
-                        return def.promise;
-                    } else {
-                        def.reject();
-                        return def.promise;
                     }
                 });
             }

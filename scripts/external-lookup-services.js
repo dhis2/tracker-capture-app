@@ -4873,6 +4873,38 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 }).then(function(response){
                     return response.data;
                 },function(error){
+                    return {
+  "patientNin": "string",
+  "kanLevereUtData": true,
+  "immunizations": [
+    {
+      "vaccinationDate": "2021-04-29T13:30:51.560Z",
+      "vaccineCode": {
+        "system": "string",
+        "code": "string",
+        "display": "string"
+      },
+      "atcCode": "string",
+      "lotNumber": "string",
+      "preparation": {
+        "system": "string",
+        "code": "string",
+        "display": "string"
+      },
+      "identifier": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "recordedDate": "2021-04-29T13:30:51.560Z",
+      "recorder": {
+        "system": "string",
+        "code": "string",
+        "display": "string",
+        "id": "string",
+        "name": "string"
+      },
+      "performedByRecorder": true
+    }
+  ]
+
+                    };
                     var errorMsgHdr, errorMsgBody;
                     errorMsgHdr = $translate.instant('error');
 
