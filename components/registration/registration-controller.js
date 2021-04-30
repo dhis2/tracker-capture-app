@@ -1432,16 +1432,6 @@ trackerCapture.controller('RegistrationController',
                             return modalData;
                         }
                     }
-                }).result.then(function(res){
-                    var def = $q.defer();
-                    if(res.action === "OPENTEI"){
-                        def.resolve();
-                        openTei(res.tei);
-                        return def.promise;
-                    }else{
-                        def.reject();
-                        return def.promise;
-                    }
                 });
             }
         });
