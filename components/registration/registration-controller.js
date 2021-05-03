@@ -1465,7 +1465,7 @@ trackerCapture.controller('RegistrationController',
 
                         $scope.noVaccinesMessage = response.kanLeverUtData ?
                             "Det er ingen registrerte vaksineringer på dette fødselsnummeret." :
-                            "Du har ikke de nødvendige rettighetene for å hente ut vaksineinformasjon.";
+                            "Du har ikke de nødvendige rettighetene for å hente ut vaksineinformasjon på denne personen.";
 
                         $scope.cancel = function() {
                             $modalInstance.close({ action: "OK" });
