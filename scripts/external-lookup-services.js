@@ -4,9 +4,9 @@
 
 /* Services */
 
-var externalLookupServices = angular.module('externalLookupServices', ['ngResource'])
+var externalLookupServices = angular.module('externalLookupServices', ['ngResource', 'ngCookies'])
 
-.service('FNrLookupService', function($http, DHIS2URL, $translate, NotificationService, DateUtils) {
+.service('FNrLookupService', function($http, DHIS2URL, $translate, $cookies, NotificationService, DateUtils) {
         var not_supported_message_shown_previously = false;
 
         var land = [
@@ -4869,7 +4869,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     method: 'POST',
                     url: url,
                     data: {fnr:fNr, kommunenr:kommuneNr, userid:userId},
-                    headers: {'Content-Type': 'application/json'}
+                    headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']},
                 }).then(function(response){
                     return response.data;
                 },function(error) {
@@ -4879,7 +4879,12 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     errorMsgBody =  'Feil ved henting av vaksinedata:' + fNr;
 
                     if(error.status == 403) {
-                        errorMsgBody = `Tjenesten Fiks prøvesvar er ikke tilgjengelig for deg.`;
+                        errorMsgBody = `Tjenesten Fiks vaksine er ikke tilgjengelig for deg.
+                        Det kan være to årsaker til dette
+                        <ol>
+                        <li>Din kommune har ikke aktivert tjenesten Fiks vaksine. Les mer om aktivering av Fiks vaksine her: <a target="_blank" href="https://portal.fiks.ks.no/fiks/fiks-vaksine/">https://portal.fiks.ks.no/fiks/fiks-vaksine/</a></li>
+                        <li>Tjenesten er aktivert, men du har ikke fått rettigheter til å gjøre oppslag. Ta kontakt med Fiks administrator i din kommune.</li>
+                        </ol>`;
                     }
                     else if(error.status == 401) {
                         errorMsgBody = "Kunne ikke nå tjeneste for vaksinedata, prøv å logge inn på nytt.";

@@ -1463,7 +1463,11 @@ trackerCapture.controller('RegistrationController',
                             return DateUtils.getDateFromUTCString(item.vaccinationDate);
                         }
 
-                        $scope.cancel = function(){
+                        $scope.noVaccinesMessage = response.kanLeverUtData ?
+                            "Det er ingen registrerte vaksineringer på dette fødselsnummeret." :
+                            "Du har ikke de nødvendige rettighetene for å hente ut vaksineinformasjon.";
+
+                        $scope.cancel = function() {
                             $modalInstance.close({ action: "OK" });
                         }
                     },
