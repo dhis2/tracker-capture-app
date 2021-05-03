@@ -126,8 +126,6 @@ module.exports = {
             createProxy({ path: '/icons/**'}),
             createProxy({ path: '/images/**'}),
             createProxy({ path: '/main.js'}),
-            createProxy({ path: '/api/person/sok', target: fiksConfig.mockApiPath}),
-            createProxy({ path: '/api/provesvar/sok', target: fiksConfig.mockApiPath})
         ],
     },
 };
