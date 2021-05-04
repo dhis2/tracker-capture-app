@@ -4773,7 +4773,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     method: 'POST',
                     url: url,
                     data: {fnr:fNr, kommunenr:kommuneNr, userid:userId},
-                    headers: {'Content-Type': 'application/json'}
+                    headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']}
                 }).then(function(response){
                     var errorMsgHdr, errorMsgBody;
                     errorMsgHdr = $translate.instant('error');
@@ -4837,7 +4837,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     method: 'POST',
                     url: url,
                     data: {fnr:fNr, kommunenr:kommuneNr, userid:userId},
-                    headers: {'Content-Type': 'application/json'}
+                    headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']}
                 }).then(function(response){                  
                     return response.data;
                 },function(error){
@@ -4905,7 +4905,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     method: 'POST',
                     url: url,
                     data: {melding:melding, kommunenr:kommuneNr, userid:userId},
-                    headers: {'Content-Type': 'application/json'}
+                    headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']}
                 }).then(function(response){
                     if(response.data.status == 'ok'){
                         NotificationService.showNotifcationDialog("Klinikermelding sendt", "Klinikermelding er sendt inn i MSIS.");

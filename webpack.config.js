@@ -16,7 +16,7 @@ try {
     console.warn('\nWARNING! Failed to load DHIS config:', e.message);
     console.info('Using default config');
     dhisConfig = {
-        baseUrl: 'http://localhost:8080/',
+        baseUrl: 'http://localhost:8090/',
         authorization: 'Basic ZG92cmU6VGVzdDEyMyE=' //c2VsOlRlc3QxMjMh sel:Test123!    //bWFya3VzOlN0b3BDb3ZpZDE5IQ== markus:StopCovid19!    // YWRtaW46ZGlzdHJpY3Q=' // admin:district
     };
 }
