@@ -4,9 +4,9 @@
 
 /* Services */
 
-var externalLookupServices = angular.module('externalLookupServices', ['ngResource'])
+var externalLookupServices = angular.module('externalLookupServices', ['ngResource', 'ngCookies'])
 
-.service('FNrLookupService', function($http, DHIS2URL, $translate, NotificationService, DateUtils) {
+.service('FNrLookupService', function($http, DHIS2URL, $translate, $cookies, NotificationService, DateUtils) {
         var not_supported_message_shown_previously = false;
 
         var land = [
@@ -4773,7 +4773,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     method: 'POST',
                     url: url,
                     data: {fnr:fNr, kommunenr:kommuneNr, userid:userId},
-                    headers: {'Content-Type': 'application/json'}
+                    headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']}
                 }).then(function(response){
                     var errorMsgHdr, errorMsgBody;
                     errorMsgHdr = $translate.instant('error');
@@ -4837,7 +4837,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     method: 'POST',
                     url: url,
                     data: {fnr:fNr, kommunenr:kommuneNr, userid:userId},
-                    headers: {'Content-Type': 'application/json'}
+                    headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']}
                 }).then(function(response){                  
                     return response.data;
                 },function(error){
@@ -4863,6 +4863,38 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 });
                 return promise;
             },
+            lookupVaccine: function(fNr, kommuneNr, userId) {
+                var url = '../' + DHIS2URL + '/vaksine/sok';
+                var promise = $http({
+                    method: 'POST',
+                    url: url,
+                    data: {fnr:fNr, kommunenr:kommuneNr, userid:userId},
+                    headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']},
+                }).then(function(response){
+                    return response.data;
+                },function(error) {
+                    var errorMsgHdr, errorMsgBody;
+                    errorMsgHdr = $translate.instant('error');
+
+                    errorMsgBody =  'Feil ved henting av vaksinedata:' + fNr;
+
+                    if(error.status == 403) {
+                        errorMsgBody = `Tjenesten Fiks vaksine er ikke tilgjengelig for deg.
+                        Det kan være to årsaker til dette
+                        <ol>
+                        <li>Din kommune har ikke aktivert tjenesten Fiks vaksine. Les mer om aktivering av Fiks vaksine her: <a target="_blank" href="https://portal.fiks.ks.no/fiks/fiks-vaksine/">https://portal.fiks.ks.no/fiks/fiks-vaksine/</a></li>
+                        <li>Tjenesten er aktivert, men du har ikke fått rettigheter til å gjøre oppslag. Ta kontakt med Fiks administrator i din kommune.</li>
+                        </ol>`;
+                    }
+                    else if(error.status == 401) {
+                        errorMsgBody = "Kunne ikke nå tjeneste for vaksinedata, prøv å logge inn på nytt.";
+                    }
+
+                    NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
+                    return null;
+                });
+                return promise;
+            },
             getNotificationMessageTextSummary: function(kommuneNr, tei, allEvents) {
                 return constructNotificationMessage(tei, allEvents, kommuneNr, true);
             },
@@ -4873,7 +4905,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     method: 'POST',
                     url: url,
                     data: {melding:melding, kommunenr:kommuneNr, userid:userId},
-                    headers: {'Content-Type': 'application/json'}
+                    headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']}
                 }).then(function(response){
                     if(response.data.status == 'ok'){
                         NotificationService.showNotifcationDialog("Klinikermelding sendt", "Klinikermelding er sendt inn i MSIS.");

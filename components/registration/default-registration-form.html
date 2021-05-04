@@ -355,7 +355,10 @@
                             <div ng-if="attribute.id == 'ZSt07qyq6Pt'">
                                 <button type="button" style="margin-bottom: 5px;" ng-disabled="selectedTei[attribute.id].length != 11 || showFetchingDataSpinner" class="btn btn-primary" ng-click="registryLookup()">Slå opp og hent profildata</button>
                                 <i ng-show="showFetchingDataSpinner" class="fa fa-spinner fa-spin fa-2x" style="margin-left:5px"></i>
-                                <button type="button" ng-disabled="selectedTei[attribute.id].length != 11" class="btn btn-secondary" style="margin-bottom: 5px;" ng-click="showLabTest()">Prøvesvar</button>
+                                <div ng-style="{display: 'flex'}">
+                                    <button type="button" ng-disabled="selectedTei[attribute.id].length != 11" class="btn btn-secondary" style="margin-bottom: 5px; margin-right: 4px;" ng-click="showLabTest()">Prøvesvar</button>
+                                    <button type="button" ng-disabled="selectedTei[attribute.id].length != 11" class="btn btn-secondary" style="margin-bottom: 5px;" ng-click="showVaccine()">Vaksine</button>
+                                </div>
                             </div>
                     </span>
                     <span ng-switch-when="PHONE_NUMBER">
