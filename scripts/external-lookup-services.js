@@ -4868,7 +4868,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 var promise = $http({
                     method: 'POST',
                     url: url,
-                    data: {fnr:fNr, kommunenr:kommuneNr, userid:userId},
+                    data: {patientNin:fNr, kommunenr:kommuneNr, userid:userId},
                     headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']},
                 }).then(function(response){
                     return response.data;
