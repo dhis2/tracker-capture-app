@@ -10,6 +10,8 @@ pipeline {
     }
 
     tools {
+        maven 'maven'
+        jdk 'openjdk11'
         nodejs "node-LTS"
     }
 
