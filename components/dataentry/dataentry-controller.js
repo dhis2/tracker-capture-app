@@ -896,7 +896,7 @@ trackerCapture.controller('DataEntryController',
                 $scope.programStages = $scope.tabularEntryStages = $scope.selectedProgram.programStages;
                 
                 angular.forEach($scope.selectedProgram.programStages, function (stage) {
-                    if (stage.openAfterEnrollment) {
+                    if (!$scope.currentStage && stage.openAfterEnrollment) {
                         $scope.currentStage = stage;
                     }
 
