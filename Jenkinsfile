@@ -9,7 +9,7 @@ pipeline {
         IMAGE_NAME = "fiks-dhis2-tracker-capture-app"
     }
 
-      tools {
+    tools {
         nodejs "node-LTS"
     }
 
@@ -24,12 +24,15 @@ pipeline {
                     env.CURRENT_VERSION = env.CURRENT_VERSION.replace("SNAPSHOT", env.GIT_SHA)
                     env.IMAGE_TAG = env.CURRENT_VERSION
                 }
-
             }
         }
 
         stage('Install yarn') {
-          yarnInstall()
+          steps {
+              script {
+                yarnInstall()
+              }
+          }
         }
 
         stage('check tools') {
@@ -61,6 +64,9 @@ pipeline {
             }
         }
         stage('Repackage war with KS tracker capture app') {
+            when {
+                branch 'main'
+            }
             steps {
                 dir('war-content') {
 
