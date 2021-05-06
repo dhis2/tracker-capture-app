@@ -1,3 +1,10 @@
+## [31.6.9](https://github.com/dhis2/tracker-capture-app/compare/v31.6.8...v31.6.9) (2021-05-06)
+
+
+### Bug Fixes
+
+* Do not override currentStage on each iteration ([#1031](https://github.com/dhis2/tracker-capture-app/issues/1031)) ([c7db5bd](https://github.com/dhis2/tracker-capture-app/commit/c7db5bdced4c6849b1cb7b05e60a6f1fa0711fc6))
+
 ## [31.6.8](https://github.com/dhis2/tracker-capture-app/compare/v31.6.7...v31.6.8) (2021-05-05)
 
 
