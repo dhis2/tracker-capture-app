@@ -73,8 +73,7 @@ pipeline {
                         sh "mv ../build/* ${tracker_capture_path}/"
                         sh "jar -cvf ${war_file} *"
                         sh "mv ${war_file} ../${war_file}"
-                        sh "cd .."
-                        sh "ls -l"
+                        sh "ls -l ../"
                     }
                 }
             }
