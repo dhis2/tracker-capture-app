@@ -9,6 +9,10 @@ pipeline {
         IMAGE_NAME = "fiks-dhis2-tracker-capture-app"
     }
 
+      tools {
+        nodejs "node-LTS"
+    }
+
     stages {
 
         stage('Resolve version') {
@@ -24,11 +28,23 @@ pipeline {
             }
         }
 
+        stage('Install yarn') {
+          yarnInstall()
+        }
+
+        stage('check tools') {
+            steps {
+                sh "node -v"
+                sh "npm -v"
+                sh "yarn -v"
+            }
+        }
+
         stage('Build tracker capture app') {
             steps {
                 script {
-                    sh "npm install"
-                    sh "npm run build"
+                    sh "yarn install"
+                    sh "yarn run build"
                 }
             }
         }
