@@ -27,27 +27,18 @@ pipeline {
             }
         }
 
-        stage('Install yarn') {
-          steps {
-              script {
-                yarnInstall()
-              }
-          }
-        }
-
         stage('check tools') {
             steps {
                 sh "node -v"
                 sh "npm -v"
-                sh "yarn -v"
             }
         }
 
         stage('Build tracker capture app') {
             steps {
                 script {
-                    sh "yarn install"
-                    sh "yarn run build"
+                    sh "npm install"
+                    sh "npm run build"
                 }
             }
         }
