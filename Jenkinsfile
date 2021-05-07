@@ -15,6 +15,12 @@ pipeline {
         nodejs "node-LTS"
     }
 
+    parameters {
+        booleanParam(defaultValue: false, description: 'Skal prosjektet releases?', name: 'isRelease')
+        string(name: "releaseVersion", defaultValue: "", description: "Hva er det nye versjonsnummeret?")
+        string(name: "snapshotVersion", defaultValue: "", description: "Hva er den nye snapshotversjonen? (uten -SNAPSHOT postfix)")
+    }
+
     stages {
 
         stage('Resolve version') {
@@ -73,7 +79,16 @@ pipeline {
                         sh "mv ../build/* ${tracker_capture_path}/"
                         sh "jar -cvf ${war_file} *"
                         sh "mv ${war_file} ../${war_file}"
-                        sh "ls -l ../"
+                    }
+                }
+            }
+        }
+
+        stage('Push image') {
+            steps {
+                script {
+                    docker.withRegistry('https://docker-all.artifactory.fiks.ks.no', 'artifactory-token-based') {
+                        buildAndPushDockerImage('fiks-dhis2-tracker-capture-app', [env.CURRENT_VERSION, 'latest'], [], params.isRelease)
                     }
                 }
             }
