@@ -7,6 +7,7 @@ pipeline {
         DHIS2_CORE_KS_BRANCH = '2.36-ks-tracker'
 
         IMAGE_NAME = "fiks-dhis2-tracker-capture-app"
+        WAR_FILE_NAME = "dhis.war"
     }
 
     tools {
@@ -72,13 +73,12 @@ pipeline {
                     script {
                         def tracker_capture_path = "dhis-web-tracker-capture"
                         def docker_artifacts_path = "../dhis2-core/docker/artifacts/"
-                        def war_file = "dhis.war"
 
-                        sh "jar -xvf ../dhis2-core/dhis-2/dhis-web/dhis-web-portal/target/${war_file}"
+                        sh "jar -xvf ../dhis2-core/dhis-2/dhis-web/dhis-web-portal/target/${WAR_FILE_NAME}"
                         sh "rm -rf ${tracker_capture_path}/*"
                         sh "mv ../build/* ${tracker_capture_path}/"
-                        sh "jar -cvf ${war_file} *"
-                        sh "mv ${war_file} ../${war_file}"
+                        sh "jar -cvf ${WAR_FILE_NAME} *"
+                        sh "mv ${WAR_FILE_NAME} ../${WAR_FILE_NAME}/docker"
                     }
                 }
             }
@@ -87,7 +87,7 @@ pipeline {
         stage('Push image') {
             steps {
                 script {
-                    buildAndPushDockerImage(IMAGE_NAME, [env.CURRENT_VERSION, 'latest'], [], params.isRelease)
+                    buildAndPushDockerImage(IMAGE_NAME, [env.CURRENT_VERSION, 'latest'], [], params.isRelease, 'docker')
                 }
             }
         }
