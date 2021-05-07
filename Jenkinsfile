@@ -87,9 +87,7 @@ pipeline {
         stage('Push image') {
             steps {
                 script {
-                    docker.withRegistry('https://docker-all.artifactory.fiks.ks.no', 'artifactory-token-based') {
-                        buildAndPushDockerImage('fiks-dhis2-tracker-capture-app', [env.CURRENT_VERSION, 'latest'], [], params.isRelease)
-                    }
+                    buildAndPushDockerImage(IMAGE_NAME, [env.CURRENT_VERSION, 'latest'], [], params.isRelease)
                 }
             }
         }
