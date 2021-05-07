@@ -78,7 +78,7 @@ pipeline {
                         sh "rm -rf ${tracker_capture_path}/*"
                         sh "mv ../build/* ${tracker_capture_path}/"
                         sh "jar -cvf ${WAR_FILE_NAME} *"
-                        sh "mv ${WAR_FILE_NAME} ../${WAR_FILE_NAME}/docker"
+                        sh "mv ${WAR_FILE_NAME} ../docker/${WAR_FILE_NAME}"
                     }
                 }
             }
