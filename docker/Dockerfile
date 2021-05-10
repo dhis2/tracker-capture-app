@@ -25,6 +25,7 @@ RUN chmod +rx /usr/local/bin/docker-entrypoint.sh && \
     chmod +rx /usr/local/bin/wait-for-it.sh
 
 COPY ./config/tomcat/conf/server.xml /usr/local/tomcat/conf
+COPY ./dhis.war /usr/local/tomcat/webapps/ROOT.war
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
