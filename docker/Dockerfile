@@ -19,8 +19,7 @@ RUN apk add --update --no-cache \
 
 COPY ./config/tomcat/docker-entrypoint.sh /usr/local/bin/
 
-RUN chmod +rx /usr/local/bin/docker-entrypoint.sh && \
-    chmod +rx /usr/local/bin/wait-for-it.sh
+RUN chmod +rx /usr/local/bin/docker-entrypoint.sh
 
 COPY ./config/tomcat/conf/server.xml /usr/local/tomcat/conf
 
