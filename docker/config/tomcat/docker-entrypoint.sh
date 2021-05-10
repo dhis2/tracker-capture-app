@@ -22,4 +22,8 @@ if [ "$(id -u)" = "0" ]; then
     exec su-exec tomcat "$0" "$@"
 fi
 
+if [[ ! -z "$WAIT_FOR_DB_CONTAINER" ]]; then
+    $BINDIR/wait-for-it.sh $WAIT_FOR_DB_CONTAINER
+fi
+
 exec "$@"

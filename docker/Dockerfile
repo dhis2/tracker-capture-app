@@ -1,5 +1,6 @@
 FROM tomcat:8.5.34-jre8-alpine
 
+ENV WAIT_FOR_DB_CONTAINER=""
 ENV DHIS2_HOME=/DHIS2_home
 
 RUN rm -rf /usr/local/tomcat/webapps/* && \
@@ -17,9 +18,11 @@ RUN apk add --update --no-cache \
         fontconfig \
         ttf-dejavu
 
+COPY ./config/tomcat/wait-for-it.sh /usr/local/bin/
 COPY ./config/tomcat/docker-entrypoint.sh /usr/local/bin/
 
-RUN chmod +rx /usr/local/bin/docker-entrypoint.sh
+RUN chmod +rx /usr/local/bin/docker-entrypoint.sh && \
+    chmod +rx /usr/local/bin/wait-for-it.sh
 
 COPY ./config/tomcat/conf/server.xml /usr/local/tomcat/conf
 
