@@ -17,7 +17,7 @@ RUN apk add --update --no-cache \
         fontconfig \
         ttf-dejavu
 
-COPY ./tomcat-alpine/docker-entrypoint.sh /usr/local/bin/
+COPY ./config/tomcat/docker-entrypoint.sh /usr/local/bin/
 
 RUN chmod +rx /usr/local/bin/docker-entrypoint.sh && \
     chmod +rx /usr/local/bin/wait-for-it.sh
