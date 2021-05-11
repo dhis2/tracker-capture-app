@@ -2849,6 +2849,8 @@ i
                 existing[d[0]] = true;
                 return true;
             });
+            // Due to implementation, we cannot trust a number that is higher than 1000.
+            var totalElementsIfLessThanThousand = data.rows && data.rows.length  < 1000 ? data.rows.length : -1;
             var sortColumnIndex = data.headers.findIndex(function(h){ return h.name === sortColumn.id});
             if(sortColumnIndex) data.rows = orderByKeyFilter(data.rows, sortColumnIndex, sortColumn.direction);
             //order list
@@ -2856,6 +2858,7 @@ i
             workingList.cachedSorting = searchParams.sortUrl;
             workingList.cachedOrgUnit = searchParams.orgUnitId;
             var data = getCachedMultipleEventFiltersData(workingList, pager, sortColumn);
+            data.metaData.pager.total = totalElementsIfLessThanThousand;
             def.resolve(data);
         });
         return def.promise;
@@ -3155,6 +3158,7 @@ i
         }
     }
     var tetScopeSearchCount = this.tetScopeSearchCount = function(tetSearchGroup, trackedEntityType, orgUnit){
+        console.log('----? Getting scope search count?')
         var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, null, searchScopes.TET);
         if(params){
             return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, null, false).then(function(response){
