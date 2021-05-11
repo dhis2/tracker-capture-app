@@ -18,6 +18,8 @@ if [ "$(id -u)" = "0" ]; then
         $TOMCATDIR/work \
         $TOMCATDIR/logs
 
+    chown tomcat:tomcat /opt/tomcat-dhis/conf/tomcat-users.xml
+
     chown -R tomcat:tomcat $DHIS2HOME
     exec su-exec tomcat "$0" "$@"
 fi
