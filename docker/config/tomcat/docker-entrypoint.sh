@@ -16,9 +16,9 @@ if [ "$(id -u)" = "0" ]; then
     chmod -R u+rwX,g+rX,o-rwx $TOMCATDIR
     chown -R tomcat:tomcat $TOMCATDIR/temp \
         $TOMCATDIR/work \
-        $TOMCATDIR/logs
+        $TOMCATDIR/logs \
+        $TOMCATDIR/temp
 
-    chown tomcat:tomcat /opt/tomcat-dhis/conf/tomcat-users.xml
 
     chown -R tomcat:tomcat $DHIS2HOME
     exec su-exec tomcat "$0" "$@"
