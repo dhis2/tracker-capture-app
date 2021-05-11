@@ -27,6 +27,8 @@ RUN chmod +rx /usr/local/bin/docker-entrypoint.sh && \
 COPY ./config/tomcat/conf/server.xml /usr/local/tomcat/conf
 COPY ./dhis.war /usr/local/tomcat/webapps/ROOT.war
 
+USER 1001
+
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 CMD ["catalina.sh", "run"]
