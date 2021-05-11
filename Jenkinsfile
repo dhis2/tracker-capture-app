@@ -1,6 +1,6 @@
 
 pipeline {
-    agent any
+    agent linux
 
       environment {
         DHIS2_CORE_GIT_REPO = 'https://github.com/dhis2/dhis2-core.git'
