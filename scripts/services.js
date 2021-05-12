@@ -3165,7 +3165,6 @@ i
         }
     }
     var tetScopeSearchCount = this.tetScopeSearchCount = function(tetSearchGroup, trackedEntityType, orgUnit){
-        console.log('----? Getting scope search count?')
         var params = getSearchParams(tetSearchGroup, null, trackedEntityType, orgUnit, null, searchScopes.TET);
         if(params){
             return TEIService.searchCount(params.orgUnit.id, params.ouMode,null, params.programOrTETUrl, params.queryUrl, null, false).then(function(response){
