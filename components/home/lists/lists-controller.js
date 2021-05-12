@@ -263,6 +263,7 @@ trackerCapture.controller('ListsController',function(
         $scope.setServerResponse = function(serverResponse) {
             $scope.currentTrackedEntityList.data = TEIGridService.format($scope.selectedOrgUnit.id, serverResponse, false, $scope.base.optionSets, null);
             $scope.currentTrackedEntityList.loading = false;
+            $scope.pager = $scope.currentTrackedEntityList.data.pager
         };
 
         $scope.fetchTeis = function(pager, sortColumn){
