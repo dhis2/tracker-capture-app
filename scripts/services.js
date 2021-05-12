@@ -952,8 +952,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             pgSize = pgSize > 1 ? pgSize  : 1;
             pg = pg > 1 ? pg : 1;
             url = url + '&pageSize=' + pgSize + '&page=' + pg;
+            // Not getting totalPages causes unpredictable bugs. Override and always get totalPages
             if(pager && pager.skipTotalPages) {
-                url+= '&totalPages=false';
+                url+= '&totalPages=true';
             }else{
                 url+= '&totalPages=true';
             }
@@ -2807,7 +2808,12 @@ i
     }
     var getCachedMultipleEventFiltersData = function(workingList, pager, sortColumn){
         var cachedData = cachedMultipleEventFiltersData[workingList.name];
-        if(!pager) pager = { page: 1, pageSize: 50, pageCount: Math.ceil(cachedData.rows.length/50)};
+        if(!pager) {
+            pager = { page: 1, pageSize: 50 }
+        };
+        // This has to be set explicitly, as it is randomly wrong otherwise.
+        pager.pageCount = Math.ceil(cachedData.rows.length/50)
+
         var pageEnd = (pager.pageSize*pager.page);
         var pageStart = pageEnd - pager.pageSize;
 
@@ -2859,6 +2865,7 @@ i
             workingList.cachedOrgUnit = searchParams.orgUnitId;
             var data = getCachedMultipleEventFiltersData(workingList, pager, sortColumn);
             data.metaData.pager.total = totalElementsIfLessThanThousand;
+            data.metaData.pager.pageCount = totalElementsIfLessThanThousand > 0 ? Math.ceil(totalElementsIfLessThanThousand/pager.pageSize) : 0
             def.resolve(data);
         });
         return def.promise;
