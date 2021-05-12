@@ -16,10 +16,13 @@ try {
     console.warn('\nWARNING! Failed to load DHIS config:', e.message);
     console.info('Using default config');
     dhisConfig = {
-        baseUrl: 'http://localhost:8090/',
+        baseUrl: 'https://covid19.fiks.dev.ks.no',
         authorization: 'Basic ZG92cmU6VGVzdDEyMyE=' //c2VsOlRlc3QxMjMh sel:Test123!    //bWFya3VzOlN0b3BDb3ZpZDE5IQ== markus:StopCovid19!    // YWRtaW46ZGlzdHJpY3Q=' // admin:district
     };
 }
+const fiksConfig = {
+    mockApiPath: "http://localhost:4040/dhis2-mock"
+};
 console.log(JSON.stringify(dhisConfig, null, 2), '\n');
 
 function bypass(req, res, opt) {
@@ -49,6 +52,17 @@ function makeScriptTags(scripts) {
             .map(script => (`<script src="${script}?_=${hash}"></script>`))
             .join(`\n`);
     };
+}
+
+function createProxy(data) {
+    return Object.assign(
+        {
+            target: dhisConfig.baseUrl,
+            secure: false,
+            bypass:bypass,
+            changeOrigin: true
+        },
+        data);
 }
 
 module.exports = {
@@ -91,6 +105,7 @@ module.exports = {
         }),
     ],
     devtool: 'sourcemap',
+
     devServer: {
         contentBase: '.',
         progress: true,
@@ -99,15 +114,18 @@ module.exports = {
         inline: false,
         compress: false,
         proxy: [
-                { path: '/api/**', target: dhisConfig.baseUrl, bypass:bypass },
-                { path: '/dhis/dhis-web-commons/**', target: dhisConfig.baseUrl, bypass:bypass},
-                { path: '/dhis-web-commons-ajax-json/**', target: dhisConfig.baseUrl, bypass:bypass },
-                { path: '/dhis-web-commons-stream/**', target: dhisConfig.baseUrl, bypass:bypass },
-                { path: '/dhis-web-commons/***', target: dhisConfig.baseUrl, bypass:bypass, proxyTimeout: 1000 * 60 * 5 },
-                { path: '/dhis-web-core-resource/**', target: dhisConfig.baseUrl, bypass:bypass },
-                { path: '/icons/**', target: dhisConfig.baseUrl, bypass:bypass },
-                { path: '/images/**', target: dhisConfig.baseUrl, bypass:bypass },
-                { path: '/main.js', target: dhisConfig.baseUrl, bypass:bypass },
+            createProxy({ path: '/api/person/sok', target: fiksConfig.mockApiPath}),
+            createProxy({ path: '/api/provesvar/sok', target: fiksConfig.mockApiPath}),
+            createProxy({ path: '/api/klinikermelding', target: fiksConfig.mockApiPath}),
+            createProxy({ path: '/api/**'}),
+            createProxy({ path: '/dhis/dhis-web-commons/**'}),
+            createProxy({ path: '/dhis-web-commons-ajax-json/**'}),
+            createProxy({ path: '/dhis-web-commons-stream/**'}),
+            createProxy({ path: '/dhis-web-commons/***', proxyTimeout: 1000 * 60 * 5}),
+            createProxy({ path: '/dhis-web-core-resource/**'}),
+            createProxy({ path: '/icons/**'}),
+            createProxy({ path: '/images/**'}),
+            createProxy({ path: '/main.js'}),
         ],
     },
 };
