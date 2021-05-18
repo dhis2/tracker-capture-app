@@ -1,7 +1,7 @@
 
 pipeline {
     agent {
-        label 'linux'
+        label 'linux-large'
     }
 
       environment {
@@ -9,19 +9,12 @@ pipeline {
         DHIS2_CORE_KS_BRANCH = '2.36-ks-tracker'
 
         IMAGE_NAME = "fiks-dhis2-tracker-capture-app"
-        WAR_FILE_NAME = "dhis.war"
     }
 
     tools {
         maven 'maven'
         jdk 'openjdk11'
         nodejs "node-LTS"
-    }
-
-    parameters {
-        booleanParam(defaultValue: false, description: 'Skal prosjektet releases?', name: 'isRelease')
-        string(name: "releaseVersion", defaultValue: "", description: "Hva er det nye versjonsnummeret?")
-        string(name: "snapshotVersion", defaultValue: "", description: "Hva er den nye snapshotversjonen? (uten -SNAPSHOT postfix)")
     }
 
     stages {
@@ -66,21 +59,19 @@ pipeline {
             }
         }
         stage('Repackage war with KS tracker capture app') {
-            when {
-                branch 'main'
-            }
             steps {
                 dir('war-content') {
 
                     script {
                         def tracker_capture_path = "dhis-web-tracker-capture"
                         def docker_artifacts_path = "../dhis2-core/docker/artifacts/"
+                        def war_file_name = "dhis.war"
 
-                        sh "jar -xvf ../dhis2-core/dhis-2/dhis-web/dhis-web-portal/target/${WAR_FILE_NAME}"
+                        sh "jar -xvf ../dhis2-core/dhis-2/dhis-web/dhis-web-portal/target/${war_file_name}"
                         sh "rm -rf ${tracker_capture_path}/*"
                         sh "mv ../build/* ${tracker_capture_path}/"
-                        sh "jar -cvf ${WAR_FILE_NAME} *"
-                        sh "mv ${WAR_FILE_NAME} ../docker/${WAR_FILE_NAME}"
+                        sh "jar -cvf ${war_file_name} *"
+                        sh "mv ${war_file_name} ../docker/${war_file_name}"
                     }
                 }
             }
@@ -89,9 +80,18 @@ pipeline {
         stage('Push image') {
             steps {
                 script {
-                    buildAndPushDockerImage(IMAGE_NAME, [env.CURRENT_VERSION, 'latest'], [], params.isRelease, 'docker')
+                    buildAndPushDockerImage(IMAGE_NAME, [env.CURRENT_VERSION, 'latest'], [], false, 'docker')
                 }
             }
         }
+
+        stage('Deploy to dev') {
+            when {
+                branch 'main'
+            }
+            steps {
+                build job: 'KS / fiks-dhis2-configuration', parameters: [string(name: 'tag', value: params.tag)], wait: false, propagate: false
+            }
+       }
     }
 }
