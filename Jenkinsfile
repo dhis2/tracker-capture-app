@@ -86,11 +86,8 @@ pipeline {
         }
 
         stage('Deploy to dev') {
-            when {
-                branch 'main'
-            }
             steps {
-                build job: 'KS / fiks-dhis2-configuration', parameters: [string(name: 'tag', value: params.tag)], wait: false, propagate: false
+                build job: 'KS/fiks-dhis2-configuration', parameters: [string(name: 'tag', value: 'latest')], wait: false, propagate: false
             }
        }
     }
