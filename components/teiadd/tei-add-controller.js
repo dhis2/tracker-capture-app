@@ -1,5 +1,7 @@
 /* global trackerCapture, angular */
 
+import {conditionalAutofillBirthdateOnDnumberChange} from "../../ks_patches/field_updates";
+
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('TEIAddController', 
     function($scope, 
@@ -934,6 +936,7 @@ trackerCapture.controller('TEIAddController',
     };
     
     $scope.teiValueUpdated = function(tei, field){
+        conditionalAutofillBirthdateOnDnumberChange(tei, field)
         $scope.executeRules();
     };
     
