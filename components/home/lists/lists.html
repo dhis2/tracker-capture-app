@@ -35,8 +35,12 @@
             <button class="btn btn-default"ng-click="showHideListColumns()" ng-attr-title="{{'show_hide_columns'| translate}}"><span class="fa fa-table"></span></button>
         </div>
 
-        <span ng-if="currentTrackedEntityList.data && pager.total">
+
+        <span ng-if="pager.total > -1">
             {{'total'| translate}}:  {{pager.total}}
+        </span>
+        <span ng-if="pager.total == -1">
+            {{'total'| translate}}:  ukjent / mer enn 1000
         </span>
         
         

@@ -296,7 +296,8 @@ var d2Directives = angular.module('d2Directives', [])
 
             $scope.hasNextPage = function(){
                 var pager = $scope.pager;
-                return pager.recordsCount === pager.pageSize;
+                var isOnLastPage = pager.pageCount > 0 && pager.page >= pager.pageCount;
+                return pager.recordsCount === pager.pageSize && !isOnLastPage;
             }
 
             $scope.changePage = function(){
