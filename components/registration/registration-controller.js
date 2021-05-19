@@ -1,6 +1,9 @@
 /* global trackerCapture, angular */
 import { processRegistration } from './processRegistration';
 import {conditionalAutofillBirthdateOnDnumberChange} from "../../ks_patches/field_updates";
+import {
+    transferDataFromNaerkontaktToIndeksering,
+} from "../../ks_patches/data_transfer";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RegistrationController', 
@@ -544,6 +547,7 @@ trackerCapture.controller('RegistrationController',
                                     NotificationService.showNotifcationDialog($translate.instant("enrollment_error"), enrollmentResponse.message);
                                     return;
                                 }
+                                transferDataFromNaerkontaktToIndeksering(enrollment, $scope.tei,  $scope.selectedEnrollment.program, EnrollmentService, DHIS2EventFactory);
                             }
                         });
                     }
