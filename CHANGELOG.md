@@ -1,3 +1,10 @@
+## [31.6.13](https://github.com/dhis2/tracker-capture-app/compare/v31.6.12...v31.6.13) (2021-05-19)
+
+
+### Bug Fixes
+
+* calendar format for overdue events ([db009bd](https://github.com/dhis2/tracker-capture-app/commit/db009bd45bb60e4119415b8461902c253ca63f0c))
+
 ## [31.6.12](https://github.com/dhis2/tracker-capture-app/compare/v31.6.11...v31.6.12) (2021-05-18)
 
 
