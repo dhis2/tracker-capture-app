@@ -2500,7 +2500,7 @@ i
                     return 'alert-warning'; //'stage-executed';
                 }
                 else{
-                    if(moment(eventDate, calendarSetting.momentFormat).isAfter(dhis2Event.dueDate)){
+                    if(moment(eventDate, calendarSetting.momentFormat).isAfter(moment(dhis2Event.dueDate, calendarSetting.momentFormat))){
                         return 'alert-danger';//'stage-overdue';
                     }
                     return 'alert-success';//'stage-on-time';
