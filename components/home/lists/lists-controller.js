@@ -192,6 +192,7 @@ trackerCapture.controller('ListsController',function(
                     direction: 'asc',
                 }
             }
+            $scope.numberOfSelectedRows = 0;
         }
 
         var setCurrentTrackedEntityListData = function(serverResponse){

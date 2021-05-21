@@ -657,13 +657,16 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             gridColumns: "=?teiGridColumns",
             refetchData: "&teiRefetchData",
             onTeiClicked: "&onTeiClicked",
-            allowFlagDuplicates: "=allowFlagDuplicates", 
+            allowFlagDuplicates: "=allowFlagDuplicates",
             onMarkDuplicate: "&onMarkDuplicate",
             onUnMarkDuplicate: "&onUnMarkDuplicate",
-            onGetDuplicate: "&onGetDuplicate"
+            onGetDuplicate: "&onGetDuplicate",
+            numberOfSelectedRows: "=selectedRowsCount",
+            isListOfActiveEnrollments: "=activeEnrollments"
         },
         controller: function($scope, Paginator,TEIGridService, CurrentSelection){
             var attributesById = CurrentSelection.getAttributesById();
+
             if (!$scope.pager) {
                 $scope.pager = {};
             }
@@ -756,6 +759,17 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             $scope.onChangePage = function(newPage){
                 $scope.pager.page = newPage;
                 $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
+            };
+
+            $scope.selectOne = function(tei) {
+                tei.checkBoxTicked ? $scope.numberOfSelectedRows++ : $scope.numberOfSelectedRows--;
+            };
+
+            $scope.selectAll = function() {
+                const newState = $scope.data.selectAllChecked;
+                const rows = $scope.data.rows.own;
+                rows.forEach((tei) => tei.checkBoxTicked = newState);
+                $scope.numberOfSelectedRows = newState ? rows.length : 0;
             };
         }
     }

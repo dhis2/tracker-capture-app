@@ -12,9 +12,12 @@
                             </span>
                             {{gridColumn.formName ? gridColumn.formName : gridColumn.displayName}}
                         </span>
-                        <!-- sort icon ends -->                            
-                    </th>                              
-                </tr>                        
+                        <!-- sort icon ends -->
+                    </th>
+                    <td ng-if="isListOfActiveEnrollments" style="cursor: default; text-align: center; vertical-align: middle;">
+                        <input type="checkbox" ng-model="data.selectAllChecked" ng-click="selectAll()" />
+                    </td>
+                </tr>
             </thead>
             <tbody id="list">
                 <tr ng-repeat="tei in data.rows.own"
@@ -46,6 +49,9 @@
                         <span ng-if="onGetDuplicateInternal(tei)"><div class="alert alert-warning alert-compact">{{'possible_duplicate' | translate}}</div>
                             <a ng-click="onUnMarkDuplicateInternal(tei)">{{'unflag' | translate}}</a>
                         </span>
+                    </td>
+                    <td ng-if="isListOfActiveEnrollments" style="cursor: default; text-align: center; vertical-align: middle;">
+                        <input type="checkbox" ng-model="tei.checkBoxTicked" ng-click="selectOne(tei)" />
                     </td>
                 </tr>
                 <tr ng-repeat="tei in data.rows.other"
