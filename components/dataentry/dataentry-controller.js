@@ -1,5 +1,7 @@
 /* global angular, trackerCapture */
 
+import {disableCompleteIncompleteEventConfirmation} from "../../ks_patches/custom_override_flags";
+
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('DataEntryController',
         function ($rootScope,
@@ -2264,7 +2266,8 @@ trackerCapture.controller('DataEntryController',
                 dhis2Event.completedDate = DateUtils.formatFromUserToApi(today);
             }
         }
-        ModalService.showModal(modalDefaults, modalOptions).then(function (modalResult) {
+
+        var completionFunction = function (modalResult) {
             if(modalResult===modalCompleteIncompleteActions.completeEnrollment){
                 modalOptions = {
                     closeButtonText: 'cancel',
@@ -2276,9 +2279,15 @@ trackerCapture.controller('DataEntryController',
                     $scope.executeCompleteIncompleteEvent(dhis2Event,modalResult);
                 });
             }else{
-                $scope.executeCompleteIncompleteEvent(dhis2Event,modalResult);               
+                $scope.executeCompleteIncompleteEvent(dhis2Event,modalResult);
             }
-        });           
+        }
+
+        if(disableCompleteIncompleteEventConfirmation) {
+            completionFunction();
+        } else {
+            ModalService.showModal(modalDefaults, modalOptions).then(completionFunction);
+        }
     };
     
     $scope.executeCompleteIncompleteEvent = function(dhis2Event, modalResult){
