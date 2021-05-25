@@ -4,6 +4,8 @@
 
 /* Directives */
 
+import {convertToCorrectDateString} from "../utils/converters";
+
 var d2Directives = angular.module('d2Directives', [])
 
 
@@ -431,6 +433,7 @@ var d2Directives = angular.module('d2Directives', [])
             var maxDate = $parse(attrs.maxDate)(scope);
             var calendar = $.calendars.instance(calendarSetting.keyCalendar);
             var pickerClass = attrs.pickerClass;
+            var convertedDate;
 
             var initializeDatePicker = function( sDate, eDate ){
                 element.calendarsPicker({
@@ -449,11 +452,15 @@ var d2Directives = angular.module('d2Directives', [])
                     },
                     onClose:function(){
                         $(this).blur();
-                    }
+                    },
                 }).change(function () {
+                    this.value = convertedDate || this.value;
                     ctrl.$setViewValue(this.value);
                     this.focus();
                     scope.$apply();
+                }).keyup(function(e) {
+                    // Have to listen to all keys and keep temporary value, as we are unable to listen to the return key.
+                    convertedDate = convertToCorrectDateString(this.value, dateFormat);
                 });
             };
 

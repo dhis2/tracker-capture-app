@@ -1,4 +1,5 @@
 import {BIRTH_DATE_FIELD_CODE, DNUMBER_FIELD_CODE} from "../utils/constants";
+import {getFullYear} from "../utils/converters";
 
 export function conditionalAutofillBirthdateOnDnumberChange(tei, field) {
     // only update if the changed field is d-number
@@ -33,12 +34,3 @@ function getValidDateOrUndefined(dnumber) {
     return undefined;
 }
 
-function getFullYear(year) {
-    var thisYear =  new Date().getFullYear() - 2000; // Gets two digit year of today
-
-    // Will wrongly guess age of 100+ year olds as babies
-    if (year < thisYear) {
-        return '20' + year;
-    }
-    return '19' + year;
-}
