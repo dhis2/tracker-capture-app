@@ -547,7 +547,9 @@ trackerCapture.controller('RegistrationController',
                                     NotificationService.showNotifcationDialog($translate.instant("enrollment_error"), enrollmentResponse.message);
                                     return;
                                 }
-                                transferDataFromNaerkontaktToIndeksering(enrollment, $scope.tei,  $scope.selectedEnrollment.program, EnrollmentService, DHIS2EventFactory);
+                                if(enableAutoTransferFromNaerkontakt) {
+                                    transferDataFromNaerkontaktToIndeksering(enrollment, $scope.tei, $scope.selectedEnrollment.program, EnrollmentService, DHIS2EventFactory);
+                                }
                             }
                         });
                     }
