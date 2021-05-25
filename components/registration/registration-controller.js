@@ -730,7 +730,7 @@ trackerCapture.controller('RegistrationController',
     };
 
     $scope.teiValueUpdated = function (tei, field) {
-        conditionalAutofillBirthdateOnDnumberChange(tei, field)
+        conditionalAutofillBirthdateOnDnumberChange(tei, field);
         if ($scope.teiPreviousValues[field] !== tei[field] && $scope.attributeUniquenessError[field]) {
             $scope.attributeUniquenessError[field] = false;
         }

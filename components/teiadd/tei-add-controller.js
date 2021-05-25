@@ -936,7 +936,7 @@ trackerCapture.controller('TEIAddController',
     };
     
     $scope.teiValueUpdated = function(tei, field){
-        conditionalAutofillBirthdateOnDnumberChange(tei, field)
+        conditionalAutofillBirthdateOnDnumberChange(tei, field);
         $scope.executeRules();
     };
     
