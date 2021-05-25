@@ -4,6 +4,7 @@ import {conditionalAutofillBirthdateOnDnumberChange} from "../../ks_patches/fiel
 import {
     transferDataFromNaerkontaktToIndeksering,
 } from "../../ks_patches/data_transfer";
+import {enableAutoTransferFromNaerkontakt} from "../../ks_patches/custom_override_flags";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RegistrationController', 
