@@ -22,7 +22,7 @@ trackerCapture.controller('ListsController',function(
     ProgramWorkingListService,
     OperatorFactory,
     ModalService,
-    TeiAccessApiService) {
+    $http) {
         var ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];
         var userGridColumns = null;
         var defaultCustomWorkingListValues = { ouMode: ouModes[0], programStatus: ""};
@@ -194,10 +194,10 @@ trackerCapture.controller('ListsController',function(
                     direction: 'asc',
                 }
             }
-            $scope.numberOfSelectedRows = 0;
         }
 
         var setCurrentTrackedEntityListData = function(serverResponse){
+            $scope.numberOfSelectedRows = 0;
             if(serverResponse.rows && serverResponse.rows.length > 0
                 && ($scope.base.selectedProgram.id == 'uYjxkTbwRNf'
                 || $scope.base.selectedProgram.id == 'DM9n1bUw8W8')) {
@@ -518,8 +518,9 @@ trackerCapture.controller('ListsController',function(
                 const programId = $scope.base.selectedProgram.id;
                 TEIService.getActiveEnrollments(selectedTeis, programId, $scope.selectedOrgUnit.id).then(function(enrollments) {
                     enrollments.enrollments.forEach((enrollment) => enrollment.status = 'COMPLETED');
-                    TeiAccessApiService.post(selectedTeis, programId, DHIS2URL + '/enrollments', enrollments);
-                    $scope.setWorkingList($scope.currentTrackedEntityList.config);
+                    $http.post(DHIS2URL + '/enrollments', enrollments).then(function(){
+                        $scope.setWorkingList($scope.currentTrackedEntityList.config);
+                    });
                 })
             });
         }
