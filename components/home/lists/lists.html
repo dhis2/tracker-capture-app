@@ -23,7 +23,7 @@
     
     
         <div class="pull-right dropdown small-vertical-spacing" ng-if="currentTrackedEntityList.data">
-            <button ng-if="numberOfSelectedRows" type="button" class="btn btn-primary" ng-click="">
+            <button ng-if="numberOfSelectedRows" type="button" class="btn btn-primary" ng-click="completeSelectedEnrollments()">
                 {{('complete'| translate)}} {{numberOfSelectedRows}}
             </button>
             <span class="dropdown">

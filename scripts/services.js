@@ -1060,6 +1060,32 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return def.promise;
             }
         },
+        getActiveEnrollments: function(entityUidList, programUid, orgUnitId) {
+            if(entityUidList && entityUidList.length > 0){
+                return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&program='+programUid+'&ou=' + orgUnitId + '&programStatus=ACTIVE&fields=trackedEntityInstance,enrollments[enrollment]').then(function(response){
+                    var data = { enrollments: [] }
+                    var enrollments = data.enrollments;
+                    if (response.data && response.data.trackedEntityInstances && response.data.trackedEntityInstances.length > 0){
+                        response.data.trackedEntityInstances.forEach(function(tei) {
+                            enrollments.push({
+                                program: programUid,
+                                enrollment: tei.enrollments[0].enrollment,
+                                trackedEntityInstance: tei.trackedEntityInstance
+                            });
+                        });
+                    }
+                    return data;
+                }, function(error){
+                    var def = $q.defer();
+                    def.reject(error);
+                    return def.promise;
+                });
+            } else {
+                var def = $q.defer();
+                def.resolve([]);
+                return def.promise;
+            }
+        },
         get: function(entityUid, optionSets, attributesById){
             var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
                 var tei = response.data;
