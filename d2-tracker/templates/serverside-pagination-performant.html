@@ -1,7 +1,20 @@
 <div class="paging-container">
     <table style="background-color: #ebf0f6;" width='100%'>
+
         <tr>
             <td>
+            </td>
+            <td>
+                Viser {{pager.recordsCount}} av <span ng-if="pager.total > -1"> {{pager.total}}</span> <span ng-if="pager.total == -1"> over 1000</span> treff
+            </td>
+            <td>
+                Side {{pager.page}}<span ng-if="pager.pageCount && pager.total > -1"> av {{pager.pageCount}}</span>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+
             </td>
             <td>
                 <span>{{'rows_per_page'| translate}}:</span> <input type="text" min="1" style="width:50px;" ng-model="pageSizeEdit" d2-enter="changePageSize()" ng-blur="changePageSize()"> 
