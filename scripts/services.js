@@ -1013,7 +1013,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return def.promise;
             });
         },
-        getListWithProgramData: function(entityUidList,programUid, dataElementId, programStageId, orgUnitId, transferStageId){
+        getListWithProgramData: function(entityUidList, programUid, dataElementId, programStageId, orgUnitId, transferStageId){
             if(entityUidList && entityUidList.length > 0){
                 return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&program='+programUid+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,orgUnit,enrollments[enrollment,program,enrollmentDate,events[status,dataValues,programStage,eventDate]]').then(function(response){
                     var teiDictionary = {};
@@ -2267,7 +2267,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 if(attr.displayInListNoProgram){
                     gridColumnIndex++;
                     var gridColumn = {id: attr.id, displayName: attr.displayName, formName: attr.formName, show: false, valueType: attr.valueType};
-                    setShowGridColumn(gridColumn,gridColumnIndex, config, savedGridColumnsKeyMap);
+                    setShowGridColumn(gridColumn, gridColumnIndex, config, savedGridColumnsKeyMap);
                     gridColumns.push(gridColumn);
                 }
             });
@@ -2286,7 +2286,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var columns = [];
 
             var returnAttributes = [];
-i
+
             if ( attributes )
             {
                 if( nonConfidential ) {
