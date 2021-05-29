@@ -20,7 +20,9 @@ trackerCapture.controller('ListsController',function(
     TEIService,
     UserDataStoreService,
     ProgramWorkingListService,
-    OperatorFactory) {
+    OperatorFactory,
+    ModalService,
+    $http) {
         var ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];
         var userGridColumns = null;
         var defaultCustomWorkingListValues = { ouMode: ouModes[0], programStatus: ""};
@@ -195,6 +197,7 @@ trackerCapture.controller('ListsController',function(
         }
 
         var setCurrentTrackedEntityListData = function(serverResponse){
+            $scope.numberOfSelectedRows = 0;
             if(serverResponse.rows && serverResponse.rows.length > 0
                 && ($scope.base.selectedProgram.id == 'uYjxkTbwRNf'
                 || $scope.base.selectedProgram.id == 'DM9n1bUw8W8')) {
@@ -494,5 +497,32 @@ trackerCapture.controller('ListsController',function(
                 }
                 $scope.base.setFrontPageData(viewData);
             }
+        }
+
+        $scope.completeSelectedEnrollments = function() {
+            var modalOptions = {
+                closeButtonText: 'no',
+                actionButtonText: 'yes',
+                headerText: 'complete_selected_enrollments',
+                bodyText: 'are_you_sure_to_complete_selected_enrollments'
+            };
+
+
+            ModalService.showModal({}, modalOptions).then(function (result) {
+
+                var selectedTeis = [];
+                $scope.currentTrackedEntityList.data.rows.own.forEach(function(row){
+                    if (row.checkBoxTicked) {
+                        selectedTeis.push(row.id);
+                    }
+                });
+                const programId = $scope.base.selectedProgram.id;
+                TEIService.getActiveEnrollments(selectedTeis, programId, $scope.selectedOrgUnit.id).then(function(enrollments) {
+                    enrollments.enrollments.forEach((enrollment) => enrollment.status = 'COMPLETED');
+                    $http.post(DHIS2URL + '/enrollments', enrollments).then(function(){
+                        $scope.setWorkingList($scope.currentTrackedEntityList.config);
+                    });
+                })
+            });
         }
 });
