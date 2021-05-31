@@ -58,7 +58,8 @@ function addInnreiseEvents(selectedTei, existingTei, enrollmentId, eventFactory)
                     var newEvent = angular.copy(event);
                     newEvent.program = INNREISE_PROGRAM_CODE;
                     newEvent.programStage = duplicateToInnreiseEventCode(event.programStage);
-                    newEvent.enrollment = enrollmentId;
+                    var id = Array.isArray(enrollmentId) ? enrollmentId[0] : enrollmentId;  // Needed to avoid "Event date is required."-error
+                    newEvent.enrollment = id;
                     if (newEvent.notes) {
                         newEvent.notes = newEvent.notes.map(note => {
                             delete note.note; // Cannot reuse note ID
