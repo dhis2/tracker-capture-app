@@ -313,7 +313,12 @@ trackerCapture.controller('RegistrationController',
             $scope.selectedEnrollment.coordinate = $scope.selectedEnrollment.coordinate ? $scope.selectedEnrollment.coordinate : {};
         }
 
+        var trackedEntityType = $scope.trackedEntityTypes.selected;
+
         if($scope.selectedProgram){
+            if (!trackedEntityType) {
+                trackedEntityType = $scope.selectedProgram.trackedEntityType;
+            }
             AttributesFactory.getByProgram($scope.selectedProgram).then(function (atts) {
                 $scope.attributes = TEIGridService.generateGridColumns(atts, null, false).columns;
                 fetchGeneratedAttributes();
@@ -364,7 +369,6 @@ trackerCapture.controller('RegistrationController',
             });
         }
 
-        var trackedEntityType = $scope.trackedEntityTypes.selected || $scope.selectedProgram.trackedEntityType;
         if(trackedEntityType){
             AttributesFactory.getByTrackedEntityType(trackedEntityType).then(function (atts) {
                 $scope.teTypeAttributesById = {};
@@ -374,8 +378,8 @@ trackerCapture.controller('RegistrationController',
                 
                 if(!$scope.selectedProgram){
                     $scope.attributes = TEIGridService.generateGridColumns(atts, null, false).columns;
+                    fetchGeneratedAttributes();
                 }
-                fetchGeneratedAttributes();
             });
         }
 
