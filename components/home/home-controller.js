@@ -1,3 +1,5 @@
+import {DUPLICAT_INNREISE_PROGRAM_CODE, INNREISE_PROGRAM_CODE} from "../../utils/constants";
+
 var trackerCapture = angular.module('trackerCapture');
 
 trackerCapture.controller('HomeController',function(
@@ -296,5 +298,15 @@ trackerCapture.controller('HomeController',function(
 
             }
           });
+
+        $scope.shouldShowButton = function (view) {
+            if($scope.selectedProgram.id === INNREISE_PROGRAM_CODE && view.name === 'Registrere') {
+                return false;
+            }
+            if($scope.selectedProgram.id === DUPLICAT_INNREISE_PROGRAM_CODE && view.name === 'Registrere') {
+                return false;
+            }
+            return true;
+        }
         
 });
