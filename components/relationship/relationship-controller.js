@@ -1,7 +1,6 @@
 /* global trackerCapture, angular */
 
 import {DUPLIKAT_PROGRAM_CODE, INNREISE_PROGRAM_CODE} from "../../utils/constants";
-import {teiIsInInnreise} from "../../utils/tei_utils";
 import {registerInnreiseDuplicateToExisting, registerNewInnreiseProfil} from "../../ks_patches/innreise_duplicates";
 
 const {program} = require("babel-types");
