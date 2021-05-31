@@ -137,7 +137,5 @@ function innreiseEnrollmentCode(tei) {
 function closeDuplicate(selectedEnrollment, enrollmentService) {
     var en = angular.copy(selectedEnrollment);
     en.status = 'COMPLETED';
-    return enrollmentService.update(en).then(function (data) {
-        console.log('It has been closed. Refresh to confirm');
-    });
+    return enrollmentService.update(en);
 }
