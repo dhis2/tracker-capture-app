@@ -6,7 +6,7 @@ import {registerInnreiseDuplicateToExisting, registerNewInnreiseProfil} from "..
 const {program} = require("babel-types");
 
 var trackerCapture = angular.module('trackerCapture');
-    trackerCapture.controller('RelationshipController',
+trackerCapture.controller('RelationshipController',
         function ($scope,
                   $rootScope,
                   $modal,
