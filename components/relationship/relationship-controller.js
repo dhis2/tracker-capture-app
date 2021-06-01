@@ -1,6 +1,8 @@
 /* global trackerCapture, angular */
 
 const { program } = require("babel-types");
+import {DUPLIKAT_PROGRAM_CODE, INNREISE_PROGRAM_CODE} from "../../utils/constants";
+import {registerInnreiseDuplicateToExisting, registerNewInnreiseProfil} from "../../ks_patches/innreise_duplicates";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RelationshipController',
