@@ -81,7 +81,7 @@ function addInnreiseEvents(selectedTei, existingTei, enrollmentId, eventFactory)
 
 function updateProfile(selectedTei, existingTei, optionSets, attributesById, teiService) {
     selectedTei.attributes.forEach((attribute) => {
-        if (!existingTei.attributes.some((att) => att.code === attribute.code)) {
+        if (!existingTei.attributes.some((att) => att.id === attribute.id)) {
             existingTei.attributes.push(attribute);
         }
     });
@@ -127,7 +127,7 @@ function duplicateToInnreiseEventCode(duplicateCode) {
 }
 
 function isEnrolledInInnreise(tei) {
-    return tei.enrollments.some(enrollment => enrollment.program === INNREISE_PROGRAM_CODE);
+    return tei.enrollments.some(enrollment => enrollment.program === INNREISE_PROGRAM_CODE && enrollment.status === 'ACTIVE');
 }
 
 function innreiseEnrollmentCode(tei) {
