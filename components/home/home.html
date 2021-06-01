@@ -72,7 +72,7 @@
         
             <div>
                 <ul class="nav nav-pills small-vertical-spacing hideInPrint" style="padding-left:15px;">
-                    <li ng-repeat="view in views" ng-class="{'active' : view.name === currentView.name}" ng-click="setCurrentView(view)" ng-if="!view.disabled"><a href="">{{view.name}}</a></li>
+                    <li ng-repeat="view in views" ng-class="{'active' : view.name === currentView.name}" ng-click="setCurrentView(view)" ng-if="!view.disabled && shouldShowButton(view)"><a href="">{{view.name}}</a></li>
                 </ul>
             </div>
         </div>

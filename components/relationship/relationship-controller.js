@@ -1,6 +1,8 @@
 /* global trackerCapture, angular */
 
 const { program } = require("babel-types");
+import {DUPLIKAT_PROGRAM_ID, INNREISE_PROGRAM_ID} from "../../utils/constants";
+import {registerInnreiseDuplicateToExisting, registerNewInnreiseProfil} from "../../ks_patches/innreise_duplicates";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RelationshipController',
@@ -204,10 +206,18 @@ trackerCapture.controller('RelationshipController',
                 angular.forEach(teiIndex.enrollments,function(enrollment) {
                     if(enrollment.program == 'DM9n1bUw8W8') {
                         var contactDateMoment = moment(DateUtils.formatFromUserToApi(enrollment.enrollmentDate));
+
+                        angular.forEach(enrollment.events, function(event){
+                            if((!endDate || moment(event.eventDate).isBefore(endDate)) && moment(event.eventDate).isAfter(startDate) && event.programStage == 'sAV9jAajr8x' ) {
+                                //this is the followup event in the contact program: event date is contact time.
+                                contactDateMoment = moment(event.eventDate);
+                            }
+                        });
+
                         if(!endDate || contactDateMoment.isBefore(endDate)) {
                             relative.contactDateMoment = contactDateMoment
-                            relative.contactDate = enrollment.enrollmentDate;
-                            relative.created = enrollment.enrollmentDate;
+                            relative.contactDate = DateUtils.formatFromApiToUser(contactDateMoment);;
+                            relative.created = DateUtils.formatFromApiToUser(contactDateMoment);;
                         }
                     };
                     //TODO: Check wether we keep the API behavior of returning other programs the user has access to as well as the requested program:
@@ -216,7 +226,7 @@ trackerCapture.controller('RelationshipController',
                         if( !endDate || symptomsOnsetMoment.isBefore(endDate) )
                         {
                             angular.forEach(enrollment.events, function(event){
-                                if((!endDate || moment(enrollment.events[0].eventDate).isBefore(endDate)) && moment(enrollment.events[0].eventDate).isAfter(startDate)) {
+                                if((!endDate || moment(event.eventDate).isBefore(endDate)) && moment(event.eventDate).isAfter(startDate)) {
                                     //Health condition:
                                     if(event.programStage == 'oqsk2Jv4k3s'){
                                         angular.forEach(event.dataValues, function(dataValue){
@@ -508,6 +518,42 @@ trackerCapture.controller('RelationshipController',
         });
 
         return programAttributes;
+    };
+    $scope.isDuplikatsjekk = function () {
+        return $scope.selectedProgram.id === DUPLIKAT_PROGRAM_ID;
+    };
+
+    $scope.registerNewInInnreise = function () {
+        var modalOptions = {
+            headerText: 'Registrer som ny',
+            bodyText: 'Vil du registrere som ny person? Det vil opprettes ny person i innreiseregistrering.'
+        };
+        ModalService.showModal({}, modalOptions).then(() => {
+            registerNewInnreiseProfil($scope.selectedTei, $scope.selectedEnrollment, $scope.optionSets, $scope.attributesById, $scope.selectedOrgUnit.id, TEIService, EnrollmentService, DHIS2EventFactory).then((newTeiId) => {
+                $location.path('/dashboard').search({
+                    tei: newTeiId,
+                    program: INNREISE_PROGRAM_ID,
+                    ou: $scope.selectedOrgUnit.id
+                });
+
+            });
+        });
+    };
+    $scope.addToDuplicateAndAddInnreise = function (rel) {
+        var modalOptions = {
+            headerText: 'Registrer på eksisterende person',
+            bodyText: 'Vil du registrere på eksisterende person? Det vil opprettes et nytt innslag i innreiseregistrering. Tomme felt i profilen vil fylles inn med verdier fra denne. Eksisterende felt vil ikke oppdateres.'
+        };
+        ModalService.showModal({}, modalOptions).then(() => {
+            registerInnreiseDuplicateToExisting($scope.selectedTei, rel.trackedEntityInstance, $scope.selectedEnrollment, $scope.optionSets, $scope.attributesById, $scope.selectedOrgUnit.id, TEIService, EnrollmentService, DHIS2EventFactory).then((newTeiId) => {
+                $location.path('/dashboard').search({
+                    tei: newTeiId,
+                    program: INNREISE_PROGRAM_ID,
+                    ou: $scope.selectedOrgUnit.id
+                });
+
+            });
+        });
     };
 });
 

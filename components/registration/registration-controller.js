@@ -1,5 +1,10 @@
 /* global trackerCapture, angular */
 import { processRegistration } from './processRegistration';
+import {conditionalAutofillBirthdateOnDnumberChange} from "../../ks_patches/field_updates";
+import {
+    transferDataFromNaerkontaktToIndeksering,
+} from "../../ks_patches/data_transfer";
+import {enableAutoTransferFromNaerkontakt} from "../../ks_patches/custom_override_flags";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RegistrationController', 
@@ -543,6 +548,9 @@ trackerCapture.controller('RegistrationController',
                                     NotificationService.showNotifcationDialog($translate.instant("enrollment_error"), enrollmentResponse.message);
                                     return;
                                 }
+                                if(enableAutoTransferFromNaerkontakt) {
+                                    transferDataFromNaerkontaktToIndeksering(enrollment, $scope.tei, $scope.selectedEnrollment.program, EnrollmentService, DHIS2EventFactory);
+                                }
                             }
                         });
                     }
@@ -722,6 +730,7 @@ trackerCapture.controller('RegistrationController',
     };
 
     $scope.teiValueUpdated = function (tei, field) {
+        conditionalAutofillBirthdateOnDnumberChange(tei, field);
         if ($scope.teiPreviousValues[field] !== tei[field] && $scope.attributeUniquenessError[field]) {
             $scope.attributeUniquenessError[field] = false;
         }

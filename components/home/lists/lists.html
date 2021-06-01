@@ -23,6 +23,9 @@
     
     
         <div class="pull-right dropdown small-vertical-spacing" ng-if="currentTrackedEntityList.data">
+            <button ng-if="numberOfSelectedRows" type="button" class="btn btn-primary" ng-click="completeSelectedEnrollments()">
+                {{('complete'| translate)}} {{numberOfSelectedRows}}
+            </button>
             <span class="dropdown">
                 <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"><span class="fa fa-download"></span></button>
                 <ul class="dropdown-menu">
@@ -35,8 +38,12 @@
             <button class="btn btn-default"ng-click="showHideListColumns()" ng-attr-title="{{'show_hide_columns'| translate}}"><span class="fa fa-table"></span></button>
         </div>
 
-        <span ng-if="currentTrackedEntityList.data && pager.total">
+
+        <span ng-if="pager.total > -1">
             {{'total'| translate}}:  {{pager.total}}
+        </span>
+        <span ng-if="pager.total == -1">
+            {{'total'| translate}}:  ukjent / mer enn 1000
         </span>
         
         
@@ -69,12 +76,14 @@
     
     <!--- Error display for search ends -->    
     <tracker-tei-list-performant 
-        tei-data="currentTrackedEntityList.data" 
+        tei-data="currentTrackedEntityList.data"
         tei-pager="pager" 
         tei-sort-column="currentTrackedEntityList.sortColumn"
         tei-grid-columns="gridColumns"
         tei-refetch-data="fetchTeis(pager, sortColumn)"
         on-tei-clicked="openTei(tei)"
+        selected-rows-count="numberOfSelectedRows"
+        active-enrollments="currentTrackedEntityList.config.enrollmentStatus === 'ACTIVE'"
         >
     </tracker-tei-list-performant>
 </div>

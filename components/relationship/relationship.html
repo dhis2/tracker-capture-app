@@ -20,7 +20,8 @@
     <div ng-show="relationshipsWidget.expand" class="panel-body dashboard-widget-container">
         <div>
             <div ng-show="selectedTei && !selectedTei.relationships || selectedTei.relationships.length < 1 || (relatedTeis.length < 1 && relatedEvents.length < 1)" class="alert alert-warning">{{noRelationshipLabel}}</div>
-            <div ng-show="!selectedTei" class="alert alert-danger">{{'relationship_not_possible'| translate}}</div> 
+            <div ng-show="!selectedTei" class="alert alert-danger">{{'relationship_not_possible'| translate}}</div>
+
             <div ng-if="relatedTeis.length > 0">
                 <table class="table table-striped dhis2-table-hover table-bordered">
                     <tr>
@@ -38,6 +39,7 @@
                             Siste kontakt
                         </th>
                         <th ng-if="!selectedTei.inactive && selectedProgram.access.data.write"></th>
+                        <th ng-if="isDuplikatsjekk()">Slå sammen</th>
                     </tr>
                     <tr ng-repeat="rel in relatedTeis | orderBy:'-created'">
                         <td ng-if="!relationshipsWidget.customRelationship" ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)">{{rel.relName}}</td>
@@ -56,9 +58,19 @@
                         <td ng-if="!rel.relationshipType.access.data.write" ng-attr-title="{{'can_not_delete_relationship'| translate}}">
                             <i class="fa fa-trash-o grey"></i>
                         </td>
+                        <td ng-if="isDuplikatsjekk()">
+                            <button type="button" class="btn btn-primary ng-binding" ng-click="addToDuplicateAndAddInnreise(rel)">
+                                Slå sammen
+                            </button>
+                        </td>
                     </tr>
                 </table>           
             </div>
+
+            <button type="button" class="btn btn-primary ng-binding" ng-if="isDuplikatsjekk()" ng-click="registerNewInInnreise()">
+                Registrer som ny
+            </button>
+
             <div ng-if="relatedEvents.length > 0">
                 <table class="table table-striped dhis2-table-hover table-bordered">
                     <tr>
