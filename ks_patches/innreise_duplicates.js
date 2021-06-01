@@ -1,5 +1,5 @@
 import {
-    DUPLICAT_INNREISE_PROGRAM_CODE, DUPLIKAT_INNREISE_STAGE_CODE, DUPLIKAT_OPPFOLGING_STAGE_CODE,
+    DUPLIKAT_INNREISE_PROGRAM_CODE, DUPLIKAT_INNREISE_STAGE_CODE, DUPLIKAT_OPPFOLGING_STAGE_CODE,
     DUPLIKAT_PROGRAM_CODE,
     INNREISE_ENTITY_TYPE,
     INNREISE_PROGRAM_CODE, INNREISEINFORMASJON_PROGRAM_STAGE_CODE, OPPFOLGING_STAGE_CODE
@@ -52,7 +52,7 @@ function addInnreiseEnrollment(selectedTei, existingTei, orgId, enrollmentServic
 function addInnreiseEvents(selectedTei, existingTei, enrollmentId, eventFactory) {
 
     selectedTei.enrollments.forEach(enrollment => {
-        if (enrollment.program === DUPLICAT_INNREISE_PROGRAM_CODE) {
+        if (enrollment.program === DUPLIKAT_INNREISE_PROGRAM_CODE) {
             enrollment.events.forEach(event => {
                 try {
                     var newEvent = angular.copy(event);
