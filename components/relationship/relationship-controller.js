@@ -519,6 +519,42 @@ trackerCapture.controller('RelationshipController',
 
         return programAttributes;
     };
+    $scope.isDuplikatsjekk = function () {
+        return $scope.selectedProgram.id === DUPLIKAT_PROGRAM_CODE;
+    };
+
+    $scope.registerNewInInnreise = function () {
+        var modalOptions = {
+            headerText: 'Registrer som ny',
+            bodyText: 'Vil du registrere som ny person? Det vil opprettes ny person i innreiseregistrering.'
+        };
+        ModalService.showModal({}, modalOptions).then(() => {
+            registerNewInnreiseProfil($scope.selectedTei, $scope.selectedEnrollment, $scope.optionSets, $scope.attributesById, $scope.selectedOrgUnit.id, TEIService, EnrollmentService, DHIS2EventFactory).then((newTeiId) => {
+                $location.path('/dashboard').search({
+                    tei: newTeiId,
+                    program: INNREISE_PROGRAM_CODE,
+                    ou: $scope.selectedOrgUnit.id
+                });
+
+            });
+        });
+    };
+    $scope.addToDuplicateAndAddInnreise = function (rel) {
+        var modalOptions = {
+            headerText: 'Registrer på eksisterende person',
+            bodyText: 'Vil du registrere på eksisterende person? Det vil opprettes et nytt innslag i innreiseregistrering. Tomme felt i profilen vil fylles inn med verdier fra denne. Eksisterende felt vil ikke oppdateres.'
+        };
+        ModalService.showModal({}, modalOptions).then(() => {
+            registerInnreiseDuplicateToExisting($scope.selectedTei, rel.trackedEntityInstance, $scope.selectedEnrollment, $scope.optionSets, $scope.attributesById, $scope.selectedOrgUnit.id, TEIService, EnrollmentService, DHIS2EventFactory).then((newTeiId) => {
+                $location.path('/dashboard').search({
+                    tei: newTeiId,
+                    program: INNREISE_PROGRAM_CODE,
+                    ou: $scope.selectedOrgUnit.id
+                });
+
+            });
+        });
+    };
 });
 
 
