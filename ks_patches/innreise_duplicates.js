@@ -81,7 +81,7 @@ function addInnreiseEvents(selectedTei, existingTei, enrollmentId, eventFactory)
 
 function updateProfile(selectedTei, existingTei, optionSets, attributesById, teiService) {
     selectedTei.attributes.forEach((attribute) => {
-        if (!existingTei.attributes.some((att) => att.id === attribute.id)) {
+        if (!existingTei.attributes.some((att) => att.attribute === attribute.attribute)) {
             existingTei.attributes.push(attribute);
         }
     });
