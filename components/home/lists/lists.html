@@ -48,8 +48,8 @@
             <div class="alert alert-info" style="margin-left:12px;margin-right:12px">{{currentTrackedEntityList.config.description}} 
             <span ng-if="provesvarAktivert">
                 <hr>
-                <span ng-if="syncDate">Innreseidata sist oppdatert {{syncDate}}. Prøvesvardata sist hentet {{labdate}}.</span>
-                <span ng-if="!syncDate">Inreisedata har ikke blitt hentet ennå</span>
+                <span ng-if="prøveSvarSyncDate">Innreseidata sist oppdatert {{prøveSvarSyncDate}}. Prøvesvardata sist hentet {{innreiseSyncDate}}.</span>
+                <span ng-if="!prøveSvarSyncDate">Inreisedata har ikke blitt hentet ennå</span>
                 <a ng-if="canSyncLabTests" ng-click="syncLabTests()">Hent prøvesvar nå</a>
                 <span ng-if="!canSyncLabTests"> Henting av prøvesvar ble nylig startet, og kan gjøres på nytt etter 2,5 evigheter.</span>
             </span>
