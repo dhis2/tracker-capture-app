@@ -39,8 +39,8 @@ var d2Controllers = angular.module('d2Controllers', [])
 
 //controller for dealing with google map
 .controller('MapController',
-        function($scope, 
-                $modalInstance,                
+        function($scope,
+                $modalInstance,
                 $translate,
                 $http,
                 $window,
@@ -302,16 +302,21 @@ var d2Controllers = angular.module('d2Controllers', [])
                     currentOuLayer.removeFrom(map);
                 }
                 var latlngs = [];
+
+                var convertPolygonCoordinates = function(polygon) {
+                    angular.forEach(polygon, function(linearRing){
+                        angular.forEach(linearRing, function(coordinate){
+                            latlngs.push(L.GeoJSON.coordsToLatLng(coordinate));
+                        });
+                    });
+                }
+
                 angular.forEach(response.data.features, function(feature){
                     feature.properties.type = "ou";
-                    if(feature.geometry.type != "Point"){
-                        angular.forEach(feature.geometry.coordinates, function(coordinate){
-                            angular.forEach(coordinate, function(point){
-                                angular.forEach(point, function(p){
-                                    return latlngs.push(L.GeoJSON.coordsToLatLng(p));
-                                });
-                            });
-                        });
+                    if(feature.geometry.type === "Polygon"){
+                        convertPolygonCoordinates(feature.geometry.coordinates);
+                    } else if (feature.geometry.type === "MultiPolygon"){
+                        angular.forEach(feature.geometry.coordinates, convertPolygonCoordinates);
                     }
                 });
 
@@ -416,7 +421,7 @@ var d2Controllers = angular.module('d2Controllers', [])
                     allowIntersection: false, // Restricts shapes to simple polygons
                     drawError: {
                         color: '#e74c3c', // Color the shape will turn when intersects
-                        message: '<strong>Intersecting<strong> not allowed!' // Message that will show when intersect
+                        message: '<strong>Intersecting</strong> not allowed!' // Message that will show when intersect
                     },
                     shapeOptions: {
                         color: '#3498db',
