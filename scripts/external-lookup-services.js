@@ -4933,7 +4933,27 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     return null;
                 });
                 return promise;
-            }
+            },
+            getPrøveSvarStatus: function(kommuneNr, userId) {
+              var url = '../' + DHIS2URL + '/innreise/synkroniser/status';
+              var promise = $http({
+                  method: 'POST',
+                  url: url,
+                  data: { kommunenr:kommuneNr, userid:userId},
+                  headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']},
+              }).then(function(response){
+                  return response.data;
+              },function(error) {
+                  var errorMsgHdr, errorMsgBody;
+                  errorMsgHdr = $translate.instant('error');
+
+                  errorMsgBody =  'Feil ved henting av prøvesvarStatus: ' + error.status + ' En feil oppsto';
+
+                  NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
+                  return null;
+              });
+              return promise;
+          },
         }
     }
 )
