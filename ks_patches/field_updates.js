@@ -1,19 +1,19 @@
-import {BIRTH_DATE_FIELD_CODE, DNUMBER_FIELD_CODE} from "../utils/constants";
+import {BIRTH_DATE_FIELD_ID, DNUMBER_FIELD_ID} from "../utils/constants";
 import {getFullYear} from "../utils/converters";
 
 export function conditionalAutofillBirthdateOnDnumberChange(tei, field) {
     // only update if the changed field is d-number
-    if (field !== DNUMBER_FIELD_CODE) {
+    if (field !== DNUMBER_FIELD_ID) {
         return;
     }
 
     // Do not overwrite already set birth date
-    if (tei[BIRTH_DATE_FIELD_CODE]) {
+    if (tei[BIRTH_DATE_FIELD_ID]) {
         return;
     }
 
-    var dnumber = tei[DNUMBER_FIELD_CODE];
-    tei[BIRTH_DATE_FIELD_CODE] = getValidDateOrUndefined(dnumber);
+    var dnumber = tei[DNUMBER_FIELD_ID];
+    tei[BIRTH_DATE_FIELD_ID] = getValidDateOrUndefined(dnumber);
 }
 
 function getValidDateOrUndefined(dnumber) {

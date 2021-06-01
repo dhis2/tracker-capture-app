@@ -1,8 +1,8 @@
 import {
-    DUPLIKAT_INNREISE_PROGRAM_CODE, DUPLIKAT_INNREISE_STAGE_CODE, DUPLIKAT_OPPFOLGING_STAGE_CODE,
-    DUPLIKAT_PROGRAM_CODE,
+    DUPLIKAT_INNREISE_PROGRAM_ID, DUPLIKAT_INNREISE_STAGE_ID, DUPLIKAT_OPPFOLGING_STAGE_ID,
+    DUPLIKAT_PROGRAM_ID,
     INNREISE_ENTITY_TYPE,
-    INNREISE_PROGRAM_CODE, INNREISEINFORMASJON_PROGRAM_STAGE_CODE, OPPFOLGING_STAGE_CODE
+    INNREISE_PROGRAM_ID, INNREISEINFORMASJON_PROGRAM_STAGE_ID, OPPFOLGING_STAGE_ID
 } from "../utils/constants";
 
 export function registerInnreiseDuplicateToExisting(selectedTei, existingTeiId, selectedEnrollment, optionSets, attributesById, orgId, teiService, enrollmentService, eventFactory) {
@@ -24,7 +24,7 @@ export function registerNewInnreiseProfil(selectedTei, selectedEnrollment, optio
 }
 
 function updateAndAddInnreise(selectedTei, existingTeiId, isExisting, optionSets, attributesById, orgId, teiService, enrollmentService, eventFactory) {
-    return teiService.getWithProgramData(existingTeiId, isExisting ? INNREISE_PROGRAM_CODE : DUPLIKAT_PROGRAM_CODE, optionSets, attributesById).then(existingTei => {
+    return teiService.getWithProgramData(existingTeiId, isExisting ? INNREISE_PROGRAM_ID : DUPLIKAT_PROGRAM_ID, optionSets, attributesById).then(existingTei => {
         try {
             return updateProfile(selectedTei, existingTei, optionSets, attributesById, teiService).then(() => {
                 if (isEnrolledInInnreise(existingTei)) {
@@ -52,11 +52,11 @@ function addInnreiseEnrollment(selectedTei, existingTei, orgId, enrollmentServic
 function addInnreiseEvents(selectedTei, existingTei, enrollmentId, eventFactory) {
 
     selectedTei.enrollments.forEach(enrollment => {
-        if (enrollment.program === DUPLIKAT_INNREISE_PROGRAM_CODE) {
+        if (enrollment.program === DUPLIKAT_INNREISE_PROGRAM_ID) {
             enrollment.events.forEach(event => {
                 try {
                     var newEvent = angular.copy(event);
-                    newEvent.program = INNREISE_PROGRAM_CODE;
+                    newEvent.program = INNREISE_PROGRAM_ID;
                     newEvent.programStage = duplicateToInnreiseEventCode(event.programStage);
                     var id = Array.isArray(enrollmentId) ? enrollmentId[0] : enrollmentId;  // Needed to avoid "Event date is required."-error
                     newEvent.enrollment = id;
@@ -99,7 +99,7 @@ function createProfile(selectedTei, optionSets, attributesById, teiService) {
 function createEnrollment(exisitngTeiId, orgUnitId) {
     var enrollment = {};
     enrollment.trackedEntityInstance = exisitngTeiId;
-    enrollment.program = INNREISE_PROGRAM_CODE;
+    enrollment.program = INNREISE_PROGRAM_ID;
     enrollment.status = 'ACTIVE';
     enrollment.orgUnit = orgUnitId;
     return enrollment;
@@ -117,21 +117,21 @@ function cleanTeiForCreate(tei) {
 
 
 function duplicateToInnreiseEventCode(duplicateCode) {
-    if (duplicateCode === DUPLIKAT_OPPFOLGING_STAGE_CODE) {
-        return OPPFOLGING_STAGE_CODE;
+    if (duplicateCode === DUPLIKAT_OPPFOLGING_STAGE_ID) {
+        return OPPFOLGING_STAGE_ID;
     }
-    if (duplicateCode === DUPLIKAT_INNREISE_STAGE_CODE) {
-        return INNREISEINFORMASJON_PROGRAM_STAGE_CODE;
+    if (duplicateCode === DUPLIKAT_INNREISE_STAGE_ID) {
+        return INNREISEINFORMASJON_PROGRAM_STAGE_ID;
     }
     return undefined;
 }
 
 function isEnrolledInInnreise(tei) {
-    return tei.enrollments.some(enrollment => enrollment.program === INNREISE_PROGRAM_CODE && enrollment.status === 'ACTIVE');
+    return tei.enrollments.some(enrollment => enrollment.program === INNREISE_PROGRAM_ID && enrollment.status === 'ACTIVE');
 }
 
 function innreiseEnrollmentCode(tei) {
-    return tei.enrollments.filter(enrollment => enrollment.program === INNREISE_PROGRAM_CODE).map(enrollment => enrollment.enrollment);
+    return tei.enrollments.filter(enrollment => enrollment.program === INNREISE_PROGRAM_ID).map(enrollment => enrollment.enrollment);
 }
 
 function closeDuplicate(selectedEnrollment, enrollmentService) {

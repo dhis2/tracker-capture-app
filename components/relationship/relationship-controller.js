@@ -1,7 +1,7 @@
 /* global trackerCapture, angular */
 
 const { program } = require("babel-types");
-import {DUPLIKAT_PROGRAM_CODE, INNREISE_PROGRAM_CODE} from "../../utils/constants";
+import {DUPLIKAT_PROGRAM_ID, INNREISE_PROGRAM_ID} from "../../utils/constants";
 import {registerInnreiseDuplicateToExisting, registerNewInnreiseProfil} from "../../ks_patches/innreise_duplicates";
 
 var trackerCapture = angular.module('trackerCapture');
@@ -520,7 +520,7 @@ trackerCapture.controller('RelationshipController',
         return programAttributes;
     };
     $scope.isDuplikatsjekk = function () {
-        return $scope.selectedProgram.id === DUPLIKAT_PROGRAM_CODE;
+        return $scope.selectedProgram.id === DUPLIKAT_PROGRAM_ID;
     };
 
     $scope.registerNewInInnreise = function () {
@@ -532,7 +532,7 @@ trackerCapture.controller('RelationshipController',
             registerNewInnreiseProfil($scope.selectedTei, $scope.selectedEnrollment, $scope.optionSets, $scope.attributesById, $scope.selectedOrgUnit.id, TEIService, EnrollmentService, DHIS2EventFactory).then((newTeiId) => {
                 $location.path('/dashboard').search({
                     tei: newTeiId,
-                    program: INNREISE_PROGRAM_CODE,
+                    program: INNREISE_PROGRAM_ID,
                     ou: $scope.selectedOrgUnit.id
                 });
 
@@ -548,7 +548,7 @@ trackerCapture.controller('RelationshipController',
             registerInnreiseDuplicateToExisting($scope.selectedTei, rel.trackedEntityInstance, $scope.selectedEnrollment, $scope.optionSets, $scope.attributesById, $scope.selectedOrgUnit.id, TEIService, EnrollmentService, DHIS2EventFactory).then((newTeiId) => {
                 $location.path('/dashboard').search({
                     tei: newTeiId,
-                    program: INNREISE_PROGRAM_CODE,
+                    program: INNREISE_PROGRAM_ID,
                     ou: $scope.selectedOrgUnit.id
                 });
 
