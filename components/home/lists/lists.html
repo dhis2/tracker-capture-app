@@ -52,7 +52,18 @@
 
     <div class="row" ng-if="currentTrackedEntityList && currentTrackedEntityList.config && currentTrackedEntityList.config.description">
         <div class="vertical-spacing" >
-            <div class="alert alert-info" style="margin-left:12px;margin-right:12px">{{currentTrackedEntityList.config.description}}</div>
+            <div class="alert alert-info" style="margin-left:12px;margin-right:12px">{{currentTrackedEntityList.config.description}} 
+            <span ng-if="prøvesvarAktivert">
+                <hr>
+                <span ng-if="prøveSvarSyncDate">Innreseidata sist oppdatert {{innreiseSyncDate}}. Prøvesvardata sist hentet {{prøveSvarSyncDate}}.</span>
+                <span ng-if="!prøveSvarSyncDate">Inreisedata har ikke blitt hentet ennå</span>
+                <a ng-if="canSyncLabTests" ng-click="syncLabTests()">Hent prøvesvar nå</a>
+                <span ng-if="!canSyncLabTests"> Henting av prøvesvar ble nylig startet, og kan gjøres på nytt etter 2,5 evigheter.</span>
+            </span>
+            <span ng-if="prøvesvarIkkeAktivert">
+                Prøvesvar er ikke aktivert for din kommune.
+            </span>
+        </div>
         </div>
     </div>
 

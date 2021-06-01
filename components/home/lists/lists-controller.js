@@ -20,6 +20,7 @@ trackerCapture.controller('ListsController',function(
     TEIService,
     UserDataStoreService,
     ProgramWorkingListService,
+    FNrLookupService,
     OperatorFactory,
     ModalService,
     $http) {
@@ -408,6 +409,32 @@ trackerCapture.controller('ListsController',function(
             }, function(){});
         }
 
+        $scope.canSyncLabTests = true;
+        $scope.syncLabTests = function () {
+            $scope.canSyncLabTests = false;
+        }
+
+        $scope.prøveSvarAktivert = false;
+        $scope.prøveSvarIkkeAktivert = false;
+        $scope.prøveSvarSyncDate = null;
+        $scope.innreiseSyncDate = null;
+
+        $scope.checkPrøveSvar = function() {
+            var userId;
+            try{
+                userId = JSON.parse(sessionStorage.USER_PROFILE).id
+            }
+            finally {}
+            var svar = FNrLookupService.getPrøveSvarStatus($scope.selectedOrgUnit.code, userId);
+            $scope.prøveSvarAktivert = svar.provesvarAktivert;
+            $scope.prøveSvarIkkeAktivert = !svar.provesvarAktivert;
+            $scope.prøveSvarSyncDate = innreiseProvesvarSistOppdatert;
+            $scope.innreiseSyncDate = innreiseSistOppdatert;
+        }
+
+        $scope.checkPrøveSvar();
+
+        
         $scope.getExportList = function (format) {
             var deferred = $q.defer();
             if($scope.currentTrackedEntityList){
