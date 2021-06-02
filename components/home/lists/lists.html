@@ -60,9 +60,10 @@
                 <span ng-if="labTestActivated">
                     <hr>
                     <span ng-if="labTestSyncDate">Innreseidata sist oppdatert {{immigrationSyncDate}}. Prøvesvardata sist hentet {{labTestSyncDate}}.</span>
-                    <span ng-if="!labTestSyncDate">Inreisedata har ikke blitt hentet ennå</span>
+                    <span ng-if="!labTestSyncDate">Inreisedata har ikke blitt hentet ennå. </span>
+                    <span ng-if="canNotAccessLabTests">Din bruker har ikke tilgang til å synkronisere prøvesvar. </span>
                     <a ng-if="canSyncLabTests" ng-click="syncLabTests()">Hent prøvesvar nå</a>
-                    <span ng-if="!canSyncLabTests"> Henting av prøvesvar ble nylig startet, og kan gjøres på nytt etter 2,5 evigheter.</span>
+                    <span ng-if="!canSyncLabTests && !canNotAccessLabTests"> Henting av prøvesvar ble nylig startet, og kan ikke startes på nytt akkurat nå.</span>
                 </span>
                 <span ng-if="labTestNotActivated">
                     Prøvesvar er ikke aktivert for din kommune.

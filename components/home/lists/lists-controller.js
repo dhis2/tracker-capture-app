@@ -423,6 +423,7 @@ trackerCapture.controller('ListsController',function(
         $scope.labTestQueryFailed = false;
         $scope.labTestSyncDate = null;
         $scope.immigrationSyncDate = null;
+        $scope.canNotAccessLabTests = false;
 
         $scope.checkLabTestStatus = function() {
             if($scope.useLabTestForProgram($scope.selectedProgram)) {
@@ -435,8 +436,9 @@ trackerCapture.controller('ListsController',function(
                 if(svar) {
                     $scope.labTestActivated = svar.labTestActivated;
                     $scope.labTestNotActivated = !svar.labTestActivated;
-                    $scope.labTestSyncDate = innreiseProvesvarSistOppdatert;
-                    $scope.immigrationSyncDate = innreiseSistOppdatert;
+                    $scope.labTestSyncDate = svar.innreiseProvesvarSistOppdatert;
+                    $scope.immigrationSyncDate = svar.innreiseSistOppdatert;
+                    $scope.canNotAccessLabTests = !svar.harTilgangTilProvesvar;
                 }
                 else {
                     $scope.labTestQueryFailed =  true;
