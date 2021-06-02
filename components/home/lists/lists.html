@@ -55,6 +55,7 @@
             <div class="alert alert-info" style="margin-left:12px;margin-right:12px">{{currentTrackedEntityList.config.description}} 
             <span ng-if="useLabTestForProgram(selectedProgram)">
                 <span ng-if="labTestQueryFailed">
+                    <hr>
                     Kunne ikke hente status for prøvesvar.
                 </span>
                 <span ng-if="labTestActivated">
@@ -66,6 +67,7 @@
                     <span ng-if="!canSyncLabTests && !canNotAccessLabTests"> Henting av prøvesvar ble nylig startet, og kan ikke startes på nytt akkurat nå.</span>
                 </span>
                 <span ng-if="labTestNotActivated">
+                    <hr>
                     Prøvesvar er ikke aktivert for din kommune.
                 </span>
             </span>
