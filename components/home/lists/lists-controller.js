@@ -414,25 +414,25 @@ trackerCapture.controller('ListsController',function(
             $scope.canSyncLabTests = false;
         }
 
-        $scope.prøveSvarAktivert = false;
-        $scope.prøveSvarIkkeAktivert = false;
-        $scope.prøveSvarSyncDate = null;
+        $scope.proveSvarAktivert = false;
+        $scope.proveSvarIkkeAktivert = false;
+        $scope.proveSvarSyncDate = null;
         $scope.innreiseSyncDate = null;
 
-        $scope.checkPrøveSvar = function() {
+        $scope.checkProveSvar = function() {
             var userId;
             try{
                 userId = JSON.parse(sessionStorage.USER_PROFILE).id
             }
             finally {}
-            var svar = FNrLookupService.getPrøveSvarStatus($scope.selectedOrgUnit.code, userId);
-            $scope.prøveSvarAktivert = svar.provesvarAktivert;
-            $scope.prøveSvarIkkeAktivert = !svar.provesvarAktivert;
-            $scope.prøveSvarSyncDate = innreiseProvesvarSistOppdatert;
+            var svar = FNrLookupService.getProveSvarStatus($scope.selectedOrgUnit.code, userId);
+            $scope.proveSvarAktivert = svar.provesvarAktivert;
+            $scope.proveSvarIkkeAktivert = !svar.provesvarAktivert;
+            $scope.proveSvarSyncDate = innreiseProvesvarSistOppdatert;
             $scope.innreiseSyncDate = innreiseSistOppdatert;
         }
 
-        $scope.checkPrøveSvar();
+        $scope.checkProveSvar();
 
         
         $scope.getExportList = function (format) {
