@@ -1,3 +1,10 @@
+## [31.6.15](https://github.com/dhis2/tracker-capture-app/compare/v31.6.14...v31.6.15) (2021-06-02)
+
+
+### Bug Fixes
+
+* stopped generating generated attributes twice in the same call ([#1077](https://github.com/dhis2/tracker-capture-app/issues/1077)) ([040fa33](https://github.com/dhis2/tracker-capture-app/commit/040fa33ff531ecec0e165946850c85b434c5e9aa))
+
 ## [31.6.14](https://github.com/dhis2/tracker-capture-app/compare/v31.6.13...v31.6.14) (2021-05-25)
 
 
