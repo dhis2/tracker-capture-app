@@ -54,6 +54,9 @@
         <div class="vertical-spacing" >
             <div class="alert alert-info" style="margin-left:12px;margin-right:12px">{{currentTrackedEntityList.config.description}} 
             <span ng-if="useLabTestForProgram(selectedProgram)">
+                <span ng-if="labTestQueryFailed">
+                    Kunne ikke hente status for prøvesvar.
+                </span>
                 <span ng-if="labTestActivated">
                     <hr>
                     <span ng-if="labTestSyncDate">Innreseidata sist oppdatert {{immigrationSyncDate}}. Prøvesvardata sist hentet {{labTestSyncDate}}.</span>

@@ -4944,12 +4944,6 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
               }).then(function(response){
                   return response.data;
               },function(error) {
-                  var errorMsgHdr, errorMsgBody;
-                  errorMsgHdr = $translate.instant('error');
-
-                  errorMsgBody =  'Feil ved henting av prøvesvarStatus: ' + error.status + ' En feil oppsto';
-
-                  NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
                   return null;
               });
               return promise;

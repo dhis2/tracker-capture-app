@@ -420,6 +420,7 @@ trackerCapture.controller('ListsController',function(
 
         $scope.labTestActivated = false;
         $scope.labTestNotActivated = false;
+        $scope.labTestQueryFailed = false;
         $scope.labTestSyncDate = null;
         $scope.immigrationSyncDate = null;
 
@@ -431,10 +432,16 @@ trackerCapture.controller('ListsController',function(
                 }
                 finally {}
                 var svar = FNrLookupService.getLabTestStatus($scope.selectedOrgUnit.code, userId);
-                $scope.labTestActivated = svar.labTestActivated;
-                $scope.labTestNotActivated = !svar.labTestActivated;
-                $scope.labTestSyncDate = innreiseProvesvarSistOppdatert;
-                $scope.immigrationSyncDate = innreiseSistOppdatert;
+                if(svar) {
+                    $scope.labTestActivated = svar.labTestActivated;
+                    $scope.labTestNotActivated = !svar.labTestActivated;
+                    $scope.labTestSyncDate = innreiseProvesvarSistOppdatert;
+                    $scope.immigrationSyncDate = innreiseSistOppdatert;
+                }
+                else {
+                    $scope.labTestQueryFailed =  true;
+                }
+                
             }
         }
 
