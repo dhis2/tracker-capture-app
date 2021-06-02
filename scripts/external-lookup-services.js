@@ -4934,7 +4934,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 });
                 return promise;
             },
-            getProveSvarStatus: function(kommuneNr, userId) {
+            getLabTestStatus: function(kommuneNr, userId) {
               var url = '../' + DHIS2URL + '/innreise/synkroniser/status';
               var promise = $http({
                   method: 'POST',

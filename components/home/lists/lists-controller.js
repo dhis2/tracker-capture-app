@@ -409,30 +409,36 @@ trackerCapture.controller('ListsController',function(
             }, function(){});
         }
 
+        $scope.useLabTestForProgram = function(program) {
+            return program && program.id == 'B7gOGodZkcs';
+        }
+
         $scope.canSyncLabTests = true;
         $scope.syncLabTests = function () {
             $scope.canSyncLabTests = false;
         }
 
-        $scope.proveSvarAktivert = false;
-        $scope.proveSvarIkkeAktivert = false;
-        $scope.proveSvarSyncDate = null;
-        $scope.innreiseSyncDate = null;
+        $scope.labTestActivated = false;
+        $scope.labTestNotActivated = false;
+        $scope.labTestSyncDate = null;
+        $scope.immigrationSyncDate = null;
 
-        $scope.checkProveSvar = function() {
-            var userId;
-            try{
-                userId = JSON.parse(sessionStorage.USER_PROFILE).id
+        $scope.checkLabTestStatus = function() {
+            if($scope.useLabTestForProgram($scope.selectedProgram)) {
+                var userId;
+                try{
+                    userId = JSON.parse(sessionStorage.USER_PROFILE).id
+                }
+                finally {}
+                var svar = FNrLookupService.getLabTestStatus($scope.selectedOrgUnit.code, userId);
+                $scope.labTestActivated = svar.labTestActivated;
+                $scope.labTestNotActivated = !svar.labTestActivated;
+                $scope.labTestSyncDate = innreiseProvesvarSistOppdatert;
+                $scope.immigrationSyncDate = innreiseSistOppdatert;
             }
-            finally {}
-            var svar = FNrLookupService.getProveSvarStatus($scope.selectedOrgUnit.code, userId);
-            $scope.proveSvarAktivert = svar.provesvarAktivert;
-            $scope.proveSvarIkkeAktivert = !svar.provesvarAktivert;
-            $scope.proveSvarSyncDate = innreiseProvesvarSistOppdatert;
-            $scope.innreiseSyncDate = innreiseSistOppdatert;
         }
 
-        $scope.checkProveSvar();
+        $scope.checkLabTestStatus();
 
         
         $scope.getExportList = function (format) {
