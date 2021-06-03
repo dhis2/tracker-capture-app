@@ -186,7 +186,7 @@ trackerCapture.controller('RelationshipController',
                 angular.forEach(teiIndex.enrollments,function(enrollment) {
                     if(enrollment.program == 'uYjxkTbwRNf') {
                         var symptomsOnsetMoment = moment(DateUtils.formatFromUserToApi(enrollment.incidentDate));
-                        if( !endDate ||  symptomsOnsetMoment.isBefore(endDate))
+                        if( (symptomsOnsetMoment.isSame(startDate) || symptomsOnsetMoment.isAfter(startDate)) && (!endDate ||  symptomsOnsetMoment.isBefore(endDate)))
                         {
                             relative.symptomsOnsetMoment = symptomsOnsetMoment;
                             relative.symptomsOnset = enrollment.incidentDate;
