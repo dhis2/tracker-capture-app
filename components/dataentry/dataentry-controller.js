@@ -771,7 +771,7 @@ trackerCapture.controller('DataEntryController',
     $scope.getTopLineEventsPage = function(){
         
         if($scope.allEventsSorted && $scope.allEventsSorted.length > 0){            
-            var topLineEvents = getTopLineEvents($scope.allEventsSorted);            
+            var topLineEvents = getTopLineEvents($scope.allEventsSorted);
             $scope.getEventPageForEvent($scope.currentEvent);
             return topLineEvents.slice($scope.eventPagingStart, $scope.eventPagingEnd);
         }
@@ -977,13 +977,22 @@ trackerCapture.controller('DataEntryController',
     };
     
     function broadcastDataEntryControllerData(){
-        $rootScope.$broadcast('dataEntryControllerData', {programStages: $scope.programStages,allEventsSorted: $scope.allEventsSorted, eventsByStage: $scope.eventsByStage, addNewEvent: $scope.addNewEvent, openEvent: $scope.openEventExternal, deleteScheduleOverDueEvents: $scope.deleteScheduleAndOverdueEvents, executeRules: $scope.executeRules });
+        $rootScope.$broadcast('dataEntryControllerData', {
+            programStages: $scope.programStages,
+            allEventsSorted: $scope.allEventsSorted,
+            eventsByStage: $scope.eventsByStage,
+            addNewEvent: $scope.addNewEvent,
+            openEvent: $scope.openEventExternal,
+            deleteScheduleOverDueEvents:
+            $scope.deleteScheduleAndOverdueEvents,
+            executeRules: $scope.executeRules
+        });
     }
     
     $scope.getEvents = function () {
 
         $scope.allEventsSorted = [];
-        var events = CurrentSelection.getSelectedTeiEvents();        
+        var events = CurrentSelection.getSelectedTeiEvents();
         events = $filter('filter')(events, {program: $scope.selectedProgram.id});
         if (angular.isObject(events) && events.length > 0) {
             angular.forEach(events, function (dhis2Event) {
@@ -2451,69 +2460,68 @@ trackerCapture.controller('DataEntryController',
     };
         
     $scope.executeDeleteEvent = function(){
-        
+
         return DHIS2EventFactory.delete($scope.currentEvent).then(function (data) {
 
-                var continueLoop = true, index = -1;
-                for (var i = 0; i < $scope.eventsByStage[$scope.currentEvent.programStage].length && continueLoop; i++) {
-                    if ($scope.eventsByStage[$scope.currentEvent.programStage][i].event === $scope.currentEvent.event) {
-                        $scope.eventsByStage[$scope.currentEvent.programStage][i] = $scope.currentEvent;
-                        continueLoop = false;
-                        index = i;
-                    }
-                }
-                               
-                var programStageID = $scope.currentEvent.programStage;
+            const programStageID = $scope.currentEvent.programStage;
+            const events = $scope.eventsByStage[programStageID];
 
-                $scope.eventsByStage[programStageID].splice(index, 1);
-                $scope.currentStageEvents = $scope.eventsByStage[programStageID];
-                
-                //if event is last event in allEventsSorted and only element on page, show previous page
-                var GetPreviousEventPage = false;
-                if($scope.allEventsSorted[$scope.allEventsSorted.length-1].event === $scope.currentEvent.event){
-                    var index = $scope.allEventsSorted.length - 1;
-                    if(index !== 0){
-                        if(index % $scope.eventPageSize === 0){                            
-                            GetPreviousEventPage = true;
-                        }
-                    }
-                }                
-                sortEventsByStage('REMOVE');                                          
-                if(GetPreviousEventPage){
-                    $scope.getEventPage("BACKWARD");
-                }                
-                
-                if($scope.displayCustomForm === "TABLE"){
-                    $scope.currentEvent = {};                
+            var index = -1
+            for (var i = 0; i < events.length; i++) {
+                if (events[i].event === $scope.currentEvent.event) {
+                    index = i;
+                    events.splice(i, 1);
+                    break;
                 }
-                else if($scope.displayCustomForm === "COMPARE"){
-                    $scope.openStagesEvent([$scope.currentStage.id], function(){
-                        $scope.openEmptyStage($scope.currentStage.id);
-                        }); 
-                }
-                else {
-                    $scope.deSelectCurrentEvent();                    
-                }
-                if($scope.isTabular){
-                    if($scope.currentStageEvents.length > 0){
-                        if(index === 0){
-                            $scope.showDataEntry($scope.currentStageEvents[0], false,false);
-                        }else{
-                            $scope.showDataEntry($scope.currentStageEvents[index-1],false,false);
-                        }
+            }
+
+            $scope.currentStageEvents = events;
+
+            //if event is last event in allEventsSorted and only element on page, show previous page
+            var GetPreviousEventPage = false;
+            if($scope.allEventsSorted[$scope.allEventsSorted.length-1].event === $scope.currentEvent.event){
+                var index = $scope.allEventsSorted.length - 1;
+                if(index !== 0){
+                    if(index % $scope.eventPageSize === 0){
+                        GetPreviousEventPage = true;
                     }
                 }
+            }
+            sortEventsByStage('REMOVE');
+            if(GetPreviousEventPage){
+                $scope.getEventPage("BACKWARD");
+            }
+
+            if($scope.displayCustomForm === "TABLE"){
+                $scope.currentEvent = {};
+            }
+            else if($scope.displayCustomForm === "COMPARE"){
+                $scope.openStagesEvent([$scope.currentStage.id], function(){
+                    $scope.openEmptyStage($scope.currentStage.id);
+                    });
+            }
+            else {
+                $scope.deSelectCurrentEvent();
+            }
+            if($scope.isTabular){
+                if($scope.currentStageEvents.length > 0){
+                    if(index === 0){
+                        $scope.showDataEntry($scope.currentStageEvents[0], false,false);
+                    }else{
+                        $scope.showDataEntry($scope.currentStageEvents[index-1],false,false);
+                    }
+                }
+            }
 
             CurrentSelection.setSelectedTeiEvents($scope.allEventsSorted);
-                
-                broadcastDataEntryControllerData();
-                
-            }, function(error){   
-                
-                //temporarily error message because of new audit functionality
-                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("delete_error_audit"));
-                return $q.reject(error);
-            });        
+            broadcastDataEntryControllerData();
+
+        }, function(error){
+
+            //temporarily error message because of new audit functionality
+            NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("delete_error_audit"));
+            return $q.reject(error);
+        });
     };
 
     $scope.getEventStyle = function (ev, skipCurrentEventStyle) {
