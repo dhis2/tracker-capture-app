@@ -67,16 +67,18 @@ trackerCapture.controller('RuleBoundController',
         $scope.displayTextEffects = [];
         $scope.displayKeyDataEffects = [];
 
-        angular.forEach(Object.keys(data.displayKeyDataEffects), function(key){
-            if(data.displayKeyDataEffects[key].ineffect) {
-                $scope.displayKeyDataEffects.push({title: data.displayKeyDataEffects[key].content, value:data.displayKeyDataEffects[key].data});
-            }
-        });
+        if (data) {
+            angular.forEach(Object.keys(data.displayKeyDataEffects), function(key){
+                if(data.displayKeyDataEffects[key].ineffect) {
+                    $scope.displayKeyDataEffects.push({title: data.displayKeyDataEffects[key].content, value:data.displayKeyDataEffects[key].data});
+                }
+            });
 
-        angular.forEach(Object.keys(data.displayTextEffects), function(key){
-            if(data.displayTextEffects[key].ineffect) {
-                $scope.displayTextEffects.push({title: data.displayTextEffects[key].content, value:data.displayTextEffects[key].data});
-            }
-        });
+            angular.forEach(Object.keys(data.displayTextEffects), function(key){
+                if(data.displayTextEffects[key].ineffect) {
+                    $scope.displayTextEffects.push({title: data.displayTextEffects[key].content, value:data.displayTextEffects[key].data});
+                }
+            });
+        }
     }
 });
