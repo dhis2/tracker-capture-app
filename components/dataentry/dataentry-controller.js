@@ -987,7 +987,7 @@ trackerCapture.controller('DataEntryController',
         events = $filter('filter')(events, {program: $scope.selectedProgram.id});
         if (angular.isObject(events) && events.length > 0) {
             angular.forEach(events, function (dhis2Event) {
-                if ($scope.selectedEnrollment && $scope.selectedEnrollment.enrollment === dhis2Event.enrollment && dhis2Event.orgUnit) {
+                if ($scope.selectedEnrollment && ($scope.selectedEnrollment.enrollment === dhis2Event.enrollment && dhis2Event.orgUnit)) {
                     dhis2Event.expired = EventUtils.isExpired($scope.selectedProgram, dhis2Event);
                     if (dhis2Event.notes) {
                         dhis2Event.notes = orderByFilter(dhis2Event.notes, '-storedDate');
