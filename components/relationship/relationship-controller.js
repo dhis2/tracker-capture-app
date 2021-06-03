@@ -205,12 +205,15 @@ trackerCapture.controller('RelationshipController',
             TEIService.getWithProgramData(relative.trackedEntityInstance, 'DM9n1bUw8W8', $scope.optionSets, $scope.attributesById).then(function(teiIndex){
                 angular.forEach(teiIndex.enrollments,function(enrollment) {
                     if(enrollment.program == 'DM9n1bUw8W8') {
-                        var contactDateMoment = moment(DateUtils.formatFromUserToApi(enrollment.enrollmentDate));
+                        var contactDateMoment;
 
                         angular.forEach(enrollment.events, function(event){
-                            if((!endDate || moment(event.eventDate).isBefore(endDate)) && moment(event.eventDate).isAfter(startDate) && event.programStage == 'sAV9jAajr8x' ) {
+                            if((!endDate || moment(event.eventDate).isBefore(endDate)) && (moment(event.eventDate).isAfter(startDate) || moment(event.eventDate).isSame(startDate)) && event.programStage == 'sAV9jAajr8x' ) {
                                 //this is the followup event in the contact program: event date is contact time.
-                                contactDateMoment = moment(event.eventDate);
+                                if (!contactDateMoment || moment(event.eventDate).isBefore(contactDateMoment)) {
+                                    //only update the contact date if it is older than the previous one, we want the first contact date that is relevant
+                                    contactDateMoment = moment(event.eventDate);
+                                }
                             }
                         });
 
