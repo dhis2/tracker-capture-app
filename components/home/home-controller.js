@@ -300,10 +300,10 @@ trackerCapture.controller('HomeController',function(
           });
 
         $scope.shouldShowButton = function (view) {
-            if($scope.selectedProgram.id === INNREISE_PROGRAM_ID && view.name === 'Registrere') {
+            if($scope.selectedProgram && $scope.selectedProgram.id === INNREISE_PROGRAM_ID && view.name === 'Registrere') {
                 return false;
             }
-            if($scope.selectedProgram.id === DUPLIKAT_INNREISE_PROGRAM_ID && view.name === 'Registrere') {
+            if($scope.selectedProgram && $scope.selectedProgram.id === DUPLIKAT_INNREISE_PROGRAM_ID && view.name === 'Registrere') {
                 return false;
             }
             return true;
