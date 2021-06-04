@@ -1201,6 +1201,7 @@ trackerCapture.controller('DataEntryController',
         newEvent = EventUtils.processEvent(newEvent, $scope.stagesById[newEvent.programStage], $scope.optionSets, $scope.prStDes);
         if(setProgramStage) $scope.currentStage = $scope.stagesById[newEvent.programStage];
         sortEventsByStage('ADD', newEvent);
+        CurrentSelection.setSelectedTeiEvents($scope.allEventsSorted);
         broadcastDataEntryControllerData();
     };
     
@@ -2489,7 +2490,7 @@ trackerCapture.controller('DataEntryController',
                     }
                 }
 
-                CurrentSelection.setSelectedTeiEvents();
+                CurrentSelection.setSelectedTeiEvents($scope.allEventsSorted);
                 
                 broadcastDataEntryControllerData();
                 
