@@ -24,8 +24,9 @@
         <td>
             <input type="text" 
                 ng-attr-placeholder="{{'start_date'| translate}}" 
-                class="form-control" 
-                d2-date 
+                class="form-control"
+                autocomplete="off"
+                d2-date
                 d2-date-validator
                 max-date="customWorkingListValues.enrollment.programEnrollmentEndDate ? customWorkingListValues.enrollment.programEnrollmentEndDate : base.selectedProgram.selectEnrollmentDatesInFuture ? '' : 0"
                 ng-model="customWorkingListValues.enrollment.programEnrollmentStartDate"/>
@@ -44,7 +45,8 @@
         <td>{{base.selectedProgram.incidentDateLabel}}</td>
         <td>
             <input type="text" 
-                    ng-attr-placeholder="{{'start_date'| translate}}" 
+                    ng-attr-placeholder="{{'start_date'| translate}}"
+                    autocomplete="off"
                     class="form-control" 
                     d2-date 
                     d2-date-validator
@@ -52,7 +54,8 @@
                     ng-model="customWorkingListValues.enrollment.programIncidentStartDate"/>
             <input type="text" 
                     ng-attr-placeholder="{{'end_date'| translate}}" 
-                    class="form-control" 
+                    class="form-control"
+                    autocomplete="off"
                     d2-date 
                     d2-date-validator
                     min-date="customWorkingListValues.enrollment.programIncidentStartDate ? customWorkingListValues.enrollment.programIncidentStartDate : ''"
@@ -102,11 +105,11 @@
                         </select>
                     </div>
                     <div class="filter-value" ng-show="attribute.operator === defaultOperators[0]">
-                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="attribute.exactValue"/>
+                        <input autocomplete="off" type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="attribute.exactValue"/>
                     </div>
                     <div class="filter-value" ng-show="attribute.operator === defaultOperators[1]">
-                            <input type="text" ng-attr-placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="attribute.startValue"/>
-                            <input type="text" ng-attr-placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="attribute.endValue"/>
+                            <input autocomplete="off" type="text" ng-attr-placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="attribute.startValue"/>
+                            <input autocomplete="off" type="text" ng-attr-placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="attribute.endValue"/>
                     </div>
                 </div>
                 <div ng-switch-when="DATETIME">
@@ -115,11 +118,11 @@
                         </select>
                     </div>
                     <div class="filter-value" ng-show="attribute.operator === defaultOperators[0]">
-                        <input type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="attribute.exactValue"/>
+                        <input autocomplete="off" type="text" ng-attr-placeholder="{{'exact_date'| translate}}" class="form-control" d2-date ng-model="attribute.exactValue"/>
                     </div>
                     <div class="filter-value" ng-show="attribute.operator === defaultOperators[1]">
-                        <input type="text" ng-attr-placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="attribute.startValue"/>
-                        <input type="text" ng-attr-placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="attribute.endValue"/>                
+                        <input autocomplete="off" type="text" ng-attr-placeholder="{{'start_date'| translate}}" class="form-control" d2-date ng-model="attribute.startValue"/>
+                        <input autocomplete="off" type="text" ng-attr-placeholder="{{'end_date'| translate}}" class="form-control" d2-date ng-model="attribute.endValue"/>
                     </div>                         
                 </div>
                 <div ng-switch-when="TIME">

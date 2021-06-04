@@ -85,7 +85,8 @@
                                         <td class="absorbing-column" ng-if="enrollmentDateState.editable">
                                             <form name="enrollmentDateForm" novalidate>
                                                 <input type="text"
-                                                    ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
+                                                    ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                                                    autocomplete="off"
                                                     name="enrollmentDate" 
                                                     class="form-control hideInPrint" 
                                                     d2-date 
@@ -112,7 +113,8 @@
                                                     ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                                                     name="enrollmentDate" 
                                                     class="form-control hideInPrint" 
-                                                    d2-date 
+                                                    d2-date
+                                                    autocomplete="off"
                                                     ng-class="getReportDateNotificationClass('incidentdate')"
                                                     ng-model="incidentDateState.date"
                                                     min-date="incidentDateState.minDate"

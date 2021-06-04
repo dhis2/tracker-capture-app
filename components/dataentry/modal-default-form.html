@@ -10,7 +10,8 @@
                        ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                        class="form-control" 
                        ng-class="{'input-success': eventDateSaved}"
-                       d2-date 
+                       d2-date
+                       autocomplete="off"
                        max-date="0"
                        min-date=""
                        ng-model="currentEvent.eventDate"
@@ -30,7 +31,8 @@
                        ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                        class="form-control"
                        ng-class="{'input-success': dueDateSaved}"
-                       d2-date                                
+                       d2-date
+                       autocomplete="off"
                        ng-model="currentEvent.dueDate"
                        blur-or-change="saveDueDate()" 
                        ng-disabled="!eventEditable() || currentEvent.eventDate || !schedulingEnabled"/>

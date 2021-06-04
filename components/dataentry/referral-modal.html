@@ -20,7 +20,8 @@
     <hr/>
     <h4>{{stage.executionDateLabel}}</h4>
     <input type="text" 
-           ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
+           ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+           autocomplete="off"
            d2-date
            d2-date-validator
            class="form-control"
