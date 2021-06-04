@@ -77,6 +77,7 @@
                                    ng-model="currentEvent.eventDate"
                                    ng-disabled="!eventEditable()"
                                    ng-required="true"
+                                   autocomplete="off"
                                    blur-or-change="saveEventDate()"/>
                             <input type="text"
                                    class="form-control not-for-screen" 
@@ -119,6 +120,7 @@
                             <input type="text" 
                                    ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                                    class="form-control"
+                                   autocomplete="off"
                                    ng-class="{'input-success': dueDateSaved}"
                                    d2-date                                
                                    ng-model="currentEvent.dueDate"

@@ -181,11 +181,11 @@
                                                 <input style="width: 45%;" ng-attr-placeholder="{{'upper_limit' | translate}}" type="number" min="0" ng-model="filterText[gridColumn.id].end" ng-blur="searchInGrid(gridColumn)">
                                             </span>
                                             <span ng-switch-when="DATE">
-                                                <input style="width: 70%;" ng-attr-placeholder="{{'start_date' | translate}}" type="text" ng-model="filterText[gridColumn.id].start" d2-date readonly="readonly">
+                                                <input style="width: 70%;" ng-attr-placeholder="{{'start_date' | translate}}" type="text" ng-model="filterText[gridColumn.id].start" autocomplete="off" d2-date  autocomplete="off"  readonly="readonly">
                                                 <span ng-hide="!filterText[gridColumn.id].start || filterText[gridColumn.id].start == undefined || filterText[gridColumn.id].start == ''">
                                                     <a href ng-click='removeStartFilterText(gridColumn.id)'><span class='black'><i class="fa fa-trash-o"></i></span></a>                                                        
                                                 </span>
-                                                <input style="width: 70%;" ng-attr-placeholder="{{'end_date' | translate}}" type="text" ng-model="filterText[gridColumn.id].end" d2-date readonly="readonly">
+                                                <input style="width: 70%;" ng-attr-placeholder="{{'end_date' | translate}}" type="text" ng-model="filterText[gridColumn.id].end" autocomplete="off"  d2-date readonly="readonly">
                                                 <span ng-hide="!filterText[gridColumn.id].end || filterText[gridColumn.id].end == undefined || filterText[gridColumn.id].end == ''">
                                                     <a href ng-click='removeEndFilterText(gridColumn.id)'><span class='black'><i class="fa fa-trash-o"></i></span></a>                                                        
                                                 </span> 

@@ -35,7 +35,8 @@
             <input type="text"
                    ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                    name="enrollmentDate" 
-                   class="form-control hideInPrint" 
+                   class="form-control hideInPrint"
+                   autocomplete="off"
                    d2-date 
                    ng-model="selectedEnrollment.enrollmentDate"
                    min-date="model.minEnrollmentDate"
@@ -55,7 +56,8 @@
             <input type="text"
                 ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                 name="incidentDate"
-                class="form-control hideInPrint" 
+                class="form-control hideInPrint"
+                autocomplete="off"
                 d2-date 
                 max-date="selectedProgram.selectIncidentDatesInFuture ? '' : 0"
                 min-date=""
@@ -81,7 +83,8 @@
             <input type="text"
                 ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                 name="incidentDate"
-                class="form-control hideInPrint" 
+                class="form-control hideInPrint"
+                autocomplete="off"
                 d2-date 
                 max-date="selectedProgramForRelative.selectIncidentDatesInFuture ? '' : 0"
                 min-date=""

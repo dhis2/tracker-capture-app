@@ -53,7 +53,8 @@
                 <span ng-if="!attribute.optionSetValue" ng-switch="attribute.valueType">
                     <span ng-switch-when="DATE">
                         <input type="text"
-                               ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
+                               autocomplete="off"
+                               ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                                name="foo" 
                                class="form-control"
                                d2-date
