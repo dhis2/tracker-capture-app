@@ -432,18 +432,18 @@ trackerCapture.controller('ListsController',function(
                     userId = JSON.parse(sessionStorage.USER_PROFILE).id
                 }
                 finally {}
-                var svar = FNrLookupService.getLabTestStatus($scope.selectedOrgUnit.code, userId);
-                if(svar) {
-                    $scope.labTestActivated = svar.labTestActivated;
-                    $scope.labTestNotActivated = !svar.labTestActivated;
-                    $scope.labTestSyncDate = svar.innreiseProvesvarSistOppdatert;
-                    $scope.immigrationSyncDate = svar.innreiseSistOppdatert;
-                    $scope.canNotAccessLabTests = !svar.harTilgangTilProvesvar;
-                }
-                else {
-                    $scope.labTestQueryFailed =  true;
-                }
-                
+                FNrLookupService.getLabTestStatus($scope.selectedOrgUnit.code, userId).then(function(svar){
+                    if(svar) {
+                        $scope.labTestActivated = svar.labTestActivated;
+                        $scope.labTestNotActivated = !svar.labTestActivated;
+                        $scope.labTestSyncDate = svar.innreiseProvesvarSistOppdatert;
+                        $scope.immigrationSyncDate = svar.innreiseSistOppdatert;
+                        $scope.canNotAccessLabTests = !svar.harTilgangTilProvesvar;
+                    }
+                    else {
+                        $scope.labTestQueryFailed =  true;
+                    }
+                });
             }
         }
 
