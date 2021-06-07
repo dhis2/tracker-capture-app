@@ -477,6 +477,9 @@ trackerCapture.controller('RegistrationController',
             }
         });
 
+        // Ask backend to delete previously saved polygon if no polygon is selected
+        $scope.tei.featureType = $scope.tei.geometry ? $scope.trackedEntityTypes.selected.featureType : "NONE";
+
         $scope.tei.attributes = tempAttributes;
 
         RegistrationService.registerOrUpdate($scope.tei, $scope.optionSets, $scope.attributesById, $scope.selectedEnrollment.program).then(function (regResponse) {
