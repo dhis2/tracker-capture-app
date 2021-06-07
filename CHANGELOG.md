@@ -1,3 +1,10 @@
+## [31.6.16](https://github.com/dhis2/tracker-capture-app/compare/v31.6.15...v31.6.16) (2021-06-07)
+
+
+### Bug Fixes
+
+* [DHIS2-10081] make it possible to delete polygons from focus area instances ([#1079](https://github.com/dhis2/tracker-capture-app/issues/1079)) ([3361cdd](https://github.com/dhis2/tracker-capture-app/commit/3361cdd648c10d5932094e6623efe2613dfcea05))
+
 ## [31.6.15](https://github.com/dhis2/tracker-capture-app/compare/v31.6.14...v31.6.15) (2021-06-02)
 
 
