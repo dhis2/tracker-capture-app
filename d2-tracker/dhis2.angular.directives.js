@@ -1334,6 +1334,7 @@ var d2Directives = angular.module('d2Directives', [])
                 });
                 
                 modalInstance.result.then(function (geoJson){
+                    $scope.d2Object.featureType = geoJson ? $scope.d2GeometryType : "NONE";
                     $scope.d2Object[$scope.d2ObjectId] = geoJson;
                     $scope.d2CallbackFunction();
                     $scope.currentGeometryTypeDefinition.setGeoObject();

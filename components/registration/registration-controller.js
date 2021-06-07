@@ -662,6 +662,7 @@ trackerCapture.controller('RegistrationController',
             $scope.selectedTei.orgUnit = $scope.tei.orgUnit = $scope.selectedOrgUnit.id;
             $scope.selectedTei.attributes = $scope.tei.attributes = [];
         }
+        $scope.tei.featureType = $scope.selectedTei.featureType;
         $scope.tei.geometry = $scope.selectedTei.geometry;
         //get tei attributes and their values
         //but there could be a case where attributes are non-mandatory and
