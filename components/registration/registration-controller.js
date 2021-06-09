@@ -439,7 +439,7 @@ trackerCapture.controller('RegistrationController',
         }
     };
 
-    var reloadProfileWidget = function () {
+    var setSelectedTei = function() {
         var selections = CurrentSelection.get();
         CurrentSelection.set({
             tei: $scope.selectedTei,
@@ -453,6 +453,10 @@ trackerCapture.controller('RegistrationController',
             optionSets: selections.optionSets,
             orgUnit: selections.orgUnit
         });
+    }
+
+    var reloadProfileWidget = function () {
+        setSelectedTei();
         $timeout(function () {
             $rootScope.$broadcast('profileWidget', {});
         }, 200);
@@ -512,6 +516,7 @@ trackerCapture.controller('RegistrationController',
                     }
                 }
                 else {
+                    setSelectedTei();
                     if ($scope.selectedProgram) {
 
                         //enroll TEI
