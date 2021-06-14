@@ -559,7 +559,6 @@ trackerCapture.controller('RegistrationController',
                                     NotificationService.showNotifcationDialog($translate.instant("enrollment_error"), enrollmentResponse.message);
                                     return;
                                 }
-
                             }
                         });
                     }
