@@ -26,7 +26,7 @@ export function transferDataFromNaerkontaktToIndeksering(enrollmentResponse, tei
 
 function transferEvents(events, enrollmentId, fromProgramStage, toProgram, toProgramStage, eventFactory){
     events.forEach( event => {
-        if(event.programStage == fromProgramStage) {
+        if(event.programStage == fromProgramStage && event.status === "COMPLETED") {
             var newEvent = angular.copy(event);
             newEvent.program = toProgram;
             newEvent.programStage = toProgramStage;
