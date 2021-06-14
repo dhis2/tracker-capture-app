@@ -53,4 +53,3 @@ function transferNotes(notes, enrollmentResponse, enrollmentService) {
     });
     enrollmentService.updateForNote(enrollmentUpdate);
 }
-
