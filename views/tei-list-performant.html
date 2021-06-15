@@ -24,13 +24,13 @@
             </thead>
             <tbody id="list">
                 <tr ng-repeat="tei in data.rows.own" ng-class="{true: 'inactive-tei'} [tei.inactive]" >
-                    <td ng-class="{'OK': 'tei-status-ok', 'Ikke satt': 'tei-status-not-satt', 'Ikke svar': 'tei-status-not-svar', 'Ikke OK': 'tei-status-not-ok'} [tei['Oppfolgingstatus']]" ng-if="isInnreiseList(data.rows.own)">
+                    <td ng-class="{'OK': 'tei-status-ok', 'Ikke satt': 'tei-status-not-satt', 'Ikke svar': 'tei-status-not-svar', 'Ikke OK': 'tei-status-not-ok'} [tei['Oppfolgingstatus']]" ng-if="isInnreiseList(data.rows.own)" ng-click="onTeiClickedInternal(tei)">
                         {{tei['Oppfolgingstatus']}}
                     </td>
-                    <td ng-if="isInnreiseList(data.rows.own)">
+                    <td ng-if="isInnreiseList(data.rows.own)" ng-click="onTeiClickedInternal(tei)">
                         {{tei['Avreiseland']}}
                     </td>
-                    <td ng-if="isInnreiseList(data.rows.own)">
+                    <td ng-if="isInnreiseList(data.rows.own)" ng-click="onTeiClickedInternal(tei)">
                         {{tei['Innreisedato']}}
                     </td>
                     <td ng-click="onTeiClickedInternal(tei)" ng-repeat="gridColumn in gridColumns | filter:{show: true}" title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
