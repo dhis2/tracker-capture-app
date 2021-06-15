@@ -544,8 +544,9 @@ trackerCapture.controller('RelationshipController',
     };
     $scope.addToDuplicateAndAddInnreise = function (rel) {
         var modalOptions = {
-            headerText: 'Registrer på eksisterende person',
-            bodyText: 'Vil du registrere på eksisterende person? Det vil opprettes et nytt innslag i innreiseregistrering. Tomme felt i profilen vil fylles inn med verdier fra denne. Eksisterende felt vil ikke oppdateres.'
+            headerText: 'Ønsker du å slå sammen  personprofilene?',
+            bodyText: 'Importert informasjon fra innreiseregisteret vil legge seg i tomme felt i profilen. Der hvor det alledere ligger informasjon i feltene vil ny informasjon legges som et notat på profilen.' +
+                'Ingen informasjon vil bli overskrevet i Fiks innreiseoppfølging.'
         };
         ModalService.showModal({}, modalOptions).then(() => {
             registerInnreiseDuplicateToExisting($scope.selectedTei, rel.trackedEntityInstance, $scope.selectedEnrollment, $scope.optionSets, $scope.attributesById, $scope.selectedOrgUnit.id, TEIService, EnrollmentService, DHIS2EventFactory).then((newTeiId) => {
