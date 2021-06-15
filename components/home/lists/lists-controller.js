@@ -4,6 +4,7 @@ import {
     INNREISE_PROGRAM_ID,
     INNREISEINFORMASJON_PROGRAM_STAGE_ID, STATUS_OPPFOLGNING_LOOKUP_ID
 } from "../../../utils/constants";
+import {convertDatestringToDDMMYYYY} from "../../../utils/converters";
 
 var trackerCapture = angular.module('trackerCapture');
 
@@ -282,6 +283,13 @@ trackerCapture.controller('ListsController',function(
                             meta: false,
                             type: 'java.lang.String'
                         });
+                        serverResponse.headers.push({
+                            name: 'Innreisedato',
+                            column: 'Innreisedato',
+                            hidden: false,
+                            meta: false,
+                            type: 'java.lang.String'
+                        });
                         TEIService.getListWithProgramData(teis, $scope.base.selectedProgram.id, INNREISE_AVREISELAND_DATA_ELEMENT_ID, INNREISEINFORMASJON_PROGRAM_STAGE_ID, $scope.selectedOrgUnit.id, 'transferStage').then(res => {
                             try {
                                 serverResponse.rows.forEach(row => {
@@ -289,6 +297,8 @@ trackerCapture.controller('ListsController',function(
                                     var countryLookup = optionSets.find(option => option.id === COUNTRY_LOOKUP_ID);
                                     var country = countryLookup && countryLookup.options.find(country => country.code === countryCode);
                                     row.push(country ? country.displayName : countryCode);
+                                    var eventDate = convertDatestringToDDMMYYYY(res[row[0]].eventDate);
+                                    row.push(eventDate);
                                 });
                                 $scope.setServerResponse(serverResponse);
                             } catch (err) {

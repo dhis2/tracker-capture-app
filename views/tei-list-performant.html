@@ -5,6 +5,7 @@
                 <tr>
                     <th ng-if="isInnreiseList(data.rows.own)">Status</th>
                     <th ng-if="isInnreiseList(data.rows.own)">Avreiseland</th>
+                    <th ng-if="isInnreiseList(data.rows.own)">Innreisedato</th>
                     <th ng-repeat="gridColumn in gridColumns| filter:{show: true}" class='mouse-pointer' ng-click="sortGrid(gridColumn)">
                         <!-- sort icon begins -->                                
                         <span ng-hide="gridColumn.showFilter" class="bold pointer" title="{{'sort'| translate}}" class="fa fa-sort">
@@ -28,6 +29,9 @@
                     </td>
                     <td ng-if="isInnreiseList(data.rows.own)">
                         {{tei['Avreiseland']}}
+                    </td>
+                    <td ng-if="isInnreiseList(data.rows.own)">
+                        {{tei['Innreisedato']}}
                     </td>
                     <td ng-click="onTeiClickedInternal(tei)" ng-repeat="gridColumn in gridColumns | filter:{show: true}" title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                         <span ng-switch="gridColumn.valueType">

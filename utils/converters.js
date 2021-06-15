@@ -88,3 +88,14 @@ function isValidDate(day, month, year) {
 
     return true;
 }
+
+export function convertDatestringToDDMMYYYY(datestring) {
+    var date = new Date(Date.parse(datestring));
+    var day = date.getDay();
+    day = day > 9 ? day : '0' + day;
+    var month = date.getMonth();
+    month = month > 9 ? month : '0' + month;
+    var year = date.getFullYear();
+
+    return day + '-' + month + '-' + year;
+}

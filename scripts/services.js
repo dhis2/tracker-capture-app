@@ -1036,6 +1036,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                                 event.dataValues.forEach(function(dataValue){
                                                     if(dataValue.dataElement == dataElementId) {
                                                         teiDictionary[tei.trackedEntityInstance].dataValue = dataValue.value;
+                                                        teiDictionary[tei.trackedEntityInstance].eventDate = event.eventDate;
                                                     }
                                                 });
                                             }
