@@ -690,6 +690,10 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                 }
             });
 
+            $scope.isInnreiseList = function(teis) {
+                return teis.some(tei => tei.Oppfolgingstatus);
+            };
+
             $scope.$watch("data", function(){
                 $scope.pager.recordsCount = ($scope.data && $scope.data.length) || 0;
                 setGridColumns();

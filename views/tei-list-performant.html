@@ -3,7 +3,10 @@
         <table class="table table-striped dhis2-table-hover table-bordered">               
             <thead>                        
                 <tr>
-                    <th ng-repeat="gridColumn in gridColumns| filter:{show: true}" class='mouse-pointer' ng-click="sortGrid(gridColumn)">                            
+                    <th ng-if="isInnreiseList(data.rows.own)">Status</th>
+                    <th ng-if="isInnreiseList(data.rows.own)">Avreiseland</th>
+                    <th ng-if="isInnreiseList(data.rows.own)">Innreisedato</th>
+                    <th ng-repeat="gridColumn in gridColumns| filter:{show: true}" class='mouse-pointer' ng-click="sortGrid(gridColumn)">
                         <!-- sort icon begins -->                                
                         <span ng-hide="gridColumn.showFilter" class="bold pointer" title="{{'sort'| translate}}" class="fa fa-sort">
                             <span class="fa-stack">
@@ -20,8 +23,16 @@
                 </tr>
             </thead>
             <tbody id="list">
-                <tr ng-repeat="tei in data.rows.own"
-                    ng-class="{true: 'inactive-tei'} [tei.inactive]">
+                <tr ng-repeat="tei in data.rows.own" ng-class="{true: 'inactive-tei'} [tei.inactive]" >
+                    <td ng-class="{'OK': 'tei-status-ok', 'Ikke satt': 'tei-status-not-satt', 'Ikke svar': 'tei-status-not-svar', 'Ikke OK': 'tei-status-not-ok'} [tei['Oppfolgingstatus']]" ng-if="isInnreiseList(data.rows.own)">
+                        {{tei['Oppfolgingstatus']}}
+                    </td>
+                    <td ng-if="isInnreiseList(data.rows.own)">
+                        {{tei['Avreiseland']}}
+                    </td>
+                    <td ng-if="isInnreiseList(data.rows.own)">
+                        {{tei['Innreisedato']}}
+                    </td>
                     <td ng-click="onTeiClickedInternal(tei)" ng-repeat="gridColumn in gridColumns | filter:{show: true}" title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">

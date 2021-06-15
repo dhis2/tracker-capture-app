@@ -1385,6 +1385,23 @@ ul.tree ul li:last-child:before {
     color: #ff4000;
 }
 
+.tei-status-ok {
+    background-color: #99FF99 !important;
+}
+
+.tei-status-not-ok {
+    font-weight: 800 !important;
+    color: red;
+}
+
+.tei-status-not-svar {
+    background-color: orange !important;
+}
+
+.tei-status-not-satt {
+    background-color: yellow !important;
+}
+
 .form-control-ui-select {
     width:100%;
     height:34px;

@@ -21,3 +21,12 @@ export const DUPLIKAT_INNREISE_STAGE_ID = 'yfGvhpnZCxq'
 
 // Entity types
 export const INNREISE_ENTITY_TYPE = 'MCPQUTHX1Ze';
+
+// Data elements
+export const INNREISE_AVREISELAND_DATA_ELEMENT_ID = 'EwrMxsQG3OX';
+export const INNREISE_OPPFOLGINGSTATUS_ID = 'uI17SVSOZmQ';
+
+// Lookup IDs
+
+export const COUNTRY_LOOKUP_ID = 'ynHtyLDVeJO';
+export const STATUS_OPPFOLGNING_LOOKUP_ID = 'IDHxRNOGuSS';
