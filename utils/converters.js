@@ -91,7 +91,7 @@ function isValidDate(day, month, year) {
 
 export function convertDatestringToDDMMYYYY(datestring) {
     var date = new Date(Date.parse(datestring));
-    var day = date.getDay();
+    var day = date.getDate();
     day = day > 9 ? day : '0' + day;
     var month = date.getMonth() + 1; // Month starts indexing on 0
     month = month > 9 ? month : '0' + month;
