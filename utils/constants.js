@@ -17,8 +17,7 @@ export const INDEKSERING_HELSESTATUS_PROGRAM_STAGE_ID = 'oqsk2Jv4k3s';
 export const INNREISEINFORMASJON_PROGRAM_STAGE_ID = 'pQRu1RLcfLX';
 export const OPPFOLGING_STAGE_ID = 'htARRqRQNnz';
 export const DUPLIKAT_OPPFOLGING_STAGE_ID = 'ggzSsCfSnZh';
-export const DUPLIKAT_INNREISE_STAGE_ID = 'yfGvhpnZCxq'
-
+export const DUPLIKAT_INNREISE_STAGE_ID = 'yfGvhpnZCxq';
 // Entity types
 export const INNREISE_ENTITY_TYPE = 'MCPQUTHX1Ze';
 
