@@ -40,8 +40,7 @@ export function addEventDataToInnreiseList(scope, serverResponse, teiAccessApiSe
         INNREISEINFORMASJON_PROGRAM_STAGE_ID,
         scope.selectedOrgUnit.id,
         dataValuesToExtract,
-        teiAccessApiService,
-        a => a).then(eventData => {
+        teiAccessApiService).then(eventData => {
         metaDataFactory.getAll('optionSets').then(function (optionSets) {
             try {
                 setHeader(serverResponse, 'Avreiseland');
@@ -104,7 +103,6 @@ function setHeader(serverResponse, headerName) {
 function setDataValue(serverResponse, eventData, dataId, dataConverter = a => a) {
     serverResponse.rows.forEach(row => {
         var teiId = row[0];
-        console.log(eventData[teiId]);
         var dataValue = dataConverter(eventData[teiId][dataId]);
         row.push(dataValue);
     });

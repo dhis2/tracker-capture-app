@@ -1,7 +1,7 @@
-export function importEventToListAsync(teiIds, programId, programStageId, orgUnitId, elementIds, teiAccessApiService, orderByFilter ) {
+export function importEventToListAsync(teiIds, programId, programStageId, orgUnitId, elementIds, teiAccessApiService ) {
     return getTeisWithEnrollmentsAsync(teiIds, programId, orgUnitId, teiAccessApiService).then(response => {
         var teis = getTEIs(response);
-        var elementDictionary = getValuesFromEvent(teis, elementIds, programStageId, orderByFilter);
+        var elementDictionary = getValuesFromEvent(teis, elementIds, programStageId);
         return elementDictionary;
     });
 }
@@ -10,32 +10,28 @@ function getTeisWithEnrollmentsAsync(teiIds, programId,orgUnitId, teiAccessApiSe
     return teiAccessApiService.get(null, programId, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+teiIds.join(';')+'&program='+programId+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,orgUnit,enrollments[enrollment,program,enrollmentDate,events[status,dataValues,programStage,eventDate]]');
 }
 
-function getValuesFromEvent(teis, elementIds, programStageId, orderByFilter) {
+function getValuesFromEvent(teis, elementIds, programStageId) {
     var teiDictionary = {};
     teis.forEach(tei => {
-        var enrollments = getOrderedEnrollments(tei, orderByFilter);
-        enrollments.forEach(enrollment => {
-            var events = getOrderedEventsFromProgramStageWithData(enrollment, orderByFilter, programStageId);
-            events.forEach(event => {
-                elementIds.forEach(elementId => {
-                    var dataValue = getDataElementFromEvent(event, elementId);
+        var enrollment = getNewestEnrollment(tei);
+        var event = getNewestEventFromProgramStageWithData(enrollment, programStageId);
+        elementIds.forEach(elementId => {
+            var dataValue = getDataElementFromEvent(event, elementId);
 
-                    if (dataValue) {
-                        teiDictionary[tei.trackedEntityInstance] = {
-                            ...teiDictionary[tei.trackedEntityInstance],
-                            [elementId]: dataValue,
-                        };
-                    }
-                });
-                if(teiDictionary[tei.trackedEntityInstance]) {
-                    teiDictionary[tei.trackedEntityInstance] = {
-                        ...teiDictionary[tei.trackedEntityInstance],
-                        eventDate: event.eventDate,
-                        enrollmentDate: enrollment.enrollmentDate,
-                    };
-                }
-            });
+            if (dataValue) {
+                teiDictionary[tei.trackedEntityInstance] = {
+                    ...teiDictionary[tei.trackedEntityInstance],
+                    [elementId]: dataValue,
+                };
+            }
         });
+        if (teiDictionary[tei.trackedEntityInstance]) {
+            teiDictionary[tei.trackedEntityInstance] = {
+                ...teiDictionary[tei.trackedEntityInstance],
+                eventDate: event.eventDate,
+                enrollmentDate: enrollment.enrollmentDate,
+            };
+        }
     });
     return teiDictionary;
 
@@ -45,18 +41,18 @@ function getTEIs(response) {
     return response.data && response.data.trackedEntityInstances && response.data.trackedEntityInstances.length > 0 ? response.data.trackedEntityInstances : [];
 }
 
-function getOrderedEnrollments(tei, orderByFilter) {
+function getNewestEnrollment(tei) {
     if(tei.enrollments && tei.enrollments.length > 0 ) {
-        return orderByFilter(tei.enrollments, '+enrollmentDate');
+        return tei.enrollments.sort((e1, e2) => firstDateIsBeforeSecond(e1.eventDate, e2.eventDate))[0];
     }
     return [];
 }
 
-function getOrderedEventsFromProgramStageWithData(enrollment, orderByFilter, programStageId) {
+function getNewestEventFromProgramStageWithData(enrollment, programStageId) {
     if (enrollment.events && enrollment.events.length > 0) {
-        return orderByFilter(enrollment.events, '+eventDate').filter(event =>
+        return enrollment.events.filter(event =>
             event.programStage == programStageId && event.dataValues && event.dataValues.length > 0
-        );
+        ).sort((e1, e2) => firstDateIsBeforeSecond(e1.eventDate, e2.eventDate))[0];
     }
     return [];
 }
@@ -70,4 +66,10 @@ function getDataElementFromEvent(event, dataElementId) {
     });
 
     return outValue;
+}
+
+function firstDateIsBeforeSecond(first, second) {
+    var firstDate = new Date(first);
+    var secondDate = new Date(second);
+    return firstDate.getTime() < secondDate.getTime();
 }
