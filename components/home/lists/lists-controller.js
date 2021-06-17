@@ -5,6 +5,8 @@ import {
     INNREISEINFORMASJON_PROGRAM_STAGE_ID, STATUS_OPPFOLGNING_LOOKUP_ID
 } from "../../../utils/constants";
 import {convertDatestringToDDMMYYYY} from "../../../utils/converters";
+import {importEventToListAsync} from "../../../ks_patches/import_event_to_list";
+import {addEventDataToInnreiseList} from "../../../ks_patches/add_event_data_to_innreise_list";
 
 var trackerCapture = angular.module('trackerCapture');
 
@@ -26,6 +28,7 @@ trackerCapture.controller('ListsController',function(
     CurrentSelection,
     TEIGridService,
     TEIService,
+    TeiAccessApiService,
     UserDataStoreService,
     ProgramWorkingListService,
     FNrLookupService,
@@ -270,63 +273,7 @@ trackerCapture.controller('ListsController',function(
             else if(serverResponse.rows && serverResponse.rows.length > 0
                 && ($scope.base.selectedProgram.id == INNREISE_PROGRAM_ID)) {
                 try {
-                    var teis = [];
-                    serverResponse.rows.forEach(function(row){
-                        teis.push(row[0]);
-                    });
-                    MetaDataFactory.getAll('optionSets').then(function (optionSets) {
-                        console.log(optionSets)
-                        serverResponse.headers.push({
-                            name: 'Avreiseland',
-                            column: 'Avreiseland',
-                            hidden: false,
-                            meta: false,
-                            type: 'java.lang.String'
-                        });
-                        serverResponse.headers.push({
-                            name: 'Innreisedato',
-                            column: 'Innreisedato',
-                            hidden: false,
-                            meta: false,
-                            type: 'java.lang.String'
-                        });
-                        TEIService.getListWithProgramData(teis, $scope.base.selectedProgram.id, INNREISE_AVREISELAND_DATA_ELEMENT_ID, INNREISEINFORMASJON_PROGRAM_STAGE_ID, $scope.selectedOrgUnit.id, 'transferStage').then(res => {
-                            try {
-                                serverResponse.rows.forEach(row => {
-                                    var countryCode = res[row[0]].dataValue;
-                                    var countryLookup = optionSets.find(option => option.id === COUNTRY_LOOKUP_ID);
-                                    var country = countryLookup && countryLookup.options.find(country => country.code === countryCode);
-                                    row.push(country ? country.displayName : countryCode);
-                                    var eventDate = convertDatestringToDDMMYYYY(res[row[0]].eventDate);
-                                    row.push(eventDate);
-                                });
-                                $scope.setServerResponse(serverResponse);
-                            } catch (err) {
-                                $scope.setServerResponse(serverResponse);
-                            }
-                        }).then(() => {
-                            serverResponse.headers.push({
-                                name: 'Oppfolgingstatus',
-                                column: 'Oppfolgingstatus',
-                                hidden: false,
-                                meta: false,
-                                type: 'java.lang.String'
-                            });
-
-                            TEIService.getListWithProgramData(teis, $scope.base.selectedProgram.id, INNREISE_OPPFOLGINGSTATUS_ID, INNREISEINFORMASJON_PROGRAM_STAGE_ID, $scope.selectedOrgUnit.id, 'transferStage').then(res => {
-                                serverResponse.rows.forEach(row => {
-                                    var statusCode = res[row[0]].dataValue;
-                                    var statusLookup = optionSets.find(option => option.id === STATUS_OPPFOLGNING_LOOKUP_ID);
-                                    var status = statusLookup && statusLookup.options.find(status => status.code === statusCode);
-
-                                    row.push(status ? status.displayName : statusCode);
-                                })
-                                $scope.setServerResponse(serverResponse);
-                            });
-                        });
-                        $scope.setServerResponse(serverResponse);
-                    })
-
+                    addEventDataToInnreiseList($scope, serverResponse, TeiAccessApiService, MetaDataFactory);
                 } catch (err) {
                     console.log(err);
                     $scope.setServerResponse(serverResponse);
