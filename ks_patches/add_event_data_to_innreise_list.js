@@ -41,8 +41,7 @@ export function addEventDataToInnreiseList(scope, serverResponse, teiAccessApiSe
         metaDataFactory.getAll('optionSets').then(function (optionSets) {
             try {
                 setHeader(serverResponse, 'Avreiseland');
-                var countryLookupFun = countryCode => optionSetsDataLookup(optionSets, COUNTRY_LOOKUP_ID, countryCode);
-                setDataValue(serverResponse, eventData, INNREISE_AVREISELAND_DATA_ELEMENT_ID, countryLookupFun);
+                setDataValue(serverResponse, eventData, INNREISE_AVREISELAND_DATA_ELEMENT_ID);
 
                 setHeader(serverResponse, 'Innreisedato');
                 setDataValue(serverResponse, eventData, 'eventDate', convertDatestringToDDMMYYYY);
