@@ -1419,7 +1419,9 @@ trackerCapture.controller('RegistrationController',
             userId = JSON.parse(sessionStorage.USER_PROFILE).id
         }
         finally {}
-        return FNrLookupService.lookupLabSvar($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code, userId);
+        var fnr = $scope.selectedTei.ZSt07qyq6Pt ? $scope.selectedTei.ZSt07qyq6Pt : $scope.selectedTei.fkUN6jLp7K4;
+        
+        return FNrLookupService.lookupLabSvar(fnr, CurrentSelection.currentSelection.orgUnit.code, userId);
     }
 
     $scope.showLabTest = function() {
