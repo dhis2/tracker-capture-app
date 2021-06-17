@@ -1,7 +1,7 @@
 /* global angular, trackerCapture */
 
 import {disableCompleteIncompleteEventConfirmation} from "../../ks_patches/custom_override_flags";
-import {INNREISE_INNREISEINFORMASJON_STAGE_ID} from "../../utils/constants";
+import { INNREISEINFORMASJON_PROGRAM_STAGE_ID} from "../../utils/constants";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('DataEntryController',
@@ -2456,7 +2456,7 @@ trackerCapture.controller('DataEntryController',
         } else {
             if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
         }
-        if($scope.currentEvent.event === INNREISE_INNREISEINFORMASJON_STAGE_ID) {
+        if($scope.currentEvent.programStage === INNREISEINFORMASJON_PROGRAM_STAGE_ID) {
             return false;
         }
         return true;
