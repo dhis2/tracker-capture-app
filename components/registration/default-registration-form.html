@@ -1,5 +1,5 @@
 <div ng-if="widget !== 'PROFILE' && trackedEntityTypes.selected" class="section-label section-spacing vertical-spacing">
-    {{'profile'| translate}}<button style="margin-left: 20px;margin-top:10px;" ng-click="showLabTest()" class="btn btn-secondary"  ng-show="selectedTei['ZSt07qyq6Pt'].length == 11 && editingDisabled">Vis prøvesvar</button>
+    {{'profile'| translate}}<button style="margin-left: 20px;margin-top:10px;" ng-click="showLabTest()" class="btn btn-secondary"  ng-show="(selectedTei['ZSt07qyq6Pt'].length == 11 || selectedTei['fkUN6jLp7K4'].length == 11) && editingDisabled">Vis prøvesvar</button>
     <button style="margin-left: 20px;margin-top:10px" ng-if="selectedProgram.id == 'uYjxkTbwRNf' && selectedEnrollment.enrollment" ng-disabled="(selectedTei['ZSt07qyq6Pt'].length != 11 && !selectedTei['NI0QRzJvQ0k']) || !selectedTei['ENRjVGxVL6l'] || !selectedTei['sB1IHYu2xQT']" ng-click="sendNotification()" class="btn btn-secondary">Send klinikermelding</button>
     <p></p>
 </div>
@@ -353,8 +353,8 @@
                                ng-disabled="attributeFieldDisabled(attribute)"
                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                            <div ng-if="attribute.id == 'ZSt07qyq6Pt'">
-                                <button type="button" style="margin-bottom: 5px;" ng-disabled="selectedTei[attribute.id].length != 11 || showFetchingDataSpinner" class="btn btn-primary" ng-click="registryLookup()">Slå opp og hent profildata</button>
+                            <div ng-if="(attribute.id == 'ZSt07qyq6Pt' || attribute.id == 'fkUN6jLp7K4') && !editingDisabled">
+                                <button type="button" ng-if="attribute.id == 'ZSt07qyq6Pt'" style="margin-bottom: 5px;" ng-disabled="selectedTei[attribute.id].length != 11 || showFetchingDataSpinner" class="btn btn-primary" ng-click="registryLookup()">Slå opp og hent profildata</button>
                                 <i ng-show="showFetchingDataSpinner" class="fa fa-spinner fa-spin fa-2x" style="margin-left:5px"></i>
                                 <div ng-style="{display: 'flex'}">
                                     <button type="button" ng-disabled="selectedTei[attribute.id].length != 11" class="btn btn-secondary" style="margin-bottom: 5px; margin-right: 4px;" ng-click="showLabTest()">Prøvesvar</button>
