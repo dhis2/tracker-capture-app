@@ -10,7 +10,7 @@ import {
     INNREISE_UNNTAK_TYPE_ID,
     INNREISE_UNNTAK_TYPE_TEXT_ID,
     INNREISEINFORMASJON_PROGRAM_STAGE_ID,
-    STATUS_OPPFOLGNING_LOOKUP_ID
+    STATUS_OPPFOLGNING_LOOKUP_ID, INNREISE_OPPHOLDSSTED_ID, INNREISE_ARBEIDSGIVER_NAVN_ID
 } from "../utils/constants";
 import {importEventToListAsync} from "./import_event_to_list";
 import {convertDatestringToDDMMYYYY} from "../utils/converters";
@@ -25,7 +25,9 @@ export function addEventDataToInnreiseList(scope, serverResponse, teiAccessApiSe
         INNREISE_UNNTAK_TYPE_TEXT_ID,
         INNREISE_UNNTAK_TYPE_CODE_ID,
         INNREISE_KARANTENE_GJENOMFORING_TYPE_TEXT_ID,
-        INNREISE_KARANTENE_GJENOMFORING_TYPE_CODE_ID
+        INNREISE_KARANTENE_GJENOMFORING_TYPE_CODE_ID,
+        INNREISE_OPPHOLDSSTED_ID,
+        INNREISE_ARBEIDSGIVER_NAVN_ID
     ];
     var teis = [];
     serverResponse.rows.forEach(function (row) {
@@ -73,6 +75,12 @@ export function addEventDataToInnreiseList(scope, serverResponse, teiAccessApiSe
 
                 setHeader(serverResponse, 'Gjennomforingstype_tekst');
                 setDataValue(serverResponse, eventData, INNREISE_KARANTENE_GJENOMFORING_TYPE_TEXT_ID);
+
+                setHeader(serverResponse, 'Oppholdsted');
+                setDataValue(serverResponse, eventData, INNREISE_OPPHOLDSSTED_ID);
+
+                setHeader(serverResponse, 'Arbeidsgivernavn');
+                setDataValue(serverResponse, eventData, INNREISE_ARBEIDSGIVER_NAVN_ID);
 
                 scope.setServerResponse(serverResponse);
             } catch (err) {
