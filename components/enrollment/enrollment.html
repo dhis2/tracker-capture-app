@@ -169,7 +169,7 @@
                                     <button type="button" 
                                             class="btn btn-danger pull-right"
                                             ng-disabled="selectedOrgUnit.closedStatus"
-                                            ng-if="selectedProgram.access.data.write"
+                                            ng-if="selectedProgram.access.data.write && selectedEnrollment.program !== 'B7gOGodZkcs'"
                                             ng-click="deleteEnrollment()">
                                         {{'remove_enrollment' | translate}}
                                     </button>
