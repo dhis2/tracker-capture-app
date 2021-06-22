@@ -99,7 +99,13 @@ function setHeader(serverResponse, headerName) {
 function setDataValue(serverResponse, eventData, dataId, dataConverter = a => a) {
     serverResponse.rows.forEach(row => {
         var teiId = row[0];
-        var dataValue = dataConverter(eventData[teiId][dataId]);
+        var dataValue;
+        if(eventData && teiId && eventData[teiId] && dataId && eventData[teiId][dataId]) {
+            dataValue = dataConverter(eventData[teiId][dataId]);
+        } else {
+            dataValue = undefined;
+        }
+
         row.push(dataValue);
     });
 }
