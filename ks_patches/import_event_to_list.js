@@ -15,7 +15,7 @@ function getValuesFromEvent(teis, elementIds, programStageId) {
     teis.forEach(tei => {
         var enrollment = getNewestEnrollment(tei);
         var event = getNewestEventFromProgramStageWithData(enrollment, programStageId);
-        if (event && enrollment) {
+        if (event && enrollment && elementIds) {
             elementIds.forEach(elementId => {
                 var dataValue = getDataElementFromEvent(event, elementId);
 
@@ -61,11 +61,13 @@ function getNewestEventFromProgramStageWithData(enrollment, programStageId) {
 
 function getDataElementFromEvent(event, dataElementId) {
     var outValue;
-    event.dataValues.forEach(function(dataValue){
-        if(dataValue.dataElement == dataElementId) {
-            outValue = dataValue.value;
-        }
-    });
+    if(event && event.dataValues) {
+        event.dataValues.forEach(function (dataValue) {
+            if (dataValue.dataElement == dataElementId) {
+                outValue = dataValue.value;
+            }
+        });
+    }
 
     return outValue;
 }
