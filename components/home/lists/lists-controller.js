@@ -436,6 +436,18 @@ trackerCapture.controller('ListsController',function(
         $scope.canSyncLabTests = true;
         $scope.syncLabTests = function () {
             $scope.canSyncLabTests = false;
+            if($scope.useLabTestForProgram($scope.selectedProgram)) {
+                var userId;
+                try{
+                    userId = JSON.parse(sessionStorage.USER_PROFILE).id
+                }
+                finally {}
+                FNrLookupService.startLabTestSync($scope.selectedOrgUnit.code, userId).then(function(svar){
+                    if(svar) {
+                        $scope.canSyncLabTests = false;
+                    }
+                });
+            }
         }
 
         $scope.labTestActivated = false;
@@ -454,8 +466,8 @@ trackerCapture.controller('ListsController',function(
                 finally {}
                 FNrLookupService.getLabTestStatus($scope.selectedOrgUnit.code, userId).then(function(svar){
                     if(svar) {
-                        $scope.labTestActivated = svar.labTestActivated;
-                        $scope.labTestNotActivated = !svar.labTestActivated;
+                        $scope.labTestActivated = svar.harTilgangTilProvesvar;
+                        $scope.labTestNotActivated = !svar.harTilgangTilProvesvar;
                         $scope.labTestSyncDate = svar.innreiseProvesvarSistOppdatert;
                         $scope.immigrationSyncDate = svar.innreiseSistOppdatert;
                         $scope.canNotAccessLabTests = !svar.harTilgangTilProvesvar;
