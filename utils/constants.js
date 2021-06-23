@@ -33,6 +33,9 @@ export const INNREISE_KARANTENE_GJENOMFORING_TYPE_CODE_ID = 'fJcTMI7RD9u';
 export const INNREISE_OPPHOLDSSTED_ID = 'LYrjfgwVNVn';
 export const INNREISE_ARBEIDSGIVER_NAVN_ID = 'uncjwHvpOWP';
 
+export const PROFIL_NASJONALT_FELLES_HJELPENUMMER = 'WBjHgYajTsb';
+export const PROFIL_FNR = 'fkUN6jLp7K4';
+export const PROFIL_FNR_AS_WELL = 'ZSt07qyq6Pt';
 // Lookup IDs
 
 export const COUNTRY_LOOKUP_ID = 'ynHtyLDVeJO';

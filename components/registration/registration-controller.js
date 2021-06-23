@@ -7,7 +7,11 @@ import {
     transferNotesFromNaerkontaktToIndeksering,
 } from "../../ks_patches/data_transfer";
 import {enableAutoTransferFromNaerkontakt} from "../../ks_patches/custom_override_flags";
-import {INDEKSERING_PROGRAM_ID, NEARKONTAKT_PROGRAM_ID} from "../../utils/constants";
+import {
+    INDEKSERING_PROGRAM_ID,
+    NEARKONTAKT_PROGRAM_ID, PROFIL_FNR, PROFIL_FNR_AS_WELL,
+    PROFIL_NASJONALT_FELLES_HJELPENUMMER
+} from "../../utils/constants";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RegistrationController', 
@@ -1413,15 +1417,31 @@ trackerCapture.controller('RegistrationController',
         return attributeMandatory || $scope.mandatoryFields[attributeId];
     }
 
+    $scope.shouldShowLabTest = function() {
+        return !!$scope.getBestNumberForLabTest()
+    }
+
+    $scope.getBestNumberForLabTest = function() {
+        if($scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER] && $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER].toString().length === 11) {
+            return $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER];
+        }
+        if($scope.selectedTei[PROFIL_FNR] && $scope.selectedTei[PROFIL_FNR].length === 11) {
+            return $scope.selectedTei[PROFIL_FNR];
+        }
+        if($scope.selectedTei[PROFIL_FNR_AS_WELL] && $scope.selectedTei[PROFIL_FNR_AS_WELL].length === 11) {
+            return $scope.selectedTei[PROFIL_FNR_AS_WELL];
+        }
+        return undefined;
+    }
+
     $scope.labTestLookup = function() {
         var userId;
         try{
             userId = JSON.parse(sessionStorage.USER_PROFILE).id
         }
         finally {}
-        var fnr = $scope.selectedTei.ZSt07qyq6Pt ? $scope.selectedTei.ZSt07qyq6Pt : $scope.selectedTei.fkUN6jLp7K4;
-        
-        return FNrLookupService.lookupLabSvar(fnr, CurrentSelection.currentSelection.orgUnit.code, userId);
+        var labTestLookupNumber = $scope.getBestNumberForLabTest();
+        return FNrLookupService.lookupLabSvar(labTestLookupNumber, CurrentSelection.currentSelection.orgUnit.code, userId);
     }
 
     $scope.showLabTest = function() {
