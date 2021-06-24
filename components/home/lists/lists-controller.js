@@ -485,18 +485,8 @@ trackerCapture.controller('ListsController',function(
 
         $scope.showProvesvarSyncButton = function() {
             return $scope.harTilgangTilProvesvar && $scope.provesvarAktivert && $scope.kanStarteNyProvesvarSynk && !$scope.hasStartedSync;
-        }
+        };
 
-        /*
-        {
-            kommunenr: '1127',
-            provesvarAktivert: true,
-            harTilgangTilProvesvar: true,
-            innreiseSistOppdatert: '2021-06-22T21:52:00.000',
-            innreiseProvesvarSistOppdatert: null,
-            kanStarteNyProvesvarSynk: true,
-        }
-         */
 
         $scope.checkLabTestStatus();
 
