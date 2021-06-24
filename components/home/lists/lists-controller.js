@@ -4,7 +4,7 @@ import {
     INNREISE_PROGRAM_ID,
     INNREISEINFORMASJON_PROGRAM_STAGE_ID, STATUS_OPPFOLGNING_LOOKUP_ID
 } from "../../../utils/constants";
-import {convertDatestringToDDMMYYYY} from "../../../utils/converters";
+import {convertDatestringToDDMMYYYY, convertDatestringToFullTime} from "../../../utils/converters";
 import {importEventToListAsync} from "../../../ks_patches/import_event_to_list";
 import {addEventDataToInnreiseList} from "../../../ks_patches/add_event_data_to_innreise_list";
 
@@ -468,8 +468,8 @@ trackerCapture.controller('ListsController',function(
                     if(svar) {
                         $scope.labTestActivated = svar.harTilgangTilProvesvar;
                         $scope.labTestNotActivated = !svar.harTilgangTilProvesvar;
-                        $scope.labTestSyncDate = svar.innreiseProvesvarSistOppdatert;
-                        $scope.immigrationSyncDate = svar.innreiseSistOppdatert;
+                        $scope.labTestSyncDate = convertDatestringToFullTime(svar.innreiseProvesvarSistOppdatert);
+                        $scope.immigrationSyncDate = convertDatestringToFullTime(svar.innreiseSistOppdatert);
                         $scope.canNotAccessLabTests = !svar.harTilgangTilProvesvar;
                     }
                     else {
