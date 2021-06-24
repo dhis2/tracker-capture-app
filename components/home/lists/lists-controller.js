@@ -4,7 +4,7 @@ import {
     INNREISE_PROGRAM_ID,
     INNREISEINFORMASJON_PROGRAM_STAGE_ID, STATUS_OPPFOLGNING_LOOKUP_ID
 } from "../../../utils/constants";
-import {convertDatestringToDDMMYYYY} from "../../../utils/converters";
+import {convertDatestringToDDMMYYYY, convertDatestringToFullTime} from "../../../utils/converters";
 import {importEventToListAsync} from "../../../ks_patches/import_event_to_list";
 import {addEventDataToInnreiseList} from "../../../ks_patches/add_event_data_to_innreise_list";
 
@@ -433,29 +433,29 @@ trackerCapture.controller('ListsController',function(
             return program && program.id == 'B7gOGodZkcs';
         }
 
-        $scope.canSyncLabTests = true;
+        $scope.hasStartedSync = false;
         $scope.syncLabTests = function () {
-            $scope.canSyncLabTests = false;
             if($scope.useLabTestForProgram($scope.selectedProgram)) {
                 var userId;
                 try{
                     userId = JSON.parse(sessionStorage.USER_PROFILE).id
                 }
                 finally {}
+                $scope.hasStartedSync = true;
                 FNrLookupService.startLabTestSync($scope.selectedOrgUnit.code, userId).then(function(svar){
                     if(!svar) {
-                        $scope.canSyncLabTests = true;
+                        $scope.hasStartedSync = false;
                     }
                 });
             }
         }
 
-        $scope.labTestActivated = false;
-        $scope.labTestNotActivated = false;
-        $scope.labTestQueryFailed = false;
-        $scope.labTestSyncDate = null;
-        $scope.immigrationSyncDate = null;
-        $scope.canNotAccessLabTests = false;
+
+        $scope.provesvarAktivert = false;
+        $scope.harTilgangTilProvesvar = false;
+        $scope.innreiseSistOppdatert = false;
+        $scope.innreiseProvesvarSistOppdatert = false;
+        $scope.kanStarteNyProvesvarSynk = null;
 
         $scope.checkLabTestStatus = function() {
             if($scope.useLabTestForProgram($scope.selectedProgram)) {
@@ -466,18 +466,27 @@ trackerCapture.controller('ListsController',function(
                 finally {}
                 FNrLookupService.getLabTestStatus($scope.selectedOrgUnit.code, userId).then(function(svar){
                     if(svar) {
-                        $scope.labTestActivated = svar.harTilgangTilProvesvar;
-                        $scope.labTestNotActivated = !svar.harTilgangTilProvesvar;
-                        $scope.labTestSyncDate = svar.innreiseProvesvarSistOppdatert;
-                        $scope.immigrationSyncDate = svar.innreiseSistOppdatert;
-                        $scope.canNotAccessLabTests = !svar.harTilgangTilProvesvar;
+                        $scope.provesvarAktivert = svar.provesvarAktivert;
+                        $scope.innreiseProvesvarSistOppdatert = svar.innreiseProvesvarSistOppdatert ? convertDatestringToFullTime(svar.innreiseProvesvarSistOppdatert) : undefined;
+                        $scope.innreiseSistOppdatert = svar.innreiseSistOppdatert ? convertDatestringToFullTime(svar.innreiseSistOppdatert) : undefined;
+                        $scope.kanStarteNyProvesvarSynk = svar.kanStarteNyProvesvarSynk;
+                        $scope.harTilgangTilProvesvar = svar.harTilgangTilProvesvar;
                     }
                     else {
                         $scope.labTestQueryFailed =  true;
                     }
                 });
             }
-        }
+        };
+
+        $scope.showNoProvesvardataHentet = function() {
+            return !$scope.innreiseProvesvarSistOppdatert && !$scope.hasStartedSync;
+        };
+
+        $scope.showProvesvarSyncButton = function() {
+            return $scope.harTilgangTilProvesvar && $scope.provesvarAktivert && $scope.kanStarteNyProvesvarSynk && !$scope.hasStartedSync;
+        };
+
 
         $scope.checkLabTestStatus();
 

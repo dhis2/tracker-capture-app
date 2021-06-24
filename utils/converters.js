@@ -99,3 +99,7 @@ export function convertDatestringToDDMMYYYY(datestring) {
 
     return day + '-' + month + '-' + year;
 }
+
+export function convertDatestringToFullTime(datestring) {
+    return new Intl.DateTimeFormat('nb-no', {dateStyle: 'short', timeStyle: 'short'}).format(new Date(datestring));
+}
