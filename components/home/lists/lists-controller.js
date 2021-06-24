@@ -468,8 +468,8 @@ trackerCapture.controller('ListsController',function(
                     if(svar) {
                         $scope.labTestActivated = svar.harTilgangTilProvesvar;
                         $scope.labTestNotActivated = !svar.harTilgangTilProvesvar;
-                        $scope.labTestSyncDate = convertDatestringToFullTime(svar.innreiseProvesvarSistOppdatert);
-                        $scope.immigrationSyncDate = convertDatestringToFullTime(svar.innreiseSistOppdatert);
+                        $scope.labTestSyncDate = svar.innreiseProvesvarSistOppdatert ? convertDatestringToFullTime(svar.innreiseProvesvarSistOppdatert) : $scope.labTestSyncDate;
+                        $scope.immigrationSyncDate = svar.innreiseSistOppdatert ? convertDatestringToFullTime(svar.innreiseSistOppdatert) : $scope.labTestSyncDate;
                         $scope.canNotAccessLabTests = !svar.harTilgangTilProvesvar;
                     }
                     else {
