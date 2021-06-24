@@ -471,6 +471,7 @@ trackerCapture.controller('ListsController',function(
                         $scope.labTestSyncDate = svar.innreiseProvesvarSistOppdatert ? convertDatestringToFullTime(svar.innreiseProvesvarSistOppdatert) : $scope.labTestSyncDate;
                         $scope.immigrationSyncDate = svar.innreiseSistOppdatert ? convertDatestringToFullTime(svar.innreiseSistOppdatert) : $scope.labTestSyncDate;
                         $scope.canNotAccessLabTests = !svar.harTilgangTilProvesvar;
+                        $scope.canSyncLabTests = svar.kanStarteNyProvesvarSynk;
                     }
                     else {
                         $scope.labTestQueryFailed =  true;

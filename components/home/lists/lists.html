@@ -69,7 +69,7 @@
                             <span ng-if="canNotAccessLabTests">Du har ikke tilgang til å synkronisere prøvesvar. </span>
                             <span ng-if="!canSyncLabTests && !canNotAccessLabTests"> Henting av prøvesvar ble nylig startet, og kan ikke startes på nytt akkurat nå.</span>
                         </div>
-                        <button ng-if="canSyncLabTests" ng-click="syncLabTests()" class="btn btn-primary" style="margin-left: 1em">Hent prøvesvar nå</button>
+                        <button ng-if="canSyncLabTests && !canNotAccessLabTests" ng-click="syncLabTests()" class="btn btn-primary" style="margin-left: 1em">Hent prøvesvar nå</button>
                     </div>
                 </span>
                 <span ng-if="labTestNotActivated">
