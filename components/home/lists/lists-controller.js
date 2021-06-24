@@ -443,8 +443,8 @@ trackerCapture.controller('ListsController',function(
                 }
                 finally {}
                 FNrLookupService.startLabTestSync($scope.selectedOrgUnit.code, userId).then(function(svar){
-                    if(svar) {
-                        $scope.canSyncLabTests = false;
+                    if(!svar) {
+                        $scope.canSyncLabTests = true;
                     }
                 });
             }
