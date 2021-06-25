@@ -80,28 +80,31 @@
         <!-- data entry form ends -->
 
         <!-- registration buttons begin -->
-        <div ng-if="!editingDisabled && registrationMode === 'PROFILE' && hasTeiWrite()" class="vertical-spacing btn-group">
-            <button type="button" class="btn btn-primary" ng-disabled="saveAttributedDisabledButton()" ng-click="registerEntity(null)">{{'save'| translate}}</button>
-            <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="saveAttributedDisabledButton()" ng-click="cancelRegistrationWarning(cancel)" ng-if="!isInDashboard">{{'cancel'| translate}}</button>
-            <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="saveAttributedDisabledButton()" ng-click="cancelRegistrationWarning(cancel, isInDashboard)" ng-if="isInDashboard">{{'cancel'| translate}}</button>
-        </div>
+        <!-- disable buttons for Innreiseoppføling, as it should not be possible to change profile here -->
+        <div ng-if="selectedProgram.id !== 'B7gOGodZkcs'">
+            <div ng-if="!editingDisabled && registrationMode === 'PROFILE' && hasTeiWrite()" class="vertical-spacing btn-group">
+                <button type="button" class="btn btn-primary" ng-disabled="saveAttributedDisabledButton()" ng-click="registerEntity(null)">{{'save'| translate}}</button>
+                <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="saveAttributedDisabledButton()" ng-click="cancelRegistrationWarning(cancel)" ng-if="!isInDashboard">{{'cancel'| translate}}</button>
+                <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="saveAttributedDisabledButton()" ng-click="cancelRegistrationWarning(cancel, isInDashboard)" ng-if="isInDashboard">{{'cancel'| translate}}</button>
+            </div>
 
-        <div class="vertical-spacing btn-group" ng-if="registrationMode === 'ENROLLMENT'">            
-            <button type="button" class="btn btn-primary" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" ng-click="registerEntity('ENROLLMENT')">{{'enroll'| translate}}</button>
-            <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" ng-click="cancelRegistrationWarning(showNewEnrollment)">{{'cancel'| translate}}</button>
-            <span ng-show="model.savingRegistration" style="margin-left: 25px;"><i class="fa fa-spinner fa-spin fa-3x"></i></span>
-        </div>
+            <div class="vertical-spacing btn-group" ng-if="registrationMode === 'ENROLLMENT'">
+                <button type="button" class="btn btn-primary" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" ng-click="registerEntity('ENROLLMENT')">{{'enroll'| translate}}</button>
+                <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus" ng-click="cancelRegistrationWarning(showNewEnrollment)">{{'cancel'| translate}}</button>
+                <span ng-show="model.savingRegistration" style="margin-left: 25px;"><i class="fa fa-spinner fa-spin fa-3x"></i></span>
+            </div>
 
-        <div class="vertical-spacing hideInPrint btn-group" ng-if="showRegistrationButtons()">
-            <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus || validatingRegistration" class="btn btn-primary" ng-click="processRegistration('DASHBOARD')">{{'save_and_continue'| translate}}</button>
-            <!--<button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus || validatingRegistration" class="btn btn-success" ng-click="processRegistration('SELF')">{{'save_and_add_new'| translate}}</button>  -->
-            <!--<button type="button" class="btn btn-info" onclick="javascript:window.print()">{{'print_form'| translate}}</button>-->
-            <button type="button"  ng-disabled="model.savingRegistration || validatingRegistration" class="btn btn-default" ng-click="setCurrentView(null)">{{'cancel'| translate}}</button>
-            <i ng-if="model.savingRegistration || validatingRegistration" class="fa fa-spinner fa-spin" style="font-size:28px;margin-left:15px"></i>
-        </div>
+            <div class="vertical-spacing hideInPrint btn-group" ng-if="showRegistrationButtons()">
+                <button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus || validatingRegistration" class="btn btn-primary" ng-click="processRegistration('DASHBOARD')">{{'save_and_continue'| translate}}</button>
+                <!--<button type="button" ng-disabled="model.savingRegistration || selectedOrgUnit.closedStatus || validatingRegistration" class="btn btn-success" ng-click="processRegistration('SELF')">{{'save_and_add_new'| translate}}</button>  -->
+                <!--<button type="button" class="btn btn-info" onclick="javascript:window.print()">{{'print_form'| translate}}</button>-->
+                <button type="button"  ng-disabled="model.savingRegistration || validatingRegistration" class="btn btn-default" ng-click="setCurrentView(null)">{{'cancel'| translate}}</button>
+                <i ng-if="model.savingRegistration || validatingRegistration" class="fa fa-spinner fa-spin" style="font-size:28px;margin-left:15px"></i>
+            </div>
 
-        <div class="vertical-spacing hideInPrint" ng-if="showTetRegistrationWarning()">
-            <div class="alert alert-warning">{{"tracked_entity_type_has_no_attributes" | translate}}</div>
+            <div class="vertical-spacing hideInPrint" ng-if="showTetRegistrationWarning()">
+                <div class="alert alert-warning">{{"tracked_entity_type_has_no_attributes" | translate}}</div>
+            </div>
         </div>
 
         <!-- registration buttons end -->

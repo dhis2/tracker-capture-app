@@ -1,7 +1,8 @@
 <div class="panel panel-default-custom" ng-controller="ProfileController">
     <div class="panel-heading handle bold">
         {{profileWidget.title| translate}}
-        <span class="nav-pills" ng-if="!enrollmentEditing && !selectedTei.inactive">
+        <!-- Hide rediger from innreiseprogram -->
+        <span class="nav-pills" ng-if="!enrollmentEditing && !selectedTei.inactive && selectedProgram.id !=='B7gOGodZkcs'">
             <a href ng-click="enableEdit()" ng-attr-title="{{'edit_profile'| translate}}" ng-if="trackedEntityType.access.data.write"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [!editingDisabled]">{{'edit'| translate}}</span></a>
             <a href ng-click="enableEdit()" ng-attr-title="{{'show_all'| translate}}" ng-if="!trackedEntityType.access.data.write"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [!editingDisabled]">{{'show_all'| translate}}</span></a>
         </span>
