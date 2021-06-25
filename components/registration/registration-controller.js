@@ -12,6 +12,7 @@ import {
     NEARKONTAKT_PROGRAM_ID, PROFIL_FNR, PROFIL_FNR_AS_WELL,
     PROFIL_NASJONALT_FELLES_HJELPENUMMER
 } from "../../utils/constants";
+import {makeHyphensInKodebeskrivelseNonBreaking} from "../../ks_patches/provesvar_utils";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RegistrationController', 
@@ -1449,7 +1450,8 @@ trackerCapture.controller('RegistrationController',
         $scope.labTestLookup().then(function(response){
             $scope.showFetchingDataSpinner = false;
             if(response) {
-                var modalData = response.provesvarliste;
+                console.log(response.provesvarliste)
+                var modalData = makeHyphensInKodebeskrivelseNonBreaking(response.provesvarliste);
 
                 return $modal.open({
                     templateUrl: 'components/registration/lab-test-modal.html',
