@@ -4,6 +4,12 @@
 
 /* Directives */
 
+import {
+    INNREISE_KARANTENEKODE_2_ATTRIBUTE_ID,
+    INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID, INNREISE_KARANTENETYPE_ATTRIBUTE_ID,
+    INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID
+} from "../utils/constants";
+
 var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
 
 .directive('stringToNumber', function () {
@@ -775,6 +781,35 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                 rows.forEach((tei) => tei.checkBoxTicked = newState);
                 $scope.numberOfSelectedRows = newState ? rows.length : 0;
             };
+            $scope.setColTitle = function (tei, attrId) {
+                if(attrId === INNREISE_KARANTENEKODE_2_ATTRIBUTE_ID && tei['Karantenekode2_tekst']) {
+                    return tei['Karantenekode2_tekst'];
+                }
+                if(attrId === INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID && tei['Karantenekode4_tekst']) {
+                    return tei['Karantenekode4_tekst'];
+                }
+                if(attrId === INNREISE_KARANTENETYPE_ATTRIBUTE_ID && tei['Karantenetype_tekst']) {
+                    return tei['Karantenetype_tekst'];
+                }
+
+                return 'Velg';
+            };
+            $scope.setColClass = function (tei, attrId) {
+                if(attrId === INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID) {
+                    if(tei[attrId] === 'OK') {
+                        return 'tei-status-ok';
+                    }
+                    if(tei[attrId] === 'Ikke satt') {
+                        return 'tei-status-not-satt';
+                    }
+                    if(tei[attrId] === 'Ikke svar') {
+                        return 'tei-status-not-svar';
+                    }
+                    if(tei[attrId] === 'Ikke OK') {
+                        return 'tei-status-not-ok';
+                    }
+                }
+            }
         }
     }
 });

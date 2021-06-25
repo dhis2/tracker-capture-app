@@ -3,11 +3,6 @@
         <table class="table table-striped dhis2-table-hover table-bordered">               
             <thead>                        
                 <tr>
-                    <th ng-if="isInnreiseList(data.rows.own)">Status</th>
-                    <th ng-if="isInnreiseList(data.rows.own)">Avreiseland</th>
-                    <th ng-if="isInnreiseList(data.rows.own)">Innreisedato</th>
-                    <th ng-if="isInnreiseList(data.rows.own)">Karantenevalg</th>
-                    <th ng-if="isInnreiseList(data.rows.own)">Karantenekode</th>
                     <th ng-repeat="gridColumn in gridColumns| filter:{show: true}" class='mouse-pointer' ng-click="sortGrid(gridColumn)">
                         <!-- sort icon begins -->                                
                         <span ng-hide="gridColumn.showFilter" class="bold pointer" title="{{'sort'| translate}}" class="fa fa-sort">
@@ -19,8 +14,6 @@
                         </span>
                         <!-- sort icon ends -->
                     </th>
-                    <th ng-if="isInnreiseList(data.rows.own)">Oppholdsadresse</th>
-                    <th ng-if="isInnreiseList(data.rows.own)">Arbeidsgiver</th>
                     <td ng-if="isListOfActiveEnrollments" style="cursor: default; text-align: center; vertical-align: middle;">
                         <input type="checkbox" ng-model="data.selectAllChecked" ng-click="selectAll()" />
                     </td>
@@ -28,22 +21,10 @@
             </thead>
             <tbody id="list">
                 <tr ng-repeat="tei in data.rows.own" ng-class="{true: 'inactive-tei'} [tei.inactive]" >
-                    <td ng-class="{'OK': 'tei-status-ok', 'Ikke satt': 'tei-status-not-satt', 'Ikke svar': 'tei-status-not-svar', 'Ikke OK': 'tei-status-not-ok'} [tei['Oppfolgingstatus']]" ng-if="isInnreiseList(data.rows.own)" ng-click="onTeiClickedInternal(tei)">
-                        {{tei['Oppfolgingstatus']}}
-                    </td>
-                    <td ng-if="isInnreiseList(data.rows.own)" ng-click="onTeiClickedInternal(tei)">
-                        {{tei['Avreiseland']}}
-                    </td>
-                    <td ng-if="isInnreiseList(data.rows.own)" ng-click="onTeiClickedInternal(tei)">
-                        {{tei['Innreisedato']}}
-                    </td>
-                    <td ng-if="isInnreiseList(data.rows.own)" ng-click="onTeiClickedInternal(tei)" title="{{tei['Karantenetype_tekst']}}">
-                        {{tei['Karantenetype_tekst_short']}}
-                    </td>
-                    <td ng-if="isInnreiseList(data.rows.own)" ng-click="onTeiClickedInternal(tei)" title="{{tei['Unntaktype_tekst']}} {{tei['Gjennomforingstype_tekst']}}">
-                        {{tei['Unntaktype_kode']}} {{tei['Gjennomforingstype_kode']}}
-                    </td>
-                    <td ng-click="onTeiClickedInternal(tei)" ng-repeat="gridColumn in gridColumns | filter:{show: true}" title="{{mainTei.trackedEntityInstance ? 'select' : 'go_to_dashboard'| translate}}">
+                    <td ng-click="onTeiClickedInternal(tei)" ng-repeat="gridColumn in gridColumns | filter:{show: true}"
+                        ng-attr-title="{{setColTitle(tei, gridColumn.id)}}"
+                        ng-attr-class="{{setColClass(tei, gridColumn.id)}}"
+                    >
                         <span ng-switch="gridColumn.valueType">
                             <span ng-switch-when="BOOLEAN">
                                 <span ng-if="tei[gridColumn.id] === 'true'">{{'yes'| translate}}</span>
@@ -70,12 +51,6 @@
                         <span ng-if="onGetDuplicateInternal(tei)"><div class="alert alert-warning alert-compact">{{'possible_duplicate' | translate}}</div>
                             <a ng-click="onUnMarkDuplicateInternal(tei)">{{'unflag' | translate}}</a>
                         </span>
-                    </td>
-                    <td ng-if="isInnreiseList(data.rows.own)" ng-click="onTeiClickedInternal(tei)">
-                        {{tei['Oppholdsted']}}
-                    </td>
-                    <td ng-if="isInnreiseList(data.rows.own)" ng-click="onTeiClickedInternal(tei)">
-                        {{tei['Arbeidsgivernavn']}}
                     </td>
                     <td ng-if="isListOfActiveEnrollments" style="cursor: default; text-align: center; vertical-align: middle;">
                         <input type="checkbox" ng-model="tei.checkBoxTicked" ng-click="selectOne(tei)" />
