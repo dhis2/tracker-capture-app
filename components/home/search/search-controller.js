@@ -1,3 +1,5 @@
+import {INNREISE_PROGRAM_ID} from "../../../utils/constants";
+
 var trackerCapture = angular.module('trackerCapture');
 
 trackerCapture.controller('SearchController',function(
@@ -290,7 +292,11 @@ trackerCapture.controller('SearchController',function(
         }
 
         var canOpenRegistration = function(){
+
             if($scope.base.selectedProgramForSearch){
+                if($scope.base.selectedProgramForSearch.id === INNREISE_PROGRAM_ID) {
+                    return false;
+                }
                 return AccessUtils.isWritable($scope.base.selectedProgramForSearch) && AccessUtils.isWritable($scope.trackedEntityTypes.selected);
             }else if($scope.trackedEntityTypes.selected){
                 return AccessUtils.isWritable($scope.trackedEntityTypes.selected);
