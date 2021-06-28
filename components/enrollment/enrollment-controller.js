@@ -123,6 +123,7 @@ trackerCapture.controller('EnrollmentController',
             $scope.programStageNames = selections.prStNames;
             $scope.attributesById = CurrentSelection.getAttributesById();
             $scope.activeEnrollments = [];
+            $scope.inactiveEnrollments = [];
 
             $scope.enrollmentDateState= getDefaultReportDateState();
             $scope.incidentDateState = getDefaultReportDateState();
@@ -130,6 +131,11 @@ trackerCapture.controller('EnrollmentController',
             angular.forEach(selections.enrollments, function (en) {
                 if (en.status === "ACTIVE" && $scope.selectedProgram && $scope.selectedProgram.id !== en.program) {
                     $scope.activeEnrollments.push(en);
+                }
+                if (en.status === "COMPLETED" && $scope.selectedProgram && $scope.selectedProgram.id !== en.program) {
+                    if(!$scope.inactiveEnrollments.find(inactive => inactive.program === en.program)) {
+                        $scope.inactiveEnrollments.push(en);
+                    }
                 }
             });
             if ($scope.selectedProgram) {

@@ -225,9 +225,9 @@
                     
                 </div>
                 
-                <div class="col-sm-6 border-left" ng-if="!showEnrollmentDiv && activeEnrollments.length > 0">
-                    <div class="title small-vertical-spacing">{{'active_enrollments_in_other_programs'| translate}}</div>
-                    <div class="vertical-spacing">
+                <div class="col-sm-6 border-left" ng-if="!showEnrollmentDiv && (activeEnrollments.length > 0 || inactiveEnrollments.length > 0)">
+                    <div class="title small-vertical-spacing" ng-if="activeEnrollments.length > 0 ">{{'active_enrollments_in_other_programs'| translate}}</div>
+                    <div class="vertical-spacing" ng-if="activeEnrollments.length > 0 ">
                         <div ng-if="activeEnrollments.length > 0">
                             <table class="table table-striped dhis2-table-hover table-bordered">
                                 <tr ng-repeat="activeEnrollment in activeEnrollments">
@@ -237,9 +237,19 @@
                                 </tr>
                             </table> 
                         </div>
-                        <!--<div ng-if="activeEnrollments.length === 0">
-                            <div class="alert alert-warning">{{'no_active_enrollments_exist'| translate}}</div>
-                        </div>-->
+                    </div>
+
+                    <div class="title small-vertical-spacing" ng-if="inactiveEnrollments.length > 0 ">{{'inactive_enrollments_in_other_programs'| translate}}</div>
+                    <div class="vertical-spacing" ng-if="inactiveEnrollments.length > 0 ">
+                        <div ng-if="inactiveEnrollments.length > 0">
+                            <table class="table table-striped dhis2-table-hover table-bordered">
+                                <tr ng-repeat="inactiveEnrollment in inactiveEnrollments">
+                                    <td ng-if="selectedProgram && selectedProgram.id !== inactiveEnrollment.program || !selectedProgram" ng-attr-title="{{'set_as_current'| translate}}" ng-click="changeProgram(inactiveEnrollment.program)">
+                                        {{programNames[inactiveEnrollment.program].displayName}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                                     
                 </div>
