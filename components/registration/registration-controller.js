@@ -13,6 +13,7 @@ import {
     PROFIL_NASJONALT_FELLES_HJELPENUMMER
 } from "../../utils/constants";
 import {makeHyphensInKodebeskrivelseNonBreaking} from "../../ks_patches/provesvar_utils";
+import {setCustomShowOnAttributes} from "../../ks_patches/hide_show_attributes";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RegistrationController', 
@@ -333,6 +334,7 @@ trackerCapture.controller('RegistrationController',
         if($scope.selectedProgram){
             AttributesFactory.getByProgram($scope.selectedProgram).then(function (atts) {
                 $scope.attributes = TEIGridService.generateGridColumns(atts, null, false).columns;
+                $scope.attributes = setCustomShowOnAttributes($scope.attributes, $scope.selectedProgram.id);
                 fetchGeneratedAttributes();
                 if ($scope.selectedProgram && $scope.selectedProgram.id) {
                     if ($scope.selectedProgram.dataEntryForm && $scope.selectedProgram.dataEntryForm.htmlCode) {
