@@ -81,7 +81,7 @@
 
         <!-- registration buttons begin -->
         <!-- disable buttons for Innreiseoppføling, as it should not be possible to change profile here -->
-        <div ng-if="selectedProgram.id !== 'B7gOGodZkcs'">
+        <div ng-if="selectedProgram.id !== 'B7gOGodZkcs' && selectedProgram.id !== 'STKyXc3OT7i'">
             <div ng-if="!editingDisabled && registrationMode === 'PROFILE' && hasTeiWrite()" class="vertical-spacing btn-group">
                 <button type="button" class="btn btn-primary" ng-disabled="saveAttributedDisabledButton()" ng-click="registerEntity(null)">{{'save'| translate}}</button>
                 <button type="button" class="btn btn-default small-horizontal-spacing" ng-disabled="saveAttributedDisabledButton()" ng-click="cancelRegistrationWarning(cancel)" ng-if="!isInDashboard">{{'cancel'| translate}}</button>

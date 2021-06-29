@@ -1,4 +1,5 @@
 import {
+    DUPLIKAT_PROGRAM_ID,
     INNREISE_ARBEIDSGIVER_ATTRIBUTE_ID,
     INNREISE_AVREISELAND_ATTRIBUTE_ID,
     INNREISE_INNREISE_DATO_ATTRIBUTE_ID,
@@ -16,7 +17,7 @@ import {
 
 export function setCustomShowOnAttributes(attributes, programId) {
     console.log(programId);
-    if(programId === INNREISE_PROGRAM_ID) {
+    if(programId === INNREISE_PROGRAM_ID || programId === DUPLIKAT_PROGRAM_ID) {
         attributes = attributes.map(attribute => {
             if(attributesToHideFromProfileInInnreise.find(attId => attId === attribute.id)) {
                 return {...attribute, show: false};
