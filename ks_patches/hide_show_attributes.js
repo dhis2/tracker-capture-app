@@ -16,7 +16,6 @@ import {
 } from "../utils/constants";
 
 export function setCustomShowOnAttributes(attributes, programId) {
-    console.log(programId);
     if(programId === INNREISE_PROGRAM_ID || programId === DUPLIKAT_PROGRAM_ID) {
         attributes = attributes.map(attribute => {
             if(attributesToHideFromProfileInInnreise.find(attId => attId === attribute.id)) {
@@ -27,12 +26,23 @@ export function setCustomShowOnAttributes(attributes, programId) {
             }
             return attribute;
         });
-        console.log(attributes)
         return attributes;
     }
     return attributes;
 }
 
+export function setCustomShowOnAttributesInList(attributes, programId) {
+    if(programId === INNREISE_PROGRAM_ID || programId === DUPLIKAT_PROGRAM_ID) {
+        attributes = attributes.map(attribute => {
+            if(attributesToHideInInnreiseArbeidsliste.find(attId => attId === attribute.id)) {
+                return {...attribute, show: false};
+            }
+            return attribute;
+        });
+        return attributes;
+    }
+    return attributes;
+}
 const attributesToHideFromProfileInInnreise = [
     INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID,
     INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID,
@@ -51,4 +61,9 @@ const attributesToShowInProfileInInnreise = [
     PROFIL_EPOST_ATTRIBUTE_ID,
     PROFIL_MOBIL_TLF_ATTRIBUTE_ID,
     PROFIL_FNR_ATTRIBUTE_ID
+]
+
+const attributesToHideInInnreiseArbeidsliste = [
+    'orgUnitName',
+    'created'
 ]

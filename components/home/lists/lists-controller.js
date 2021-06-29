@@ -1,12 +1,9 @@
 import {
-    COUNTRY_LOOKUP_ID,
-    INNREISE_AVREISELAND_DATA_ELEMENT_ID, INNREISE_OPPFOLGINGSTATUS_ID,
     INNREISE_PROGRAM_ID,
-    INNREISEINFORMASJON_PROGRAM_STAGE_ID, STATUS_OPPFOLGNING_LOOKUP_ID
 } from "../../../utils/constants";
-import {convertDatestringToDDMMYYYY, convertDatestringToFullTime} from "../../../utils/converters";
-import {importEventToListAsync} from "../../../ks_patches/import_event_to_list";
+import { convertDatestringToFullTime} from "../../../utils/converters";
 import {addEventDataToInnreiseList} from "../../../ks_patches/add_event_data_to_innreise_list";
+import {setCustomShowOnAttributesInList} from "../../../ks_patches/hide_show_attributes";
 
 var trackerCapture = angular.module('trackerCapture');
 
@@ -94,6 +91,7 @@ trackerCapture.controller('ListsController',function(
                     var lastDateName = $scope.base.selectedProgram.id == 'uYjxkTbwRNf' ? 'last_date_in_isolation' : $scope.base.selectedProgram.id == 'DM9n1bUw8W8' ? 'last_date_in_quarantine' : '';
 
                     $scope.gridColumns = TEIGridService.makeGridColumns($scope.programAttributes,gridColumnConfig, savedGridColumns, lastDateName);
+                    $scope.gridColumns = setCustomShowOnAttributesInList($scope.gridColumns, $scope.base.selectedProgram.id);
                     /*
                     $scope.gridColumns = [];
                     angular.forEach($scope.programAttributes, function(attr){
