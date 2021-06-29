@@ -43,7 +43,7 @@
                                     </d2-image-in-list>
                                 </div>
                             </span>
-                            <span ng-switch-default>{{tei[gridColumn.id]}}</span>
+                            <span ng-switch-default>{{ tei[gridColumn.id] ? tei[gridColumn.id] : getBackupValueFromEvent(tei, gridColumn.id) }}</span>
                         </span>
                     </td>
                     <td ng-if="allowFlagDuplicates">

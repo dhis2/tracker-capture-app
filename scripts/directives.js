@@ -5,9 +5,11 @@
 /* Directives */
 
 import {
+    INNREISE_AVREISELAND_ATTRIBUTE_ID,
+    INNREISE_INNREISE_DATO_ATTRIBUTE_ID,
     INNREISE_KARANTENEKODE_2_ATTRIBUTE_ID,
     INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID, INNREISE_KARANTENETYPE_ATTRIBUTE_ID,
-    INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID
+    INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID, INNREISE_OPPFOLGINGSTATUS_ID
 } from "../utils/constants";
 
 var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
@@ -796,19 +798,42 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             };
             $scope.setColClass = function (tei, attrId) {
                 if(attrId === INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID) {
-                    if(tei[attrId] === 'OK') {
+                    var value = $scope.getBackupValueFromEvent(tei, attrId)
+                    if(value === 'OK') {
                         return 'tei-status-ok';
                     }
-                    if(tei[attrId] === 'Ikke satt') {
+                    if(value === 'Ikke satt') {
                         return 'tei-status-not-satt';
                     }
-                    if(tei[attrId] === 'Ikke svar') {
+                    if(value === 'Ikke svar') {
                         return 'tei-status-not-svar';
                     }
-                    if(tei[attrId] === 'Ikke OK') {
+                    if(value === 'Ikke OK') {
                         return 'tei-status-not-ok';
                     }
                 }
+            }
+
+            $scope.getBackupValueFromEvent = function(tei, attrId) {
+                if(tei[attrId]){
+                    return tei[attrId];
+                }
+                switch(attrId) {
+                    case INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID:
+                        return tei['Oppfolgingstatus'];
+                    case INNREISE_INNREISE_DATO_ATTRIBUTE_ID:
+                        return tei['Innreisedato'];
+                    case INNREISE_AVREISELAND_ATTRIBUTE_ID:
+                        return tei['Avreiseland'];
+                    case INNREISE_KARANTENETYPE_ATTRIBUTE_ID:
+                        return tei['Karantenetype_tekst_short'];
+                    case INNREISE_KARANTENEKODE_2_ATTRIBUTE_ID:
+                        return tei['Unntaktype_kode'];
+                    case INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID:
+                        return tei['Gjennomforingstype_kode'];
+                }
+
+                return '';
             }
         }
     }

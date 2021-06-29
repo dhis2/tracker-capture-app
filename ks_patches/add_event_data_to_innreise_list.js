@@ -49,6 +49,44 @@ export function addEventDataToInnreiseList(scope, serverResponse, teiAccessApiSe
                 setHeader(serverResponse, 'Karantenetype_tekst');
                 setDataValue(serverResponse, eventData, INNREISE_KARANTENE_ALTERNATIV_TEXT_ID);
 
+                setHeader(serverResponse, 'Avreiseland');
+                setDataValue(serverResponse, eventData, INNREISE_AVREISELAND_DATA_ELEMENT_ID);
+
+                setHeader(serverResponse, 'Innreisedato');
+                setDataValue(serverResponse, eventData, 'eventDate', convertDatestringToDDMMYYYY);
+
+                setHeader(serverResponse, 'Oppfolgingstatus');
+                var statusLookup = status => optionSetsDataLookup(optionSets, STATUS_OPPFOLGNING_LOOKUP_ID, status);
+                setDataValue(serverResponse, eventData, INNREISE_OPPFOLGINGSTATUS_ID, statusLookup);
+
+                setHeader(serverResponse, 'Karantenetype_kode');
+                setDataValue(serverResponse, eventData, INNREISE_KARANTENE_ALTERNATIV_CODE_ID);
+
+                setHeader(serverResponse, 'Karantenetype_tekst_short');
+                setDataValue(serverResponse, eventData, INNREISE_KARANTENE_ALTERNATIV_CODE_ID, karantenekodeToShortTekst);
+
+                setHeader(serverResponse, 'Karantenetype_tekst');
+                setDataValue(serverResponse, eventData, INNREISE_KARANTENE_ALTERNATIV_TEXT_ID);
+
+                setHeader(serverResponse, 'Unntaktype_kode');
+                setDataValue(serverResponse, eventData, INNREISE_UNNTAK_TYPE_CODE_ID);
+
+                setHeader(serverResponse, 'Unntaktype_tekst');
+                setDataValue(serverResponse, eventData, INNREISE_UNNTAK_TYPE_TEXT_ID);
+
+                setHeader(serverResponse, 'Gjennomforingstype_kode');
+                setDataValue(serverResponse, eventData, INNREISE_KARANTENE_GJENOMFORING_TYPE_CODE_ID);
+
+                setHeader(serverResponse, 'Gjennomforingstype_tekst');
+                setDataValue(serverResponse, eventData, INNREISE_KARANTENE_GJENOMFORING_TYPE_TEXT_ID);
+
+                setHeader(serverResponse, 'Oppholdsted');
+                setDataValue(serverResponse, eventData, INNREISE_OPPHOLDSSTED_ID);
+
+                setHeader(serverResponse, 'Arbeidsgivernavn');
+                setDataValue(serverResponse, eventData, INNREISE_ARBEIDSGIVER_NAVN_ID);
+
+
                 scope.setServerResponse(serverResponse);
             } catch (err) {
                 console.log(err);
