@@ -57,19 +57,18 @@
                 <span ng-if="isInnreiseProgram(selectedProgram)">
                     <span ng-if="innreiseStatusQueryFailed">
                         <hr>
-                        Kunne ikke hente status for prøvesvar.
+                        Kunne ikke hente status for prøvesvar og innreise.
                     </span>
                     <hr>
-                    <div>
+                    <div ng-if="!innreiseStatusQueryFailed">
                         <div ng-if="innreiseStatus === 'AVSLUTTET'">Innreisedata sist oppdatert {{innreiseSistOppdatert}}.</div>
                         <div ng-if="innreiseStatus === 'KJORER'">Ny innreisedata lastes inn. Dette kan ta flere minutter. Oppdater siden for å hente inn ny data.</div>
                         <div ng-if="innreiseStatus === 'FEIL'" class="error">Det skjedde en feil ved sist innlesning av innreisedata.</div>
                         <div ng-if="innreiseStatus === 'ALDRI_KJORT'">Innreisedata har aldri blitt hentet.</div>
                         <div ng-if="!innreiseStatus" class="error">Kunne ikke laste inn status på innreisedata</div>
                     </div>
-                    <!-- type statusType = 'AVSLUTTET' | 'KJORER' | 'FEIL' | 'ALDRI_KJORT'; -->
                     <hr>
-                    <div style="display: flex">
+                    <div style="display: flex" ng-if="!innreiseStatusQueryFailed">
                         <div style="align-self: center">
                             <div ng-if="provesvarStatus === 'AVSLUTTET'">Prøvesvardata sist hentet {{innreiseProvesvarSistOppdatert}}.</div>
                             <div ng-if="provesvarStatus === 'KJORER'">Ny prøvesvardata lastes inn. <br />Dette kan ta flere minutter. Oppdater siden for å hente inn ny data.</div>
@@ -91,10 +90,6 @@
                             </button>
                         </div>
                     </div>
-                    <span ng-if="labTestNotActivated">
-                        <hr>
-                        Prøvesvar er ikke aktivert for din kommune.
-                    </span>
                 </span>
             </div>
         </div>
