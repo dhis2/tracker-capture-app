@@ -52,30 +52,46 @@
 
     <div class="row" ng-if="currentTrackedEntityList && currentTrackedEntityList.config && currentTrackedEntityList.config.description">
         <div class="vertical-spacing" >
-            <div class="alert alert-info" style="margin-left:12px;margin-right:12px">{{currentTrackedEntityList.config.description}} 
-            <span ng-if="useLabTestForProgram(selectedProgram)">
-                <span ng-if="labTestQueryFailed">
+            <div class="alert alert-info" style="margin-left:12px;margin-right:12px">
+                {{currentTrackedEntityList.config.description}}
+                <span ng-if="isInnreiseProgram(selectedProgram)">
+                    <span ng-if="innreiseStatusQueryFailed">
+                        <hr>
+                        Kunne ikke hente status for prøvesvar og innreise.
+                    </span>
                     <hr>
-                    Kunne ikke hente status for prøvesvar.
-                </span>
-                <hr>
-                <div style="display: flex">
-                    <div>
-                        <div ng-if="innreiseSistOppdatert">Innreisedata sist oppdatert {{innreiseSistOppdatert}}.</div>
-                        <span ng-if="!innreiseSistOppdatert">Innreisedata har ikke blitt hentet ennå. </span>
-                        <div ng-if="innreiseProvesvarSistOppdatert"> Prøvesvardata sist hentet {{innreiseProvesvarSistOppdatert}}.</div>
-                        <span ng-if="showNoProvesvardataHentet()">Prøvesvar har ikke blitt hentet ennå. </span>
-                        <span ng-if="!harTilgangTilProvesvar">Du har ikke tilgang til å synkronisere prøvesvar. </span>
-                        <span ng-if="hasStartedSync"> Henting av prøvesvar ble nylig startet, og kan ikke startes på nytt akkurat nå.</span>
+                    <div ng-if="!innreiseStatusQueryFailed">
+                        <div ng-if="innreiseStatus === 'AVSLUTTET'">Innreisedata sist oppdatert {{innreiseSistOppdatert}}.</div>
+                        <div ng-if="innreiseStatus === 'KJORER'">Nye innreisedata lastes inn. Dette kan ta flere minutter. Oppdater siden for å hente inn nye data.</div>
+                        <div ng-if="innreiseStatus === 'FEIL'" class="error">Det skjedde en feil ved siste innlesing av innreisedata.</div>
+                        <div ng-if="innreiseStatus === 'ALDRI_KJORT'">Innreisedata har aldri blitt hentet.</div>
+                        <div ng-if="!innreiseStatus" class="error">Kunne ikke laste inn status på innreisedata</div>
                     </div>
-                    <button ng-if="showProvesvarSyncButton()" ng-click="syncLabTests()" class="btn btn-primary" style="margin-left: 1em">Hent prøvesvar nå</button>
-                </div>
-                <span ng-if="labTestNotActivated">
                     <hr>
-                    Prøvesvar er ikke aktivert for din kommune.
+                    <div style="display: flex" ng-if="!innreiseStatusQueryFailed">
+                        <div style="align-self: center">
+                            <div ng-if="provesvarStatus === 'AVSLUTTET'">Prøvesvardata sist hentet {{innreiseProvesvarSistOppdatert}}.</div>
+                            <div ng-if="provesvarStatus === 'KJORER'">Nye prøvesvardata lastes inn. <br />Dette kan ta flere minutter. Oppdater siden for å hente inn nye data.</div>
+                            <div ng-if="provesvarStatus === 'FEIL'" class="error">Det skjedde en feil ved sist innlesing av prøvesvardata. <br />Vennligst prøv igjen. <br />Ta kontakt med support dersom problemet vedvarer.</div>
+                            <div ng-if="provesvarStatus === 'ALDRI_KJORT'">Prøvesvardata har aldri blitt hentet</div>
+                            <div ng-if="!provesvarStatus" class="error">Kunne ikke laste inn status på prøvesvardata</div>
+                        </div>
+                        <div style="padding-left: 1em;">
+                            <span ng-if="!harTilgangTilProvesvar && provesvarAktivert">Du har ikke tilgang til å synkronisere prøvesvar. </span>
+                            <span ng-if="!provesvarAktivert">Kommunen har ikke aktivert prøvesvar. </span>
+                            <span ng-if="provesvarStartFailed" class="error">
+                                Noe feilet ved henting av prøvesvar. Last siden på nytt og prøv igjen.
+                            </span>
+                            <button ng-if="kanStarteNyProvesvarSynk && !proveSvarSyncIsLoading" ng-click="syncLabTests()" class="btn btn-primary" style="margin-left: 1em">
+                                Hent prøvesvar nå
+                            </button>
+                            <button ng-if="kanStarteNyProvesvarSynk && proveSvarSyncIsLoading" ng-click="syncLabTests()" class="btn btn-primary" disabled style="margin-left: 1em">
+                                Henter prøvesvar <img id="ouwt_loader" src="../images/ajax-loader-bar.gif" alt="{{'in_progress'| translate}}"/>
+                            </button>
+                        </div>
+                    </div>
                 </span>
-            </span>
-        </div>
+            </div>
         </div>
     </div>
 

@@ -429,36 +429,54 @@ trackerCapture.controller('ListsController',function(
             }, function(){});
         }
 
-        $scope.useLabTestForProgram = function(program) {
-            return program && program.id == 'B7gOGodZkcs';
+        $scope.isInnreiseProgram = function(program) {
+            return program && program.id == INNREISE_PROGRAM_ID;
         }
 
-        $scope.hasStartedSync = false;
+        $scope.proveSvarSyncIsLoading = false;
         $scope.syncLabTests = function () {
-            if($scope.useLabTestForProgram($scope.selectedProgram)) {
+            if($scope.isInnreiseProgram($scope.selectedProgram)) {
+                $scope.provesvarStartFailed = false;
                 var userId;
                 try{
                     userId = JSON.parse(sessionStorage.USER_PROFILE).id
                 }
                 finally {}
-                $scope.hasStartedSync = true;
+                $scope.proveSvarSyncIsLoading = true;
                 FNrLookupService.startLabTestSync($scope.selectedOrgUnit.code, userId).then(function(svar){
-                    if(!svar) {
-                        $scope.hasStartedSync = false;
+                    $scope.proveSvarSyncIsLoading = false;
+                    if(svar) {
+                        $scope.mapInnreiseStatusToScope(svar);
+                        fetchWorkingList();;
+                    } else {
+                        $scope.provesvarStartFailed = true;
+                        $scope.kanStarteNyProvesvarSynk = false;
                     }
                 });
             }
         }
 
-
+        $scope.provesvarStartFailed = false;
         $scope.provesvarAktivert = false;
         $scope.harTilgangTilProvesvar = false;
         $scope.innreiseSistOppdatert = false;
         $scope.innreiseProvesvarSistOppdatert = false;
         $scope.kanStarteNyProvesvarSynk = null;
+        $scope.provesvarStatus = null;
+        $scope.innreiseStatus = null;
+
+        $scope.mapInnreiseStatusToScope = function(svar) {
+            $scope.provesvarAktivert = svar.provesvarAktivert;
+            $scope.innreiseProvesvarSistOppdatert = svar.innreiseProvesvarSistOppdatert ? convertDatestringToFullTime(svar.innreiseProvesvarSistOppdatert) : undefined;
+            $scope.innreiseSistOppdatert = svar.innreiseSistOppdatert ? convertDatestringToFullTime(svar.innreiseSistOppdatert) : undefined;
+            $scope.kanStarteNyProvesvarSynk = svar.kanStarteNyProvesvarSynk;
+            $scope.harTilgangTilProvesvar = svar.harTilgangTilProvesvar;
+            $scope.provesvarStatus = svar.provesvarStatus;
+            $scope.innreiseStatus = svar.innreiseStatus;
+        }
 
         $scope.checkLabTestStatus = function() {
-            if($scope.useLabTestForProgram($scope.selectedProgram)) {
+            if($scope.isInnreiseProgram($scope.selectedProgram)) {
                 var userId;
                 try{
                     userId = JSON.parse(sessionStorage.USER_PROFILE).id
@@ -466,14 +484,10 @@ trackerCapture.controller('ListsController',function(
                 finally {}
                 FNrLookupService.getLabTestStatus($scope.selectedOrgUnit.code, userId).then(function(svar){
                     if(svar) {
-                        $scope.provesvarAktivert = svar.provesvarAktivert;
-                        $scope.innreiseProvesvarSistOppdatert = svar.innreiseProvesvarSistOppdatert ? convertDatestringToFullTime(svar.innreiseProvesvarSistOppdatert) : undefined;
-                        $scope.innreiseSistOppdatert = svar.innreiseSistOppdatert ? convertDatestringToFullTime(svar.innreiseSistOppdatert) : undefined;
-                        $scope.kanStarteNyProvesvarSynk = svar.kanStarteNyProvesvarSynk;
-                        $scope.harTilgangTilProvesvar = svar.harTilgangTilProvesvar;
+                        $scope.mapInnreiseStatusToScope(svar);
                     }
                     else {
-                        $scope.labTestQueryFailed =  true;
+                        $scope.innreiseStatusQueryFailed =  true;
                     }
                 });
             }
@@ -482,11 +496,6 @@ trackerCapture.controller('ListsController',function(
         $scope.showNoProvesvardataHentet = function() {
             return !$scope.innreiseProvesvarSistOppdatert && !$scope.hasStartedSync;
         };
-
-        $scope.showProvesvarSyncButton = function() {
-            return $scope.harTilgangTilProvesvar && $scope.provesvarAktivert && $scope.kanStarteNyProvesvarSynk && !$scope.hasStartedSync;
-        };
-
 
         $scope.checkLabTestStatus();
 
