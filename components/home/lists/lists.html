@@ -62,8 +62,8 @@
                     <hr>
                     <div ng-if="!innreiseStatusQueryFailed">
                         <div ng-if="innreiseStatus === 'AVSLUTTET'">Innreisedata sist oppdatert {{innreiseSistOppdatert}}.</div>
-                        <div ng-if="innreiseStatus === 'KJORER'">Ny innreisedata lastes inn. Dette kan ta flere minutter. Oppdater siden for å hente inn ny data.</div>
-                        <div ng-if="innreiseStatus === 'FEIL'" class="error">Det skjedde en feil ved sist innlesning av innreisedata.</div>
+                        <div ng-if="innreiseStatus === 'KJORER'">Nye innreisedata lastes inn. Dette kan ta flere minutter. Oppdater siden for å hente inn nye data.</div>
+                        <div ng-if="innreiseStatus === 'FEIL'" class="error">Det skjedde en feil ved siste innlesing av innreisedata.</div>
                         <div ng-if="innreiseStatus === 'ALDRI_KJORT'">Innreisedata har aldri blitt hentet.</div>
                         <div ng-if="!innreiseStatus" class="error">Kunne ikke laste inn status på innreisedata</div>
                     </div>
@@ -71,8 +71,8 @@
                     <div style="display: flex" ng-if="!innreiseStatusQueryFailed">
                         <div style="align-self: center">
                             <div ng-if="provesvarStatus === 'AVSLUTTET'">Prøvesvardata sist hentet {{innreiseProvesvarSistOppdatert}}.</div>
-                            <div ng-if="provesvarStatus === 'KJORER'">Ny prøvesvardata lastes inn. <br />Dette kan ta flere minutter. Oppdater siden for å hente inn ny data.</div>
-                            <div ng-if="provesvarStatus === 'FEIL'" class="error">Det skjedde en feil ved sist innlesning av prøvesvardata. <br />Vennligst prøv igjen. <br />Ta kontakt med support dersom problemet vedvarer.</div>
+                            <div ng-if="provesvarStatus === 'KJORER'">Nye prøvesvardata lastes inn. <br />Dette kan ta flere minutter. Oppdater siden for å hente inn nye data.</div>
+                            <div ng-if="provesvarStatus === 'FEIL'" class="error">Det skjedde en feil ved sist innlesing av prøvesvardata. <br />Vennligst prøv igjen. <br />Ta kontakt med support dersom problemet vedvarer.</div>
                             <div ng-if="provesvarStatus === 'ALDRI_KJORT'">Prøvesvardata har aldri blitt hentet</div>
                             <div ng-if="!provesvarStatus" class="error">Kunne ikke laste inn status på prøvesvardata</div>
                         </div>
