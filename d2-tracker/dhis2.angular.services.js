@@ -3239,7 +3239,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         if(value === 'true' || value === 'false') {
             valueType = 'BOOLEAN';
         }
-        else if((angular.isNumber(value) || !isNaN(value)) && (value && value.substring(0,1) != '0')) {
+        else if((angular.isNumber(value) || !isNaN(value)) && (angular.isString(value) && value.substring(0,1) != '0')) {
             if(value % 1 !== 0) {
                 valueType = 'NUMBER';
             }
