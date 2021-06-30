@@ -1,5 +1,5 @@
 import {
-    COUNTRY_LOOKUP_ID,
+    COUNTRY_LOOKUP_ID, DUPLIKAT_INNREISE_PROGRAM_ID,
     INNREISE_AVREISELAND_DATA_ELEMENT_ID, INNREISE_OPPFOLGINGSTATUS_ID,
     INNREISE_PROGRAM_ID,
     INNREISEINFORMASJON_PROGRAM_STAGE_ID, STATUS_OPPFOLGNING_LOOKUP_ID
@@ -271,7 +271,7 @@ trackerCapture.controller('ListsController',function(
                 });
             }
             else if(serverResponse.rows && serverResponse.rows.length > 0
-                && ($scope.base.selectedProgram.id == INNREISE_PROGRAM_ID)) {
+                && ($scope.base.selectedProgram.id == INNREISE_PROGRAM_ID || $scope.base.selectedProgram.id == DUPLIKAT_INNREISE_PROGRAM_ID)) {
                 try {
                     addEventDataToInnreiseList($scope, serverResponse, TeiAccessApiService, MetaDataFactory);
                 } catch (err) {
