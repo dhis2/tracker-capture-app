@@ -435,7 +435,6 @@ trackerCapture.controller('ListsController',function(
 
         $scope.proveSvarSyncIsLoading = false;
         $scope.syncLabTests = function () {
-
             if($scope.isInnreiseProgram($scope.selectedProgram)) {
                 $scope.provesvarStartFailed = false;
                 var userId;
