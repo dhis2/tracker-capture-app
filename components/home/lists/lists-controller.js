@@ -497,11 +497,6 @@ trackerCapture.controller('ListsController',function(
             return !$scope.innreiseProvesvarSistOppdatert && !$scope.hasStartedSync;
         };
 
-        $scope.showProvesvarSyncButton = function() {
-            return $scope.harTilgangTilProvesvar && $scope.provesvarAktivert && $scope.kanStarteNyProvesvarSynk && (!$scope.hasStartedSync || $scope.proveSvarSyncIsLoading);
-        };
-
-
         $scope.checkLabTestStatus();
 
         
