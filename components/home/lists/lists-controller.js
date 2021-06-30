@@ -448,6 +448,7 @@ trackerCapture.controller('ListsController',function(
                     $scope.proveSvarSyncIsLoading = false;
                     if(svar) {
                         $scope.mapInnreiseStatusToScope(svar);
+                        fetchWorkingList();;
                     } else {
                         $scope.provesvarStartFailed = true;
                         $scope.kanStarteNyProvesvarSynk = false;
