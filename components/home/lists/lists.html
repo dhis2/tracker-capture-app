@@ -70,7 +70,7 @@
                     <!-- type statusType = 'AVSLUTTET' | 'KJORER' | 'FEIL' | 'ALDRI_KJORT'; -->
                     <hr>
                     <div style="display: flex">
-                        <div>
+                        <div style="align-self: center">
                             <div ng-if="provesvarStatus === 'AVSLUTTET'">Prøvesvardata sist hentet {{innreiseProvesvarSistOppdatert}}.</div>
                             <div ng-if="provesvarStatus === 'KJORER'">Ny prøvesvardata lastes inn. <br />Dette kan ta flere minutter. Oppdater siden for å hente inn ny data.</div>
                             <div ng-if="provesvarStatus === 'FEIL'" class="error">Det skjedde en feil ved sist innlesning av prøvesvardata. <br />Vennligst prøv igjen. <br />Ta kontakt med support dersom problemet vedvarer.</div>
