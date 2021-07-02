@@ -1,6 +1,19 @@
 <div ng-if="widget !== 'PROFILE' && trackedEntityTypes.selected" class="section-label section-spacing vertical-spacing">
     {{'profile'| translate}}
-    <button type="button" style="margin-left: 20px;margin-top:10px;" ng-click="showLabTest()" class="btn btn-secondary"  ng-disabled="!shouldShowLabTest()">Vis prøvesvar</button>
+    <hr />
+    <table>
+        <tr>
+            <td style="font-size: 9pt">
+                F‑nr/hjelpenummer
+            </td>
+            <td>
+                <input class="form-control" ng-model="labTestLookupNrGetterSetter" ng-model-options=" {getterSetter: true }" maxlength="11"/>
+            </td>
+            <td>
+                <button  ng-click="showLabTest()" class="btn btn-secondary"  ng-disabled="!shouldShowLabTest()">Vis prøvesvar</button>
+            </td>
+        </tr>
+    </table>
     <div ng-show="!shouldShowLabTest()" class="alert alert-warning" style="font-size: 9pt;">Gyldig nasjonalt felles hjelpenummer eller F-nummer må være satt for å vise prøvesvar</div>
     <button style="margin-left: 20px;margin-top:10px" ng-if="selectedProgram.id == 'uYjxkTbwRNf' && selectedEnrollment.enrollment" ng-disabled="(selectedTei['ZSt07qyq6Pt'].length != 11 && !selectedTei['NI0QRzJvQ0k']) || !selectedTei['ENRjVGxVL6l'] || !selectedTei['sB1IHYu2xQT']" ng-click="sendNotification()" class="btn btn-secondary">Send klinikermelding</button>
     <p></p>

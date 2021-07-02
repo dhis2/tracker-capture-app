@@ -1420,8 +1420,19 @@ trackerCapture.controller('RegistrationController',
         return attributeMandatory || $scope.mandatoryFields[attributeId];
     }
 
+    $scope.labTestLookupNr = undefined;
+    $scope.labTestLookupNrGetterSetter = function(value) {
+        if (angular.isDefined(value)) {
+            $scope.labTestLookupNr = value;
+        } else {
+            if($scope.labTestLookupNr === undefined) {
+                $scope.labTestLookupNr = $scope.getBestNumberForLabTest();
+            }
+            return $scope.labTestLookupNr;
+        }
+    }
     $scope.shouldShowLabTest = function() {
-        return !!$scope.getBestNumberForLabTest()
+        return $scope.labTestLookupNr && $scope.labTestLookupNr.toString().length === 11;
     }
 
     $scope.getBestNumberForLabTest = function() {
@@ -1443,8 +1454,7 @@ trackerCapture.controller('RegistrationController',
             userId = JSON.parse(sessionStorage.USER_PROFILE).id
         }
         finally {}
-        var labTestLookupNumber = $scope.getBestNumberForLabTest();
-        return FNrLookupService.lookupLabSvar(labTestLookupNumber, CurrentSelection.currentSelection.orgUnit.code, userId);
+        return FNrLookupService.lookupLabSvar($scope.labTestLookupNrGetterSetter(), CurrentSelection.currentSelection.orgUnit.code, userId);
     }
 
     $scope.showLabTest = function() {
