@@ -1,8 +1,4 @@
-import {
-    COUNTRY_LOOKUP_ID, DUPLIKAT_INNREISE_PROGRAM_ID,
-    INNREISE_AVREISELAND_DATA_ELEMENT_ID, INNREISE_OPPFOLGINGSTATUS_ID,
-    INNREISE_PROGRAM_ID,
-} from "../../../utils/constants";
+import { DUPLIKAT_INNREISE_PROGRAM_ID, INNREISE_PROGRAM_ID } from "../../../utils/constants";
 import { convertDatestringToFullTime} from "../../../utils/converters";
 import {addEventDataToInnreiseList} from "../../../ks_patches/add_event_data_to_innreise_list";
 import {setCustomShowOnAttributesInList} from "../../../ks_patches/hide_show_attributes";
