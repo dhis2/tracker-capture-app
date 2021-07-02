@@ -41,11 +41,11 @@
                         <span class="nav-pills" ng-show="selectedProgram && currentEnrollment && currentEnrollment !== selectedEnrollment">
                             | <a href ng-click="loadEnrollmentDetails(currentEnrollment)" ng-attr-title="{{'current'| translate}}"><span ng-class="{true: 'widget-link-active bold', false: 'widget-link'} [showEnrollmentDiv]">{{'current'| translate}}</span></a>
                         </span>
-                        <span class="nav-pills" ng-show="selectedProgram && !currentEnrollment && !selectedTei.inactive && selectedProgram.access.data.write">
+                        <span class="nav-pills" ng-show="selectedProgram && !currentEnrollment && !selectedTei.inactive && selectedProgram.access.data.write && selectedProgram.id !== 'B7gOGodZkcs' && selectedProgram.id !== 'STKyXc3OT7i' ">
                             <span ng-show="selectedProgram && currentEnrollment && currentEnrollment !== selectedEnrollment">|</span> <a href ng-click="showNewEnrollment()" ng-attr-title="{{'add_new'| translate}}"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [showEnrollmentDiv]">{{'add_new'| translate}}</span></a>
                         </span>
                         <span class="nav-pills" ng-show="hasEnrollmentHistory">
-                            <span ng-if="selectedProgram && selectedProgram.access.data.write">|</span> <a href ng-click="showEnrollmentHistory()" ng-attr-title="{{'history'| translate}}"><span ng-class="{true: 'widget-link-active bold', false: 'widget - link'} [showEnrollmentHistoryDiv]">{{'history'| translate}}</span></a>
+                            <span ng-if="selectedProgram && selectedProgram.access.data.write  && selectedProgram.id !== 'B7gOGodZkcs' && selectedProgram.id !== 'STKyXc3OT7i' ">|</span> <a href ng-click="showEnrollmentHistory()" ng-attr-title="{{'history'| translate}}"><span ng-class="{true: 'widget-link-active bold', false: 'widget - link'} [showEnrollmentHistoryDiv]">{{'history'| translate}}</span></a>
                         </span>
                     </div>
                     <div class="vertical-spacing">
