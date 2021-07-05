@@ -1,3 +1,10 @@
+## [31.6.23](https://github.com/dhis2/tracker-capture-app/compare/v31.6.22...v31.6.23) (2021-07-05)
+
+
+### Bug Fixes
+
+* avoid substring statement on numeric variable ([#1171](https://github.com/dhis2/tracker-capture-app/issues/1171)) ([2fa8515](https://github.com/dhis2/tracker-capture-app/commit/2fa8515e33e5d04099b099bf2b459e0c1a4ad048))
+
 ## [31.6.22](https://github.com/dhis2/tracker-capture-app/compare/v31.6.21...v31.6.22) (2021-06-29)
 
 
