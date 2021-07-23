@@ -366,13 +366,13 @@ function getBatchPrograms( programs, batch )
                     type: 'GET',
                     data: 'programs=' + program.id
                 }).done( function( response ){
+                    var ou = {};
                     if( response[program.id] ){
-                        var ou = {};
                         _.each(_.values( response[program.id] ), function(o){
                             ou[o] = {id:o};
                         });
-                        program.organisationUnits = ou;
                     }
+                    program.organisationUnits = ou;
                     
                     if( program.programStages ){
                         program.programStages = _.sortBy( program.programStages, 'sortOrder' );
