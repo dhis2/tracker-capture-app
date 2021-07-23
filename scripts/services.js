@@ -500,7 +500,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                         var programs = [];
                         angular.forEach(prs, function(pr){
                             if( (loadSelectedProgram && selectedProgram && pr.id == selectedProgram.id) || 
-                                (pr.organisationUnits.hasOwnProperty( ou.id ) && accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read) ){
+                                (pr.organisationUnits && pr.organisationUnits.hasOwnProperty( ou.id ) && accesses.programsById[pr.id] && accesses.programsById[pr.id].data.read) ){
                                 if(pr.programTrackedEntityAttributes){
                                     pr.programTrackedEntityAttributes = pr.programTrackedEntityAttributes.filter(function(attr){
                                         return attr.access && attr.access.read;
