@@ -277,18 +277,18 @@ trackerCapture.controller('ListsController',function(
                     console.log(err);
                     $scope.setServerResponse(serverResponse);
                 }
-        } else {
-            $scope.setServerResponse(serverResponse);
-        }
-        if ($scope.isAlleTildelteOppgaver()) {
-            try {
-                addTildeltToTildeltList($scope, serverResponse, TeiAccessApiService, MetaDataFactory, $q);
-            } catch (err) {
-                console.log(err);
+            } else {
                 $scope.setServerResponse(serverResponse);
             }
+            if ($scope.isAlleTildelteOppgaver()) {
+                try {
+                    addTildeltToTildeltList($scope, serverResponse, TeiAccessApiService, MetaDataFactory, $q);
+                } catch (err) {
+                    console.log(err);
+                    $scope.setServerResponse(serverResponse);
+                }
+            }
         }
-    }
 
         $scope.setServerResponse = function(serverResponse) {
             $scope.currentTrackedEntityList.data = TEIGridService.format($scope.selectedOrgUnit.id, serverResponse, false, $scope.base.optionSets, null);
