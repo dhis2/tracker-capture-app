@@ -2,6 +2,7 @@ import {DUPLIKAT_PROGRAM_ID, INNREISE_PROGRAM_ID} from "../../../utils/constants
 import {convertDatestringToFullTime} from "../../../utils/converters";
 import {addEventDataToInnreiseList} from "../../../ks_patches/add_event_data_to_innreise_list";
 import {setCustomShowOnAttributesInList} from "../../../ks_patches/hide_show_attributes";
+import {addTildeltToTildeltList} from "../../../ks_patches/add_tildelt_to_tidelt_list";
 
 var trackerCapture = angular.module('trackerCapture');
 
