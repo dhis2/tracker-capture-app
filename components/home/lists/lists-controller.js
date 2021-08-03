@@ -1,5 +1,5 @@
-import { DUPLIKAT_INNREISE_PROGRAM_ID, INNREISE_PROGRAM_ID } from "../../../utils/constants";
-import { convertDatestringToFullTime} from "../../../utils/converters";
+import {DUPLIKAT_PROGRAM_ID, INNREISE_PROGRAM_ID} from "../../../utils/constants";
+import {convertDatestringToFullTime} from "../../../utils/converters";
 import {addEventDataToInnreiseList} from "../../../ks_patches/add_event_data_to_innreise_list";
 import {setCustomShowOnAttributesInList} from "../../../ks_patches/hide_show_attributes";
 
@@ -204,8 +204,10 @@ trackerCapture.controller('ListsController',function(
             }
         }
 
-        var setCurrentTrackedEntityListData = function(serverResponse){
-            $scope.numberOfSelectedRows = 0;
+    $scope.isAlleTildelteOppgaver = function() {
+        return $scope.currentTrackedEntityList.config.name === "Alle tildelte oppgaver";
+    }
+
             if(serverResponse.rows && serverResponse.rows.length > 0
                 && ($scope.base.selectedProgram.id == 'uYjxkTbwRNf'
                 || $scope.base.selectedProgram.id == 'DM9n1bUw8W8')) {
@@ -274,11 +276,18 @@ trackerCapture.controller('ListsController',function(
                     console.log(err);
                     $scope.setServerResponse(serverResponse);
                 }
-            }
-            else {
+        } else {
+            $scope.setServerResponse(serverResponse);
+        }
+        if ($scope.isAlleTildelteOppgaver()) {
+            try {
+                addTildeltToTildeltList($scope, serverResponse, TeiAccessApiService, MetaDataFactory, $q);
+            } catch (err) {
+                console.log(err);
                 $scope.setServerResponse(serverResponse);
             }
         }
+    }
 
         $scope.setServerResponse = function(serverResponse) {
             $scope.currentTrackedEntityList.data = TEIGridService.format($scope.selectedOrgUnit.id, serverResponse, false, $scope.base.optionSets, null);
