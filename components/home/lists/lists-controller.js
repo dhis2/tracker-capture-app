@@ -265,7 +265,6 @@ trackerCapture.controller('ListsController',function(
                         }, $scope.currentTrackedEntityList.sortColumn.direction != 'desc');
                     }
 
-
                     $scope.setServerResponse(serverResponse);
                 },function(error){
                     $scope.setServerResponse(serverResponse);
