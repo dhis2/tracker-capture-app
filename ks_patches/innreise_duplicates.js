@@ -1,6 +1,5 @@
 import {
-    DUPLIKAT_INNREISE_PROGRAM_ID, DUPLIKAT_INNREISE_STAGE_ID, DUPLIKAT_OPPFOLGING_STAGE_ID,
-    DUPLIKAT_PROGRAM_ID,
+    DUPLIKAT_PROGRAM_ID, DUPLIKAT_INNREISE_STAGE_ID, DUPLIKAT_OPPFOLGING_STAGE_ID,
     INNREISE_ENTITY_TYPE,
     INNREISE_PROGRAM_ID, INNREISEINFORMASJON_PROGRAM_STAGE_ID, OPPFOLGING_STAGE_ID
 } from "../utils/constants";
@@ -52,7 +51,7 @@ function addInnreiseEnrollment(selectedTei, existingTei, orgId, enrollmentServic
 function addInnreiseEvents(selectedTei, existingTei, enrollmentId, eventFactory) {
 
     selectedTei.enrollments.forEach(enrollment => {
-        if (enrollment.program === DUPLIKAT_INNREISE_PROGRAM_ID) {
+        if (enrollment.program === DUPLIKAT_PROGRAM_ID) {
             enrollment.events.forEach(event => {
                 try {
                     var newEvent = angular.copy(event);

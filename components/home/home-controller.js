@@ -1,4 +1,4 @@
-import {DUPLIKAT_INNREISE_PROGRAM_ID, INNREISE_PROGRAM_ID} from "../../utils/constants";
+import {DUPLIKAT_PROGRAM_ID, INNREISE_PROGRAM_ID} from "../../utils/constants";
 
 var trackerCapture = angular.module('trackerCapture');
 
@@ -303,7 +303,7 @@ trackerCapture.controller('HomeController',function(
             if($scope.selectedProgram && $scope.selectedProgram.id === INNREISE_PROGRAM_ID && view.name === 'Registrere') {
                 return false;
             }
-            if($scope.selectedProgram && $scope.selectedProgram.id === DUPLIKAT_INNREISE_PROGRAM_ID && view.name === 'Registrere') {
+            if($scope.selectedProgram && $scope.selectedProgram.id === DUPLIKAT_PROGRAM_ID && view.name === 'Registrere') {
                 return false;
             }
             return true;

@@ -14,6 +14,7 @@
                         </span>
                         <!-- sort icon ends -->
                     </th>
+                    <th ng-if="data.rows.own[0]['tildelt_bruker']">Tildelt programbruker</th>
                     <td ng-if="isListOfActiveEnrollments" style="cursor: default; text-align: center; vertical-align: middle;">
                         <input type="checkbox" ng-model="data.selectAllChecked" ng-click="selectAll()" />
                     </td>
@@ -52,6 +53,7 @@
                             <a ng-click="onUnMarkDuplicateInternal(tei)">{{'unflag' | translate}}</a>
                         </span>
                     </td>
+                    <td ng-if="data.rows.own[0]['tildelt_bruker']">{{tei['tildelt_bruker']}}</td>
                     <td ng-if="isListOfActiveEnrollments" style="cursor: default; text-align: center; vertical-align: middle;">
                         <input type="checkbox" ng-model="tei.checkBoxTicked" ng-click="selectOne(tei)" />
                     </td>
