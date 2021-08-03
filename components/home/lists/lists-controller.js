@@ -205,92 +205,92 @@ trackerCapture.controller('ListsController',function(
             }
         }
 
-    $scope.isAlleTildelteOppgaver = function() {
-        return $scope.currentTrackedEntityList.config.name === "Alle tildelte oppgaver";
-    }
-    
-    var setCurrentTrackedEntityListData = function(serverResponse){
-        $scope.numberOfSelectedRows = 0;
-        if(serverResponse.rows && serverResponse.rows.length > 0
-            && ($scope.base.selectedProgram.id == 'uYjxkTbwRNf'
-            || $scope.base.selectedProgram.id == 'DM9n1bUw8W8')) {
-            var allTeis = [];
-            serverResponse.rows.forEach(function(row){
-                allTeis.push(row[0]);
-            });
+        $scope.isAlleTildelteOppgaver = function() {
+            return $scope.currentTrackedEntityList.config.name === "Alle tildelte oppgaver";
+        }
 
-            var dataElement = 'BoUcoEx9sVl';
-            var programStage = 'LpWNjNGvCO5';
-            var transferStage = 'zAstsy3slf9';
-
-            if($scope.base.selectedProgram.id == 'DM9n1bUw8W8') {
-                dataElement = 'JNF44zBaNqn';
-                programStage = 'sAV9jAajr8x';
-                transferStage = 'xK50EzZwHkn';
-            }
-            TEIService.getListWithProgramData(allTeis,$scope.base.selectedProgram.id,dataElement,programStage,$scope.selectedOrgUnit.id,transferStage).then(function(dateDictionary){
-                serverResponse.rows.forEach(async function(row){
-                    if(dateDictionary[row[0]] && dateDictionary[row[0]].enrollmentDate){
-                        //Set enrollment date instead of created date:
-                        row[1] = (dateDictionary[row[0]].enrollmentDate);
-                    }
-
-                    if(dateDictionary[row[0]] && dateDictionary[row[0]].dataValue){
-                        row.push(dateDictionary[row[0]].dataValue);
-                    }
-                    else {
-                        row.push('');
-                    }
-
-                    if(dateDictionary[row[0]] && dateDictionary[row[0]].transferStatus){
-                        row[4] = "Overført";
-                        row.push(dateDictionary[row[0]].transferStatus);
-                    }
-                    else {
-                        row.push('');
-                    }
+        var setCurrentTrackedEntityListData = function(serverResponse){
+            $scope.numberOfSelectedRows = 0;
+            if(serverResponse.rows && serverResponse.rows.length > 0
+                && ($scope.base.selectedProgram.id == 'uYjxkTbwRNf'
+                || $scope.base.selectedProgram.id == 'DM9n1bUw8W8')) {
+                var allTeis = [];
+                serverResponse.rows.forEach(function(row){
+                    allTeis.push(row[0]);
                 });
 
-                serverResponse.headers.push( {column: "LastDate", hidden: false, meta: false, name: "last_date", type:"java.lang.String" });
-                serverResponse.headers.push( {column: "TransferStatus", hidden: false, meta: false, name: "Overføringsstatus", type:"java.lang.String" });
+                var dataElement = 'BoUcoEx9sVl';
+                var programStage = 'LpWNjNGvCO5';
+                var transferStage = 'zAstsy3slf9';
 
-                if( $scope.currentTrackedEntityList.sortColumn.id == 'created' ) {
-                    serverResponse.rows = $filter('orderBy')(serverResponse.rows, function(tei) {
-                        return tei[1];
-                    }, $scope.currentTrackedEntityList.sortColumn.direction != 'desc');
+                if($scope.base.selectedProgram.id == 'DM9n1bUw8W8') {
+                    dataElement = 'JNF44zBaNqn';
+                    programStage = 'sAV9jAajr8x';
+                    transferStage = 'xK50EzZwHkn';
                 }
-                if( $scope.currentTrackedEntityList.sortColumn.id == 'last_date' ) {
-                    serverResponse.rows = $filter('orderBy')(serverResponse.rows, function(tei) {
-                        return tei[tei.length - 2];
-                    }, $scope.currentTrackedEntityList.sortColumn.direction != 'desc');
+                TEIService.getListWithProgramData(allTeis,$scope.base.selectedProgram.id,dataElement,programStage,$scope.selectedOrgUnit.id,transferStage).then(function(dateDictionary){
+                    serverResponse.rows.forEach(async function(row){
+                        if(dateDictionary[row[0]] && dateDictionary[row[0]].enrollmentDate){
+                            //Set enrollment date instead of created date:
+                            row[1] = (dateDictionary[row[0]].enrollmentDate);
+                        }
+
+                        if(dateDictionary[row[0]] && dateDictionary[row[0]].dataValue){
+                            row.push(dateDictionary[row[0]].dataValue);
+                        }
+                        else {
+                            row.push('');
+                        }
+
+                        if(dateDictionary[row[0]] && dateDictionary[row[0]].transferStatus){
+                            row[4] = "Overført";
+                            row.push(dateDictionary[row[0]].transferStatus);
+                        }
+                        else {
+                            row.push('');
+                        }
+                    });
+
+                    serverResponse.headers.push( {column: "LastDate", hidden: false, meta: false, name: "last_date", type:"java.lang.String" });
+                    serverResponse.headers.push( {column: "TransferStatus", hidden: false, meta: false, name: "Overføringsstatus", type:"java.lang.String" });
+
+                    if( $scope.currentTrackedEntityList.sortColumn.id == 'created' ) {
+                        serverResponse.rows = $filter('orderBy')(serverResponse.rows, function(tei) {
+                            return tei[1];
+                        }, $scope.currentTrackedEntityList.sortColumn.direction != 'desc');
+                    }
+                    if( $scope.currentTrackedEntityList.sortColumn.id == 'last_date' ) {
+                        serverResponse.rows = $filter('orderBy')(serverResponse.rows, function(tei) {
+                            return tei[tei.length - 2];
+                        }, $scope.currentTrackedEntityList.sortColumn.direction != 'desc');
+                    }
+
+
+                    $scope.setServerResponse(serverResponse);
+                },function(error){
+                    $scope.setServerResponse(serverResponse);
+                });
+            }
+            else if(serverResponse.rows && serverResponse.rows.length > 0
+                && ($scope.base.selectedProgram.id == INNREISE_PROGRAM_ID || $scope.base.selectedProgram.id == DUPLIKAT_INNREISE_PROGRAM_ID)) {
+                try {
+                    addEventDataToInnreiseList($scope, serverResponse, TeiAccessApiService, MetaDataFactory);
+                } catch (err) {
+                    console.log(err);
+                    $scope.setServerResponse(serverResponse);
                 }
-
-
-                $scope.setServerResponse(serverResponse);
-            },function(error){
-                $scope.setServerResponse(serverResponse);
-            });
-        }
-        else if(serverResponse.rows && serverResponse.rows.length > 0
-            && ($scope.base.selectedProgram.id == INNREISE_PROGRAM_ID || $scope.base.selectedProgram.id == DUPLIKAT_INNREISE_PROGRAM_ID)) {
-            try {
-                addEventDataToInnreiseList($scope, serverResponse, TeiAccessApiService, MetaDataFactory);
-            } catch (err) {
-                console.log(err);
+            } else {
                 $scope.setServerResponse(serverResponse);
             }
-        } else {
-            $scope.setServerResponse(serverResponse);
-        }
-        if ($scope.isAlleTildelteOppgaver()) {
-            try {
-                addTildeltToTildeltList($scope, serverResponse, TeiAccessApiService, MetaDataFactory, $q);
-            } catch (err) {
-                console.log(err);
-                $scope.setServerResponse(serverResponse);
+            if ($scope.isAlleTildelteOppgaver()) {
+                try {
+                    addTildeltToTildeltList($scope, serverResponse, TeiAccessApiService, MetaDataFactory, $q);
+                } catch (err) {
+                    console.log(err);
+                    $scope.setServerResponse(serverResponse);
+                }
             }
-        }
-    };
+        };
 
         $scope.setServerResponse = function(serverResponse) {
             $scope.currentTrackedEntityList.data = TEIGridService.format($scope.selectedOrgUnit.id, serverResponse, false, $scope.base.optionSets, null);
