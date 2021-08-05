@@ -1,3 +1,10 @@
+## [31.6.26](https://github.com/dhis2/tracker-capture-app/compare/v31.6.25...v31.6.26) (2021-08-05)
+
+
+### Bug Fixes
+
+* refined the condition for loading a program through relationships ([#1195](https://github.com/dhis2/tracker-capture-app/issues/1195)) ([421e8d3](https://github.com/dhis2/tracker-capture-app/commit/421e8d389f9312a5b331a020da0db6cf19169fde))
+
 ## [31.6.25](https://github.com/dhis2/tracker-capture-app/compare/v31.6.24...v31.6.25) (2021-07-19)
 
 
