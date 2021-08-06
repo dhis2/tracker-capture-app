@@ -463,6 +463,7 @@ trackerCapture.controller('ListsController',function(
             }
         }
 
+        $scope.provesvarStatusLastet = false;
         $scope.provesvarStartFailed = false;
         $scope.provesvarAktivert = false;
         $scope.harTilgangTilProvesvar = false;
@@ -473,6 +474,7 @@ trackerCapture.controller('ListsController',function(
         $scope.innreiseStatus = null;
 
         $scope.mapInnreiseStatusToScope = function(svar) {
+            $scope.provesvarStatusLastet = true;
             $scope.provesvarAktivert = svar.provesvarAktivert;
             $scope.innreiseProvesvarSistOppdatert = svar.innreiseProvesvarSistOppdatert ? convertDatestringToFullTime(svar.innreiseProvesvarSistOppdatert) : undefined;
             $scope.innreiseSistOppdatert = svar.innreiseSistOppdatert ? convertDatestringToFullTime(svar.innreiseSistOppdatert) : undefined;
