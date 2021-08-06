@@ -6,7 +6,7 @@
         <tr ng-repeat="vaccine in gridData">
             <td>{{dateFromItem(vaccine)}}<br>
                 {{vaccine.recorder.name}}<div ng-if="!vaccine.performedByRecorder"><br>(Utført av en annen helseenhet)</div></td>
-            <td><div style="padding-bottom:5px">{{vaccine.atcCode}}({{vaccine.lotNumber}})
+            <td><div style="padding-bottom:5px">{{vaccine.atcCode}}<span ng-if="vaccine.lotNumber">({{vaccine.lotNumber}})</span>
         </tr>
     </table>
     <div ng-if="!gridData || gridData.length == 0">
