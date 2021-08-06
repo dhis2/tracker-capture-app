@@ -62,6 +62,7 @@
                            ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                            ng-rquired="true" 
                            d2-date
+                           autocomplete="off"
                            d2-date-validator 
                            ng-model="dhis2Event.dueDate">
                     <div ng-messages="eventCreationForm.dueDate.$error" ng-if="interacted(eventCreationForm.eventDate)" class="required" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">                        
@@ -80,6 +81,7 @@
                            ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
                            ng-rquired="true" 
                            d2-date
+                           autocomplete="off"
                            d2-date-validator 
                            max-date="0"
                            min-date=""
@@ -151,6 +153,7 @@
                        ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                        id="referralDueDate"
                        name="dueDate"
+                       autocomplete="off"
                        d2-date
                        d2-date-validator
                        class="form-control"

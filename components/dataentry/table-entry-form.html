@@ -92,6 +92,7 @@
                                ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                                class="form-control"
                                ng-class="getInputNotifcationClass('eventDate',false)"
+                               autocomplete="off"
                                d2-date
                                ng-model="eventRow.eventDate"
                                ng-disabled="!eventEditable()"
@@ -285,6 +286,7 @@
                                 </div>
                                 <div ng-switch-when="DATE">
                                     <input type="text"
+                                           autocomplete="off"
                                            ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
                                            d2-date
                                            d2-date-validator

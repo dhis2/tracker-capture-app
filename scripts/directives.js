@@ -4,6 +4,14 @@
 
 /* Directives */
 
+import {
+    INNREISE_AVREISELAND_ATTRIBUTE_ID,
+    INNREISE_INNREISE_DATO_ATTRIBUTE_ID,
+    INNREISE_KARANTENEKODE_2_ATTRIBUTE_ID,
+    INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID, INNREISE_KARANTENETYPE_ATTRIBUTE_ID,
+    INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID, INNREISE_OPPFOLGINGSTATUS_ID
+} from "../utils/constants";
+
 var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
 
 .directive('stringToNumber', function () {
@@ -657,13 +665,16 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             gridColumns: "=?teiGridColumns",
             refetchData: "&teiRefetchData",
             onTeiClicked: "&onTeiClicked",
-            allowFlagDuplicates: "=allowFlagDuplicates", 
+            allowFlagDuplicates: "=allowFlagDuplicates",
             onMarkDuplicate: "&onMarkDuplicate",
             onUnMarkDuplicate: "&onUnMarkDuplicate",
-            onGetDuplicate: "&onGetDuplicate"
+            onGetDuplicate: "&onGetDuplicate",
+            numberOfSelectedRows: "=selectedRowsCount",
+            isListOfActiveEnrollments: "=activeEnrollments"
         },
         controller: function($scope, Paginator,TEIGridService, CurrentSelection){
             var attributesById = CurrentSelection.getAttributesById();
+
             if (!$scope.pager) {
                 $scope.pager = {};
             }
@@ -686,6 +697,10 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                     Paginator.setItemCount($scope.pager.total);
                 }
             });
+
+            $scope.isInnreiseList = function(teis) {
+                return teis.some(tei => tei.Oppfolgingstatus);
+            };
 
             $scope.$watch("data", function(){
                 $scope.pager.recordsCount = ($scope.data && $scope.data.length) || 0;
@@ -757,6 +772,69 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                 $scope.pager.page = newPage;
                 $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
             };
+
+            $scope.selectOne = function(tei) {
+                tei.checkBoxTicked ? $scope.numberOfSelectedRows++ : $scope.numberOfSelectedRows--;
+            };
+
+            $scope.selectAll = function() {
+                const newState = $scope.data.selectAllChecked;
+                const rows = $scope.data.rows.own;
+                rows.forEach((tei) => tei.checkBoxTicked = newState);
+                $scope.numberOfSelectedRows = newState ? rows.length : 0;
+            };
+            $scope.setColTitle = function (tei, attrId) {
+                if(attrId === INNREISE_KARANTENEKODE_2_ATTRIBUTE_ID && tei['Karantenekode2_tekst']) {
+                    return tei['Karantenekode2_tekst'];
+                }
+                if(attrId === INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID && tei['Karantenekode4_tekst']) {
+                    return tei['Karantenekode4_tekst'];
+                }
+                if(attrId === INNREISE_KARANTENETYPE_ATTRIBUTE_ID && tei['Karantenetype_tekst']) {
+                    return tei['Karantenetype_tekst'];
+                }
+
+                return 'Velg';
+            };
+            $scope.setColClass = function (tei, attrId) {
+                if(attrId === INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID) {
+                    var value = $scope.getBackupValueFromEvent(tei, attrId)
+                    if(value === 'OK') {
+                        return 'tei-status-ok';
+                    }
+                    if(value === 'Ikke satt') {
+                        return 'tei-status-not-satt';
+                    }
+                    if(value === 'Ikke svar') {
+                        return 'tei-status-not-svar';
+                    }
+                    if(value === 'Ikke OK') {
+                        return 'tei-status-not-ok';
+                    }
+                }
+            }
+
+            $scope.getBackupValueFromEvent = function(tei, attrId) {
+                if(tei[attrId]){
+                    return tei[attrId];
+                }
+                switch(attrId) {
+                    case INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID:
+                        return tei['Oppfolgingstatus'];
+                    case INNREISE_INNREISE_DATO_ATTRIBUTE_ID:
+                        return tei['Innreisedato'];
+                    case INNREISE_AVREISELAND_ATTRIBUTE_ID:
+                        return tei['Avreiseland'];
+                    case INNREISE_KARANTENETYPE_ATTRIBUTE_ID:
+                        return tei['Karantenetype_tekst_short'];
+                    case INNREISE_KARANTENEKODE_2_ATTRIBUTE_ID:
+                        return tei['Unntaktype_kode'];
+                    case INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID:
+                        return tei['Gjennomforingstype_kode'];
+                }
+
+                return '';
+            }
         }
     }
 });

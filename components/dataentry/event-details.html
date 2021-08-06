@@ -10,6 +10,7 @@
                ng-class="{'input-success': eventDateSaved}"
                d2-date-validator
                d2-date
+               autocomplete="off"
                max-date="model.maxDate?model.maxDate : '0'"
                min-date="model.minDate?model.minDate : ''"
                picker-class="hide-clear"
@@ -40,6 +41,7 @@
                ng-class="{'input-success': dueDateSaved}"
                d2-date-validator
                d2-date
+               autocomplete="off"
                name="dueDate"
                min-date="model.minDate?model.maxDate : ''"
                ng-model="currentEvent.dueDate"

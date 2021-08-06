@@ -90,6 +90,14 @@ trackerCapture.controller('NotesController',
         $scope.showNotesDiv = !$scope.showNotesDiv;
     };
 
+    $scope.copyNote = function(note) {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val(note.value).select();
+        document.execCommand("copy");
+        $temp.remove();
+    }
+
     $scope.printNote = function(note){
         var w=window.open();
         w.document.write('Dato: ' + note.displayDate + '(' + note.storedBy + ')<br>' + note.value);

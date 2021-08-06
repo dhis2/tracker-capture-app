@@ -1,3 +1,9 @@
+import {DUPLIKAT_PROGRAM_ID, INNREISE_PROGRAM_ID} from "../../../utils/constants";
+import {convertDatestringToFullTime} from "../../../utils/converters";
+import {addEventDataToInnreiseList} from "../../../ks_patches/add_event_data_to_innreise_list";
+import {setCustomShowOnAttributesInList} from "../../../ks_patches/hide_show_attributes";
+import {addTildeltToTildeltList} from "../../../ks_patches/add_tildelt_to_tidelt_list";
+
 var trackerCapture = angular.module('trackerCapture');
 
 trackerCapture.controller('ListsController',function(
@@ -18,10 +24,13 @@ trackerCapture.controller('ListsController',function(
     CurrentSelection,
     TEIGridService,
     TEIService,
+    TeiAccessApiService,
     UserDataStoreService,
     ProgramWorkingListService,
     FNrLookupService,
-    OperatorFactory) {
+    OperatorFactory,
+    ModalService,
+    $http) {
         var ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];
         var userGridColumns = null;
         var defaultCustomWorkingListValues = { ouMode: ouModes[0], programStatus: ""};
@@ -81,6 +90,7 @@ trackerCapture.controller('ListsController',function(
                     var lastDateName = $scope.base.selectedProgram.id == 'uYjxkTbwRNf' ? 'last_date_in_isolation' : $scope.base.selectedProgram.id == 'DM9n1bUw8W8' ? 'last_date_in_quarantine' : '';
 
                     $scope.gridColumns = TEIGridService.makeGridColumns($scope.programAttributes,gridColumnConfig, savedGridColumns, lastDateName);
+                    $scope.gridColumns = setCustomShowOnAttributesInList($scope.gridColumns, $scope.base.selectedProgram.id);
                     /*
                     $scope.gridColumns = [];
                     angular.forEach($scope.programAttributes, function(attr){
@@ -195,7 +205,12 @@ trackerCapture.controller('ListsController',function(
             }
         }
 
+        $scope.isAlleTildelteOppgaver = function() {
+            return $scope.currentTrackedEntityList.config.name === "Alle tildelte oppgaver";
+        }
+
         var setCurrentTrackedEntityListData = function(serverResponse){
+            $scope.numberOfSelectedRows = 0;
             if(serverResponse.rows && serverResponse.rows.length > 0
                 && ($scope.base.selectedProgram.id == 'uYjxkTbwRNf'
                 || $scope.base.selectedProgram.id == 'DM9n1bUw8W8')) {
@@ -207,7 +222,7 @@ trackerCapture.controller('ListsController',function(
                 var dataElement = 'BoUcoEx9sVl';
                 var programStage = 'LpWNjNGvCO5';
                 var transferStage = 'zAstsy3slf9';
-                
+
                 if($scope.base.selectedProgram.id == 'DM9n1bUw8W8') {
                     dataElement = 'JNF44zBaNqn';
                     programStage = 'sAV9jAajr8x';
@@ -249,21 +264,37 @@ trackerCapture.controller('ListsController',function(
                             return tei[tei.length - 2];
                         }, $scope.currentTrackedEntityList.sortColumn.direction != 'desc');
                     }
-                    
-                    
+
                     $scope.setServerResponse(serverResponse);
                 },function(error){
                     $scope.setServerResponse(serverResponse);
                 });
             }
-            else {
+            else if(serverResponse.rows && serverResponse.rows.length > 0
+                && ($scope.base.selectedProgram.id == INNREISE_PROGRAM_ID || $scope.base.selectedProgram.id == DUPLIKAT_INNREISE_PROGRAM_ID)) {
+                try {
+                    addEventDataToInnreiseList($scope, serverResponse, TeiAccessApiService, MetaDataFactory);
+                } catch (err) {
+                    console.log(err);
+                    $scope.setServerResponse(serverResponse);
+                }
+            } else {
                 $scope.setServerResponse(serverResponse);
             }
-        }
+            if ($scope.isAlleTildelteOppgaver()) {
+                try {
+                    addTildeltToTildeltList($scope, serverResponse, TeiAccessApiService, MetaDataFactory, $q);
+                } catch (err) {
+                    console.log(err);
+                    $scope.setServerResponse(serverResponse);
+                }
+            }
+        };
 
         $scope.setServerResponse = function(serverResponse) {
             $scope.currentTrackedEntityList.data = TEIGridService.format($scope.selectedOrgUnit.id, serverResponse, false, $scope.base.optionSets, null);
             $scope.currentTrackedEntityList.loading = false;
+            $scope.pager = $scope.currentTrackedEntityList.data.pager
         };
 
         $scope.fetchTeis = function(pager, sortColumn){
@@ -405,30 +436,75 @@ trackerCapture.controller('ListsController',function(
             }, function(){});
         }
 
-        $scope.canSyncLabTests = true;
+        $scope.isInnreiseProgram = function(program) {
+            return program && program.id == INNREISE_PROGRAM_ID;
+        }
+
+        $scope.proveSvarSyncIsLoading = false;
         $scope.syncLabTests = function () {
-            $scope.canSyncLabTests = false;
-        }
-
-        $scope.proveSvarAktivert = false;
-        $scope.proveSvarIkkeAktivert = false;
-        $scope.proveSvarSyncDate = null;
-        $scope.innreiseSyncDate = null;
-
-        $scope.checkProveSvar = function() {
-            var userId;
-            try{
-                userId = JSON.parse(sessionStorage.USER_PROFILE).id
+            if($scope.isInnreiseProgram($scope.selectedProgram)) {
+                $scope.provesvarStartFailed = false;
+                var userId;
+                try{
+                    userId = JSON.parse(sessionStorage.USER_PROFILE).id
+                }
+                finally {}
+                $scope.proveSvarSyncIsLoading = true;
+                FNrLookupService.startLabTestSync($scope.selectedOrgUnit.code, userId).then(function(svar){
+                    $scope.proveSvarSyncIsLoading = false;
+                    if(svar) {
+                        $scope.mapInnreiseStatusToScope(svar);
+                        fetchWorkingList();;
+                    } else {
+                        $scope.provesvarStartFailed = true;
+                        $scope.kanStarteNyProvesvarSynk = false;
+                    }
+                });
             }
-            finally {}
-            var svar = FNrLookupService.getProveSvarStatus($scope.selectedOrgUnit.code, userId);
-            $scope.proveSvarAktivert = svar.provesvarAktivert;
-            $scope.proveSvarIkkeAktivert = !svar.provesvarAktivert;
-            $scope.proveSvarSyncDate = innreiseProvesvarSistOppdatert;
-            $scope.innreiseSyncDate = innreiseSistOppdatert;
         }
 
-        $scope.checkProveSvar();
+        $scope.provesvarStartFailed = false;
+        $scope.provesvarAktivert = false;
+        $scope.harTilgangTilProvesvar = false;
+        $scope.innreiseSistOppdatert = false;
+        $scope.innreiseProvesvarSistOppdatert = false;
+        $scope.kanStarteNyProvesvarSynk = null;
+        $scope.provesvarStatus = null;
+        $scope.innreiseStatus = null;
+
+        $scope.mapInnreiseStatusToScope = function(svar) {
+            $scope.provesvarAktivert = svar.provesvarAktivert;
+            $scope.innreiseProvesvarSistOppdatert = svar.innreiseProvesvarSistOppdatert ? convertDatestringToFullTime(svar.innreiseProvesvarSistOppdatert) : undefined;
+            $scope.innreiseSistOppdatert = svar.innreiseSistOppdatert ? convertDatestringToFullTime(svar.innreiseSistOppdatert) : undefined;
+            $scope.kanStarteNyProvesvarSynk = svar.kanStarteNyProvesvarSynk;
+            $scope.harTilgangTilProvesvar = svar.harTilgangTilProvesvar;
+            $scope.provesvarStatus = svar.provesvarStatus;
+            $scope.innreiseStatus = svar.innreiseStatus;
+        }
+
+        $scope.checkLabTestStatus = function() {
+            if($scope.isInnreiseProgram($scope.selectedProgram)) {
+                var userId;
+                try{
+                    userId = JSON.parse(sessionStorage.USER_PROFILE).id
+                }
+                finally {}
+                FNrLookupService.getLabTestStatus($scope.selectedOrgUnit.code, userId).then(function(svar){
+                    if(svar) {
+                        $scope.mapInnreiseStatusToScope(svar);
+                    }
+                    else {
+                        $scope.innreiseStatusQueryFailed =  true;
+                    }
+                });
+            }
+        };
+
+        $scope.showNoProvesvardataHentet = function() {
+            return !$scope.innreiseProvesvarSistOppdatert && !$scope.hasStartedSync;
+        };
+
+        $scope.checkLabTestStatus();
 
         
         $scope.getExportList = function (format) {
@@ -520,5 +596,32 @@ trackerCapture.controller('ListsController',function(
                 }
                 $scope.base.setFrontPageData(viewData);
             }
+        }
+
+        $scope.completeSelectedEnrollments = function() {
+            var modalOptions = {
+                closeButtonText: 'no',
+                actionButtonText: 'yes',
+                headerText: 'complete_selected_enrollments',
+                bodyText: 'are_you_sure_to_complete_selected_enrollments'
+            };
+
+
+            ModalService.showModal({}, modalOptions).then(function (result) {
+
+                var selectedTeis = [];
+                $scope.currentTrackedEntityList.data.rows.own.forEach(function(row){
+                    if (row.checkBoxTicked) {
+                        selectedTeis.push(row.id);
+                    }
+                });
+                const programId = $scope.base.selectedProgram.id;
+                TEIService.getActiveEnrollments(selectedTeis, programId, $scope.selectedOrgUnit.id).then(function(enrollments) {
+                    enrollments.enrollments.forEach((enrollment) => enrollment.status = 'COMPLETED');
+                    $http.post(DHIS2URL + '/enrollments', enrollments).then(function(){
+                        $scope.setWorkingList($scope.currentTrackedEntityList.config);
+                    });
+                })
+            });
         }
 });

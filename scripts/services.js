@@ -952,8 +952,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             pgSize = pgSize > 1 ? pgSize  : 1;
             pg = pg > 1 ? pg : 1;
             url = url + '&pageSize=' + pgSize + '&page=' + pg;
+            // Not getting totalPages causes unpredictable bugs. Override and always get totalPages
             if(pager && pager.skipTotalPages) {
-                url+= '&totalPages=false';
+                url+= '&totalPages=true';
             }else{
                 url+= '&totalPages=true';
             }
@@ -1013,7 +1014,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return def.promise;
             });
         },
-        getListWithProgramData: function(entityUidList,programUid, dataElementId, programStageId, orgUnitId, transferStageId){
+        getListWithProgramData: function(entityUidList, programUid, dataElementId, programStageId, orgUnitId, transferStageId){
             if(entityUidList && entityUidList.length > 0){
                 return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&program='+programUid+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,orgUnit,enrollments[enrollment,program,enrollmentDate,events[status,dataValues,programStage,eventDate]]').then(function(response){
                     var teiDictionary = {};
@@ -1035,6 +1036,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                                 event.dataValues.forEach(function(dataValue){
                                                     if(dataValue.dataElement == dataElementId) {
                                                         teiDictionary[tei.trackedEntityInstance].dataValue = dataValue.value;
+                                                        teiDictionary[tei.trackedEntityInstance].eventDate = event.eventDate;
                                                     }
                                                 });
                                             }
@@ -1049,6 +1051,32 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     }
     
                     return teiDictionary;
+                }, function(error){
+                    var def = $q.defer();
+                    def.reject(error);
+                    return def.promise;
+                });
+            } else {
+                var def = $q.defer();
+                def.resolve([]);
+                return def.promise;
+            }
+        },
+        getActiveEnrollments: function(entityUidList, programUid, orgUnitId) {
+            if(entityUidList && entityUidList.length > 0){
+                return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&program='+programUid+'&ou=' + orgUnitId + '&programStatus=ACTIVE&fields=trackedEntityInstance,enrollments[enrollment]').then(function(response){
+                    var data = { enrollments: [] }
+                    var enrollments = data.enrollments;
+                    if (response.data && response.data.trackedEntityInstances && response.data.trackedEntityInstances.length > 0){
+                        response.data.trackedEntityInstances.forEach(function(tei) {
+                            enrollments.push({
+                                program: programUid,
+                                enrollment: tei.enrollments[0].enrollment,
+                                trackedEntityInstance: tei.trackedEntityInstance
+                            });
+                        });
+                    }
+                    return data;
                 }, function(error){
                     var def = $q.defer();
                     def.reject(error);
@@ -2241,7 +2269,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 if(attr.displayInListNoProgram){
                     gridColumnIndex++;
                     var gridColumn = {id: attr.id, displayName: attr.displayName, formName: attr.formName, show: false, valueType: attr.valueType};
-                    setShowGridColumn(gridColumn,gridColumnIndex, config, savedGridColumnsKeyMap);
+                    setShowGridColumn(gridColumn, gridColumnIndex, config, savedGridColumnsKeyMap);
                     gridColumns.push(gridColumn);
                 }
             });
@@ -2260,7 +2288,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var columns = [];
 
             var returnAttributes = [];
-i
+
             if ( attributes )
             {
                 if( nonConfidential ) {
@@ -2807,7 +2835,12 @@ i
     }
     var getCachedMultipleEventFiltersData = function(workingList, pager, sortColumn){
         var cachedData = cachedMultipleEventFiltersData[workingList.name];
-        if(!pager) pager = { page: 1, pageSize: 50, pageCount: Math.ceil(cachedData.rows.length/50)};
+        if(!pager) {
+            pager = { page: 1, pageSize: 50 }
+        };
+        // This has to be set explicitly, as it is randomly wrong otherwise.
+        pager.pageCount = Math.ceil(cachedData.rows.length/50)
+
         var pageEnd = (pager.pageSize*pager.page);
         var pageStart = pageEnd - pager.pageSize;
 
@@ -2849,6 +2882,8 @@ i
                 existing[d[0]] = true;
                 return true;
             });
+            // Due to implementation, we cannot trust a number that is higher than 1000.
+            var totalElementsIfLessThanThousand = data.rows && data.rows.length  < 1000 ? data.rows.length : -1;
             var sortColumnIndex = data.headers.findIndex(function(h){ return h.name === sortColumn.id});
             if(sortColumnIndex) data.rows = orderByKeyFilter(data.rows, sortColumnIndex, sortColumn.direction);
             //order list
@@ -2856,6 +2891,8 @@ i
             workingList.cachedSorting = searchParams.sortUrl;
             workingList.cachedOrgUnit = searchParams.orgUnitId;
             var data = getCachedMultipleEventFiltersData(workingList, pager, sortColumn);
+            data.metaData.pager.total = totalElementsIfLessThanThousand;
+            data.metaData.pager.pageCount = totalElementsIfLessThanThousand > 0 ? Math.ceil(totalElementsIfLessThanThousand/pager.pageSize) : 0
             def.resolve(data);
         });
         return def.promise;

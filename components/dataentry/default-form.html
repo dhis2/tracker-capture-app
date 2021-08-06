@@ -90,7 +90,7 @@
                                     template="dataelement-details.html"
                                     trigger="click"
                                     placement="right">
-                                    <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{prStDes[de.id].dataElement.displayFormName}} <img class="icon-program" ng-style="{'background-color': (prStDes[de.id].dataElement.style.color ? prStDes[de.id].dataElement.style.color : 'none')}" ng-if="prStDes[de.id].dataElement.style.icon" ng-src="{{APIURL}}/icons/{{prStDes[de.id].dataElement.style.icon}}/icon.svg"></a>
+                                    <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1"> {{prStDes[de.id].dataElement.formName}} <img class="icon-program" ng-style="{'background-color': (prStDes[de.id].dataElement.style.color ? prStDes[de.id].dataElement.style.color : 'none')}" ng-if="prStDes[de.id].dataElement.style.icon" ng-src="{{APIURL}}/icons/{{prStDes[de.id].dataElement.style.icon}}/icon.svg"> </a>
                                 </span>
                                 <span class="not-for-screen">
                                     {{prStDes[de.id].dataElement.displayFormName}}

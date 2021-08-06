@@ -1,5 +1,7 @@
 /* global trackerCapture, angular */
 
+import {disableCompleteReopenEnrollmentConfirmation} from "../../ks_patches/custom_override_flags";
+
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('EnrollmentController',
         function($rootScope,
@@ -121,6 +123,7 @@ trackerCapture.controller('EnrollmentController',
             $scope.programStageNames = selections.prStNames;
             $scope.attributesById = CurrentSelection.getAttributesById();
             $scope.activeEnrollments = [];
+            $scope.inactiveEnrollments = [];
 
             $scope.enrollmentDateState= getDefaultReportDateState();
             $scope.incidentDateState = getDefaultReportDateState();
@@ -128,6 +131,11 @@ trackerCapture.controller('EnrollmentController',
             angular.forEach(selections.enrollments, function (en) {
                 if (en.status === "ACTIVE" && $scope.selectedProgram && $scope.selectedProgram.id !== en.program) {
                     $scope.activeEnrollments.push(en);
+                }
+                if (en.status === "COMPLETED" && $scope.selectedProgram && $scope.selectedProgram.id !== en.program) {
+                    if(!$scope.inactiveEnrollments.find(inactive => inactive.program === en.program)) {
+                        $scope.inactiveEnrollments.push(en);
+                    }
                 }
             });
             if ($scope.selectedProgram) {
@@ -324,32 +332,38 @@ trackerCapture.controller('EnrollmentController',
         };
 
         $scope.completeReopenEnrollment = function () {
-            
-            if($scope.enrollmentForm && $scope.enrollmentForm.$invalid){
+
+            if ($scope.enrollmentForm && $scope.enrollmentForm.$invalid) {
                 NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("form_invalid"));
                 return;
             }
-            
-            var modalOptions = {
-                closeButtonText: 'no',
-                actionButtonText: 'yes',
-                headerText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'complete_enrollment' : 'reopen_enrollment',
-                bodyText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'are_you_sure_to_complete_enrollment' : 'are_you_sure_to_reopen_enrollment'
-            };
 
 
-            ModalService.showModal({}, modalOptions).then(function (result) {
-                
-                var en = angular.copy( $scope.selectedEnrollment );
+
+            var completionFunction = function (result) {
+
+                var en = angular.copy($scope.selectedEnrollment);
                 en.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
-                EnrollmentService.update( en ).then(function (data) {
-                    if( data && data.status === 'OK' ){
+                EnrollmentService.update(en).then(function (data) {
+                    if (data && data.status === 'OK') {
                         $scope.selectedEnrollment.status = $scope.selectedEnrollment.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE';
                         $scope.loadEnrollmentDetails($scope.selectedEnrollment);
                     }
                 });
-            });
-        };
+            };
+
+            if(disableCompleteReopenEnrollmentConfirmation) {
+                completionFunction();
+            } else {
+                var modalOptions = {
+                    closeButtonText: 'no',
+                    actionButtonText: 'yes',
+                    headerText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'complete_enrollment' : 'reopen_enrollment',
+                    bodyText: $scope.selectedEnrollment.status === 'ACTIVE' ? 'are_you_sure_to_complete_enrollment' : 'are_you_sure_to_reopen_enrollment'
+                };
+                ModalService.showModal({}, modalOptions).then(completionFunction);
+            }
+        }
 
         var canDeleteEnrollment = function(){
             if($scope.selectedProgram && $scope.selectedProgram.access.data.write){

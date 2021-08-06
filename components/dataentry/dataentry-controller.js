@@ -1,5 +1,8 @@
 /* global angular, trackerCapture */
 
+import {disableCompleteIncompleteEventConfirmation} from "../../ks_patches/custom_override_flags";
+import { INNREISEINFORMASJON_PROGRAM_STAGE_ID} from "../../utils/constants";
+
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('DataEntryController',
         function ($rootScope,
@@ -2264,7 +2267,8 @@ trackerCapture.controller('DataEntryController',
                 dhis2Event.completedDate = DateUtils.formatFromUserToApi(today);
             }
         }
-        ModalService.showModal(modalDefaults, modalOptions).then(function (modalResult) {
+
+        var completionFunction = function (modalResult) {
             if(modalResult===modalCompleteIncompleteActions.completeEnrollment){
                 modalOptions = {
                     closeButtonText: 'cancel',
@@ -2276,9 +2280,15 @@ trackerCapture.controller('DataEntryController',
                     $scope.executeCompleteIncompleteEvent(dhis2Event,modalResult);
                 });
             }else{
-                $scope.executeCompleteIncompleteEvent(dhis2Event,modalResult);               
+                $scope.executeCompleteIncompleteEvent(dhis2Event,modalResult);
             }
-        });           
+        }
+
+        if(disableCompleteIncompleteEventConfirmation) {
+            completionFunction();
+        } else {
+            ModalService.showModal(modalDefaults, modalOptions).then(completionFunction);
+        }
     };
     
     $scope.executeCompleteIncompleteEvent = function(dhis2Event, modalResult){
@@ -2438,12 +2448,16 @@ trackerCapture.controller('DataEntryController',
     }
 
     $scope.eventEditable = function(isButton){
+
         if(!$scope.currentStage || !$scope.currentStage.access || !$scope.currentStage.access.data.write) return false;
         if($scope.selectedOrgUnit.closedStatus || $scope.selectedEnrollment.status !== 'ACTIVE') return false;
         if(isButton) {
             if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed && !$scope.userAuthority.canUncompleteEvent || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
         } else {
             if(!$scope.currentEvent || $scope.currentEvent.editingNotAllowed || ($scope.currentEvent.expired && !$scope.userAuthority.canEditExpiredStuff)) return false;
+        }
+        if($scope.currentEvent.programStage === INNREISEINFORMASJON_PROGRAM_STAGE_ID) {
+            return false;
         }
         return true;
     }
