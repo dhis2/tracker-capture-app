@@ -50,7 +50,7 @@ export function transferNotesFromNaerkontaktToIndeksering(enrollmentResponse, te
 function createDuplicateEvents(events, enrollmentId, fromProgramStage, toProgram, toProgramStage){
     var outEvents = [];
     events.forEach( event => {
-        if(event.programStage == fromProgramStage && event.status === "COMPLETED") {
+        if(event.programStage == fromProgramStage && event.dataValues.length > 0) {
             var newEvent = angular.copy(event);
             newEvent.program = toProgram;
             newEvent.programStage = toProgramStage;
