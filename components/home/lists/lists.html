@@ -54,7 +54,7 @@
         <div class="vertical-spacing" >
             <div class="alert alert-info" style="margin-left:12px;margin-right:12px">
                 {{currentTrackedEntityList.config.description}}
-                <span ng-if="isInnreiseProgram(selectedProgram)">
+                <span ng-if="isInnreiseProgram(selectedProgram) && provesvarStatusLastet">
                     <span ng-if="innreiseStatusQueryFailed">
                         <hr>
                         Kunne ikke hente status for prøvesvar og innreise.
@@ -90,7 +90,11 @@
                             </button>
                         </div>
                     </div>
+
                 </span>
+                <div ng-if="isInnreiseProgram(selectedProgram) && !provesvarStatusLastet">
+                    <img id="ouwt_loader" src="../images/ajax-loader-bar.gif" alt="{{'in_progress'| translate}}"/>
+                </div>
             </div>
         </div>
     </div>
