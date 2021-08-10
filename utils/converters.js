@@ -67,7 +67,6 @@ export function convertToCorrectDateString(datestring, dateformat) {
         matched = true;
     }
 
-
     if(!matched || !isValidDate(day, month, year)) {
         return undefined;
     }
