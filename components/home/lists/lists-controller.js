@@ -271,7 +271,7 @@ trackerCapture.controller('ListsController',function(
                 });
             }
             else if(serverResponse.rows && serverResponse.rows.length > 0
-                && ($scope.base.selectedProgram.id == INNREISE_PROGRAM_ID || $scope.base.selectedProgram.id == DUPLIKAT_INNREISE_PROGRAM_ID)) {
+                && ($scope.base.selectedProgram.id == INNREISE_PROGRAM_ID || $scope.base.selectedProgram.id == DUPLIKAT_PROGRAM_ID)) {
                 try {
                     addEventDataToInnreiseList($scope, serverResponse, TeiAccessApiService, MetaDataFactory);
                 } catch (err) {
