@@ -89,7 +89,7 @@ trackerCapture.controller('RelationshipController',
     $scope.orderReverse = true;
 
     $scope.getTeiOrderValue = function(tei) {
-        var val = eval('tei.'+$scope.orderTeiBy);
+        var val = tei[$scope.orderTeiBy] || tei.attributes[$scope.orderTeiBy];
         if(!val) {
             return undefined;
         }

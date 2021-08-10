@@ -36,11 +36,11 @@
                         </th>
                         <!-- ng-if checks if the displayInListNoProgram is true and if that spesific attribute shold be displayed for the current program. -->
                         <th ng-repeat="att in relationshipAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
-                            <a ng-click="setOrderTeiBy('attributes.'+att.trackedEntityAttribute.id)" title="Sorter på {{att.displayName}}" class="ks-sort-link">
+                            <a ng-click="setOrderTeiBy(att.trackedEntityAttribute.id)" title="Sorter på {{att.displayName}}" class="ks-sort-link">
                                 {{att.displayName}}
                                 <span class="fa-stack hideInPrint">
-                                    <span ng-class="{true: 'red'} [orderTeiBy === 'attributes.'+att.trackedEntityAttribute.id && orderReverse]"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
-                                    <span ng-class="{true: 'red'} [orderTeiBy === 'attributes.'+att.trackedEntityAttribute.id && !orderReverse]"><i class="fa fa-sort-desc fa-stack-1x"></i></span>
+                                    <span ng-class="{true: 'red'} [orderTeiBy === att.trackedEntityAttribute.id && orderReverse]"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
+                                    <span ng-class="{true: 'red'} [orderTeiBy === att.trackedEntityAttribute.id && !orderReverse]"><i class="fa fa-sort-desc fa-stack-1x"></i></span>
                                 </span>
                             </a>
                         </th>
