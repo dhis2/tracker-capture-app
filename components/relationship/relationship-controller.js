@@ -1,5 +1,7 @@
 /* global trackerCapture, angular */
 
+import {convertToCorrectDateString} from "../../utils/converters";
+
 const { program } = require("babel-types");
 import {DUPLIKAT_PROGRAM_ID, INNREISE_PROGRAM_ID} from "../../utils/constants";
 import {registerInnreiseDuplicateToExisting, registerNewInnreiseProfil} from "../../ks_patches/innreise_duplicates";
@@ -82,7 +84,34 @@ trackerCapture.controller('RelationshipController',
         });
         $scope.selectedOrgUnit = $scope.selections.orgUnit;
     });
-    
+
+    $scope.orderTeiBy = 'created';
+    $scope.orderReverse = true;
+
+    $scope.getTeiOrderValue = function(tei) {
+        var val = eval('tei.'+$scope.orderTeiBy);
+        if(!val) {
+            return undefined;
+        }
+        var valAsDate = convertToCorrectDateString(val, 'yyyy-mm-dd');
+        if(valAsDate) {
+            return valAsDate;
+        }
+        return val;
+    };
+
+    $scope.setOrderTeiBy = function(field) {
+        if(field && $scope.orderTeiBy !== field) {
+            $scope.orderTeiBy = field;
+            $scope.orderReverse = false;
+        } else if(!$scope.orderReverse) {
+            $scope.orderReverse = true;
+        } else {
+            $scope.orderTeiBy = 'created';
+            $scope.orderReverse = true;
+        }
+    };
+
     $scope.showAddRelationship = function(related) {
         $scope.relatedProgramRelationship = related;
         $rootScope.showAddRelationshipDiv = !$rootScope.showAddRelationshipDiv;
