@@ -26,13 +26,17 @@
                 <table class="table table-striped dhis2-table-hover table-bordered">
                     <tr>
                         <th ng-if="!relationshipsWidget.customRelationship">
-                            <a ng-click="setOrderTeiBy('relName')" title="Sorter på relasjoner">
+                            <a ng-click="setOrderTeiBy('relName')" title="Sorter på relasjoner" class="ks-sort-link">
                             {{'relationship' | translate}}
+                                <span class="fa-stack hideInPrint">
+                                    <span ng-class="{true: 'red'} [orderTeiBy === 'relName' && orderReverse]"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
+                                    <span ng-class="{true: 'red'} [orderTeiBy === 'relName' && !orderReverse]"><i class="fa fa-sort-desc fa-stack-1x"></i></span>
+                                </span>
                             </a>
                         </th>
                         <!-- ng-if checks if the displayInListNoProgram is true and if that spesific attribute shold be displayed for the current program. -->
                         <th ng-repeat="att in relationshipAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
-                            <a ng-click="setOrderTeiBy('attributes.'+att.trackedEntityAttribute.id)" title="Sorter på {{att.displayName}}">
+                            <a ng-click="setOrderTeiBy('attributes.'+att.trackedEntityAttribute.id)" title="Sorter på {{att.displayName}}" class="ks-sort-link">
                                 {{att.displayName}}
                                 <span class="fa-stack hideInPrint">
                                     <span ng-class="{true: 'red'} [orderTeiBy === 'attributes.'+att.trackedEntityAttribute.id && orderReverse]"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
@@ -41,13 +45,21 @@
                             </a>
                         </th>
                         <th ng-if="relationshipsWidget.customRelationship == 'index'">
-                            <a ng-click="setOrderTeiBy('symptomsOnset')" title="Sorter på symptomstart">
+                            <a ng-click="setOrderTeiBy('symptomsOnset')" title="Sorter på symptomstart" class="ks-sort-link">
                             Symptomstart
+                                <span class="fa-stack hideInPrint">
+                                    <span ng-class="{true: 'red'} [orderTeiBy === 'symptomsOnset' && orderReverse]"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
+                                    <span ng-class="{true: 'red'} [orderTeiBy === 'symptomsOnset' && !orderReverse]"><i class="fa fa-sort-desc fa-stack-1x"></i></span>
+                                </span>
                             </a>
                         </th>
                         <th ng-if="relationshipsWidget.customRelationship == 'contact'">
-                            <a ng-click="setOrderTeiBy('contactDate')" title="Sorter på siste kontakt">
+                            <a ng-click="setOrderTeiBy('contactDate')" title="Sorter på siste kontakt" class="ks-sort-link">
                             Siste kontakt
+                                <span class="fa-stack hideInPrint">
+                                    <span ng-class="{true: 'red'} [orderTeiBy === 'contactDate' && orderReverse]"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
+                                    <span ng-class="{true: 'red'} [orderTeiBy === 'contactDate' && !orderReverse]"><i class="fa fa-sort-desc fa-stack-1x"></i></span>
+                                </span>
                             </a>
                         </th>
                         <th ng-if="!selectedTei.inactive && selectedProgram.access.data.write"></th>
