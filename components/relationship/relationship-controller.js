@@ -93,6 +93,7 @@ trackerCapture.controller('RelationshipController',
         if(!val) {
             return undefined;
         }
+        // Change from dd-mm-yyyy to yyyy-mm-dd to get proper ordering of dates using string sort
         var valAsDate = convertToCorrectDateString(val, 'yyyy-mm-dd');
         if(valAsDate) {
             return valAsDate;
