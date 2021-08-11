@@ -3,6 +3,23 @@ export function convertToCorrectDateString(datestring, dateformat) {
     var month;
     var year;
     var matched = false;
+
+    // format dd-mm-yy
+    if(datestring.match(/^\d{2}\-\d{2}\-\d{2}$/)) {
+        day = datestring.substr(0,2);
+        month = datestring.substr(3,2);
+        year = getFullYear(datestring.substr(6,2));
+        matched = true;
+    }
+
+    // format dd-mm-yyyy
+    if(datestring.match(/^\d{2}\-\d{2}\-\d{4}$/)) {
+        day = datestring.substr(0,2);
+        month = datestring.substr(3,2);
+        year = datestring.substr(6,4);
+        matched = true;
+    }
+
     // format dd.mm.yy
     if(datestring.match(/^\d{2}\.\d{2}\.\d{2}$/)) {
         day = datestring.substr(0,2);

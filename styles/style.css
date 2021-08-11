@@ -2457,3 +2457,15 @@ button.list-group-item-danger.active:focus {
     width: 40px;
     height: 34px;
  }
+
+.ks-sort-link {
+    cursor: pointer;
+    display: flex;
+    color: #39547d;
+}
+
+/* Override original height to fix excessive vertical spacing */
+.ks-sort-link > .fa-stack {
+    height: 1em;
+}
+
