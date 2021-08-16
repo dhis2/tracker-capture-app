@@ -4,9 +4,8 @@
 <div class="modal-body page">
     <table class="dhis2-list-table-striped default-form-table">
         <tr ng-repeat="vaccine in gridData">
-            <td>{{dateFromItem(vaccine)}}<br>
-                {{vaccine.recorder.name}}<div ng-if="!vaccine.performedByRecorder"><br>(Utført av en annen helseenhet)</div></td>
-            <td><div style="padding-bottom:5px">{{vaccine.atcCode}}({{vaccine.lotNumber}})
+            <td><b>Dose {{$index +1}}</b> <br>{{dateFromItem(vaccine)}}
+            <td><div style="padding-bottom:5px">{{vaccine.vaccineCode.display}}</span>
         </tr>
     </table>
     <div ng-if="!gridData || gridData.length == 0">

@@ -1422,30 +1422,30 @@ trackerCapture.controller('RegistrationController',
         return attributeMandatory || $scope.mandatoryFields[attributeId];
     }
 
-    $scope.labTestLookupNr = undefined;
-    $scope.labTestLookupNrGetterSetter = function(value) {
+    $scope.fNrOrEquivalent = undefined;
+    $scope.fNrOrEquivalentGetterSetter = function(value) {
         if (angular.isDefined(value)) {
-            $scope.labTestLookupNr = value;
+            $scope.fNrOrEquivalent = value;
         } else {
-            if($scope.labTestLookupNr === undefined) {
-                $scope.labTestLookupNr = $scope.getBestNumberForLabTest();
+            if($scope.fNrOrEquivalent === undefined) {
+                $scope.fNrOrEquivalent = $scope.getBestNumberForLabTestAndVaccine();
             }
-            return $scope.labTestLookupNr;
+            return $scope.fNrOrEquivalent;
         }
     }
-    $scope.shouldShowLabTest = function() {
-        return $scope.labTestLookupNr && $scope.labTestLookupNr.toString().length === 11;
+    $scope.shouldShowLabTestAndVaccine = function() {
+        return $scope.fNrOrEquivalent && $scope.fNrOrEquivalent.toString().length === 11;
     }
 
-    $scope.getBestNumberForLabTest = function() {
-        if($scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER] && $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER].toString().length === 11) {
-            return $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER];
-        }
+    $scope.getBestNumberForLabTestAndVaccine = function() {
         if($scope.selectedTei[PROFIL_FNR] && $scope.selectedTei[PROFIL_FNR].length === 11) {
             return $scope.selectedTei[PROFIL_FNR];
         }
         if($scope.selectedTei[PROFIL_FNR_AS_WELL] && $scope.selectedTei[PROFIL_FNR_AS_WELL].length === 11) {
             return $scope.selectedTei[PROFIL_FNR_AS_WELL];
+        }
+        if($scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER] && $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER].toString().length === 11) {
+            return $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER];
         }
         return undefined;
     }
@@ -1456,7 +1456,7 @@ trackerCapture.controller('RegistrationController',
             userId = JSON.parse(sessionStorage.USER_PROFILE).id
         }
         finally {}
-        return FNrLookupService.lookupLabSvar($scope.labTestLookupNrGetterSetter(), CurrentSelection.currentSelection.orgUnit.code, userId);
+        return FNrLookupService.lookupLabSvar($scope.fNrOrEquivalentGetterSetter(), CurrentSelection.currentSelection.orgUnit.code, userId);
     }
 
     $scope.showLabTest = function() {
@@ -1464,7 +1464,6 @@ trackerCapture.controller('RegistrationController',
         $scope.labTestLookup().then(function(response){
             $scope.showFetchingDataSpinner = false;
             if(response) {
-                console.log(response.provesvarliste)
                 var modalData = makeHyphensInKodebeskrivelseNonBreaking(response.provesvarliste);
 
                 return $modal.open({
@@ -1499,7 +1498,7 @@ trackerCapture.controller('RegistrationController',
             userId = JSON.parse(sessionStorage.USER_PROFILE).id
         }
         finally {}
-        return FNrLookupService.lookupVaccine($scope.selectedTei.ZSt07qyq6Pt, CurrentSelection.currentSelection.orgUnit.code, userId);
+        return FNrLookupService.lookupVaccine($scope.fNrOrEquivalentGetterSetter(), CurrentSelection.currentSelection.orgUnit.code, userId);
     }
 
     $scope.showVaccine = function() {

@@ -6,15 +6,23 @@
             <td style="font-size: 9pt">
                 F‑nr/hjelpenummer
             </td>
+            <td colspan="2">
+                <input class="form-control" ng-model="fNrOrEquivalentGetterSetter" ng-model-options=" {getterSetter: true }" maxlength="11"/>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
             <td>
-                <input class="form-control" ng-model="labTestLookupNrGetterSetter" ng-model-options=" {getterSetter: true }" maxlength="11"/>
+                <button ng-click="showLabTest()" type="button" class="btn btn-secondary"  ng-disabled="!shouldShowLabTestAndVaccine()">Vis prøvesvar</button>
+
             </td>
             <td>
-                <button  ng-click="showLabTest()" class="btn btn-secondary"  ng-disabled="!shouldShowLabTest()">Vis prøvesvar</button>
+                <button ng-click="showVaccine()" type="button" class="btn btn-secondary" ng-disabled="!shouldShowLabTestAndVaccine()">Vis vaksinestatus</button>
             </td>
         </tr>
     </table>
-    <div ng-show="!shouldShowLabTest()" class="alert alert-warning" style="font-size: 9pt;">Gyldig nasjonalt felles hjelpenummer eller F-nummer må være satt for å vise prøvesvar</div>
+    <div ng-show="!shouldShowLabTestAndVaccine()" class="alert alert-warning" style="font-size: 9pt;">Gyldig nasjonalt felles hjelpenummer eller F-nummer må være satt for å vise prøvesvar og vaksinestatus</div>
+    <hr ng-if="selectedProgram.id == 'uYjxkTbwRNf' && selectedEnrollment.enrollment" />
     <button style="margin-left: 20px;margin-top:10px" ng-if="selectedProgram.id == 'uYjxkTbwRNf' && selectedEnrollment.enrollment" ng-disabled="(selectedTei['ZSt07qyq6Pt'].length != 11 && !selectedTei['NI0QRzJvQ0k']) || !selectedTei['ENRjVGxVL6l'] || !selectedTei['sB1IHYu2xQT']" ng-click="sendNotification()" class="btn btn-secondary">Send klinikermelding</button>
     <p></p>
 </div>
@@ -371,16 +379,7 @@
                             <div ng-if="(attribute.id == 'ZSt07qyq6Pt' || attribute.id == 'fkUN6jLp7K4') && !editingDisabled">
                                 <button type="button" ng-if="attribute.id == 'ZSt07qyq6Pt'" style="margin-bottom: 5px;" ng-disabled="selectedTei[attribute.id].length != 11 || showFetchingDataSpinner" class="btn btn-primary" ng-click="registryLookup()">Slå opp og hent profildata</button>
                                 <i ng-show="showFetchingDataSpinner" class="fa fa-spinner fa-spin fa-2x" style="margin-left:5px"></i>
-                                <!--
-                                <div ng-style="{display: 'flex'}">
-
-                                    <button type="button" ng-disabled="selectedTei[attribute.id].length != 11" class="btn btn-secondary" style="margin-bottom: 5px; margin-right: 4px;" ng-click="showLabTest()">Prøvesvar</button>
-                                    
-                                    <!-- Hidden until vaksine can be used
-                                    <button type="button" ng-disabled="selectedTei[attribute.id].length != 11" class="btn btn-secondary" style="margin-bottom: 5px;" ng-click="showVaccine()">Vaksine</button>
-                                </div>
-                                -->
-                            </div>
+                             </div>
                     </span>
                     <span ng-switch-when="PHONE_NUMBER">
                         <input type="text"
