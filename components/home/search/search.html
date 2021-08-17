@@ -38,7 +38,7 @@
                                 theme="select2"
                                 class="search-ui-select">
                         <ui-select-match allow-clear="true"  class="form-control-ui-select"  ng-attr-placeholder="{{'select_or_search' | translate}}">{{$select.selected.displayName  || $select.selected}}</ui-select-match>
-                        <ui-select-choices  repeat="option.displayName as option in base.optionSets[attribute.optionSet.id].options | filter:{displayName:$select.search}">
+                        <ui-select-choices  repeat="option.code as option in base.optionSets[attribute.optionSet.id].options | filter:{displayName:$select.search}">
                             <span ng-bind-html="option.displayName | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
