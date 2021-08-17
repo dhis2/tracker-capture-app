@@ -4,6 +4,10 @@
 
 /* Services */
 
+import {
+    PROFIL_VAKSINE_1_TYPE_ID,
+} from "../utils/constants";
+
 var externalLookupServices = angular.module('externalLookupServices', ['ngResource', 'ngCookies'])
 
 .service('FNrLookupService', function($http, DHIS2URL, $translate, $cookies, NotificationService, DateUtils) {
@@ -4386,7 +4390,26 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             "beskrivelse": "Test etter varsel fra Smittestopp-app",
             "oid": 80014
           }
-        ]
+        ];
+
+        var vaksinestatuser =
+        [
+            {
+                "verdi": "1",
+                "beskrivelse": "Ja",
+                "oid": 80017
+            },
+            {
+                "verdi": "2",
+                "beskrivelse": "Nei",
+                "oid": 80017
+            },
+            {
+                "verdi": "3",
+                "beskrivelse": "Ukjent",
+                "oid": 80017
+            }
+        ];
 
         var codeLookup = function(codes,field,value) {
             var codeFound = null;
@@ -4492,6 +4515,19 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
 
         var getIndikasjon = function(indikasjon){
             return codeLookup(indikasjoner,'beskrivelse',indikasjon);
+        }
+
+        var getVaksinestatuskode = function(vaksine) {
+            console.log(vaksine)
+            var vaksinestatus;
+            if(vaksine === 'Ikke Vaksinert') {
+                vaksinestatus = 'Nei'
+            } else if (vaksine) { // If anything else is set, we assume it to be a vaccine
+                vaksinestatus = 'Ja'
+            } else {
+                vaksinestatus = 'Ukjent'
+            };
+            return codeLookup(vaksinestatuser,'beskrivelse', vaksinestatus);
         }
 
         var getSykdomsBilde = function(helseutfall) {
@@ -4741,7 +4777,14 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                 });
                 diagnoseforhold.underliggendeSykdom = underliggendeSykdom;
             }
-            
+
+
+
+            //------Vaksineringsstatus
+            var vaksinestatus = tei[PROFIL_VAKSINE_1_TYPE_ID]
+            var erVaksinert = getVaksinestatuskode(vaksinestatus);
+            textMessages.push("Er vaksinert: " + erVaksinert.beskrivelse );
+            smitteforhold = {...smitteforhold, erVaksinert};
 
             //-------MELDING
 

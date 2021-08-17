@@ -56,3 +56,7 @@ export const PROFIL_FORETRUKKET_SPRAAK_ATTRIBUTE_ID = 'xTdN78uRiJm';
 export const PROFIL_EPOST_ATTRIBUTE_ID = 'Ym6yIceP4RO';
 export const PROFIL_MOBIL_TLF_ATTRIBUTE_ID = 'h1PoxEMqi9t';
 export const PROFIL_FNR_ATTRIBUTE_ID = 'NI0QRzJvQ0k';
+export const PROFIL_VAKSINE_1_TYPE_ID = 'cnSOCLFGmLz';
+export const PROFIL_VAKSINE_1_DATO_ID = 'dvNLTk22BAG';
+export const PROFIL_VAKSINE_2_TYPE_ID = 'dO29Prg9siS';
+export const PROFIL_VAKSINE_2_DATO_ID = 'q5Zc3PCGtC7';
