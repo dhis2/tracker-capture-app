@@ -13,15 +13,15 @@
         <tr>
             <td></td>
             <td>
-                <button ng-click="showLabTest()" type="button" class="btn btn-secondary"  ng-disabled="!shouldShowLabTestAndVaccine()">Vis prøvesvar</button>
+                <button ng-click="showLabTest()" type="button" class="btn btn-secondary"  ng-disabled="!shouldEnableLabTestAndVaccine()">Vis prøvesvar</button>
 
             </td>
-            <td>
-                <button ng-click="showVaccine()" type="button" class="btn btn-secondary" ng-disabled="!shouldShowLabTestAndVaccine()">Vis vaksinestatus</button>
+            <td ng-if="shouldShowVaccineButton()">
+                <button ng-click="showVaccine()" type="button" class="btn btn-secondary" ng-disabled="!shouldEnableLabTestAndVaccine()">Vis vaksinestatus</button>
             </td>
         </tr>
     </table>
-    <div ng-show="!shouldShowLabTestAndVaccine()" class="alert alert-warning" style="font-size: 9pt;">Gyldig nasjonalt felles hjelpenummer eller F-nummer må være satt for å vise prøvesvar og vaksinestatus</div>
+    <div ng-show="!shouldEnableLabTestAndVaccine()" class="alert alert-warning" style="font-size: 9pt;">Gyldig nasjonalt felles hjelpenummer eller F-nummer må være satt for å vise prøvesvar og vaksinestatus</div>
     <hr ng-if="selectedProgram.id == 'uYjxkTbwRNf' && selectedEnrollment.enrollment" />
     <button style="margin-left: 20px;margin-top:10px" ng-if="selectedProgram.id == 'uYjxkTbwRNf' && selectedEnrollment.enrollment" ng-disabled="(selectedTei['ZSt07qyq6Pt'].length != 11 && !selectedTei['NI0QRzJvQ0k']) || !selectedTei['ENRjVGxVL6l'] || !selectedTei['sB1IHYu2xQT']" ng-click="sendNotification()" class="btn btn-secondary">Send klinikermelding</button>
     <p></p>
