@@ -4389,7 +4389,14 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             "verdi": "21",
             "beskrivelse": "Test etter varsel fra Smittestopp-app",
             "oid": 80014
-          }
+          },
+          {
+            "id": 4778,
+            "verdi": "22",
+            "beskrivelse": "Screening/massetesting covid-19",
+            "oid": 80014
+          },
+
         ];
 
         var vaksinestatuser =
@@ -4759,6 +4766,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
             }
 
             var indikasjon = getIndikasjon(bakgrunnsUndersokelse.vrrQP9OrjOB);
+            console.log(indikasjon);
             if(indikasjon) {
                 textMessages.push("Indikasjon: " + indikasjon.beskrivelse);
                 diagnoseforhold.indikasjon = indikasjon;
