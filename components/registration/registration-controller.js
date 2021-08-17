@@ -1433,8 +1433,12 @@ trackerCapture.controller('RegistrationController',
             return $scope.fNrOrEquivalent;
         }
     }
-    $scope.shouldShowLabTestAndVaccine = function() {
+    $scope.shouldEnableLabTestAndVaccine = function() {
         return $scope.fNrOrEquivalent && $scope.fNrOrEquivalent.toString().length === 11;
+    }
+
+    $scope.shouldShowVaccineButton = function() {
+        return $scope.selectedProgram.id === INDEKSERING_PROGRAM_ID || $scope.selectedProgram.id === NEARKONTAKT_PROGRAM_ID;
     }
 
     $scope.getBestNumberForLabTestAndVaccine = function() {
