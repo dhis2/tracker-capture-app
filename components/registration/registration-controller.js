@@ -1519,7 +1519,12 @@ trackerCapture.controller('RegistrationController',
                         $scope.gridData = orderByFilter(modalData, '-vaccinationDate');
 
                         $scope.dateFromItem = function(item) {
-                            return DateUtils.getDateFromUTCString(item.vaccinationDate);
+                            var vaccinationDate = Object.assign([],item.vaccinationDate);
+                            // Backend returns an array with months starting with index 1 (for January), we assume it starts with index 0 (for January)
+                            if(vaccinationDate[1]) {
+                                vaccinationDate[1] = vaccinationDate[1] - 1;
+                            }
+                            return DateUtils.getDateFromUTCString(vaccinationDate);
                         }
 
                         $scope.noVaccinesMessage = response.kanLeverUtData ?

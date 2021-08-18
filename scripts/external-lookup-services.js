@@ -4525,7 +4525,6 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
         }
 
         var getVaksinestatuskode = function(vaksine) {
-            console.log(vaksine)
             var vaksinestatus;
             if(vaksine === 'Ikke Vaksinert') {
                 vaksinestatus = 'Nei'
@@ -4927,18 +4926,18 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     var errorMsgHdr, errorMsgBody;
                     errorMsgHdr = $translate.instant('error');
 
-                    errorMsgBody =  'Feil ved henting av vaksinedata:' + fNr;
+                    errorMsgBody =  'Feil ved henting av vaksinestatus:' + fNr;
 
                     if(error.status == 403) {
-                        errorMsgBody = `Tjenesten Fiks vaksine er ikke tilgjengelig for deg.
+                        errorMsgBody = `Tjenesten Fiks vaksinestatus er ikke tilgjengelig for deg.
                         Det kan være to årsaker til dette
                         <ol>
-                        <li>Din kommune har ikke aktivert tjenesten Fiks vaksine. Les mer om aktivering av Fiks vaksine her: <a target="_blank" href="https://portal.fiks.ks.no/fiks/fiks-vaksine/">https://portal.fiks.ks.no/fiks/fiks-vaksine/</a></li>
+                        <li>Din kommune har ikke aktivert tjenesten Fiks vaksinestatus. Les mer om aktivering av Fiks vaksinestatus her: <a target="_blank" href="https://portal.fiks.ks.no/fiks/fiks-vaksinestatus/">https://portal.fiks.ks.no/fiks/fiks-vaksinestatus/</a></li>
                         <li>Tjenesten er aktivert, men du har ikke fått rettigheter til å gjøre oppslag. Ta kontakt med Fiks administrator i din kommune.</li>
                         </ol>`;
                     }
                     else if(error.status == 401) {
-                        errorMsgBody = "Kunne ikke nå tjeneste for vaksinedata, prøv å logge inn på nytt.";
+                        errorMsgBody = "Kunne ikke nå tjeneste for vaksinestatus, prøv å logge inn på nytt.";
                     }
 
                     NotificationService.showNotifcationDialog(errorMsgHdr, errorMsgBody);
