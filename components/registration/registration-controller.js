@@ -1527,7 +1527,7 @@ trackerCapture.controller('RegistrationController',
                             return DateUtils.getDateFromUTCString(vaccinationDate);
                         }
 
-                        $scope.noVaccinesMessage = response.kanLeverUtData ?
+                        $scope.noVaccinesMessage = response.kanLevereUtData ?
                             "Det er ingen registrerte vaksineringer på dette fødselsnummeret." :
                             "Du har ikke de nødvendige rettighetene for å hente ut vaksineinformasjon på denne personen.";
 
