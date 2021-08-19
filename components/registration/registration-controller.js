@@ -1516,7 +1516,7 @@ trackerCapture.controller('RegistrationController',
                     templateUrl: 'components/registration/vaccination-modal.html',
                     controller: function($scope, $modalInstance, modalData, orderByFilter)
                     {
-                        $scope.gridData = orderByFilter(modalData, '-vaccinationDate');
+                        $scope.gridData = modalData;
 
                         $scope.dateFromItem = function(item) {
                             var vaccinationDate = Object.assign([],item.vaccinationDate);
