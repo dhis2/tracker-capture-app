@@ -209,6 +209,17 @@ trackerCapture.controller('ListsController',function(
             return $scope.currentTrackedEntityList.config.name === "Alle tildelte oppgaver";
         }
 
+        $scope.addTildeltToTildeltListConditionally = function(serverResponse) {
+            if ($scope.isAlleTildelteOppgaver()) {
+                try {
+                    addTildeltToTildeltList($scope, serverResponse, TeiAccessApiService, MetaDataFactory, $q);
+                } catch (err) {
+                    console.log(err);
+                    $scope.setServerResponse(serverResponse);
+                }
+            }
+        }
+
         var setCurrentTrackedEntityListData = function(serverResponse){
             $scope.numberOfSelectedRows = 0;
             if(serverResponse.rows && serverResponse.rows.length > 0
@@ -259,12 +270,14 @@ trackerCapture.controller('ListsController',function(
                             return tei[1];
                         }, $scope.currentTrackedEntityList.sortColumn.direction != 'desc');
                     }
+
                     if( $scope.currentTrackedEntityList.sortColumn.id == 'last_date' ) {
                         serverResponse.rows = $filter('orderBy')(serverResponse.rows, function(tei) {
                             return tei[tei.length - 2];
                         }, $scope.currentTrackedEntityList.sortColumn.direction != 'desc');
                     }
 
+                    $scope.addTildeltToTildeltListConditionally(serverResponse);
                     $scope.setServerResponse(serverResponse);
                 },function(error){
                     $scope.setServerResponse(serverResponse);
@@ -273,21 +286,16 @@ trackerCapture.controller('ListsController',function(
             else if(serverResponse.rows && serverResponse.rows.length > 0
                 && ($scope.base.selectedProgram.id == INNREISE_PROGRAM_ID || $scope.base.selectedProgram.id == DUPLIKAT_PROGRAM_ID)) {
                 try {
+                    $scope.addTildeltToTildeltListConditionally(serverResponse);
                     addEventDataToInnreiseList($scope, serverResponse, TeiAccessApiService, MetaDataFactory);
                 } catch (err) {
                     console.log(err);
                     $scope.setServerResponse(serverResponse);
                 }
             } else {
+                $scope.addTildeltToTildeltListConditionally(serverResponse);
                 $scope.setServerResponse(serverResponse);
             }
-            if ($scope.isAlleTildelteOppgaver()) {
-                try {
-                    addTildeltToTildeltList($scope, serverResponse, TeiAccessApiService, MetaDataFactory, $q);
-                } catch (err) {
-                    console.log(err);
-                    $scope.setServerResponse(serverResponse);
-                }
             }
         };
 
