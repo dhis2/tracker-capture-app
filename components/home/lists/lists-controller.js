@@ -296,7 +296,6 @@ trackerCapture.controller('ListsController',function(
                 $scope.addTildeltToTildeltListConditionally(serverResponse);
                 $scope.setServerResponse(serverResponse);
             }
-            }
         };
 
         $scope.setServerResponse = function(serverResponse) {
