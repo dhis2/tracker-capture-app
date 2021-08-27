@@ -1,3 +1,10 @@
+## [31.6.31](https://github.com/dhis2/tracker-capture-app/compare/v31.6.30...v31.6.31) (2021-08-27)
+
+
+### Bug Fixes
+
+* Search using code, not displayName ([#1213](https://github.com/dhis2/tracker-capture-app/issues/1213)) ([7dd1f88](https://github.com/dhis2/tracker-capture-app/commit/7dd1f88f8d0166b4f8c0c3c0778e022a2fd74bd6))
+
 ## [31.6.30](https://github.com/dhis2/tracker-capture-app/compare/v31.6.29...v31.6.30) (2021-08-25)
 
 
