@@ -3,7 +3,7 @@ export const DNUMBER_FIELD_ID = 'ZSt07qyq6Pt';
 export const BIRTH_DATE_FIELD_ID = 'NI0QRzJvQ0k';
 
 // Programs
-export const NEARKONTAKT_PROGRAM_ID = 'DM9n1bUw8W8';
+export const NAERKONTAKT_PROGRAM_ID = 'DM9n1bUw8W8';
 export const INDEKSERING_PROGRAM_ID = 'uYjxkTbwRNf';
 export const DUPLIKAT_PROGRAM_ID = 'STKyXc3OT7i';
 export const INNREISE_PROGRAM_ID = 'B7gOGodZkcs';

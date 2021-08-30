@@ -3,6 +3,7 @@ import {convertDatestringToFullTime} from "../../../utils/converters";
 import {addEventDataToInnreiseList} from "../../../ks_patches/add_event_data_to_innreise_list";
 import {setCustomShowOnAttributesInList} from "../../../ks_patches/hide_show_attributes";
 import {addTildeltToTildeltList} from "../../../ks_patches/add_tildelt_to_tidelt_list";
+import {customPageSizeForProgram} from "../../../ks_patches/override_params";
 
 var trackerCapture = angular.module('trackerCapture');
 
@@ -48,9 +49,10 @@ trackerCapture.controller('ListsController',function(
                 skipTotalPages: true
             };
 
+            var pageSize = customPageSizeForProgram($scope.selectedProgram && $scope.selectedProgram.id) || 50;
             $scope.pager = {
                 ...$scope.defaultRequestProps,
-                pageSize: 50,
+                pageSize: pageSize,
                 page: 1
             };
         }

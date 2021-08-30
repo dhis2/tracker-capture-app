@@ -1,7 +1,7 @@
 import {
     INDEKSERING_PROGRAM_ID,
     INNREISE_PROGRAM_ID,
-    NEARKONTAKT_PROGRAM_ID,
+    NAERKONTAKT_PROGRAM_ID,
     OPPFOLGING_STAGE_ID,
     INDEKSERING_HELSESTATUS_PROGRAM_STAGE_ID,
     NAERKONTAKT_OPPFOLGING_PROGRAM_STAGE_ID
@@ -35,9 +35,9 @@ function getEnrollmentProgramAndStage(scope) {
                 program: INNREISE_PROGRAM_ID,
                 assignedUserStage: OPPFOLGING_STAGE_ID
             };
-        case NEARKONTAKT_PROGRAM_ID:
+        case NAERKONTAKT_PROGRAM_ID:
             return {
-                program: NEARKONTAKT_PROGRAM_ID,
+                program: NAERKONTAKT_PROGRAM_ID,
                 assignedUserStage: NAERKONTAKT_OPPFOLGING_PROGRAM_STAGE_ID
             };
         default:

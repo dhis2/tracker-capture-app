@@ -10,7 +10,7 @@ import {
 import {enableAutoTransferFromNaerkontakt} from "../../ks_patches/custom_override_flags";
 import {
     INDEKSERING_PROGRAM_ID,
-    NEARKONTAKT_PROGRAM_ID, PROFIL_FNR, PROFIL_FNR_AS_WELL,
+    NAERKONTAKT_PROGRAM_ID, PROFIL_FNR, PROFIL_FNR_AS_WELL,
     PROFIL_NASJONALT_FELLES_HJELPENUMMER
 } from "../../utils/constants";
 import {makeHyphensInKodebeskrivelseNonBreaking} from "../../ks_patches/provesvar_utils";
@@ -1438,7 +1438,7 @@ trackerCapture.controller('RegistrationController',
     }
 
     $scope.shouldShowVaccineButton = function() {
-        return $scope.selectedProgram.id === INDEKSERING_PROGRAM_ID || $scope.selectedProgram.id === NEARKONTAKT_PROGRAM_ID;
+        return $scope.selectedProgram.id === INDEKSERING_PROGRAM_ID || $scope.selectedProgram.id === NAERKONTAKT_PROGRAM_ID;
     }
 
     $scope.getBestNumberForLabTestAndVaccine = function() {
