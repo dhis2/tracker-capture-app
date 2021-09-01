@@ -113,6 +113,47 @@ trackerCapture.controller('RelationshipController',
         }
     };
 
+    $scope.showNaerkontaktImport = function () {
+        var modalInstance = $modal.open({
+            templateUrl: 'ks_patches/naerkontakt_import/naerkontakt-import.html',
+            controller: 'NaerkontaktImportController',
+            windowClass: 'modal-full-window',
+            resolve: {
+                relationshipTypes: function () {
+                    return $scope.relationshipTypes;
+                },
+                selectedAttribute: function(){
+                    return null;
+                },
+                existingAssociateUid: function(){
+                    return null;
+                },
+                addingRelationship: function(){
+                    return true;
+                },
+                selections: function () {
+                    return $scope.selections;
+                },
+                selectedTei: function(){
+                    return $scope.selectedTei;
+                },
+                selectedProgram: function(){
+                    return $scope.selectedProgram;
+                },
+                relatedProgramRelationship: function(){
+                    return $scope.relatedProgramRelationship;
+                },
+                allPrograms: function(){
+                    return allPrograms;
+                }
+            }
+        });
+
+        modalInstance.result.then(function () {
+
+        });
+    }
+
     $scope.showAddRelationship = function(related) {
         $scope.relatedProgramRelationship = related;
         $rootScope.showAddRelationshipDiv = !$rootScope.showAddRelationshipDiv;
@@ -588,6 +629,10 @@ trackerCapture.controller('RelationshipController',
             });
         });
     };
+
+    $scope.shouldShowExcelUpload = function(widget) {
+        return widget.title === "Nærkontakter";
+    }
 });
 
 
