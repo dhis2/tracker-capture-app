@@ -3,82 +3,85 @@
 </div>
 
 <div class="modal-body">
-    <div ng-if="getStageNr() === 1">
+    <div ng-if="stageNr === 1">
         <p>Her kan du laste opp en klasseliste fra regneark, og knytte de automatisk til klyngen.</p>
         <p>Bruk denne malen for å fylle ut klasselisten: <a href="https://minside.kommune.no">klasselistemal.xls</a></p>
         <p>Du vil kunne verifisere handlingen etter du har lastet opp klasselisten</p>
-        <span class="btn btn-grp btn-file">
+        <button class="btn btn-grp btn-file">
             <span>
                 Last opp klasseliste
                 <i class="fa fa-upload"></i>
+                <form name="fileForm">
                 <input type="file"
-                       custom-on-change="upload"
-                       name="foo">
+                       custom-on-change="uploadTry"
+                       ng-model="releationFile"
+                       name="relationFile">
+                </form>
             </span>
-            {{file}}
-        </span>
-
+        </button>
     </div>
-    <div ng-if="getStageNr() === 2">
+
+    <div ng-if="stageNr === 1.5">
+        Laster opp {{file}}
+        <i class="fa fa-spinner fa-spin audit-spinner"></i>
+    </div>
+
+    <div ng-if="stageNr === 2">
         <p>
             Excel-filen kunne leses.
         </p>
-        <div>
+        <div ng-if="uploadResult && uploadResult.importOk.length">
             Følgende personer vil bli lagt til klyngen:
             <ul>
-                <li>
-                    Steinar Pedersen (12038533523)
-                </li>
-                <li>
-                    Peder Stenersen (11048243527)
-                </li>
-                <li>
-                    Lise Lassesen (13040343227)
+                <li ng-repeat="person in uploadResult.importOk">
+                    {{person.firstName}} {{person.lastName}} ({{person.fnr}})
                 </li>
             </ul>
         </div>
-        <div>
+        <div ng-if="uploadResult && uploadResult.importNotPossible.length">
             Følgende personer kan ikke legges til automatisk og må legges til manuelt:
             <ul>
-                <li>
-                    Snorre Sturlason (12030232521)
-                </li>
-                <li>
-                    Geir Åge Nilsen (22018943221)
+                <li ng-repeat="person in uploadResult.importNotPossible">
+                    {{person.firstName}} {{person.lastName}} ({{person.fnr}})
                 </li>
             </ul>
         </div>
-        <button class="btn btn-default" ng-click="upload()">Last opp en annen klasseliste istedet</button>
-        <button class="btn btn-primary" ng-click="add()">Legg klasseliste til klynge</button>
+        <button class="btn btn-grp btn-file btn-default">
+            <span>
+                Last opp en annen klasseliste istedet
+                <i class="fa fa-upload"></i>
+                <form name="fileForm">
+                <input type="file"
+                       custom-on-change="uploadTry"
+                       ng-model="releationFile"
+                       name="relationFile">
+                </form>
+            </span>
+        </button>
+        <button class="btn btn-primary" ng-click="upload()">Legg klasseliste til klynge</button>
     </div>
-    <div ng-if="getStageNr() === 3">
-        <div>
+    <div ng-if="stageNr === 3">
+        <p>
+            Excel-filen ble importert.
+        </p>
+        <div ng-if="uploadResult && uploadResult.importOk.length">
             Følgende personer er lagt til klyngen:
             <ul>
-                <li>
-                    Steinar Pedersen (12038533523)
-                </li>
-                <li>
-                    Peder Stenersen (11048243527)
-                </li>
-                <li>
-                    Lise Lassesen (13040343227)
+                <li ng-repeat="person in uploadResult.importOk">
+                    {{person.firstName}} {{person.lastName}} ({{person.fnr}})
                 </li>
             </ul>
         </div>
-        <div>
+        <div ng-if="uploadResult && uploadResult.importNotPossible.length">
             Følgende personer kunne ikke legges til automatisk og må legges til manuelt:
             <ul>
-                <li>
-                    Snorre Sturlason (12030232521)
-                </li>
-                <li>
-                    Geir Åge Nilsen (22018943221)
+                <li ng-repeat="person in uploadResult.importNotPossible">
+                    {{person.firstName}} {{person.lastName}} ({{person.fnr}})
                 </li>
             </ul>
-            Last ned liste over personer som må håndteres manuelt: <a href="https://minside.kommune.no">manuell-liste.xls</a>
         </div>
     </div>
+
 </div>
 
 <div class="modal-footer">

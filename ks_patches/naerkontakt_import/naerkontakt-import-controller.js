@@ -5,6 +5,7 @@ trackerCapture.controller('NaerkontaktImportController',
              $translate,
              $modal,
              $modalInstance,
+             $http,
              $location,
              DateUtils,
              CurrentSelection,
@@ -30,18 +31,29 @@ trackerCapture.controller('NaerkontaktImportController',
              TEService,
              allPrograms
     ) {
-        var stageNr = 1;
-        $scope.file = 'none';
-        $scope.getStageNr = function() {
-            return stageNr;
+        $scope.uploadResult = undefined;
+        $scope.file = undefined;
+        $scope.stageNr = 1;
+
+        $scope.uploadTry = function (file) {
+            console.log(file.name);
+            $scope.file = file;
+            $scope.stageNr = 1.5;
+            $http.post('/api/naerkontakt/uploadTest', $scope.file).then(response => {
+                console.log(response);
+                $scope.uploadResult = response.data;
+                $scope.stageNr = 2;
+            });
         }
 
-        $scope.upload = function (event) {
-            stageNr = 2;
-        }
+        $scope.upload = function () {
+            $scope.stageNr = 2.5;
+             $http.post('/api/naerkontakt/upload', $scope.file).then(response => {
+                console.log(response);
 
-        $scope.add = function () {
-            stageNr = 3;
+                $scope.uploadResult = response.data;
+                $scope.stageNr = 3;
+            });
         }
 
         $scope.close = function () {
