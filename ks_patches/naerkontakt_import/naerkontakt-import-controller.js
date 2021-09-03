@@ -37,13 +37,16 @@ trackerCapture.controller('NaerkontaktImportController',
         $scope.errorCode = undefined;
         $scope.errorMsg = undefined;
 
+
         $scope.uploadTry = function (file) {
             console.log(file);
             $scope.file = file.files[0];
             console.log($scope.file);
+            console.log(selectedTei.trackedEntityInstance);
             $scope.stage = 'uploadingImportTest';
 
-            var url = `/api/v1/import/validerFil/AuqLlYLnWEW`;
+
+            var url = `/api/v1/import/validerFil/${selectedTei.trackedEntityInstance}`;
 
             var formData = new FormData();
             formData.append('file', $scope.file);
@@ -62,7 +65,7 @@ trackerCapture.controller('NaerkontaktImportController',
             $scope.stage = 'uploadingImport';
             var formData = new FormData();
 
-            var url = `/api/v1/import/validerFil/AuqLlYLnWEW`;
+            var url = `/api/v1/import/validerFil/${selectedTei.trackedEntityInstance}`;
             formData.append('file', $scope.file);
 
             $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined }}).then(response => {
