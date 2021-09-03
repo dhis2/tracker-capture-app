@@ -38,21 +38,11 @@ trackerCapture.controller('NaerkontaktImportController',
         $scope.errorMsg = undefined;
 
 
-        $scope.uploadTry = function (file) {
-            console.log(file);
+        $scope.uploadAndVerify = function (file) {
             $scope.file = file.files[0];
-            console.log($scope.file);
-            console.log(selectedTei.trackedEntityInstance);
             $scope.stage = 'uploadingImportTest';
 
-
-            var url = `/api/v1/import/validerFil/${selectedTei.trackedEntityInstance}`;
-
-            var formData = new FormData();
-            formData.append('file', $scope.file);
-
-            $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined }}).then(response => {
-                 console.log(response);
+            $scope.uploadFile('validerFil').then(response => {
                  $scope.uploadResult = response.data;
                  $scope.stage = 'importTestSuccess';
             }, error => {
@@ -61,15 +51,10 @@ trackerCapture.controller('NaerkontaktImportController',
             });
         }
 
-        $scope.upload = function () {
+        $scope.uploadAndImport = function () {
             $scope.stage = 'uploadingImport';
-            var formData = new FormData();
 
-            var url = `/api/v1/import/validerFil/${selectedTei.trackedEntityInstance}`;
-            formData.append('file', $scope.file);
-
-            $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined }}).then(response => {
-                 console.log(response);
+            $scope.uploadFile('validerFil').then(response => {
                  $scope.uploadResult = response.data;
                  $scope.stage = 'importSuccess';
              }, error => {
@@ -95,5 +80,12 @@ trackerCapture.controller('NaerkontaktImportController',
             $scope.stage = 'start';
         }
 
+        $scope.uploadFile = function (uploadType) {
+            var url = `/api/v1/import/${uploadType}/${selectedTei.trackedEntityInstance}`;
 
+            var formData = new FormData();
+            formData.append('file', $scope.file);
+
+            return $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined }});
+        }
 });

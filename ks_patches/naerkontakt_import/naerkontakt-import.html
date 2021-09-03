@@ -15,7 +15,7 @@
                 Last opp liste for verifisering
                 <i class="fa fa-upload"></i>
                 <form name="fileForm">
-                <input type="file" on-file-upload="uploadTry">
+                <input type="file" on-file-upload="uploadAndVerify">
                 </form>
             </span>
         </button>
@@ -63,11 +63,11 @@
                 Last opp en annen liste istedet
                 <i class="fa fa-upload"></i>
                 <form name="fileForm">
-                <input type="file" on-file-upload="uploadTry">
+                <input type="file" on-file-upload="uploadAndVerify">
                 </form>
             </span>
         </button>
-        <button class="btn btn-primary" ng-click="upload()">Legg nærkontakter til klynge</button>
+        <button class="btn btn-primary" ng-click="uploadAndImport()">Legg nærkontakter til klynge</button>
     </div>
 
     <!-- Import spinner page -->
