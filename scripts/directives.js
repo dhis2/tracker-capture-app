@@ -838,15 +838,13 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
         }
     }
 })
-.directive('customOnChange', function() {
+.directive('onFileUpload', function() {
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
-            var onChangeHandler = scope.$eval(attrs.customOnChange);
+            var onChangeHandler = scope.$eval(attrs.onFileUpload);
             element.on('change', () => {
-                console.log(element[0].files[0].name)
-                onChangeHandler({files: element[0].files, test: 'something'});
-
+                onChangeHandler({files: element[0].files});
             });
             element.on('$destroy', function() {
                 element.off();

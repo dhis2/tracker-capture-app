@@ -33,31 +33,63 @@ trackerCapture.controller('NaerkontaktImportController',
     ) {
         $scope.uploadResult = undefined;
         $scope.file = undefined;
-        $scope.stageNr = 1;
+        $scope.stage = 'start';
+        $scope.errorCode = undefined;
+        $scope.errorMsg = undefined;
 
         $scope.uploadTry = function (file) {
-            console.log(file.name);
-            $scope.file = file;
-            $scope.stageNr = 1.5;
-            $http.post('/api/naerkontakt/uploadTest', $scope.file).then(response => {
-                console.log(response);
-                $scope.uploadResult = response.data;
-                $scope.stageNr = 2;
+            console.log(file);
+            $scope.file = file.files[0];
+            console.log($scope.file);
+            $scope.stage = 'uploadingImportTest';
+
+            var url = `/api/v1/import/validerFil/AuqLlYLnWEW`;
+
+            var formData = new FormData();
+            formData.append('file', $scope.file);
+
+            $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined }}).then(response => {
+                 console.log(response);
+                 $scope.uploadResult = response.data;
+                 $scope.stage = 'importTestSuccess';
+            }, error => {
+                $scope.stage = 'importFailed';
+                $scope.setError(error);
             });
         }
 
         $scope.upload = function () {
-            $scope.stageNr = 2.5;
-             $http.post('/api/naerkontakt/upload', $scope.file).then(response => {
-                console.log(response);
+            $scope.stage = 'uploadingImport';
+            var formData = new FormData();
 
-                $scope.uploadResult = response.data;
-                $scope.stageNr = 3;
-            });
+            var url = `/api/v1/import/validerFil/AuqLlYLnWEW`;
+            formData.append('file', $scope.file);
+
+            $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined }}).then(response => {
+                 console.log(response);
+                 $scope.uploadResult = response.data;
+                 $scope.stage = 'importSuccess';
+             }, error => {
+                 $scope.stage = 'importFailed';
+                 $scope.setError(error);
+             });
         }
 
         $scope.close = function () {
             $modalInstance.close();
+        }
+
+        $scope.setError = function (error) {
+            $scope.errorCode = error.status;
+            $scope.errorMsg = error.data;
+        }
+
+        $scope.reset = function () {
+            $scope.errorCode = undefined;
+            $scope.errorMsg = undefined;
+            $scope.uploadResult = undefined;
+            $scope.file = undefined;
+            $scope.stage = 'start';
         }
 
 

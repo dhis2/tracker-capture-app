@@ -3,64 +3,81 @@
 </div>
 
 <div class="modal-body">
-    <div ng-if="stageNr === 1">
-        <p>Her kan du laste opp en klasseliste fra regneark, og knytte de automatisk til klyngen.</p>
-        <p>Bruk denne malen for å fylle ut klasselisten: <a href="https://minside.kommune.no">klasselistemal.xls</a></p>
-        <p>Du vil kunne verifisere handlingen etter du har lastet opp klasselisten</p>
+    <!-- First page of modal -->
+    <div ng-if="stage === 'start'">
+        <p>Her kan du laste opp en liste med nærkontakter (klasseliste) fra regneark, og knytte de automatisk til
+            klyngen.</p>
+        <p>Bruk denne malen for å fylle ut listen: <a href="https://minside.kommune.no">klasselistemal.xls</a></p>
+        <p>Vi vil først verifisere listen. Du vil få se hvilke personer som kan importeres, deretter bestemmer du om
+            disse skal importeres i klyngen eller ikke.</p>
         <button class="btn btn-grp btn-file">
             <span>
-                Last opp klasseliste
+                Last opp liste for verifisering
                 <i class="fa fa-upload"></i>
                 <form name="fileForm">
-                <input type="file"
-                       custom-on-change="uploadTry"
-                       ng-model="releationFile"
-                       name="relationFile">
+                <input type="file" on-file-upload="uploadTry">
                 </form>
             </span>
         </button>
     </div>
 
-    <div ng-if="stageNr === 1.5">
-        Laster opp {{file}}
-        <i class="fa fa-spinner fa-spin audit-spinner"></i>
+    <!-- Uploading for verification spinner page -->
+    <div ng-if="stage === 'uploadingImportTest'">
+        <p>
+            Husk: Du må se over hvilke nærkontakter som importeres og så trykke på "Legg nærkontakter til
+            klynge"-knappen.
+        </p>
+        <i class="fa fa-spinner fa-spin" style="font-size: 2em"></i>
+        Prøver å lese <em>{{file.name}}</em>
     </div>
 
-    <div ng-if="stageNr === 2">
+    <!-- Uploading for verification success page -->
+    <div ng-if="stage === 'importTestSuccess'">
+        <p>
+            Husk: Du må se over hvilke nærkontakter som importeres og så trykke på "Legg nærkontakter til
+            klynge"-knappen.
+        </p>
         <p>
             Excel-filen kunne leses.
         </p>
-        <div ng-if="uploadResult && uploadResult.importOk.length">
-            Følgende personer vil bli lagt til klyngen:
-            <ul>
-                <li ng-repeat="person in uploadResult.importOk">
-                    {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                </li>
-            </ul>
-        </div>
-        <div ng-if="uploadResult && uploadResult.importNotPossible.length">
-            Følgende personer kan ikke legges til automatisk og må legges til manuelt:
-            <ul>
-                <li ng-repeat="person in uploadResult.importNotPossible">
-                    {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                </li>
-            </ul>
+        <div style="display: flex">
+            <div ng-if="uploadResult && uploadResult.importOk.length" style="padding-right: 2em">
+                Følgende personer vil bli lagt til klyngen:
+                <ul style="list-style: none">
+                    <li ng-repeat="person in uploadResult.importOk">
+                        <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
+                    </li>
+                </ul>
+            </div>
+            <div ng-if="uploadResult && uploadResult.importNotPossible.length">
+                Følgende personer kan ikke legges til automatisk og må legges til manuelt:
+                <ul style="list-style: none">
+                    <li ng-repeat="person in uploadResult.importNotPossible">
+                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
+                    </li>
+                </ul>
+            </div>
         </div>
         <button class="btn btn-grp btn-file btn-default">
             <span>
-                Last opp en annen klasseliste istedet
+                Last opp en annen liste istedet
                 <i class="fa fa-upload"></i>
                 <form name="fileForm">
-                <input type="file"
-                       custom-on-change="uploadTry"
-                       ng-model="releationFile"
-                       name="relationFile">
+                <input type="file" on-file-upload="uploadTry">
                 </form>
             </span>
         </button>
-        <button class="btn btn-primary" ng-click="upload()">Legg klasseliste til klynge</button>
+        <button class="btn btn-primary" ng-click="upload()">Legg nærkontakter til klynge</button>
     </div>
-    <div ng-if="stageNr === 3">
+
+    <!-- Import spinner page -->
+    <div ng-if="stage === 'uploadingImport'">
+        <i class="fa fa-spinner fa-spin" style="font-size: 2em"></i>
+        Importerer nærkontakter fra <em>{{file.name}}</em>
+    </div>
+
+    <!-- Import success page -->
+    <div ng-if="stage === 'importSuccess'">
         <p>
             Excel-filen ble importert.
         </p>
@@ -80,6 +97,16 @@
                 </li>
             </ul>
         </div>
+    </div>
+
+    <!-- Upload failed page -->
+    <div ng-if="stage === 'importFailed'">
+        Lesing av <em>{{file.name}}</em> feilet.
+        <h2>Feilmelding:</h2>
+        <pre>
+            {{errorMsg}}
+        </pre>
+        <button class="btn btn-primary" ng-click="reset()">Prøv på nytt</button>
     </div>
 
 </div>
