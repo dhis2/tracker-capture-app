@@ -1,3 +1,10 @@
+## [31.6.32](https://github.com/dhis2/tracker-capture-app/compare/v31.6.31...v31.6.32) (2021-09-06)
+
+
+### Bug Fixes
+
+* inserted pagination for upcoming and overdue events lists ([#1239](https://github.com/dhis2/tracker-capture-app/issues/1239)) ([7b4352c](https://github.com/dhis2/tracker-capture-app/commit/7b4352cc76be2770e296916fa8fd63e9fae521ee))
+
 ## [31.6.31](https://github.com/dhis2/tracker-capture-app/compare/v31.6.30...v31.6.31) (2021-08-27)
 
 
