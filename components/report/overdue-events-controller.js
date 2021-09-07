@@ -101,21 +101,14 @@ trackerCapture.controller('OverdueEventsController',
             
             EventReportService.getEventReport($scope.selectedOrgUnit.id, $scope.selectedOuMode, $scope.model.selectedProgram.id, null, null, 'ACTIVE','OVERDUE', $scope.pager).then(function(data){                
                 if( data ) {
-                    if( data.pager ){
-                        $scope.pager = data.pager;
-                        $scope.pager.toolBarDisplay = 5;
-
-                        Paginator.setPage($scope.pager.page);
-                        Paginator.setPageCount($scope.pager.pageCount);
-                        Paginator.setPageSize($scope.pager.pageSize);
-                        Paginator.setItemCount($scope.pager.total);                    
-                    }
+                    $scope.pager.toolBarDisplay = 5;
+                    $scope.pager.recordsCount = data.eventRows.length;
 
                     angular.forEach(data.eventRows, function(row){
-                        var overdueEvent = {};                    
+                        var overdueEvent = {};
                         angular.forEach(row.attributes, function(att){
                             if( att.attribute && $scope.attributesById[att.attribute] ){
-                                att.value = CommonUtils.formatDataValue(null, att.value, $scope.attributesById[att.attribute], $scope.optionSets, 'USER');                
+                                att.value = CommonUtils.formatDataValue(null, att.value, $scope.attributesById[att.attribute], $scope.optionSets, 'USER');
                             }
                             overdueEvent[att.attribute] = att.value;                        
                         });
@@ -268,17 +261,19 @@ trackerCapture.controller('OverdueEventsController',
         return TEIGridService.getHeader($scope.gridColumns);
     };
     
-    $scope.jumpToPage = function(){
-        $scope.generateReport();
-    };
-    
-    $scope.resetPageSize = function(){
-        $scope.pager.page = 1;        
-        $scope.generateReport();
-    };
-    
-    $scope.getPage = function(page){    
+    $scope.onGetPage = function(page){
         $scope.pager.page = page;
+        $scope.generateReport();
+    };
+
+    $scope.onChangePageSize = function(newPageSize){
+        $scope.pager.page = 1;
+        $scope.pager.pageSize = newPageSize;
+        $scope.generateReport();
+    };
+
+    $scope.onChangePage = function(newPage){
+        $scope.pager.page = newPage;
         $scope.generateReport();
     };
 });
