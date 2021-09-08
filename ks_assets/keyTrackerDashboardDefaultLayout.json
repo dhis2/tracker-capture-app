@@ -1,0 +1,498 @@
+{
+  DM9n1bUw8W8: {
+    program: 'DM9n1bUw8W8',
+    widgets: [
+      {
+        show: true,
+        view: 'components/enrollment/enrollment.html',
+        order: 0,
+        title: 'enrollment',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: true,
+        view: 'components/rulebound/rulebound.html',
+        order: 1,
+        title: 'indicators',
+        expand: true,
+        parent: 'biggerWidget',
+        topBarView: 'components/rulebound/rulebound-topbar.html#indicators',
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: false,
+        view: 'components/dataentry/dataentry.html',
+        order: 2,
+        title: 'dataentry',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: true,
+        view: 'components/dataentry/dataentry-tabular-layout.html',
+        order: 3,
+        title: 'dataentryTabular',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: true,
+        view: 'components/report/tei-report.html',
+        order: 4,
+        title: 'report',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: false,
+        view: 'components/selected/selected.html',
+        order: 0,
+        title: 'current_selections',
+        expand: true,
+        parent: 'smallerWidget'
+      },
+      {
+        show: true,
+        view: 'components/rulebound/rulebound.html',
+        order: 1,
+        title: 'feedback',
+        expand: true,
+        parent: 'smallerWidget',
+        topBarView: 'components/rulebound/rulebound-topbar.html#feedback',
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: true,
+        view: 'components/profile/profile.html',
+        order: 2,
+        title: 'profile',
+        expand: true,
+        parent: 'smallerWidget',
+        topBarView: 'components/profile/profile-topbar.html',
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: true,
+        view: 'components/relationship/relationship.html',
+        order: 3,
+        title: 'relationships',
+        expand: true,
+        parent: 'smallerWidget'
+      },
+      {
+        show: true,
+        view: 'components/notes/notes.html',
+        order: 4,
+        title: 'notes',
+        expand: true,
+        parent: 'smallerWidget'
+      },
+      {
+        show: false,
+        view: 'components/messaging/messaging.html',
+        order: 5,
+        title: 'messaging',
+        expand: true,
+        parent: 'smallerWidget'
+      }
+    ],
+    topBarSettings: {},
+    programStageTimeLineLayout: {}
+  },
+  STKyXc3OT7i: {
+    program: 'STKyXc3OT7i',
+    widgets: [
+      {
+        show: true,
+        view: 'components/enrollment/enrollment.html',
+        order: 0,
+        title: 'enrollment',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: false,
+        view: 'components/rulebound/rulebound.html',
+        order: 2,
+        title: 'indicators',
+        expand: true,
+        parent: 'biggerWidget',
+        topBarView: 'components/rulebound/rulebound-topbar.html#indicators',
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: false,
+        view: 'components/dataentry/dataentry.html',
+        order: 4,
+        title: 'dataentry',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: false,
+        view: 'components/dataentry/dataentry-tabular-layout.html',
+        order: 5,
+        title: 'dataentryTabular',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: false,
+        view: 'components/report/tei-report.html',
+        order: 6,
+        title: 'report',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: false,
+        view: 'components/selected/selected.html',
+        order: 0,
+        title: 'current_selections',
+        expand: true,
+        parent: 'smallerWidget'
+      },
+      {
+        show: false,
+        view: 'components/rulebound/rulebound.html',
+        order: 1,
+        title: 'feedback',
+        expand: true,
+        parent: 'smallerWidget',
+        topBarView: 'components/rulebound/rulebound-topbar.html#feedback',
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: true,
+        view: 'components/profile/profile.html',
+        order: 1,
+        title: 'profile',
+        expand: true,
+        parent: 'biggerWidget',
+        topBarView: 'components/profile/profile-topbar.html',
+        useAsTopBar: false,
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: true,
+        view: 'components/relationship/relationship.html',
+        order: 3,
+        title: 'relationships',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: true,
+        view: 'components/notes/notes.html',
+        order: 2,
+        title: 'notes',
+        expand: true,
+        parent: 'smallerWidget'
+      },
+      {
+        show: false,
+        view: 'components/messaging/messaging.html',
+        order: 3,
+        title: 'messaging',
+        expand: true,
+        parent: 'smallerWidget'
+      }
+    ],
+    topBarSettings: {
+      active: false
+    },
+    programStageTimeLineLayout: {}
+  },
+  plTOwEXJrb6: {
+    program: 'plTOwEXJrb6',
+    widgets: [
+      {
+        show: true,
+        view: 'components/enrollment/enrollment.html',
+        order: 6,
+        title: 'enrollment',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: true,
+        view: 'components/rulebound/rulebound.html',
+        order: 1,
+        title: 'indicators',
+        expand: true,
+        parent: 'biggerWidget',
+        topBarView: 'components/rulebound/rulebound-topbar.html#indicators',
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: false,
+        view: 'components/dataentry/dataentry.html',
+        order: 3,
+        title: 'dataentry',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: false,
+        view: 'components/dataentry/dataentry-tabular-layout.html',
+        order: 4,
+        title: 'dataentryTabular',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: false,
+        view: 'components/report/tei-report.html',
+        order: 5,
+        title: 'report',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: false,
+        view: 'components/selected/selected.html',
+        order: 0,
+        title: 'current_selections',
+        expand: true,
+        parent: 'smallerWidget'
+      },
+      {
+        show: true,
+        view: 'components/rulebound/rulebound.html',
+        order: 0,
+        title: 'feedback',
+        expand: true,
+        parent: 'biggerWidget',
+        topBarView: 'components/rulebound/rulebound-topbar.html#feedback',
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: true,
+        view: 'components/profile/profile.html',
+        order: 2,
+        title: 'profile',
+        expand: true,
+        parent: 'smallerWidget',
+        topBarView: 'components/profile/profile-topbar.html',
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: true,
+        view: 'components/relationship/relationship.html',
+        order: 1,
+        title: 'Indekser',
+        expand: true,
+        parent: 'biggerWidget',
+        customRelationship: 'index'
+      },
+      {
+        show: true,
+        view: 'components/relationship/relationship.html',
+        order: 2,
+        title: 'Nærkontakter',
+        expand: true,
+        parent: 'biggerWidget',
+        customRelationship: 'contact'
+      },
+      {
+        show: true,
+        view: 'components/relationship/relationship.html',
+        order: 3,
+        title: 'Personer som eies av andre kommuner',
+        expand: true,
+        parent: 'biggerWidget',
+        customRelationship: 'not_access'
+      },
+      {
+        show: true,
+        view: 'components/relationship/relationship.html',
+        order: 4,
+        title: 'Personer som ikke er gyldig nærkontakt eller indeks',
+        expand: true,
+        parent: 'biggerWidget',
+        customRelationship: 'other'
+      },
+      {
+        show: true,
+        view: 'components/notes/notes.html',
+        order: 5,
+        title: 'notes',
+        expand: true,
+        parent: 'smallerWidget'
+      },
+      {
+        show: true,
+        view: 'components/messaging/messaging.html',
+        order: 6,
+        title: 'messaging',
+        expand: true,
+        parent: 'smallerWidget'
+      },
+      {
+        show: false,
+        view: 'components/relationship/relationship.html',
+        order: 7,
+        title: 'relationships',
+        expand: true,
+        parent: 'smallerWidget'
+      }
+    ],
+    topBarSettings: {},
+    programStageTimeLineLayout: {}
+  },
+  uYjxkTbwRNf: {
+    program: 'uYjxkTbwRNf',
+    widgets: [
+      {
+        show: true,
+        view: 'components/enrollment/enrollment.html',
+        order: 0,
+        title: 'enrollment',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: true,
+        view: 'components/rulebound/rulebound.html',
+        order: 0,
+        title: 'indicators',
+        expand: true,
+        parent: 'biggerWidget',
+        topBarView: 'components/rulebound/rulebound-topbar.html#indicators',
+        useAsTopBar: true,
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: false,
+        view: 'components/dataentry/dataentry.html',
+        order: 1,
+        title: 'dataentry',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: true,
+        view: 'components/dataentry/dataentry-tabular-layout.html',
+        order: 2,
+        title: 'dataentryTabular',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: true,
+        view: 'components/report/tei-report.html',
+        order: 3,
+        title: 'report',
+        expand: true,
+        parent: 'biggerWidget'
+      },
+      {
+        show: false,
+        view: 'components/selected/selected.html',
+        order: 0,
+        title: 'current_selections',
+        expand: true,
+        parent: 'smallerWidget'
+      },
+      {
+        show: true,
+        view: 'components/rulebound/rulebound.html',
+        order: 1,
+        title: 'feedback',
+        expand: true,
+        parent: 'smallerWidget',
+        topBarView: 'components/rulebound/rulebound-topbar.html#feedback',
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: true,
+        view: 'components/profile/profile.html',
+        order: 2,
+        title: 'profile',
+        expand: true,
+        parent: 'smallerWidget',
+        topBarView: 'components/profile/profile-topbar.html',
+        canBeUsedAsTopBar: true
+      },
+      {
+        show: true,
+        view: 'components/relationship/relationship.html',
+        order: 3,
+        title: 'relationships',
+        expand: true,
+        parent: 'smallerWidget'
+      },
+      {
+        show: true,
+        view: 'components/notes/notes.html',
+        order: 4,
+        title: 'notes',
+        expand: true,
+        parent: 'smallerWidget'
+      },
+      {
+        show: true,
+        view: 'components/messaging/messaging.html',
+        order: 5,
+        title: 'messaging',
+        expand: true,
+        parent: 'smallerWidget'
+      }
+    ],
+    topBarSettings: {
+      active: true,
+      selectedFields: {
+        JPxAOeSUy1f: {
+          show: true,
+          order: 1
+        },
+        LubY7O65xdd: {
+          show: true,
+          order: 5
+        },
+        US91dSuQXsJ: {
+          show: true,
+          order: 2
+        },
+        UnB5Pwi5K6K: {
+          show: true,
+          order: 6
+        },
+        VE9shczBkR2: {
+          show: true,
+          order: 3
+        },
+        ZpJOV298RXR: {
+          show: true,
+          order: 5
+        },
+        cLvhTD52drH: {
+          show: true,
+          order: 6
+        },
+        mXU7mlWOUlv: {
+          show: true,
+          order: 7
+        },
+        o3AFOMiznM9: {
+          show: true,
+          order: 4
+        },
+        sAn5Uxj8HBp: {
+          show: true,
+          order: 6
+        },
+        um0Qg2uwnl1: {
+          show: true,
+          order: 6
+        },
+        vXuve1zNw9x: {
+          show: true,
+          order: 8
+        }
+      }
+    },
+    programStageTimeLineLayout: {}
+  }
+}
