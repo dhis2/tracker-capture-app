@@ -25,6 +25,9 @@
             <div ng-if="relatedTeis.length > 0">
                 <table class="table table-striped dhis2-table-hover table-bordered">
                     <tr>
+                        <th ng-if="relationshipsWidget.customRelationship === 'other_org_owner'">
+                            Eierkommune
+                        </th>
                         <th ng-if="!relationshipsWidget.customRelationship">
                             <a ng-click="setOrderTeiBy('relName')" title="Sorter på relasjoner" class="ks-sort-link">
                             {{'relationship' | translate}}
@@ -66,6 +69,9 @@
                         <th ng-if="isDuplikatsjekk()">Slå sammen</th>
                     </tr>
                     <tr ng-repeat="rel in relatedTeis | orderBy:getTeiOrderValue:orderReverse">
+                        <td ng-if="relationshipsWidget.customRelationship === 'other_org_owner'">
+                            {{getOwnerOrgUnitName(rel)}}
+                        </td>
                         <td ng-if="!relationshipsWidget.customRelationship" ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)">{{rel.relName}}</td>
                         <td ng-attr-title="{{'go_to_dashboard'| translate}}" ng-click="showDashboard(rel.trackedEntityInstance, rel.relationshipProgramConstraint.id)" ng-repeat="att in relationshipAttributes" ng-if="att.trackedEntityAttribute.displayInListNoProgram">
                             {{rel.attributes[att.trackedEntityAttribute.id]}}

@@ -30,6 +30,7 @@ trackerCapture.controller('RelationshipController',
               $timeout,
               $q,
               DHIS2EventFactory,
+              TCStorageService,
               DateUtils) {
         $rootScope.showAddRelationshipDiv = false;
         $scope.relatedProgramRelationship = false;
@@ -232,8 +233,9 @@ trackerCapture.controller('RelationshipController',
                     $scope.updateIndicators(relative, startDate, endDate);
                     promise.resolve();
                 });
-            } else if ($scope.relationshipsWidget.customRelationship == 'not_access') {
+            } else if ($scope.relationshipsWidget.customRelationship == 'other_org_owner') {
                 if (!$scope.hasAccessToRelativeProgram(relative, NAERKONTAKT_PROGRAM_ID) && !$scope.hasAccessToRelativeProgram(relative, INDEKSERING_PROGRAM_ID)) {
+                    $scope.addOrgNameToProgramOwners(relative);
                     $scope.relatedTeis.push(relative);
                     promise.resolve();
                 }
@@ -384,6 +386,26 @@ trackerCapture.controller('RelationshipController',
                 return false;
             });
         }
+
+        $scope.addOrgNameToProgramOwners = function(relative) {
+            angular.forEach(relative.programOwners, programOwner => {
+                TCStorageService.currentStore.get('organisationUnits', programOwner.ownerOrgUnit).done(function(orgUnit){
+                    programOwner.ownerOrgUnitName = orgUnit.displayName;
+                });
+            })
+        }
+
+        $scope.getOwnerOrgUnitName = function(relative) {
+            var indeksOwner = relative.programOwners.filter(owner => owner.program === INDEKSERING_PROGRAM_ID);
+            var naerkontaktOwner = relative.programOwners.filter(owner => owner.program === NAERKONTAKT_PROGRAM_ID);
+            if(indeksOwner.length > 0) {
+                return indeksOwner[0].ownerOrgUnitName;
+            }
+            if(naerkontaktOwner.length > 0) {
+                return naerkontaktOwner[0].ownerOrgUnitName;
+            }
+            return 'Ukjent';
+        };
 
         $scope.updateIndicators = function (relative, startDate, endDate) {
             if (relative.status == 'Death') {
