@@ -1,11 +1,11 @@
 <div class="panel panel-default-custom" ng-class="{'disable-clicks':selectedOrgUnit.closedStatus}" ng-controller="RelationshipController" ng-show="shouldShowRelationshipBox(relationshipsWidget, relatedTeis)">
     <div class="panel-heading handle bold">
         {{relationshipsWidget.title| translate}}
-        <span class="nav-pills" ng-if="selectedTei && selectedProgram.relationshipText  && !selectedTei.inactive && selectedProgram.access.data.write">
+        <span class="nav-pills" ng-if="shouldShowAddRelationshipLink(relationshipsWidget) && selectedTei && selectedProgram.relationshipText  && !selectedTei.inactive && selectedProgram.access.data.write">
             | <a href ng-click="showAddRelationship(true)" ng-attr-title="{{'add_relationship'| translate}}"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [showAddRelationshipDiv]">{{selectedProgram.relationshipText}}</span></a>
         </span>        
         
-        <span class="nav-pills" ng-if="selectedTei  && !selectedTei.inactive && selectedProgram.access.data.write">
+        <span class="nav-pills" ng-if="shouldShowAddRelationshipLink(relationshipsWidget)  && selectedTei  && !selectedTei.inactive && selectedProgram.access.data.write">
             | <a href ng-click="showAddRelationship(false)" ng-attr-title="{{'add_relationship'| translate}}"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [showAddRelationshipDiv]">{{'add' | translate}}</span></a>
         </span>
         
@@ -19,8 +19,8 @@
     </div>
     <div ng-show="relationshipsWidget.expand" class="panel-body dashboard-widget-container">
         <div>
-            <div ng-if="relationshipsWidget.customRelationship === 'other_org_owner'" class="alert alert-warning">Disse relasjonene er registrer av/tilhører andre kommuner. Ta kontakt med eierkommune dersom du ønsker å overføre relasjonen til din kommune.</div>
-            <div ng-if="relationshipsWidget.customRelationship === 'other'" class="alert alert-warning">Disse relasjonene passer ikke inn i kategoriene over. Sjekk at klyngen har rett start- og sluttdato, og at relasjonen er registrer som nærkontakt eller er indeks med symptomstart innen for start- og sluttdato for klyngen</div>
+            <div ng-show="relationshipsWidget.customRelationship === 'other_org_owner'" class="alert alert-warning">Disse personene er registrert av/tilhører en annen kommune. Ta kontakt med aktuell kommune dersom du ønsker å ta over oppfølgingen av personen til din kommune.</div>
+            <div ng-show="relationshipsWidget.customRelationship === 'other'" class="alert alert-warning">Disse personene passer ikke inn i kategoriene over. Sjekk at klyngen har rett start- og sluttdato, og at personen er registrert som nærkontakt eller er indeks med symptomstart innen for start- og sluttdato for klyngen.</div>
 
             <div ng-show="selectedTei && !selectedTei.relationships || selectedTei.relationships.length < 1 || (relatedTeis.length < 1 && relatedEvents.length < 1)" class="alert alert-warning">{{noRelationshipLabel}}</div>
             <div ng-show="!selectedTei" class="alert alert-danger">{{'relationship_not_possible'| translate}}</div>
@@ -29,7 +29,7 @@
                 <table class="table table-striped dhis2-table-hover table-bordered">
                     <tr>
                         <th ng-if="relationshipsWidget.customRelationship === 'other_org_owner'">
-                            Eierkommune
+                            Eies av
                         </th>
                         <th ng-if="!relationshipsWidget.customRelationship">
                             <a ng-click="setOrderTeiBy('relName')" title="Sorter på relasjoner" class="ks-sort-link">

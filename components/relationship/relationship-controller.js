@@ -217,6 +217,13 @@ trackerCapture.controller('RelationshipController',
             return true;
         }
 
+        $scope.shouldShowAddRelationshipLink = function(relationshipsWidget) {
+            if($scope.relationshipsWidget && ($scope.relationshipsWidget.customRelationship === 'other_org_owner' || $scope.relationshipsWidget.customRelationship === 'other')) {
+                return false;
+            }
+            return true;
+        }
+
         var pushRelative = function (relative) {
 
             var promise = $q.defer();
