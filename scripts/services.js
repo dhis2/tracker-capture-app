@@ -1093,7 +1093,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 var tei = response.data;
                 setTeiAttributeValues(tei.attributes, optionSets, attributesById);
                 return tei;
-
             }, function(error){
                 if(error){
                     var headerText = errorHeader;
@@ -1118,6 +1117,29 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        getTeiWithAllAvailableFields: function(entityUid, optionSets, attributesById) {
+            var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json?fields=*').then(function(response){
+                var tei = response.data;
+                setTeiAttributeValues(tei.attributes, optionSets, attributesById);
+                return tei;
+            }, function(error){
+                if(error){
+                    var headerText = errorHeader;
+                    var bodyText = $translate.instant('access_denied');
+
+                    if(error.statusText) {
+                        headerText = error.statusText;
+                    }
+                    if(error.data && error.data.message) {
+                        bodyText = error.data.message;
+                    }
+                    NotificationService.showNotifcationDialog( headerText,  bodyText);
+                }
+            });
+
+            return promise;
+        },
+
         saveRelationship: function(relationship) {
             var promise = $http.post( DHIS2URL + '/relationships', relationship).then(function(response){
                 return response.data;

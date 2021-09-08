@@ -3,7 +3,12 @@
 import {convertToCorrectDateString} from "../../utils/converters";
 
 const {program} = require("babel-types");
-import {DUPLIKAT_PROGRAM_ID, INNREISE_PROGRAM_ID} from "../../utils/constants";
+import {
+    DUPLIKAT_PROGRAM_ID, INDEKSERING_HELSESTATUS_PROGRAM_STAGE_ID,
+    INDEKSERING_PROGRAM_ID, INDEKSERING_TESTRESULT_PROGRAM_STAGE_ID,
+    INNREISE_PROGRAM_ID, NAERKONTAKT_OPPFOLGING_PROGRAM_STAGE_ID,
+    NAERKONTAKT_PROGRAM_ID
+} from "../../utils/constants";
 import {registerInnreiseDuplicateToExisting, registerNewInnreiseProfil} from "../../ks_patches/innreise_duplicates";
 
 var trackerCapture = angular.module('trackerCapture');
@@ -211,157 +216,229 @@ trackerCapture.controller('RelationshipController',
             });
 
             if ($scope.relationshipsWidget.customRelationship == 'index') {
-                relative.relationshipProgramConstraint.id = 'uYjxkTbwRNf';
-                TEIService.getWithProgramData(relative.trackedEntityInstance, 'uYjxkTbwRNf', $scope.optionSets, $scope.attributesById).then(function (teiIndex) {
-                    angular.forEach(teiIndex.enrollments, function (enrollment) {
-                        if (enrollment.program == 'uYjxkTbwRNf') {
-                            var symptomsOnsetMoment = moment(DateUtils.formatFromUserToApi(enrollment.incidentDate));
-                            if ((symptomsOnsetMoment.isSame(startDate) || symptomsOnsetMoment.isAfter(startDate)) && (!endDate || symptomsOnsetMoment.isBefore(endDate))) {
-                                relative.symptomsOnsetMoment = symptomsOnsetMoment;
-                                relative.symptomsOnset = enrollment.incidentDate;
-                                relative.created = enrollment.incidentDate;
-                            }
-                        }
-
-                    });
-
-                    if (relative.symptomsOnset) {
+                $scope.checkIsValidIndexRelationAndUpdateRelative(relative, startDate, endDate).then(isValid => {
+                    if (isValid) {
                         $scope.relatedTeis.push(relative);
                     }
                     promise.resolve();
                 });
-            } else if ($scope.relationshipsWidget.customRelationship == 'contact') {
-                relative.relationshipProgramConstraint.id = 'DM9n1bUw8W8';
-                TEIService.getWithProgramData(relative.trackedEntityInstance, 'DM9n1bUw8W8', $scope.optionSets, $scope.attributesById).then(function (teiIndex) {
-                    angular.forEach(teiIndex.enrollments, function (enrollment) {
-                        if (enrollment.program == 'DM9n1bUw8W8') {
-                            var contactDateMoment;
 
-                            angular.forEach(enrollment.events, function (event) {
-                                if ((!endDate || moment(event.eventDate).isBefore(endDate)) && (moment(event.eventDate).isAfter(startDate) || moment(event.eventDate).isSame(startDate)) && event.programStage == 'sAV9jAajr8x') {
-                                    //this is the followup event in the contact program: event date is contact time.
-                                    if (!contactDateMoment || moment(event.eventDate).isBefore(contactDateMoment)) {
-                                        //only update the contact date if it is older than the previous one, we want the first contact date that is relevant
-                                        contactDateMoment = moment(event.eventDate);
-                                    }
+            } else if ($scope.relationshipsWidget.customRelationship == 'contact') {
+                $scope.checkIsValidNaerkontaktRelationAndUpdateRelative(relative, startDate, endDate).then(isValid => {
+                    if (isValid) {
+                        $scope.relatedTeis.push(relative);
+                    }
+
+                    $scope.updateIndicators(relative, startDate, endDate);
+                    promise.resolve();
+                });
+            } else if ($scope.relationshipsWidget.customRelationship == 'not_access') {
+                if (!$scope.hasAccessToRelativeProgram(relative, NAERKONTAKT_PROGRAM_ID) && !$scope.hasAccessToRelativeProgram(relative, INDEKSERING_PROGRAM_ID)) {
+                    $scope.relatedTeis.push(relative);
+                    promise.resolve();
+                }
+            } else if ($scope.relationshipsWidget.customRelationship == 'other') {
+                // If acccess to one of programs, then it is not caught by 'not_access'
+                if ($scope.hasAccessToRelativeProgram(relative, NAERKONTAKT_PROGRAM_ID) || $scope.hasAccessToRelativeProgram(relative, INDEKSERING_PROGRAM_ID)) {
+                    promise.resolve();
+                } else {
+                    $scope.checkIsValidIndexRelationAndUpdateRelative(relative, startDate, endDate).then(isValid => {
+                        if (isValid) {
+                            // If valid, then it is caught by 'index'
+                            promise.resolve();
+                        } else {
+                            $scope.checkIsValidNaerkontaktRelationAndUpdateRelative(relative, startDate, endDate).then(isValid => {
+                                if (isValid) {
+                                    // If valid, then it is caught by 'contact'
+                                    promise.resolve();
+                                } else {
+                                    // Not caught by any other, so added to 'other'
+                                    $scope.relatedTeis.push(relative);
+                                    promise.resolve();
                                 }
                             });
-
-                            if (contactDateMoment && (!endDate || contactDateMoment.isBefore(endDate))) {
-                                relative.contactDateMoment = contactDateMoment
-                                relative.contactDate = DateUtils.formatFromApiToUser(contactDateMoment);
-
-                                relative.created = DateUtils.formatFromApiToUser(contactDateMoment);
-
-                            }
-                        }
-
-                        //TODO: Check wether we keep the API behavior of returning other programs the user has access to as well as the requested program:
-                        if (enrollment.program == 'uYjxkTbwRNf') {
-                            var symptomsOnsetMoment = moment(DateUtils.formatFromUserToApi(enrollment.incidentDate));
-                            if ((symptomsOnsetMoment.isSame(startDate) || symptomsOnsetMoment.isAfter(startDate)) && (!endDate || symptomsOnsetMoment.isBefore(endDate))) {
-                                angular.forEach(enrollment.events, function (event) {
-                                    if ((!endDate || moment(event.eventDate).isBefore(endDate)) && moment(event.eventDate).isAfter(startDate)) {
-                                        //Health condition:
-                                        if (event.programStage == 'oqsk2Jv4k3s') {
-                                            angular.forEach(event.dataValues, function (dataValue) {
-                                                if (dataValue.dataElement == 'bOYWVEBaWy6') {
-                                                    relative.status = dataValue.value;
-                                                }
-                                            });
-                                        }
-
-                                        //Virus Mutation
-                                        if (event.programStage == 'dDHkBd3X8Ce') {
-                                            angular.forEach(event.dataValues, function (dataValue) {
-                                                if (dataValue.dataElement == 'NupAfWpNXMw') {
-                                                    relative.mutation = dataValue.value;
-                                                }
-                                            });
-                                        }
-
-                                        //Serious condition
-                                        if (event.programStage == 'LpWNjNGvCO5') {
-                                            angular.forEach(event.dataValues, function (dataValue) {
-                                                if (dataValue.dataElement == 'uUIPBIznDZT') {
-                                                    relative.condition = dataValue.value;
-                                                }
-                                            });
-                                        }
-                                    }
-                                });
-                                relative.symptomsOnset = enrollment.incidentDate;
-                                relative.symptomsOnsetMoment = symptomsOnsetMoment;
-                            }
                         }
                     });
-
-                    if (relative.status == 'Death') {
-                        $scope.indicators.death++;
-                    }
-                    if (relative.status == 'HOSPITAL') {
-                        $scope.indicators.hospital++;
-                    }
-
-                    if (relative.mutation == 'true') {
-                        $scope.indicators.mutation++;
-                    }
-
-                    if (relative.condition == 'true') {
-                        $scope.indicators.underlyingCondition++;
-                    }
-
-                    if (relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isAfter(startDate.add(9, 'days'))) {
-                        $scope.indicators.positiveContact10++;
-                    }
-
-                    //Now indicators.
-                    if (relative.symptomsOnsetMoment && (!endDate || relative.symptomsOnsetMoment.isBefore(endDate))) {
-                        $scope.indicators.indexNow++;
-                    } else if (relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
-                        $scope.indicators.contactNow++;
-                    }
-
-                    //D01 indicators.
-                    if (relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(1, 'days'))) {
-                        $scope.indicators.index1++;
-                    } else if (relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
-                        $scope.indicators.contact1++;
-                    }
-
-                    //D10 indicators.
-                    if (relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(10, 'days'))) {
-                        $scope.indicators.index10++;
-                    } else if (relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
-                        $scope.indicators.contact10++;
-                    }
-
-                    //D21 indicators.
-                    if (relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(21, 'days'))) {
-                        $scope.indicators.index21++;
-                    } else if (relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
-                        $scope.indicators.contact21++;
-                    }
-
-                    //D30 indicators.
-                    if (relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(30, 'days'))) {
-                        $scope.indicators.index30++;
-                    } else if (relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
-                        $scope.indicators.contact30++;
-                    }
-
-                    if (!relative.symptomsOnset) {
-                        $scope.relatedTeis.push(relative);
-                    }
-
-                    promise.resolve();
-                });
+                }
             } else {
                 $scope.relatedTeis.push(relative);
                 promise.resolve();
             }
 
             return promise.promise;
+        }
+
+        $scope.hasAccessToRelativeProgram = function (relative, programId) {
+            var hasAccess = false;
+            if (relative && relative.programOwners) {
+                angular.forEach(relative.programOwners, function (programOwner) {
+                    if (programOwner.program === programId && programOwner.ownerOrgUnit === 'ScyeDxgMbBm') {
+                        hasAccess = true;
+                    }
+                });
+            }
+            return hasAccess;
+        }
+
+        $scope.checkIsValidIndexRelationAndUpdateRelative = function (relative, startDate, endDate) {
+            relative.relationshipProgramConstraint.id = INDEKSERING_PROGRAM_ID;
+            if (!$scope.hasAccessToRelativeProgram(relative, INDEKSERING_PROGRAM_ID)) {
+                return false;
+            }
+            return TEIService.getWithProgramData(relative.trackedEntityInstance, INDEKSERING_PROGRAM_ID, $scope.optionSets, $scope.attributesById).then(function (teiIndex) {
+                angular.forEach(teiIndex.enrollments, function (enrollment) {
+                    if (enrollment.program == INDEKSERING_PROGRAM_ID) {
+                        var symptomsOnsetMoment = moment(DateUtils.formatFromUserToApi(enrollment.incidentDate));
+                        if ((symptomsOnsetMoment.isSame(startDate) || symptomsOnsetMoment.isAfter(startDate)) && (!endDate || symptomsOnsetMoment.isBefore(endDate))) {
+                            relative.symptomsOnsetMoment = symptomsOnsetMoment;
+                            relative.symptomsOnset = enrollment.incidentDate;
+                            relative.created = enrollment.incidentDate;
+                        }
+                    }
+
+                });
+
+                if (relative.symptomsOnset) {
+                    return true;
+                }
+            }, function (error) {
+                return false;
+            });
+        }
+
+        $scope.checkIsValidNaerkontaktRelationAndUpdateRelative = function (relative, startDate, endDate) {
+            relative.relationshipProgramConstraint.id = NAERKONTAKT_PROGRAM_ID;
+            if (!$scope.hasAccessToRelativeProgram(relative, NAERKONTAKT_PROGRAM_ID)) {
+                return false;
+            }
+            return TEIService.getWithProgramData(relative.trackedEntityInstance, NAERKONTAKT_PROGRAM_ID, $scope.optionSets, $scope.attributesById).then(function (teiIndex) {
+                angular.forEach(teiIndex.enrollments, function (enrollment) {
+                    if (enrollment.program == NAERKONTAKT_PROGRAM_ID) {
+                        var contactDateMoment;
+
+                        angular.forEach(enrollment.events, function (event) {
+                            if ((!endDate || moment(event.eventDate).isBefore(endDate)) && (moment(event.eventDate).isAfter(startDate) || moment(event.eventDate).isSame(startDate)) && event.programStage == NAERKONTAKT_OPPFOLGING_PROGRAM_STAGE_ID) {
+                                //this is the followup event in the contact program: event date is contact time.
+                                if (!contactDateMoment || moment(event.eventDate).isBefore(contactDateMoment)) {
+                                    //only update the contact date if it is older than the previous one, we want the first contact date that is relevant
+                                    contactDateMoment = moment(event.eventDate);
+                                }
+                            }
+                        });
+
+                        if (contactDateMoment && (!endDate || contactDateMoment.isBefore(endDate))) {
+                            relative.contactDateMoment = contactDateMoment;
+                            relative.contactDate = DateUtils.formatFromApiToUser(contactDateMoment);
+
+                            relative.created = DateUtils.formatFromApiToUser(contactDateMoment);
+
+                        }
+                    }
+
+                    //TODO: Check wether we keep the API behavior of returning other programs the user has access to as well as the requested program:
+                    if (enrollment.program == INDEKSERING_PROGRAM_ID) {
+                        var symptomsOnsetMoment = moment(DateUtils.formatFromUserToApi(enrollment.incidentDate));
+                        if ((symptomsOnsetMoment.isSame(startDate) || symptomsOnsetMoment.isAfter(startDate)) && (!endDate || symptomsOnsetMoment.isBefore(endDate))) {
+                            angular.forEach(enrollment.events, function (event) {
+                                if ((!endDate || moment(event.eventDate).isBefore(endDate)) && moment(event.eventDate).isAfter(startDate)) {
+                                    //Health condition:
+                                    if (event.programStage == INDEKSERING_HELSESTATUS_PROGRAM_STAGE_ID) {
+                                        angular.forEach(event.dataValues, function (dataValue) {
+                                            if (dataValue.dataElement == 'bOYWVEBaWy6') {
+                                                relative.status = dataValue.value;
+                                            }
+                                        });
+                                    }
+
+                                    //Virus Mutation
+                                    if (event.programStage == INDEKSERING_TESTRESULT_PROGRAM_STAGE_ID) {
+                                        angular.forEach(event.dataValues, function (dataValue) {
+                                            if (dataValue.dataElement == 'NupAfWpNXMw') {
+                                                relative.mutation = dataValue.value;
+                                            }
+                                        });
+                                    }
+
+                                    //Serious condition
+                                    if (event.programStage == 'LpWNjNGvCO5') {
+                                        angular.forEach(event.dataValues, function (dataValue) {
+                                            if (dataValue.dataElement == 'uUIPBIznDZT') {
+                                                relative.condition = dataValue.value;
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            relative.symptomsOnset = enrollment.incidentDate;
+                            relative.symptomsOnsetMoment = symptomsOnsetMoment;
+                        }
+                    }
+                });
+
+                if (!relative.symptomsOnset) {
+                    return true;
+                }
+                return false;
+
+            }, function (error) {
+                return false;
+            });
+        }
+
+        $scope.updateIndicators = function (relative, startDate, endDate) {
+            if (relative.status == 'Death') {
+                $scope.indicators.death++;
+            }
+            if (relative.status == 'HOSPITAL') {
+                $scope.indicators.hospital++;
+            }
+
+            if (relative.mutation == 'true') {
+                $scope.indicators.mutation++;
+            }
+
+            if (relative.condition == 'true') {
+                $scope.indicators.underlyingCondition++;
+            }
+
+            if (relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isAfter(startDate.add(9, 'days'))) {
+                $scope.indicators.positiveContact10++;
+            }
+
+            //Now indicators.
+            if (relative.symptomsOnsetMoment && (!endDate || relative.symptomsOnsetMoment.isBefore(endDate))) {
+                $scope.indicators.indexNow++;
+            } else if (relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
+                $scope.indicators.contactNow++;
+            }
+
+            //D01 indicators.
+            if (relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(1, 'days'))) {
+                $scope.indicators.index1++;
+            } else if (relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
+                $scope.indicators.contact1++;
+            }
+
+            //D10 indicators.
+            if (relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(10, 'days'))) {
+                $scope.indicators.index10++;
+            } else if (relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
+                $scope.indicators.contact10++;
+            }
+
+            //D21 indicators.
+            if (relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(21, 'days'))) {
+                $scope.indicators.index21++;
+            } else if (relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
+                $scope.indicators.contact21++;
+            }
+
+            //D30 indicators.
+            if (relative.symptomsOnsetMoment && relative.symptomsOnsetMoment.isBefore(startDate.add(30, 'days'))) {
+                $scope.indicators.index30++;
+            } else if (relative.contactDateMoment && (!endDate || relative.contactDateMoment.isBefore(endDate))) {
+                $scope.indicators.contact30++;
+            }
         }
 
         var setRelationships = function () {
@@ -404,7 +481,7 @@ trackerCapture.controller('RelationshipController',
                         var teiId = isValidToRelationship ? rel.to.trackedEntityInstance.trackedEntityInstance : rel.from.trackedEntityInstance.trackedEntityInstance;
 
                         if (isValidToRelationship || isValidFromRelationship) {
-                            queries.push(TEIService.get(teiId, $scope.optionSets, $scope.attributesById).then(function (tei) {
+                            queries.push(TEIService.getTeiWithAllAvailableFields(teiId, $scope.optionSets, $scope.attributesById).then(function (tei) {
                                     relationshipType = $scope.relationshipTypes.find(function (relType) {
                                         return relType.id === rel.relationshipType;
                                     });
@@ -421,7 +498,8 @@ trackerCapture.controller('RelationshipController',
                                         attributes: getRelativeAttributes(tei.attributes),
                                         relationshipProgramConstraint: relationshipProgram,
                                         relationshipType: relationshipType,
-                                        created: rel.created
+                                        created: rel.created,
+                                        programOwners: tei.programOwners,
                                     };
 
                                     if (relationshipType && teiTypes.filter(function (teiType) {

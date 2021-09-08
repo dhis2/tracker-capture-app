@@ -286,7 +286,7 @@ trackerCapture.controller('DashboardController',
             }
             selectedLayout = !selectedLayout ? defaultLayout : selectedLayout;
 
-            if($scope.selectedProgram && $scope.lockedList[$scope.selectedProgram.id]) {
+            if($scope.selectedProgram && $scope.lockedList && $scope.lockedList[$scope.selectedProgram.id]) {
                 selectedLayout = $scope.dashboardLayouts.defaultLayout[$scope.selectedProgram.id] ? $scope.dashboardLayouts.defaultLayout[$scope.selectedProgram.id] : defaultLayout;
             }
             
