@@ -205,20 +205,20 @@ trackerCapture.controller('RelationshipController',
         };
 
         $scope.shouldShowRelationshipBox = function (relationshipsWidget, relatedTeis) {
-            if (!$scope.relationshipsWidget || !$scope.relationshipsWidget.customRelationship) {
+            if (!relationshipsWidget || !relationshipsWidget.customRelationship) {
                 return true;
             }
-            if ($scope.relationshipsWidget.customRelationship === 'other_org_owner' && !(relatedTeis && relatedTeis.length > 0)) {
+            if (relationshipsWidget.customRelationship === 'other_org_owner' && !(relatedTeis && relatedTeis.length > 0)) {
                 return false;
             }
-            if ($scope.relationshipsWidget.customRelationship === 'other' && !(relatedTeis && relatedTeis.length > 0)) {
+            if (relationshipsWidget.customRelationship === 'other' && !(relatedTeis && relatedTeis.length > 0)) {
                 return false;
             }
             return true;
         }
 
         $scope.shouldShowAddRelationshipLink = function (relationshipsWidget) {
-            if ($scope.relationshipsWidget && ($scope.relationshipsWidget.customRelationship === 'other_org_owner' || $scope.relationshipsWidget.customRelationship === 'other')) {
+            if (relationshipsWidget && (relationshipsWidget.customRelationship === 'other_org_owner' || relationshipsWidget.customRelationship === 'other')) {
                 return false;
             }
             return true;
@@ -239,7 +239,8 @@ trackerCapture.controller('RelationshipController',
                 }
 
             } else if ($scope.relationshipsWidget.customRelationship == 'contact') {
-                if ($scope.checkIsValidNaerkontaktRelationAndUpdateRelative(relative, startDate, endDate)) {
+                var isInIndex = $scope.checkIsValidIndexRelationAndUpdateRelative(relative, startDate, endDate);
+                if (!isInIndex && $scope.checkIsValidNaerkontaktRelationAndUpdateRelative(relative, startDate, endDate)) {
                     $scope.relatedTeis.push(relative);
                 }
 
@@ -250,10 +251,10 @@ trackerCapture.controller('RelationshipController',
                     $scope.relatedTeis.push(relative);
                 }
             } else if ($scope.relationshipsWidget.customRelationship == 'other') {
-
                 var isInNotAccess = !$scope.hasAccessToRelativeProgram(relative, NAERKONTAKT_PROGRAM_ID) && !$scope.hasAccessToRelativeProgram(relative, INDEKSERING_PROGRAM_ID);
                 var isInIndex = $scope.checkIsValidIndexRelationAndUpdateRelative(relative, startDate, endDate);
                 var isInNaerkontakt = $scope.checkIsValidNaerkontaktRelationAndUpdateRelative(relative, startDate, endDate);
+
                 if (!isInNotAccess && !isInIndex && !isInNaerkontakt) {
                     $scope.relatedTeis.push(relative);
                 }
@@ -324,52 +325,8 @@ trackerCapture.controller('RelationshipController',
 
                     }
                 }
-
-                //TODO: Check wether we keep the API behavior of returning other programs the user has access to as well as the requested program:
-                if (enrollment.program == INDEKSERING_PROGRAM_ID) {
-                    var symptomsOnsetMoment = moment(enrollment.incidentDate);
-
-                    if ((symptomsOnsetMoment.isSame(startDate) || symptomsOnsetMoment.isAfter(startDate)) && (!endDate || symptomsOnsetMoment.isBefore(endDate))) {
-                        angular.forEach(enrollment.events, function (event) {
-                            if ((!endDate || moment(event.eventDate).isBefore(endDate)) && moment(event.eventDate).isAfter(startDate)) {
-                                //Health condition:
-                                if (event.programStage == INDEKSERING_HELSESTATUS_PROGRAM_STAGE_ID) {
-                                    angular.forEach(event.dataValues, function (dataValue) {
-                                        if (dataValue.dataElement == 'bOYWVEBaWy6') {
-                                            relative.status = dataValue.value;
-                                        }
-                                    });
-                                }
-
-                                //Virus Mutation
-                                if (event.programStage == INDEKSERING_TESTRESULT_PROGRAM_STAGE_ID) {
-                                    angular.forEach(event.dataValues, function (dataValue) {
-                                        if (dataValue.dataElement == 'NupAfWpNXMw') {
-                                            relative.mutation = dataValue.value;
-                                        }
-                                    });
-                                }
-
-                                //Serious condition
-                                if (event.programStage == 'LpWNjNGvCO5') {
-                                    angular.forEach(event.dataValues, function (dataValue) {
-                                        if (dataValue.dataElement == 'uUIPBIznDZT') {
-                                            relative.condition = dataValue.value;
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                        relative.symptomsOnset = enrollment.incidentDate;
-                        relative.symptomsOnsetMoment = symptomsOnsetMoment;
-                    }
-                }
             });
-
-            if (!relative.symptomsOnset) {
-                return true;
-            }
-            return false;
+            return true;
         }
 
         $scope.addOrgNameToProgramOwners = function (relative) {
@@ -499,7 +456,7 @@ trackerCapture.controller('RelationshipController',
                                     }
 
                                     var relative = {
-                                        ...tei,
+                                        ...tei, // copy the whole tei to omit extra calls to backend
                                         trackedEntityInstance: teiId,
                                         relName: relName,
                                         relId: rel.relationship,
