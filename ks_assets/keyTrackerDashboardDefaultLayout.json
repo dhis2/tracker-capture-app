@@ -299,7 +299,7 @@
         show: true,
         view: 'components/relationship/relationship.html',
         order: 3,
-        title: 'Personer som eies av andre kommuner',
+        title: 'Personer som følges opp av en annen kommune',
         expand: true,
         parent: 'biggerWidget',
         customRelationship: 'not_access'
