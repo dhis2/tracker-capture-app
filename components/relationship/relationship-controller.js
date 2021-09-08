@@ -204,6 +204,19 @@ trackerCapture.controller('RelationshipController',
             location.href = '../dhis-web-capture/index.html#/viewEvent/' + eventId;
         };
 
+        $scope.shouldShowRelationshipBox = function(relationshipsWidget, relatedTeis) {
+            if(!$scope.relationshipsWidget || !$scope.relationshipsWidget.customRelationship) {
+                return true;
+            }
+            if($scope.relationshipsWidget.customRelationship === 'other_org_owner' && !(relatedTeis && relatedTeis.length > 0)) {
+                return false;
+            }
+            if($scope.relationshipsWidget.customRelationship === 'other' && !(relatedTeis && relatedTeis.length > 0)) {
+                return false;
+            }
+            return true;
+        }
+
         var pushRelative = function (relative) {
 
             var promise = $q.defer();
@@ -240,8 +253,8 @@ trackerCapture.controller('RelationshipController',
                     promise.resolve();
                 }
             } else if ($scope.relationshipsWidget.customRelationship == 'other') {
-                // If acccess to one of programs, then it is not caught by 'not_access'
-                if ($scope.hasAccessToRelativeProgram(relative, NAERKONTAKT_PROGRAM_ID) || $scope.hasAccessToRelativeProgram(relative, INDEKSERING_PROGRAM_ID)) {
+                // If not access to any of the programs, then it is caught by 'not_access'
+                if (!$scope.hasAccessToRelativeProgram(relative, NAERKONTAKT_PROGRAM_ID) && !$scope.hasAccessToRelativeProgram(relative, INDEKSERING_PROGRAM_ID)) {
                     promise.resolve();
                 } else {
                     $scope.checkIsValidIndexRelationAndUpdateRelative(relative, startDate, endDate).then(isValid => {
@@ -285,7 +298,7 @@ trackerCapture.controller('RelationshipController',
         $scope.checkIsValidIndexRelationAndUpdateRelative = function (relative, startDate, endDate) {
             relative.relationshipProgramConstraint.id = INDEKSERING_PROGRAM_ID;
             if (!$scope.hasAccessToRelativeProgram(relative, INDEKSERING_PROGRAM_ID)) {
-                return false;
+                return $q.when(false);
             }
             return TEIService.getWithProgramData(relative.trackedEntityInstance, INDEKSERING_PROGRAM_ID, $scope.optionSets, $scope.attributesById).then(function (teiIndex) {
                 angular.forEach(teiIndex.enrollments, function (enrollment) {
@@ -303,6 +316,9 @@ trackerCapture.controller('RelationshipController',
                 if (relative.symptomsOnset) {
                     return true;
                 }
+
+                return false;
+
             }, function (error) {
                 return false;
             });
@@ -311,7 +327,7 @@ trackerCapture.controller('RelationshipController',
         $scope.checkIsValidNaerkontaktRelationAndUpdateRelative = function (relative, startDate, endDate) {
             relative.relationshipProgramConstraint.id = NAERKONTAKT_PROGRAM_ID;
             if (!$scope.hasAccessToRelativeProgram(relative, NAERKONTAKT_PROGRAM_ID)) {
-                return false;
+                return $q.when(false);
             }
             return TEIService.getWithProgramData(relative.trackedEntityInstance, NAERKONTAKT_PROGRAM_ID, $scope.optionSets, $scope.attributesById).then(function (teiIndex) {
                 angular.forEach(teiIndex.enrollments, function (enrollment) {
@@ -396,8 +412,8 @@ trackerCapture.controller('RelationshipController',
         }
 
         $scope.getOwnerOrgUnitName = function(relative) {
-            var indeksOwner = relative.programOwners.filter(owner => owner.program === INDEKSERING_PROGRAM_ID);
-            var naerkontaktOwner = relative.programOwners.filter(owner => owner.program === NAERKONTAKT_PROGRAM_ID);
+            var indeksOwner = relative.programOwners && relative.programOwners.filter(owner => owner.program === INDEKSERING_PROGRAM_ID);
+            var naerkontaktOwner = relative.programOwners && relative.programOwners.filter(owner => owner.program === NAERKONTAKT_PROGRAM_ID);
             if(indeksOwner.length > 0) {
                 return indeksOwner[0].ownerOrgUnitName;
             }
