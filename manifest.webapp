@@ -4,7 +4,7 @@
     "description": "Tracker Capture App",
     "launch_path": "index.html",
     "icons": {
-        "48": "dhis-web-tracker-capture.png",
+        "48": "dhis-web-tracker-capture.png"
     },
     "developer": {
         "name": "HISP",
