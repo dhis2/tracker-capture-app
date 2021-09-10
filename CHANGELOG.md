@@ -1,3 +1,10 @@
+## [31.6.33](https://github.com/dhis2/tracker-capture-app/compare/v31.6.32...v31.6.33) (2021-09-10)
+
+
+### Bug Fixes
+
+* changed path to app icon ([#1244](https://github.com/dhis2/tracker-capture-app/issues/1244)) ([9ab1c12](https://github.com/dhis2/tracker-capture-app/commit/9ab1c124bd9b2fc1d98937049b727ea89dbde0e1))
+
 ## [31.6.32](https://github.com/dhis2/tracker-capture-app/compare/v31.6.31...v31.6.32) (2021-09-06)
 
 
