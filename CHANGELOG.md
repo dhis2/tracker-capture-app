@@ -1,3 +1,10 @@
+## [31.6.34](https://github.com/dhis2/tracker-capture-app/compare/v31.6.33...v31.6.34) (2021-09-13)
+
+
+### Bug Fixes
+
+* check that eventRows is defined ([#1250](https://github.com/dhis2/tracker-capture-app/issues/1250)) ([bba268c](https://github.com/dhis2/tracker-capture-app/commit/bba268c671039c1b60be28d7c28f1b9389715c38))
+
 ## [31.6.33](https://github.com/dhis2/tracker-capture-app/compare/v31.6.32...v31.6.33) (2021-09-10)
 
 
