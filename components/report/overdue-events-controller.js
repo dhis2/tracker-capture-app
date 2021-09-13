@@ -92,58 +92,52 @@ trackerCapture.controller('OverdueEventsController',
     });    
     
     $scope.generateReport = function(){
-        
+
         if($scope.model.selectedProgram && $scope.selectedOuMode){
-            
+
             $scope.reportFinished = false;
-            $scope.reportStarted = true;            
+            $scope.reportStarted = true;
             $scope.overdueEvents = [];
-            
-            EventReportService.getEventReport($scope.selectedOrgUnit.id, $scope.selectedOuMode, $scope.model.selectedProgram.id, null, null, 'ACTIVE','OVERDUE', $scope.pager).then(function(data){                
+
+            EventReportService.getEventReport($scope.selectedOrgUnit.id, $scope.selectedOuMode, $scope.model.selectedProgram.id, null, null, 'ACTIVE','OVERDUE', $scope.pager).then(function(data){
                 if( data ) {
-                    if( data.pager ){
-                        $scope.pager = data.pager;
+                    if (data.eventRows) {
                         $scope.pager.toolBarDisplay = 5;
+                        $scope.pager.recordsCount = data.eventRows.length;
 
-                        Paginator.setPage($scope.pager.page);
-                        Paginator.setPageCount($scope.pager.pageCount);
-                        Paginator.setPageSize($scope.pager.pageSize);
-                        Paginator.setItemCount($scope.pager.total);                    
-                    }
+                        angular.forEach(data.eventRows, function(row){
+                            var overdueEvent = {};
+                            angular.forEach(row.attributes, function(att){
+                                if( att.attribute && $scope.attributesById[att.attribute] ){
+                                    att.value = CommonUtils.formatDataValue(null, att.value, $scope.attributesById[att.attribute], $scope.optionSets, 'USER');
+                                }
+                                overdueEvent[att.attribute] = att.value;
+                            });
 
-                    angular.forEach(data.eventRows, function(row){
-                        var overdueEvent = {};                    
-                        angular.forEach(row.attributes, function(att){
-                            if( att.attribute && $scope.attributesById[att.attribute] ){
-                                att.value = CommonUtils.formatDataValue(null, att.value, $scope.attributesById[att.attribute], $scope.optionSets, 'USER');                
-                            }
-                            overdueEvent[att.attribute] = att.value;                        
+                            overdueEvent.dueDate = DateUtils.formatFromApiToUser(row.dueDate);
+                            overdueEvent.event = row.event;
+                            overdueEvent.eventName = $scope.programStages[row.programStage].displayName;
+                            overdueEvent.orgUnitName = row.orgUnitName;
+                            overdueEvent.followup = row.followup;
+                            overdueEvent.program = row.program;
+                            overdueEvent.programStage = row.programStage;
+                            overdueEvent.trackedEntityInstance = row.trackedEntityInstance;
+                            $scope.overdueEvents.push(overdueEvent);
+
                         });
-
-                        overdueEvent.dueDate = DateUtils.formatFromApiToUser(row.dueDate);
-                        overdueEvent.event = row.event;
-                        overdueEvent.eventName = $scope.programStages[row.programStage].displayName;
-                        overdueEvent.orgUnitName = row.orgUnitName;                    
-                        overdueEvent.followup = row.followup;
-                        overdueEvent.program = row.program;
-                        overdueEvent.programStage = row.programStage;
-                        overdueEvent.trackedEntityInstance = row.trackedEntityInstance;
-                        $scope.overdueEvents.push(overdueEvent);
-
-                    });
-
+                    }
                     //sort overdue events by their due dates - this is default
                     if(!$scope.sortColumn.id){                                      
                         $scope.sortGrid({id: 'dueDate', displayName: $translate.instant('due_date'), valueType: 'DATE', displayInListNoProgram: false, showFilter: false, show: true});
                         $scope.reverse = false;
                     }
-                }                
+                }
                 $scope.reportFinished = true;
-                $scope.reportStarted = false;                
+                $scope.reportStarted = false;
             });
         }
-    };    
-    
+    };
+
     $scope.generateGridHeader = function(){
         
         if (angular.isObject($scope.model.selectedProgram)){
@@ -268,17 +262,19 @@ trackerCapture.controller('OverdueEventsController',
         return TEIGridService.getHeader($scope.gridColumns);
     };
     
-    $scope.jumpToPage = function(){
-        $scope.generateReport();
-    };
-    
-    $scope.resetPageSize = function(){
-        $scope.pager.page = 1;        
-        $scope.generateReport();
-    };
-    
-    $scope.getPage = function(page){    
+    $scope.onGetPage = function(page){
         $scope.pager.page = page;
+        $scope.generateReport();
+    };
+
+    $scope.onChangePageSize = function(newPageSize){
+        $scope.pager.page = 1;
+        $scope.pager.pageSize = newPageSize;
+        $scope.generateReport();
+    };
+
+    $scope.onChangePage = function(newPage){
+        $scope.pager.page = newPage;
         $scope.generateReport();
     };
 });
