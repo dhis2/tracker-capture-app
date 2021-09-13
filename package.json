@@ -1,6 +1,6 @@
 {
   "name": "tracker-capture-app",
-  "version": "31.6.34",
+  "version": "31.6.35",
   "description": "DHIS2 tracker capture app",
   "main": "index.js",
   "scripts": {
