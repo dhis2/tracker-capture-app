@@ -7,7 +7,7 @@ export function importEventToListAsync(teiIds, programId, programStageId, orgUni
 }
 
 function getTeisWithEnrollmentsAsync(teiIds, programId,orgUnitId, teiAccessApiService) {
-    return teiAccessApiService.get(null, programId, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+teiIds.join(';')+'&program='+programId+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,orgUnit,enrollments[enrollment,program,enrollmentDate,events[status,dataValues,programStage,eventDate]]');
+    return teiAccessApiService.get(null, programId, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+teiIds.join(';')+'&paging=false&program='+programId+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,orgUnit,enrollments[enrollment,program,enrollmentDate,events[status,dataValues,programStage,eventDate]]');
 }
 
 function getValuesFromEvent(teis, elementIds, programStageId) {
