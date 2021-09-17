@@ -4,6 +4,8 @@ import {convertToCorrectDateString} from "../../utils/converters";
 
 const {program} = require("babel-types");
 import {
+    DAYS_AFTER_KLYNGE_END_TO_INCLUDE,
+    DAYS_BEFORE_KLYNGE_START_TO_INCLUDE,
     DUPLIKAT_PROGRAM_ID, INDEKSERING_HELSESTATUS_PROGRAM_STAGE_ID,
     INDEKSERING_PROGRAM_ID, INDEKSERING_TESTRESULT_PROGRAM_STAGE_ID,
     INNREISE_PROGRAM_ID, NAERKONTAKT_OPPFOLGING_PROGRAM_STAGE_ID,
@@ -224,27 +226,39 @@ trackerCapture.controller('RelationshipController',
             return true;
         }
 
+
+        $scope.startDate;
+        $scope.endDate;
+        $scope.DAYS_BEFORE_KLYNGE_START_TO_INCLUDE = DAYS_BEFORE_KLYNGE_START_TO_INCLUDE;
+        $scope.DAYS_AFTER_KLYNGE_END_TO_INCLUDE = DAYS_AFTER_KLYNGE_END_TO_INCLUDE;
+
+
         var pushRelative = function (relative) {
-            var startDate = moment(DateUtils.formatFromUserToApi($scope.selectedEnrollment.enrollmentDate));
-            var endDate;
+            $scope.startDate = moment(DateUtils.formatFromUserToApi($scope.selectedEnrollment.enrollmentDate));
+            if(DAYS_BEFORE_KLYNGE_START_TO_INCLUDE) {
+                $scope.startDate = $scope.startDate.subtract(DAYS_BEFORE_KLYNGE_START_TO_INCLUDE, "d"); // Add grace period for including index and contacts
+            }
             angular.forEach($scope.selectedTei.attributes, function (attribute) {
                 if (attribute.attribute == 'hD3CRC6rdv1') {
-                    endDate = moment(DateUtils.formatFromUserToApi(attribute.value));
+                    $scope.endDate = moment(DateUtils.formatFromUserToApi(attribute.value));
+                    if(DAYS_AFTER_KLYNGE_END_TO_INCLUDE) {
+                        $scope.endDate = $scope.endDate.add(DAYS_AFTER_KLYNGE_END_TO_INCLUDE, "d"); // Add grace period for including index and contacts
+                    }
                 }
             });
 
             if ($scope.relationshipsWidget.customRelationship == 'index') {
-                if ($scope.checkIsValidIndexRelationAndUpdateRelative(relative, startDate, endDate)) {
+                if ($scope.checkIsValidIndexRelationAndUpdateRelative(relative, $scope.startDate, $scope.endDate)) {
                     $scope.relatedTeis.push(relative);
                 }
 
             } else if ($scope.relationshipsWidget.customRelationship == 'contact') {
-                var isInIndex = $scope.checkIsValidIndexRelationAndUpdateRelative(relative, startDate, endDate);
-                if (!isInIndex && $scope.checkIsValidNaerkontaktRelationAndUpdateRelative(relative, startDate, endDate)) {
+                var isInIndex = $scope.checkIsValidIndexRelationAndUpdateRelative(relative, $scope.startDate, $scope.endDate);
+                if (!isInIndex && $scope.checkIsValidNaerkontaktRelationAndUpdateRelative(relative, $scope.startDate, $scope.endDate)) {
                     $scope.relatedTeis.push(relative);
                 }
 
-                $scope.updateIndicators(relative, startDate, endDate);
+                $scope.updateIndicators(relative, $scope.startDate, $scope.endDate);
             } else if ($scope.relationshipsWidget.customRelationship == 'other_org_owner') {
                 if (!$scope.hasAccessToRelativeProgram(relative, NAERKONTAKT_PROGRAM_ID) && !$scope.hasAccessToRelativeProgram(relative, INDEKSERING_PROGRAM_ID)) {
                     $scope.addOrgNameToProgramOwners(relative);
@@ -252,8 +266,8 @@ trackerCapture.controller('RelationshipController',
                 }
             } else if ($scope.relationshipsWidget.customRelationship == 'other') {
                 var isInNotAccess = !$scope.hasAccessToRelativeProgram(relative, NAERKONTAKT_PROGRAM_ID) && !$scope.hasAccessToRelativeProgram(relative, INDEKSERING_PROGRAM_ID);
-                var isInIndex = $scope.checkIsValidIndexRelationAndUpdateRelative(relative, startDate, endDate);
-                var isInNaerkontakt = $scope.checkIsValidNaerkontaktRelationAndUpdateRelative(relative, startDate, endDate);
+                var isInIndex = $scope.checkIsValidIndexRelationAndUpdateRelative(relative, $scope.startDate, $scope.endDate);
+                var isInNaerkontakt = $scope.checkIsValidNaerkontaktRelationAndUpdateRelative(relative, $scope.startDate, $scope.endDate);
 
                 if (!isInNotAccess && !isInIndex && !isInNaerkontakt) {
                     $scope.relatedTeis.push(relative);
