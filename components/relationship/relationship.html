@@ -24,7 +24,7 @@
                 <p>Disse personene passer ikke inn i kategoriene over. Sjekk at klyngen har rett start- og eventuelt sluttdato.</p>
                 <p>Indekser må ha symptomstart i samme periode som klyngen er aktiv for å bli registrert i <em>indekser</em>-listen</p>
                 <p>Nærkontakter må være registrert i samme periode som klyngen er aktiv for å bli registrert i <em>nærkontakter</em>-listen</p>
-                <p>Klyngen regnes som aktiv fra {{startDate.format('DD-MM-YYYY')}} <span ng-if="DAYS_BEFORE_KLYNGE_START_TO_INCLUDE > 0">(opp til {{DAYS_BEFORE_KLYNGE_START_TO_INCLUDE}} dager før klyngens startdato)</span> <span ng-if="endDate">til {{endDate.format('DD-MM-YYYY')}} <span ng-if="DAYS_AFTER_KLYNGE_END_TO_INCLUDE > 0">(opp til {{DAYS_AFTER_KLYNGE_END_TO_INCLUDE}} dager etter klyngens sluttdato)</span></span>.</p>
+                <p>Klyngen regnes som aktiv fra {{startDate.format('DD-MM-YYYY')}} <span ng-if="DAYS_BEFORE_KLYNGE_START_TO_INCLUDE > 0">(opp til {{DAYS_BEFORE_KLYNGE_START_TO_INCLUDE}} dager før klyngens startdato)</span> <span ng-if="endDate">til {{endDate.format('DD-MM-YYYY')}}</span>.</p>
             </div>
 
             <div ng-show="selectedTei && !selectedTei.relationships || selectedTei.relationships.length < 1 || (relatedTeis.length < 1 && relatedEvents.length < 1)" class="alert alert-warning">{{noRelationshipLabel}}</div>

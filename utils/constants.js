@@ -1,6 +1,5 @@
 // Config variables
 export const DAYS_BEFORE_KLYNGE_START_TO_INCLUDE = 5;
-export const DAYS_AFTER_KLYNGE_END_TO_INCLUDE = 5;
 
 // Fields
 export const DNUMBER_FIELD_ID = 'ZSt07qyq6Pt';

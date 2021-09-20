@@ -4,10 +4,9 @@ import {convertToCorrectDateString} from "../../utils/converters";
 
 const {program} = require("babel-types");
 import {
-    DAYS_AFTER_KLYNGE_END_TO_INCLUDE,
     DAYS_BEFORE_KLYNGE_START_TO_INCLUDE,
-    DUPLIKAT_PROGRAM_ID, INDEKSERING_HELSESTATUS_PROGRAM_STAGE_ID,
-    INDEKSERING_PROGRAM_ID, INDEKSERING_TESTRESULT_PROGRAM_STAGE_ID,
+    DUPLIKAT_PROGRAM_ID,
+    INDEKSERING_PROGRAM_ID,
     INNREISE_PROGRAM_ID, NAERKONTAKT_OPPFOLGING_PROGRAM_STAGE_ID,
     NAERKONTAKT_PROGRAM_ID
 } from "../../utils/constants";
@@ -230,7 +229,6 @@ trackerCapture.controller('RelationshipController',
         $scope.startDate;
         $scope.endDate;
         $scope.DAYS_BEFORE_KLYNGE_START_TO_INCLUDE = DAYS_BEFORE_KLYNGE_START_TO_INCLUDE;
-        $scope.DAYS_AFTER_KLYNGE_END_TO_INCLUDE = DAYS_AFTER_KLYNGE_END_TO_INCLUDE;
 
 
         var pushRelative = function (relative) {
@@ -241,9 +239,6 @@ trackerCapture.controller('RelationshipController',
             angular.forEach($scope.selectedTei.attributes, function (attribute) {
                 if (attribute.attribute == 'hD3CRC6rdv1') {
                     $scope.endDate = moment(DateUtils.formatFromUserToApi(attribute.value));
-                    if(DAYS_AFTER_KLYNGE_END_TO_INCLUDE) {
-                        $scope.endDate = $scope.endDate.add(DAYS_AFTER_KLYNGE_END_TO_INCLUDE, "d"); // Add grace period for including index and contacts
-                    }
                 }
             });
 
