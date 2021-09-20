@@ -38,6 +38,9 @@ trackerCapture.controller('NaerkontaktImportController',
         $scope.errorMsg = undefined;
 
 
+        $scope.getCurrentKommuneNr = function () {
+            return CurrentSelection.currentSelection.orgUnit.code;
+        }
         $scope.uploadAndVerify = function (file) {
             $scope.file = file.files[0];
             $scope.stage = 'uploadingImportTest';
@@ -81,7 +84,7 @@ trackerCapture.controller('NaerkontaktImportController',
         }
 
         $scope.uploadFile = function (uploadType) {
-            var url = `/api/v1/import/${uploadType}/${selectedTei.trackedEntityInstance}`;
+            var url = `/api/v1/import/${uploadType}/${selectedTei.trackedEntityInstance}/${$scope.getCurrentKommuneNr()}`;
 
             var formData = new FormData();
             formData.append('file', $scope.file);
