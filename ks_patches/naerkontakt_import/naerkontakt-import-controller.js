@@ -57,7 +57,7 @@ trackerCapture.controller('NaerkontaktImportController',
         $scope.uploadAndImport = function () {
             $scope.stage = 'uploadingImport';
 
-            $scope.uploadFile('validerFil').then(response => {
+            $scope.uploadFile('lagreFil').then(response => {
                  $scope.uploadResult = response.data;
                  $scope.stage = 'importSuccess';
              }, error => {
