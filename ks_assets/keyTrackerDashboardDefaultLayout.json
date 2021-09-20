@@ -302,7 +302,7 @@
         title: 'Personer som følges opp av en annen kommune',
         expand: true,
         parent: 'biggerWidget',
-        customRelationship: 'not_access'
+        customRelationship: 'other_org_owner'
       },
       {
         show: true,
