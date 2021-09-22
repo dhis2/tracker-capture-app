@@ -491,8 +491,6 @@ var d2Directives = angular.module('d2Directives', [])
             d2FileInputPs: '='
         },
         link: function (scope, element, attrs) {
-            console.log(attrs)
-
             var de = attrs.inputFieldId;
 
             var updateModel = function () {
