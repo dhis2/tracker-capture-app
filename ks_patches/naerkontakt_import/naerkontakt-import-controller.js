@@ -17,20 +17,7 @@ trackerCapture.controller('NaerkontaktImportController',
               ProgramFactory,
               MetaDataFactory,
               TEIService,
-              TEIGridService,
-              NotificationService,
-              Paginator,
-              relationshipTypes,
-              selectedProgram,
-              relatedProgramRelationship,
-              selections,
-              selectedAttribute,
-              existingAssociateUid,
-              addingRelationship,
-              selectedTei,
-              AccessUtils,
-              TEService,
-              allPrograms
+              selectedTei
     ) {
         $scope.uploadResult = undefined;
         $scope.file = undefined;
