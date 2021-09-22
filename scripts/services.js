@@ -1016,7 +1016,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         getListWithProgramData: function(entityUidList, programUid, dataElementId, programStageId, orgUnitId, transferStageId){
             if(entityUidList && entityUidList.length > 0){
-                return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&program='+programUid+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,orgUnit,enrollments[enrollment,program,enrollmentDate,events[status,dataValues,programStage,eventDate]]').then(function(response){
+                return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&paging=false&program='+programUid+'&ou=' + orgUnitId + '&fields=trackedEntityInstance,orgUnit,enrollments[enrollment,program,enrollmentDate,events[status,dataValues,programStage,eventDate]]').then(function(response){
                     var teiDictionary = {};
                     if(response.data && response.data.trackedEntityInstances && response.data.trackedEntityInstances.length > 0){
                         response.data.trackedEntityInstances.forEach(function(tei) {
@@ -1064,7 +1064,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         getActiveEnrollments: function(entityUidList, programUid, orgUnitId) {
             if(entityUidList && entityUidList.length > 0){
-                return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&program='+programUid+'&ou=' + orgUnitId + '&programStatus=ACTIVE&fields=trackedEntityInstance,enrollments[enrollment]').then(function(response){
+                return TeiAccessApiService.get(null, programUid, DHIS2URL+'/trackedEntityInstances.json?trackedEntityInstance='+entityUidList.join(';')+'&paging=false&program='+programUid+'&ou=' + orgUnitId + '&programStatus=ACTIVE&fields=trackedEntityInstance,enrollments[enrollment]').then(function(response){
                     var data = { enrollments: [] }
                     var enrollments = data.enrollments;
                     if (response.data && response.data.trackedEntityInstances && response.data.trackedEntityInstances.length > 0){
@@ -1093,7 +1093,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 var tei = response.data;
                 setTeiAttributeValues(tei.attributes, optionSets, attributesById);
                 return tei;
-
             }, function(error){
                 if(error){
                     var headerText = errorHeader;
@@ -1118,6 +1117,29 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
+        getTeiWithAllAvailableFields: function(entityUid, optionSets, attributesById) {
+            var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json?fields=*').then(function(response){
+                var tei = response.data;
+                setTeiAttributeValues(tei.attributes, optionSets, attributesById);
+                return tei;
+            }, function(error){
+                if(error){
+                    var headerText = errorHeader;
+                    var bodyText = $translate.instant('access_denied');
+
+                    if(error.statusText) {
+                        headerText = error.statusText;
+                    }
+                    if(error.data && error.data.message) {
+                        bodyText = error.data.message;
+                    }
+                    NotificationService.showNotifcationDialog( headerText,  bodyText);
+                }
+            });
+
+            return promise;
+        },
+
         saveRelationship: function(relationship) {
             var promise = $http.post( DHIS2URL + '/relationships', relationship).then(function(response){
                 return response.data;
