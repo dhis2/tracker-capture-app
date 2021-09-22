@@ -22,6 +22,7 @@ trackerCapture.controller('RelationshipController',
               AttributesFactory,
               CurrentSelection,
               RelationshipFactory,
+              RelationshipCallbackService,
               OrgUnitFactory,
               ProgramFactory,
               EnrollmentService,
@@ -40,25 +41,45 @@ trackerCapture.controller('RelationshipController',
 
         $scope.relationshipsWidget = $rootScope.getCurrentWidget($scope);
 
+    
         ProgramFactory.getAll().then(function (result) {
             allPrograms = result.programs;
         });
 
         //listen for the selected entity
-        $scope.$on('dashboardWidgets', function (event, args) {
+        $scope.$on('dashboardWidgets', function(event, args) {
+            // Add callback for updating relationships on Klynge program.
+            if($scope.relationshipsWidget.customRelationship) {
+                RelationshipCallbackService.addCallback((relationships) => {
+                    $scope.selectedTei.relationships = relationships;
+                    $scope.loadData($scope.selectedTei);
+                });
+            }
+            $scope.loadData()
+        });
+
+        $scope.$on('$destroy', function iVeBeenDismissed() {
+            if($scope.relationshipsWidget.customRelationship) {
+                RelationshipCallbackService.clearCallbacks();
+            }
+        });
+
+        $scope.loadData = function(selectedTei) {
             $scope.relationshipTypes = [];
             $scope.relationships = [];
             $scope.relatedTeis = [];
             $scope.selections = CurrentSelection.get();
             $scope.optionSets = $scope.selections.optionSets;
-            $scope.selectedTei = angular.copy($scope.selections.tei);
+            if(!selectedTei) {
+                $scope.selectedTei = angular.copy($scope.selections.tei);
+            }
             $scope.attributesById = CurrentSelection.getAttributesById();
 
             $scope.relationshipPrograms = [];
 
             $scope.attributes = [];
-            for (var key in $scope.attributesById) {
-                if ($scope.attributesById.hasOwnProperty(key)) {
+            for(var key in $scope.attributesById){
+                if($scope.attributesById.hasOwnProperty(key)){
                     $scope.attributes.push($scope.attributesById[key]);
                 }
             }
@@ -69,28 +90,29 @@ trackerCapture.controller('RelationshipController',
             $scope.programs = $scope.selections.prs;
             $scope.programsById = {};
             $scope.allProgramNames = {};
-            ProgramFactory.getAllAccesses().then(function (data) {
+            ProgramFactory.getAllAccesses().then(function(data) {
                 $scope.allProgramNames = data.programIdNameMap;
                 $scope.accessByProgramId = data.programsById;
             });
-            angular.forEach($scope.programs, function (program) {
+            angular.forEach($scope.programs, function(program){
                 $scope.programsById[program.id] = program;
             });
 
-            RelationshipFactory.getAll().then(function (relTypes) {
-                $scope.relationshipTypes = relTypes.filter(function (relType) {
+            RelationshipFactory.getAll().then(function(relTypes){
+                $scope.relationshipTypes = relTypes.filter(function(relType){
                     return (relType.fromConstraint.trackedEntityType && relType.fromConstraint.trackedEntityType.id === $scope.trackedEntityType.id)
-                        || (relType.toConstraint.trackedEntityType && relType.toConstraint.trackedEntityType.id === $scope.trackedEntityType.id);
+                        || (relType.toConstraint.trackedEntityType && relType.toConstraint.trackedEntityType.id === $scope.trackedEntityType.id);
                 });
 
-                angular.forEach($scope.relationshipTypes, function (rel) {
+                angular.forEach($scope.relationshipTypes, function(rel){
                     $scope.relationships[rel.id] = rel;
                 });
 
                 setRelationships();
             });
             $scope.selectedOrgUnit = $scope.selections.orgUnit;
-        });
+        }
+
 
         $scope.orderTeiBy = 'created';
         $scope.orderReverse = true;
@@ -119,6 +141,43 @@ trackerCapture.controller('RelationshipController',
                 $scope.orderReverse = true;
             }
         };
+
+        $scope.showNaerkontaktImport = function () {
+            $modal.open({
+                templateUrl: 'ks_patches/naerkontakt_import/naerkontakt-import.html',
+                controller: 'NaerkontaktImportController',
+                windowClass: 'modal-full-window',
+                resolve: {
+                    relationshipTypes: function () {
+                        return $scope.relationshipTypes;
+                    },
+                    selectedAttribute: function () {
+                        return null;
+                    },
+                    existingAssociateUid: function () {
+                        return null;
+                    },
+                    addingRelationship: function () {
+                        return true;
+                    },
+                    selections: function () {
+                        return $scope.selections;
+                    },
+                    selectedTei: function () {
+                        return $scope.selectedTei;
+                    },
+                    selectedProgram: function () {
+                        return $scope.selectedProgram;
+                    },
+                    relatedProgramRelationship: function () {
+                        return $scope.relatedProgramRelationship;
+                    },
+                    allPrograms: function () {
+                        return allPrograms;
+                    },
+                }
+            });
+        }
 
         $scope.showAddRelationship = function (related) {
             $scope.relatedProgramRelationship = related;
@@ -233,7 +292,7 @@ trackerCapture.controller('RelationshipController',
 
         var pushRelative = function (relative) {
             $scope.startDate = moment(DateUtils.formatFromUserToApi($scope.selectedEnrollment.enrollmentDate));
-            if(DAYS_BEFORE_KLYNGE_START_TO_INCLUDE) {
+            if (DAYS_BEFORE_KLYNGE_START_TO_INCLUDE) {
                 $scope.startDate = $scope.startDate.subtract(DAYS_BEFORE_KLYNGE_START_TO_INCLUDE, "d"); // Add grace period for including index and contacts
             }
             angular.forEach($scope.selectedTei.attributes, function (attribute) {
@@ -442,98 +501,98 @@ trackerCapture.controller('RelationshipController',
 
 
             var teServicePromise = TEService.getAll().then(function (teiTypes) {
-                    //Loop through all relationships.
-                    var queries = [];
+                        //Loop through all relationships.
+                        var queries = [];
 
-                    angular.forEach($scope.selectedTei.relationships, function (rel) {
+                        angular.forEach($scope.selectedTei.relationships, function (rel) {
 
-                        var isValidToRelationship = rel.to && rel.to.trackedEntityInstance && rel.to.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance;
-                        var isValidFromRelationship = rel.from && rel.bidirectional && rel.from.trackedEntityInstance && rel.from.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance;
-                        var isValidBidirectionalRelationship = rel.from && rel.bidirectional && rel.from.event && rel.from.event.event;
+                            var isValidToRelationship = rel.to && rel.to.trackedEntityInstance && rel.to.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance;
+                            var isValidFromRelationship = rel.from && rel.bidirectional && rel.from.trackedEntityInstance && rel.from.trackedEntityInstance.trackedEntityInstance !== $scope.selectedTei.trackedEntityInstance;
+                            var isValidBidirectionalRelationship = rel.from && rel.bidirectional && rel.from.event && rel.from.event.event;
 
-                        var teiId = isValidToRelationship ? rel.to.trackedEntityInstance.trackedEntityInstance : rel.from.trackedEntityInstance.trackedEntityInstance;
+                            var teiId = isValidToRelationship ? rel.to.trackedEntityInstance.trackedEntityInstance : rel.from.trackedEntityInstance.trackedEntityInstance;
 
-                        if (isValidToRelationship || isValidFromRelationship) {
-                            queries.push(TEIService.getTeiWithAllAvailableFields(teiId, $scope.optionSets, $scope.attributesById).then(function (tei) {
+                            if (isValidToRelationship || isValidFromRelationship) {
+                                queries.push(TEIService.getTeiWithAllAvailableFields(teiId, $scope.optionSets, $scope.attributesById).then(function (tei) {
+                                        relationshipType = $scope.relationshipTypes.find(function (relType) {
+                                            return relType.id === rel.relationshipType;
+                                        });
+                                        relationshipProgram = isValidToRelationship ? relationshipType.toConstraint.program : relationshipType.fromConstraint.program;
+                                        var relName = isValidToRelationship ? relationshipType.fromToName : relationshipType.toFromName;
+                                        if (!relationshipProgram && $scope.selectedProgram) {
+                                            relationshipProgram = {id: $scope.selectedProgram.id};
+                                        }
+
+                                        var relative = {
+                                            ...tei, // copy the whole tei to omit extra calls to backend
+                                            trackedEntityInstance: teiId,
+                                            relName: relName,
+                                            relId: rel.relationship,
+                                            attributes: getRelativeAttributes(tei.attributes),
+                                            relationshipProgramConstraint: relationshipProgram,
+                                            relationshipType: relationshipType,
+                                            created: rel.created,
+                                            programOwners: tei.programOwners,
+                                        };
+
+                                        if (relationshipType && teiTypes.filter(function (teiType) {
+                                            return teiType.id === tei.trackedEntityType;
+                                        }).length > 0) {
+                                            var teiType = teiTypes.find(function (teiType) {
+                                                return teiType.id === tei.trackedEntityType;
+                                            });
+                                            angular.forEach(teiType.trackedEntityTypeAttributes, function (attribute) {
+                                                if ($scope.relationshipAttributes.length > 0 && $scope.relationshipAttributes.filter(function (att) {
+                                                    return att.id === attribute.id;
+                                                }).length === 0) {
+                                                    $scope.relationshipAttributes.push(attribute);
+                                                } else if ($scope.relationshipAttributes.length === 0) {
+                                                    $scope.relationshipAttributes.push(attribute);
+                                                }
+                                            });
+                                        }
+                                        pushRelative(relative);
+                                    }
+                                ));
+                            } else if (isValidBidirectionalRelationship) {
+                                var event = null;
+                                DHIS2EventFactory.getEventWithoutRegistration(rel.from.event.event).then(function (e) {
+                                    event = e;
+
                                     relationshipType = $scope.relationshipTypes.find(function (relType) {
-                                        return relType.id === rel.relationshipType;
+                                        return relType.id === rel.relationshipType
                                     });
-                                    relationshipProgram = isValidToRelationship ? relationshipType.toConstraint.program : relationshipType.fromConstraint.program;
-                                    var relName = isValidToRelationship ? relationshipType.fromToName : relationshipType.toFromName;
+                                    var relName = relationshipType.toFromName;
+
+                                    relationshipProgram = relationshipType.fromConstraint.program;
+
                                     if (!relationshipProgram && $scope.selectedProgram) {
                                         relationshipProgram = {id: $scope.selectedProgram.id};
                                     }
 
-                                    var relative = {
-                                        ...tei, // copy the whole tei to omit extra calls to backend
-                                        trackedEntityInstance: teiId,
+                                    var convertedEventDate = DateUtils.formatFromApiToUser(event.eventDate);
+                                    var isDeleteable = !$scope.selectedTei.inactive && relationshipType.access.data.write && $scope.trackedEntityType.access.data.write && $scope.accessByProgramId[event.program].data.write;
+
+                                    var eventToDisplay = {
+                                        eventId: rel.from.event.event,
+                                        eventDate: convertedEventDate,
+                                        program: $scope.allProgramNames[event.program],
+                                        status: event.status,
+                                        orgUnit: event.orgUnitName,
                                         relName: relName,
                                         relId: rel.relationship,
-                                        attributes: getRelativeAttributes(tei.attributes),
                                         relationshipProgramConstraint: relationshipProgram,
                                         relationshipType: relationshipType,
-                                        created: rel.created,
-                                        programOwners: tei.programOwners,
+                                        isDeleteable: isDeleteable
                                     };
-
-                                    if (relationshipType && teiTypes.filter(function (teiType) {
-                                        return teiType.id === tei.trackedEntityType;
-                                    }).length > 0) {
-                                        var teiType = teiTypes.find(function (teiType) {
-                                            return teiType.id === tei.trackedEntityType;
-                                        });
-                                        angular.forEach(teiType.trackedEntityTypeAttributes, function (attribute) {
-                                            if ($scope.relationshipAttributes.length > 0 && $scope.relationshipAttributes.filter(function (att) {
-                                                return att.id === attribute.id;
-                                            }).length === 0) {
-                                                $scope.relationshipAttributes.push(attribute);
-                                            } else if ($scope.relationshipAttributes.length === 0) {
-                                                $scope.relationshipAttributes.push(attribute);
-                                            }
-                                        });
-                                    }
-                                    pushRelative(relative);
-                                }
-                            ));
-                        } else if (isValidBidirectionalRelationship) {
-                            var event = null;
-                            DHIS2EventFactory.getEventWithoutRegistration(rel.from.event.event).then(function (e) {
-                                event = e;
-
-                                relationshipType = $scope.relationshipTypes.find(function (relType) {
-                                    return relType.id === rel.relationshipType
+                                    $scope.relatedEvents.push(eventToDisplay);
                                 });
-                                var relName = relationshipType.toFromName;
+                            }
 
-                                relationshipProgram = relationshipType.fromConstraint.program;
-
-                                if (!relationshipProgram && $scope.selectedProgram) {
-                                    relationshipProgram = {id: $scope.selectedProgram.id};
-                                }
-
-                                var convertedEventDate = DateUtils.formatFromApiToUser(event.eventDate);
-                                var isDeleteable = !$scope.selectedTei.inactive && relationshipType.access.data.write && $scope.trackedEntityType.access.data.write && $scope.accessByProgramId[event.program].data.write;
-
-                                var eventToDisplay = {
-                                    eventId: rel.from.event.event,
-                                    eventDate: convertedEventDate,
-                                    program: $scope.allProgramNames[event.program],
-                                    status: event.status,
-                                    orgUnit: event.orgUnitName,
-                                    relName: relName,
-                                    relId: rel.relationship,
-                                    relationshipProgramConstraint: relationshipProgram,
-                                    relationshipType: relationshipType,
-                                    isDeleteable: isDeleteable
-                                };
-                                $scope.relatedEvents.push(eventToDisplay);
-                            });
-                        }
-
-                    })
-                    ;
-                    return $q.all(queries);
-                }
+                        })
+                        ;
+                        return $q.all(queries);
+                    }
                 )
             ;
 
@@ -689,7 +748,11 @@ trackerCapture.controller('RelationshipController',
                 });
             });
         };
-    })
+
+        $scope.shouldShowExcelUpload = function (widget) {
+            return widget.title === "Nærkontakter";
+        }
+    });
 
 
 // WEBPACK FOOTER //

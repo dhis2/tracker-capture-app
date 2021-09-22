@@ -837,4 +837,19 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             }
         }
     }
+})
+.directive('onFileUpload', function() {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var onChangeHandler = scope.$eval(attrs.onFileUpload);
+            element.on('change', () => {
+                onChangeHandler({files: element[0].files});
+            });
+            element.on('$destroy', function() {
+                element.off();
+            });
+            return 3;
+        }
+    };
 });

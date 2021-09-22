@@ -8,6 +8,10 @@
         <span class="nav-pills" ng-if="shouldShowAddRelationshipLink(relationshipsWidget)  && selectedTei  && !selectedTei.inactive && selectedProgram.access.data.write">
             | <a href ng-click="showAddRelationship(false)" ng-attr-title="{{'add_relationship'| translate}}"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [showAddRelationshipDiv]">{{'add' | translate}}</span></a>
         </span>
+
+        <span lass="nav-pills" ng-if="shouldShowExcelUpload(relationshipsWidget)">
+            | <a href ng-click="showNaerkontaktImport()" ng-attr-title="Hent fra excel-fil"><span class="widget-link">Hent fra excel-fil</span></a>
+        </span>
         
         <span class="pull-right widget-link">
             <a class="small-horizontal-spacing" href ng-click="expandCollapse(relationshipsWidget)">
@@ -29,7 +33,6 @@
 
             <div ng-show="selectedTei && !selectedTei.relationships || selectedTei.relationships.length < 1 || (relatedTeis.length < 1 && relatedEvents.length < 1)" class="alert alert-warning">{{noRelationshipLabel}}</div>
             <div ng-show="!selectedTei" class="alert alert-danger">{{'relationship_not_possible'| translate}}</div>
-
             <div ng-if="relatedTeis.length > 0">
                 <table class="table table-striped dhis2-table-hover table-bordered">
                     <tr>
