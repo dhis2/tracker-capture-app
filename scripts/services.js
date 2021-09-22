@@ -200,6 +200,21 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     }
 })
 
+.service('RelationshipCallbackService', function() {
+    var callbackArray = [];
+    return {
+        addCallback: function (callback) {
+            callbackArray.push(callback);
+        },
+        clearCallbacks: function() {
+            callbackArray = [];
+        },
+        runCallbackFunctions: function (relationships) {
+            angular.forEach(callbackArray, (callback) => callback(relationships));
+        }
+    };
+})
+
 /* current selections */
 .service('PeriodService', function(DateUtils, CalendarService, $filter){
 

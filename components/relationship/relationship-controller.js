@@ -22,6 +22,7 @@ trackerCapture.controller('RelationshipController',
               AttributesFactory,
               CurrentSelection,
               RelationshipFactory,
+              RelationshipCallbackService,
               OrgUnitFactory,
               ProgramFactory,
               EnrollmentService,
@@ -40,25 +41,45 @@ trackerCapture.controller('RelationshipController',
 
         $scope.relationshipsWidget = $rootScope.getCurrentWidget($scope);
 
+    
         ProgramFactory.getAll().then(function (result) {
             allPrograms = result.programs;
         });
 
         //listen for the selected entity
-        $scope.$on('dashboardWidgets', function (event, args) {
+        $scope.$on('dashboardWidgets', function(event, args) {
+            // Add callback for updating relationships on Klynge program.
+            if($scope.relationshipsWidget.customRelationship) {
+                RelationshipCallbackService.addCallback((relationships) => {
+                    $scope.selectedTei.relationships = relationships;
+                    $scope.loadData($scope.selectedTei);
+                });
+            }
+            $scope.loadData()
+        });
+
+        $scope.$on('$destroy', function iVeBeenDismissed() {
+            if($scope.relationshipsWidget.customRelationship) {
+                RelationshipCallbackService.clearCallbacks();
+            }
+        });
+
+        $scope.loadData = function(selectedTei) {
             $scope.relationshipTypes = [];
             $scope.relationships = [];
             $scope.relatedTeis = [];
             $scope.selections = CurrentSelection.get();
             $scope.optionSets = $scope.selections.optionSets;
-            $scope.selectedTei = angular.copy($scope.selections.tei);
+            if(!selectedTei) {
+                $scope.selectedTei = angular.copy($scope.selections.tei);
+            }
             $scope.attributesById = CurrentSelection.getAttributesById();
 
             $scope.relationshipPrograms = [];
 
             $scope.attributes = [];
-            for (var key in $scope.attributesById) {
-                if ($scope.attributesById.hasOwnProperty(key)) {
+            for(var key in $scope.attributesById){
+                if($scope.attributesById.hasOwnProperty(key)){
                     $scope.attributes.push($scope.attributesById[key]);
                 }
             }
@@ -69,28 +90,29 @@ trackerCapture.controller('RelationshipController',
             $scope.programs = $scope.selections.prs;
             $scope.programsById = {};
             $scope.allProgramNames = {};
-            ProgramFactory.getAllAccesses().then(function (data) {
+            ProgramFactory.getAllAccesses().then(function(data) {
                 $scope.allProgramNames = data.programIdNameMap;
                 $scope.accessByProgramId = data.programsById;
             });
-            angular.forEach($scope.programs, function (program) {
+            angular.forEach($scope.programs, function(program){
                 $scope.programsById[program.id] = program;
             });
 
-            RelationshipFactory.getAll().then(function (relTypes) {
-                $scope.relationshipTypes = relTypes.filter(function (relType) {
+            RelationshipFactory.getAll().then(function(relTypes){
+                $scope.relationshipTypes = relTypes.filter(function(relType){
                     return (relType.fromConstraint.trackedEntityType && relType.fromConstraint.trackedEntityType.id === $scope.trackedEntityType.id)
-                        || (relType.toConstraint.trackedEntityType && relType.toConstraint.trackedEntityType.id === $scope.trackedEntityType.id);
+                        || (relType.toConstraint.trackedEntityType && relType.toConstraint.trackedEntityType.id === $scope.trackedEntityType.id);
                 });
 
-                angular.forEach($scope.relationshipTypes, function (rel) {
+                angular.forEach($scope.relationshipTypes, function(rel){
                     $scope.relationships[rel.id] = rel;
                 });
 
                 setRelationships();
             });
             $scope.selectedOrgUnit = $scope.selections.orgUnit;
-        });
+        }
+
 
         $scope.orderTeiBy = 'created';
         $scope.orderReverse = true;
@@ -121,7 +143,7 @@ trackerCapture.controller('RelationshipController',
         };
 
         $scope.showNaerkontaktImport = function () {
-            var modalInstance = $modal.open({
+            $modal.open({
                 templateUrl: 'ks_patches/naerkontakt_import/naerkontakt-import.html',
                 controller: 'NaerkontaktImportController',
                 windowClass: 'modal-full-window',
@@ -152,12 +174,8 @@ trackerCapture.controller('RelationshipController',
                     },
                     allPrograms: function () {
                         return allPrograms;
-                    }
+                    },
                 }
-            });
-
-            modalInstance.result.then(function () {
-
             });
         }
 

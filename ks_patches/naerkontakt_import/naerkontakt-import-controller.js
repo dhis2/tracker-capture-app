@@ -1,35 +1,36 @@
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('NaerkontaktImportController',
-    function($scope,
-             $rootScope,
-             $translate,
-             $modal,
-             $modalInstance,
-             $http,
-             $location,
-             DateUtils,
-             CurrentSelection,
-             OperatorFactory,
-             AttributesFactory,
-             EntityQueryFactory,
-             OrgUnitFactory,
-             ProgramFactory,
-             MetaDataFactory,
-             TEIService,
-             TEIGridService,
-             NotificationService,
-             Paginator,
-             relationshipTypes,
-             selectedProgram,
-             relatedProgramRelationship,
-             selections,
-             selectedAttribute,
-             existingAssociateUid,
-             addingRelationship,
-             selectedTei,
-             AccessUtils,
-             TEService,
-             allPrograms
+    function ($scope,
+              $rootScope,
+              $translate,
+              $modal,
+              $modalInstance,
+              $http,
+              $location,
+              DateUtils,
+              CurrentSelection,
+              OperatorFactory,
+              AttributesFactory,
+              EntityQueryFactory,
+              RelationshipCallbackService,
+              OrgUnitFactory,
+              ProgramFactory,
+              MetaDataFactory,
+              TEIService,
+              TEIGridService,
+              NotificationService,
+              Paginator,
+              relationshipTypes,
+              selectedProgram,
+              relatedProgramRelationship,
+              selections,
+              selectedAttribute,
+              existingAssociateUid,
+              addingRelationship,
+              selectedTei,
+              AccessUtils,
+              TEService,
+              allPrograms
     ) {
         $scope.uploadResult = undefined;
         $scope.file = undefined;
@@ -46,8 +47,8 @@ trackerCapture.controller('NaerkontaktImportController',
             $scope.stage = 'uploadingImportTest';
 
             $scope.uploadFile('validerFil').then(response => {
-                 $scope.uploadResult = response.data;
-                 $scope.stage = 'importTestSuccess';
+                $scope.uploadResult = response.data;
+                $scope.stage = 'importTestSuccess';
             }, error => {
                 $scope.stage = 'importFailed';
                 $scope.setError(error);
@@ -58,12 +59,15 @@ trackerCapture.controller('NaerkontaktImportController',
             $scope.stage = 'uploadingImport';
 
             $scope.uploadFile('lagreFil').then(response => {
-                 $scope.uploadResult = response.data;
-                 $scope.stage = 'importSuccess';
-             }, error => {
-                 $scope.stage = 'importFailed';
-                 $scope.setError(error);
-             });
+                $scope.uploadResult = response.data;
+                $scope.stage = 'importSuccess';
+                TEIService.getRelationships(selectedTei.trackedEntityInstance).then(response => {
+                    RelationshipCallbackService.runCallbackFunctions(response);
+                });
+            }, error => {
+                $scope.stage = 'importFailed';
+                $scope.setError(error);
+            });
         }
 
         $scope.close = function () {
@@ -89,6 +93,6 @@ trackerCapture.controller('NaerkontaktImportController',
             var formData = new FormData();
             formData.append('file', $scope.file);
 
-            return $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined }});
+            return $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined}});
         }
-});
+    });
