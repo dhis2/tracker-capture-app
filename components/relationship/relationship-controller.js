@@ -335,7 +335,7 @@ trackerCapture.controller('RelationshipController',
             var hasAccess = false;
             if (relative && relative.programOwners) {
                 angular.forEach(relative.programOwners, function (programOwner) {
-                    if (programOwner.program === programId && programOwner.ownerOrgUnit === 'ScyeDxgMbBm') {
+                    if (programOwner.program === programId && programOwner.ownerOrgUnit === $scope.selectedOrgUnit.id) {
                         hasAccess = true;
                     }
                 });
