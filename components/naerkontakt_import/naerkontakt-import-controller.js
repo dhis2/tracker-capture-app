@@ -80,6 +80,6 @@ trackerCapture.controller('NaerkontaktImportController',
             var formData = new FormData();
             formData.append('file', $scope.file);
 
-            return $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined}});
+            return $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined, 'ingress-csrf': $cookies['ingress-csrf']}});
         }
     });
