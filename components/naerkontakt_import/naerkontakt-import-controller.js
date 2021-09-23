@@ -17,7 +17,8 @@ trackerCapture.controller('NaerkontaktImportController',
               ProgramFactory,
               MetaDataFactory,
               TEIService,
-              selectedTei
+              selectedTei,
+              $cookies
     ) {
         $scope.uploadResult = undefined;
         $scope.file = undefined;
@@ -75,11 +76,10 @@ trackerCapture.controller('NaerkontaktImportController',
         }
 
         $scope.uploadFile = function (uploadType) {
-            var url = `/api/v1/import/${uploadType}/${selectedTei.trackedEntityInstance}/${$scope.getCurrentKommuneNr()}`;
+            var url = `/api/import/${uploadType}/${selectedTei.trackedEntityInstance}/${$scope.getCurrentKommuneNr()}`;
 
             var formData = new FormData();
             formData.append('file', $scope.file);
-
-            return $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined}});
+            return $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined, "ingress-csrf": $cookies['ingress-csrf']}});
         }
     });

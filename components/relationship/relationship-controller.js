@@ -144,7 +144,7 @@ trackerCapture.controller('RelationshipController',
 
         $scope.showNaerkontaktImport = function () {
             $modal.open({
-                templateUrl: 'ks_patches/naerkontakt_import/naerkontakt-import.html',
+                templateUrl: 'components/naerkontakt_import/naerkontakt-import.html',
                 controller: 'NaerkontaktImportController',
                 windowClass: 'modal-full-window',
                 resolve: {
