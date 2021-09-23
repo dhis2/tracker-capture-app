@@ -40,57 +40,24 @@
         <p>
             Excel-filen kunne leses.
         </p>
-        <tabset>
-            <tab>
-                <tab-heading>
-                    Kunne ikke importeres (2)
-                </tab-heading>
-                Test
-            </tab>
-            <tab>
-                <tab-heading>
-                    Feil ved import (3)
-                </tab-heading>
-                Test
-            </tab>
-            <tab>
-                <tab-heading>
-                    Nye nærkontakter (5)
-                </tab-heading>
-                <div style="display: flex">
-                    <div ng-if="uploadResult && uploadResult.importOk.length" style="padding-right: 2em">
-                        Følgende personer vil bli lagt til klyngen:
-                        <ul style="list-style: none">
-                            <li ng-repeat="person in uploadResult.importOk">
-                                <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                            </li>
-                        </ul>
-                    </div>
-                    <div ng-if="uploadResult && uploadResult.importNotPossible.length">
-                        Følgende personer kan ikke legges til automatisk og må legges til manuelt:
-                        <ul style="list-style: none">
-                            <li ng-repeat="person in uploadResult.importNotPossible">
-                                <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </tab>
-            <tab>
-                <tab-heading>
-                    Nye Indekser (3)
-                </tab-heading>
-                Test
-            </tab>
-            <tab>
-                <tab-heading>
-                    Allerede i klyngen (7)
-                </tab-heading>
-                Test
-            </tab>
-
-
-        </tabset>
+        <div style="display: flex">
+            <div ng-if="uploadResult && uploadResult.importOk.length" style="padding-right: 2em">
+                Følgende personer vil bli lagt til klyngen:
+                <ul style="list-style: none">
+                    <li ng-repeat="person in uploadResult.importOk">
+                        <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
+                    </li>
+                </ul>
+            </div>
+            <div ng-if="uploadResult && uploadResult.importNotPossible.length">
+                Følgende personer kan ikke legges til automatisk og må legges til manuelt:
+                <ul style="list-style: none">
+                    <li ng-repeat="person in uploadResult.importNotPossible">
+                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
+                    </li>
+                </ul>
+            </div>
+        </div>
         <button class="btn btn-grp btn-file btn-default">
             <span>
                 Last opp en annen liste istedet
