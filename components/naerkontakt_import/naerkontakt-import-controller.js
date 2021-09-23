@@ -25,7 +25,11 @@ trackerCapture.controller('NaerkontaktImportController',
         $scope.stage = 'start';
         $scope.errorCode = undefined;
         $scope.errorMsg = undefined;
-
+        $scope.peopleDuplikat = [];
+        $scope.peopleInputError = [];
+        $scope.peopleImportExisting = [];
+        $scope.peopleImportNew = [];
+        $scope.peopleAllreadyInGroup = [];
 
         $scope.getCurrentKommuneNr = function () {
             return CurrentSelection.currentSelection.orgUnit.code;
@@ -36,6 +40,7 @@ trackerCapture.controller('NaerkontaktImportController',
 
             $scope.uploadFile('validerFil').then(response => {
                 $scope.uploadResult = response.data;
+                $scope.savePeopleInCategories(response.data);
                 $scope.stage = 'importTestSuccess';
             }, error => {
                 $scope.stage = 'importFailed';
@@ -48,6 +53,7 @@ trackerCapture.controller('NaerkontaktImportController',
 
             $scope.uploadFile('lagreFil').then(response => {
                 $scope.uploadResult = response.data;
+                $scope.savePeopleInCategories(response.data);
                 $scope.stage = 'importSuccess';
                 TEIService.getRelationships(selectedTei.trackedEntityInstance).then(response => {
                     RelationshipCallbackService.runCallbackFunctions(response);
@@ -75,11 +81,49 @@ trackerCapture.controller('NaerkontaktImportController',
             $scope.stage = 'start';
         }
 
+        $scope.getImportResultCategory = function (person) {
+            switch (person.status.operasjon) {
+                case "MANUELL":
+                    return "DUPLIKAT";
+                case "FEIL":
+                    return "INPUT_ERROR";
+                case "NY_RELASJON":
+                case "NY_RELASJON_KOMMUNEINFO":
+                case "NY_ENROLLMENT":
+                    return "IMPORT_EXISTING";
+                case "NY_TEI":
+                    return "IMPORT_NEW";
+                case "INFOMELDING":
+                    return "ALLREADY_IN_GROUP";
+                default:
+                    return "INPUT_ERROR";
+            }
+        };
+
+        $scope.getPeopleInCategory = function (category, people) {
+            return people && people.filter((person) =>
+                $scope.getImportResultCategory(person) === category
+            );
+        }
+
+        $scope.savePeopleInCategories = function (people) {
+            $scope.peopleDuplikat = $scope.getPeopleInCategory('DUPLIKAT', people.importNotPossible);
+            $scope.peopleInputError = $scope.getPeopleInCategory('INPUT_ERROR', people.importNotPossible);
+            $scope.peopleImportExisting = $scope.getPeopleInCategory('IMPORT_EXISTING', people.importOk);
+            $scope.peopleImportNew = $scope.getPeopleInCategory('IMPORT_NEW', people.importOk);
+            $scope.peopleAllreadyInGroup = $scope.getPeopleInCategory('ALLREADY_IN_GROUP', people.importOk);
+        }
+
         $scope.uploadFile = function (uploadType) {
             var url = `/api/import/${uploadType}/${selectedTei.trackedEntityInstance}/${$scope.getCurrentKommuneNr()}`;
 
             var formData = new FormData();
             formData.append('file', $scope.file);
-            return $http({url, data: formData, method: "POST", headers: {"Content-Type": undefined, "ingress-csrf": $cookies['ingress-csrf']}});
+            return $http({
+                url,
+                data: formData,
+                method: "POST",
+                headers: {"Content-Type": undefined, "ingress-csrf": $cookies['ingress-csrf']}
+            });
         }
     });

@@ -2469,3 +2469,14 @@ button.list-group-item-danger.active:focus {
     height: 1em;
 }
 
+.ks-tab-heading--danger {
+    color: red;
+    font-weight: 600;
+    font-size: 8pt;
+}
+
+.ks-tab-heading--ok {
+    color: green;
+    font-weight: 600;
+    font-size: 8pt;
+}
