@@ -80,7 +80,7 @@
                 <div class="alert alert-warning">
 
                     <p>
-                        Disse personene er registrert i Fiks Smittesporing. De vil bli knyttet til klyngen. Informasjon
+                        Disse personene er allerede registrert i Fiks Smittesporing. De vil bli knyttet til klyngen. Informasjon
                         fra
                         Excel-arket vil legges til profilen, men vi vil ikke overskrive eksisterende felter.
                     </p>
@@ -125,7 +125,7 @@
                 </tab-heading>
                 <div class="alert alert-warning">
                     <p>
-                        Disse personene er allerede i klyngen. Disse vil ikke bli endret.
+                        Disse personene er allerede i klyngen. De vil ikke bli endret.
                     </p>
                 </div>
                 <ul style="list-style: none">
@@ -161,25 +161,95 @@
 
     <!-- Import success page -->
     <div ng-if="stage === 'importSuccess'">
-        <p>
-            Excel-filen ble importert.
-        </p>
-        <div ng-if="uploadResult && uploadResult.importOk.length">
-            Følgende personer er lagt til klyngen:
-            <ul>
-                <li ng-repeat="person in uploadResult.importOk">
-                    {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                </li>
-            </ul>
-        </div>
-        <div ng-if="uploadResult && uploadResult.importNotPossible.length">
-            Følgende personer kunne ikke legges til automatisk og må legges til manuelt:
-            <ul>
-                <li ng-repeat="person in uploadResult.importNotPossible">
-                    {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                </li>
-            </ul>
-        </div>
+        <h2>Importsammendrag</h2>
+        <tabset>
+            <tab ng-if="peopleDuplikat.length > 0">
+                <tab-heading class="ks-tab-heading--danger">
+                    <i class="fa fa-exclamation-triangle"></i> Ikke importert: Duplikater ({{peopleDuplikat.length}})
+                </tab-heading>
+                <div class="alert alert-warning">
+                    <p>
+                        Vi har funnet personer i Fiks Smittesporing som er mulig duplikat. Disse kunne ikke importeres
+                        automatisk. Venligst legg disse til manuelt.
+                    </p>
+                </div>
+                <ul style="list-style: none">
+                    <li ng-repeat="person in peopleDuplikat">
+                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
+                        ({{person.fnr}})
+                    </li>
+                </ul>
+            </tab>
+            <tab ng-if="peopleInputError.length > 0">
+                <tab-heading class="ks-tab-heading--danger">
+                    <i class="fa fa-exclamation-triangle"></i> Ikke importert: Inputfeil ({{peopleInputError.length}})
+                </tab-heading>
+                <div class="alert alert-warning">
+                    <p>
+                        Disse personene kunne ikke importeres på grunn av feil i Excel-arket. Venligst legg disse til manuelt.
+                    </p>
+                </div>
+                <ul style="list-style: none">
+                    <li ng-repeat="person in peopleInputError">
+                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
+                        ({{person.fnr}})
+                    </li>
+                </ul>
+            </tab>
+            <tab ng-if="peopleImportExisting.length > 0">
+                <tab-heading class="ks-tab-heading--ok">
+                    Lagt til klyngen: Eksisterende personer ({{peopleImportExisting.length}})
+                </tab-heading>
+                <div class="alert alert-warning">
+
+                    <p>
+                        Disse personene er allerede registrert i Fiks Smittesporing. De er blitt knyttet til klyngen.
+                    <p>
+                        Merk: Siden disse personene allerede er registrerte, så kan det hende de er blitt registrert under
+                        <em>Indekser</em>,
+                        <em>
+                            Personer som følges opp av en annen kommune</em> eller <em>
+                        Personer som ikke er gyldig nærkontakt eller indeks</em> istedet for <em>Nærkontakter</em>.
+                    </p>
+                </div>
+                <ul style="list-style: none">
+                    <li ng-repeat="person in peopleImportExisting">
+                        <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
+                    </li>
+                </ul>
+            </tab>
+            <tab ng-if="peopleImportNew.length > 0">
+                <tab-heading class="ks-tab-heading--ok">
+                    Lagt til klyngen: Nye personer ({{peopleImportNew.length}})
+                </tab-heading>
+                <div class="alert alert-warning">
+                    <p>
+                        Disse personene er lagt til med informasjonen gitt i Excel-arket, og lagt til som nærkontakter.
+                    </p>
+                </div>
+                <ul style="list-style: none">
+                    <li ng-repeat="person in peopleImportNew">
+                        <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
+                    </li>
+                </ul>
+            </tab>
+            <tab ng-if="peopleAllreadyInGroup.length > 0">
+                <tab-heading class="ks-tab-heading--ok">
+                    Ikke lagt til: Allerede i klyngen ({{peopleAllreadyInGroup.length}})
+                </tab-heading>
+                <div class="alert alert-warning">
+                    <p>
+                        Disse personene er allerede i klyngen. De er ikke endret.
+                    </p>
+                </div>
+                <ul style="list-style: none">
+                    <li ng-repeat="person in peopleAllreadyInGroup">
+                        <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
+                    </li>
+                </ul>
+            </tab>
+        </tabset>
+
     </div>
 
     <!-- Upload failed page -->
