@@ -1052,13 +1052,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         markPotentialDuplicate: function(tei) {
-            var promise = $http.post( DHIS2URL + '/potentialDuplicates/',{teiA:tei.id}).then(function(response){
+            var formattedTei = convertFromUserToApi(angular.copy(tei));
+            formattedTei.potentialDuplicate = true;
+            var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + tei.id, formattedTei).then(function(response){
                 return response.data;
             });
             return promise;
         },
-        deletePotentialDuplicate: function(duplicate) {
-            var promise = $http.delete( DHIS2URL + '/potentialDuplicates/' + duplicate.id).then(function(response){
+        clearPotentialDuplicate: function(duplicate) {
+            var formattedTei = convertFromUserToApi(angular.copy(tei));
+            formattedTei.potentialDuplicate = false;
+            var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + tei.id, formattedTei).then(function(response){
                 return response.data;
             });
             return promise;

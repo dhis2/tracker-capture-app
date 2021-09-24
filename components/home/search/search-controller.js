@@ -356,17 +356,17 @@ trackerCapture.controller('SearchController',function(
 
                     $scope.unMarkPotentialDuplicate = function(tei){
                         var newExistingDuplicatesList = [];
-                        var duplicateToDelete = {};
+                        var duplicateToClear = {};
                         angular.forEach($scope.existingDuplicates, function(duplicate){
                             if(duplicate.teiA != tei.id && duplicate.teiB != tei.id) {
                                 newExistingDuplicatesList.push(duplicate);
                             }
                             else {
-                                duplicateToDelete = duplicate;
+                                duplicateToClear = duplicate;
                             }
                         });
-                        if(duplicateToDelete) {
-                            TEIService.deletePotentialDuplicate(duplicateToDelete);
+                        if(duplicateToClear) {
+                            TEIService.clearPotentialDuplicate(duplicateToClear);
                         }                     
                         $scope.existingDuplicates = newExistingDuplicatesList;
                     }
