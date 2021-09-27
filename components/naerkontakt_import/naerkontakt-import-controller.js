@@ -99,7 +99,7 @@ trackerCapture.controller('NaerkontaktImportController',
                     return "ALLREADY_IN_GROUP";
                 case "SERVER_ERROR":
                 default:
-                    return "SERVER_ERROR";
+                    return "OTHER_ERROR";
             }
         };
 
@@ -110,7 +110,7 @@ trackerCapture.controller('NaerkontaktImportController',
         }
 
         $scope.savePeopleInCategories = function (people) {
-            $scope.peopleServerError = $scope.getPeopleInCategory('SERVER_ERROR', people.importNotPossible);
+            $scope.peopleServerError = $scope.getPeopleInCategory('OTHER_ERROR', people.importNotPossible);
             $scope.peopleDuplikat = $scope.getPeopleInCategory('DUPLIKAT', people.importNotPossible);
             $scope.peopleInputError = $scope.getPeopleInCategory('INPUT_ERROR', people.importNotPossible);
             $scope.peopleImportExisting = $scope.getPeopleInCategory('IMPORT_EXISTING', people.importOk);
