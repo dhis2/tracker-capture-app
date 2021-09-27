@@ -26,6 +26,7 @@ trackerCapture.controller('NaerkontaktImportController',
         $scope.errorCode = undefined;
         $scope.errorMsg = undefined;
         $scope.peopleDuplikat = [];
+        $scope.peopleServerError = [];
         $scope.peopleInputError = [];
         $scope.peopleImportExisting = [];
         $scope.peopleImportNew = [];
@@ -90,13 +91,15 @@ trackerCapture.controller('NaerkontaktImportController',
                 case "NY_RELASJON":
                 case "NY_RELASJON_KOMMUNEINFO":
                 case "NY_ENROLLMENT":
+                case "OPPDATER_ENROLLMENT":
                     return "IMPORT_EXISTING";
                 case "NY_TEI":
                     return "IMPORT_NEW";
                 case "INFOMELDING":
                     return "ALLREADY_IN_GROUP";
+                case "SERVER_ERROR":
                 default:
-                    return "INPUT_ERROR";
+                    return "SERVER_ERROR";
             }
         };
 
@@ -107,6 +110,7 @@ trackerCapture.controller('NaerkontaktImportController',
         }
 
         $scope.savePeopleInCategories = function (people) {
+            $scope.peopleServerError = $scope.getPeopleInCategory('SERVER_ERROR', people.importNotPossible);
             $scope.peopleDuplikat = $scope.getPeopleInCategory('DUPLIKAT', people.importNotPossible);
             $scope.peopleInputError = $scope.getPeopleInCategory('INPUT_ERROR', people.importNotPossible);
             $scope.peopleImportExisting = $scope.getPeopleInCategory('IMPORT_EXISTING', people.importOk);
