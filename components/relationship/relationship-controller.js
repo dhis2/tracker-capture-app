@@ -376,7 +376,7 @@ trackerCapture.controller('RelationshipController',
                     var contactDateMoment;
 
                     angular.forEach(enrollment.events, function (event) {
-                        if ((!endDate || moment(event.eventDate).isBefore(endDate)) && (moment(event.eventDate).isAfter(startDate) || moment(event.eventDate).isSame(startDate)) && event.programStage == NAERKONTAKT_OPPFOLGING_PROGRAM_STAGE_ID) {
+                        if ((!endDate || (moment(event.eventDate).isBefore(endDate) || moment(event.eventDate).isSame(endDate))) && (moment(event.eventDate).isAfter(startDate) || moment(event.eventDate).isSame(startDate)) && event.programStage == NAERKONTAKT_OPPFOLGING_PROGRAM_STAGE_ID) {
                             //this is the followup event in the contact program: event date is contact time.
                             if (!contactDateMoment || moment(event.eventDate).isBefore(contactDateMoment)) {
                                 //only update the contact date if it is older than the previous one, we want the first contact date that is relevant
@@ -385,6 +385,7 @@ trackerCapture.controller('RelationshipController',
                         }
                     });
 
+                    console.log(contactDateMoment);
                     if (contactDateMoment && (!endDate || contactDateMoment.isBefore(endDate))) {
                         relative.contactDateMoment = contactDateMoment;
                         relative.contactDate = DateUtils.formatFromApiToUser(contactDateMoment);
@@ -394,7 +395,10 @@ trackerCapture.controller('RelationshipController',
                     }
                 }
             });
-            return true;
+            if(relative.contactDate) {
+                return true;
+            }
+            return false;
         }
 
         $scope.addOrgNameToProgramOwners = function (relative) {
