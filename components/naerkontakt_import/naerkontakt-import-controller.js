@@ -26,7 +26,7 @@ trackerCapture.controller('NaerkontaktImportController',
         $scope.errorCode = undefined;
         $scope.errorMsg = undefined;
         $scope.peopleDuplikat = [];
-        $scope.peopleServerError = [];
+        $scope.peopleOtherError = [];
         $scope.peopleInputError = [];
         $scope.peopleImportExisting = [];
         $scope.peopleImportNew = [];
@@ -110,7 +110,7 @@ trackerCapture.controller('NaerkontaktImportController',
         }
 
         $scope.savePeopleInCategories = function (people) {
-            $scope.peopleServerError = $scope.getPeopleInCategory('OTHER_ERROR', people.importNotPossible);
+            $scope.peopleOtherError = $scope.getPeopleInCategory('OTHER_ERROR', people.importNotPossible);
             $scope.peopleDuplikat = $scope.getPeopleInCategory('DUPLIKAT', people.importNotPossible);
             $scope.peopleInputError = $scope.getPeopleInCategory('INPUT_ERROR', people.importNotPossible);
             $scope.peopleImportExisting = $scope.getPeopleInCategory('IMPORT_EXISTING', people.importOk);

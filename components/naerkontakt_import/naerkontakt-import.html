@@ -73,9 +73,9 @@
                     </li>
                 </ul>
             </tab>
-            <tab ng-if="peopleServerError.length > 0">
+            <tab ng-if="peopleOtherError.length > 0">
                 <tab-heading class="ks-tab-heading--danger">
-                    <i class="fa fa-exclamation-triangle"></i> Kan ikke importeres: Annet ({{peopleServerError.length}})
+                    <i class="fa fa-exclamation-triangle"></i> Kan ikke importeres: Annet ({{peopleOtherError.length}})
                 </tab-heading>
                 <div class="alert alert-warning">
                     <p>
@@ -83,7 +83,7 @@
                     </p>
                 </div>
                 <ul style="list-style: none">
-                    <li ng-repeat="person in peopleServerError">
+                    <li ng-repeat="person in peopleOtherError">
                         <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
                         ({{person.fnr}})
                     </li>
@@ -212,9 +212,9 @@
                     </li>
                 </ul>
             </tab>
-            <tab ng-if="peopleServerError.length > 0">
+            <tab ng-if="peopleOtherError.length > 0">
                 <tab-heading class="ks-tab-heading--danger">
-                    <i class="fa fa-exclamation-triangle"></i> Kan ikke importeres: Annet ({{peopleServerError.length}})
+                    <i class="fa fa-exclamation-triangle"></i> Kan ikke importeres: Annet ({{peopleOtherError.length}})
                 </tab-heading>
                 <div class="alert alert-warning">
                     <p>
@@ -222,7 +222,7 @@
                     </p>
                 </div>
                 <ul style="list-style: none">
-                    <li ng-repeat="person in peopleServerError">
+                    <li ng-repeat="person in peopleOtherError">
                         <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
                         ({{person.fnr}})
                     </li>
