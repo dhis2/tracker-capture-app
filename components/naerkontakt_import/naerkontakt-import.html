@@ -73,6 +73,22 @@
                     </li>
                 </ul>
             </tab>
+            <tab ng-if="peopleOtherError.length > 0">
+                <tab-heading class="ks-tab-heading--danger">
+                    <i class="fa fa-exclamation-triangle"></i> Kan ikke importeres: Annet ({{peopleOtherError.length}})
+                </tab-heading>
+                <div class="alert alert-warning">
+                    <p>
+                        Noe gikk galt ved import av denne personen. Det kan hende det vil fungere om du prøver igjen. Hvis det ikke fungerer, så må du legge disse personene til manuelt. Ta eventuelt kontakt med support om problemet vedvarer.
+                    </p>
+                </div>
+                <ul style="list-style: none">
+                    <li ng-repeat="person in peopleOtherError">
+                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
+                        ({{person.fnr}})
+                    </li>
+                </ul>
+            </tab>
             <tab ng-if="peopleImportExisting.length > 0">
                 <tab-heading class="ks-tab-heading--ok">
                     Legges til klyngen: Eksisterende personer ({{peopleImportExisting.length}})
@@ -191,6 +207,22 @@
                 </div>
                 <ul style="list-style: none">
                     <li ng-repeat="person in peopleInputError">
+                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
+                        ({{person.fnr}})
+                    </li>
+                </ul>
+            </tab>
+            <tab ng-if="peopleOtherError.length > 0">
+                <tab-heading class="ks-tab-heading--danger">
+                    <i class="fa fa-exclamation-triangle"></i> Kan ikke importeres: Annet ({{peopleOtherError.length}})
+                </tab-heading>
+                <div class="alert alert-warning">
+                    <p>
+                        Noe gikk galt ved import av denne personen. Det kan hende det vil fungere om du prøver igjen. Hvis det ikke fungerer, så må du legge disse personene til manuelt. Ta eventuelt kontakt med support om problemet vedvarer.
+                    </p>
+                </div>
+                <ul style="list-style: none">
+                    <li ng-repeat="person in peopleOtherError">
                         <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
                         ({{person.fnr}})
                     </li>
