@@ -38,95 +38,13 @@
     <!-- Uploading for verification success page -->
     <div ng-if="stage === 'importTestSuccess'">
         <h2>Importsammendrag</h2>
-        <tabset>
-            <tab ng-if="peopleDuplikat.length > 0">
-                <tab-heading class="ks-tab-heading--danger">
-                    <i class="fa fa-exclamation-triangle"></i> Kan ikke importeres: Duplikater ({{peopleDuplikat.length}})
+        <tabset ng-init="peopleArr = getImportResultAsArray()">
+            <tab ng-repeat="peopleStruct in peopleArr">
+                <tab-heading ng-class="{true: 'ks-tab-heading--danger', false: 'ks-tab-heading--ok'}[peopleStruct.type=='error']">
+                    <i class="fa fa-exclamation-triangle" ng-if="peopleStruct.type=='error'"></i> {{peopleStruct.titleValidator}} ({{peopleStruct.people.length}})
                 </tab-heading>
-                <div class="alert alert-warning">
-                    <p>
-                        Vi har funnet personer i Fiks Smittesporing som er mulig duplikat. Disse kan ikke importeres
-                        automatisk. Venligst legg disse til manuelt etter du har importert.
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleDuplikat"></div>
-            </tab>
-            <tab ng-if="peopleInputError.length > 0">
-                <tab-heading class="ks-tab-heading--danger">
-                    <i class="fa fa-exclamation-triangle"></i> Kan ikke importeres: Inputfeil ({{peopleInputError.length}})
-                </tab-heading>
-                <div class="alert alert-warning">
-                    <p>
-                        Disse personene kunne ikke importeres på grunn av feil i Excel-arket. Dobbeltsjekk at alle
-                        felter er fyllt ut korrekt. Husk <em>Dato for siste kontakt
-                    </em>, gyldig <em>Fødselsnummer</em>, <em>Fornavn</em> og <em>Etternavn</em> er påkrevd.
-                    </p>
-                    <p>
-                        Oppdater Excel-arket og prøv igjen. Eventuelt legg disse til manuelt etter du har importert.
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleInputError"></div>
-            </tab>
-            <tab ng-if="peopleOtherError.length > 0">
-                <tab-heading class="ks-tab-heading--danger">
-                    <i class="fa fa-exclamation-triangle"></i> Kan ikke importeres: Annet ({{peopleOtherError.length}})
-                </tab-heading>
-                <div class="alert alert-warning">
-                    <p>
-                        Noe gikk galt ved import av denne personen. Det kan hende det vil fungere om du prøver igjen. Hvis det ikke fungerer, så må du legge disse personene til manuelt. Ta eventuelt kontakt med support om problemet vedvarer.
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleOtherError"></div>
-
-            </tab>
-            <tab ng-if="peopleImportExisting.length > 0">
-                <tab-heading class="ks-tab-heading--ok">
-                    Legges til klyngen: Eksisterende personer ({{peopleImportExisting.length}})
-                </tab-heading>
-                <div class="alert alert-warning">
-
-                    <p>
-                        Disse personene er allerede registrert i Fiks Smittesporing. De vil bli knyttet til klyngen. Informasjon
-                        fra
-                        Excel-arket vil legges til profilen, men vi vil ikke overskrive eksisterende felter.
-                    </p>
-                    <p>
-                        Merk: Siden disse personene allerede er registrerte, så kan det hende de blir registrert under
-                        <em>Indekser</em>,
-                        <em>
-                            Personer som følges opp av en annen kommune</em> eller <em>
-                        Personer som ikke er gyldig nærkontakt eller indeks</em> istedet for <em>Nærkontakter</em>.
-                        Dette må
-                        eventuelt endres på etter at importen er gjenomført.
-
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleImportExisting"></div>
-            </tab>
-            <tab ng-if="peopleImportNew.length > 0">
-                <tab-heading class="ks-tab-heading--ok">
-                    Legges til klyngen: Nye personer ({{peopleImportNew.length}})
-                </tab-heading>
-                <div class="alert alert-warning">
-
-                    <p>
-                        Disse personene er ikke registrert i Fiks Smittesporing. De vil bli lagt til med informasjonen
-                        gitt
-                        i Excel-arket, og lagt til som nærkontakter.
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleImportNew"></div>
-            </tab>
-            <tab ng-if="peopleAllreadyInGroup.length > 0">
-                <tab-heading class="ks-tab-heading--ok">
-                    Legges ikke til: Allerede i klyngen ({{peopleAllreadyInGroup.length}})
-                </tab-heading>
-                <div class="alert alert-warning">
-                    <p>
-                        Disse personene er allerede i klyngen. De vil ikke bli endret.
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleAllreadyInGroup"></div>
+                <ng-include src="'components/naerkontakt_import/import-status-validate-message.html'" ng-init="statusType = peopleStruct.statusType"></ng-include>
+                <ng-include src="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleStruct.people;"></ng-include>
             </tab>
         </tabset>
         <hr/>
@@ -156,82 +74,14 @@
     <!-- Import success page -->
     <div ng-if="stage === 'importSuccess'">
         <h2>Importsammendrag</h2>
-        <tabset>
-            <tab ng-if="peopleDuplikat.length > 0">
-                <tab-heading class="ks-tab-heading--danger">
-                    <i class="fa fa-exclamation-triangle"></i> Ikke importert: Duplikater ({{peopleDuplikat.length}})
-                </tab-heading>
-                <div class="alert alert-warning">
-                    <p>
-                        Vi har funnet personer i Fiks Smittesporing som er mulig duplikat. Disse kunne ikke importeres
-                        automatisk. Venligst legg disse til manuelt.
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleDuplikat"></div>
-
-            </tab>
-            <tab ng-if="peopleInputError.length > 0">
-                <tab-heading class="ks-tab-heading--danger">
-                    <i class="fa fa-exclamation-triangle"></i> Ikke importert: Inputfeil ({{peopleInputError.length}})
-                </tab-heading>
-                <div class="alert alert-warning">
-                    <p>
-                        Disse personene kunne ikke importeres på grunn av feil i Excel-arket. Venligst legg disse til manuelt.
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleInputError"></div>
-            </tab>
-            <tab ng-if="peopleOtherError.length > 0">
-                <tab-heading class="ks-tab-heading--danger">
-                    <i class="fa fa-exclamation-triangle"></i> Kan ikke importeres: Annet ({{peopleOtherError.length}})
-                </tab-heading>
-                <div class="alert alert-warning">
-                    <p>
-                        Noe gikk galt ved import av denne personen. Det kan hende det vil fungere om du prøver igjen. Hvis det ikke fungerer, så må du legge disse personene til manuelt. Ta eventuelt kontakt med support om problemet vedvarer.
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleOtherError"></div>
-            </tab>
-            <tab ng-if="peopleImportExisting.length > 0">
-                <tab-heading class="ks-tab-heading--ok">
-                    Lagt til klyngen: Eksisterende personer ({{peopleImportExisting.length}})
-                </tab-heading>
-                <div class="alert alert-warning">
-
-                    <p>
-                        Disse personene er allerede registrert i Fiks Smittesporing. De er blitt knyttet til klyngen.
-                    <p>
-                        Merk: Siden disse personene allerede er registrerte, så kan det hende de er blitt registrert under
-                        <em>Indekser</em>,
-                        <em>
-                            Personer som følges opp av en annen kommune</em> eller <em>
-                        Personer som ikke er gyldig nærkontakt eller indeks</em> istedet for <em>Nærkontakter</em>.
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleImportExisting"></div>
-            </tab>
-            <tab ng-if="peopleImportNew.length > 0">
-                <tab-heading class="ks-tab-heading--ok">
-                    Lagt til klyngen: Nye personer ({{peopleImportNew.length}})
-                </tab-heading>
-                <div class="alert alert-warning">
-                    <p>
-                        Disse personene er lagt til med informasjonen gitt i Excel-arket, og lagt til som nærkontakter.
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleImportNew"></div>
-            </tab>
-            <tab ng-if="peopleAllreadyInGroup.length > 0">
-                <tab-heading class="ks-tab-heading--ok">
-                    Ikke lagt til: Allerede i klyngen ({{peopleAllreadyInGroup.length}})
-                </tab-heading>
-                <div class="alert alert-warning">
-                    <p>
-                        Disse personene er allerede i klyngen. De er ikke endret.
-                    </p>
-                </div>
-                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleAllreadyInGroup"></div>
-            </tab>
+            <tabset ng-init="peopleArr = getImportResultAsArray()">
+                <tab ng-repeat="peopleStruct in peopleArr">
+                    <tab-heading ng-class="{true: 'ks-tab-heading--danger', false: 'ks-tab-heading--ok'}[peopleStruct.type=='error']">
+                        <i class="fa fa-exclamation-triangle" ng-if="peopleStruct.type=='error'"></i> {{peopleStruct.titleImport}} ({{peopleStruct.people.length}})
+                    </tab-heading>
+                    <ng-include src="'components/naerkontakt_import/import-status-import-message.html'" ng-init="statusType = peopleStruct.statusType"></ng-include>
+                    <ng-include src="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleStruct.people;"></ng-include>
+                </tab>
         </tabset>
 
     </div>

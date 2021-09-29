@@ -32,6 +32,17 @@ trackerCapture.controller('NaerkontaktImportController',
         $scope.peopleImportNew = [];
         $scope.peopleAllreadyInGroup = [];
 
+        $scope.getImportResultAsArray = function () {
+            return [
+                {statusType: 'peopleDuplikat', titleValidator: 'Kan ikke importeres: Duplikater', titleImport: 'Ikke importert: Duplikater', type: 'error', people: $scope.peopleDuplikat},
+                {statusType: 'peopleInputError', titleValidator: 'Kan ikke importeres: Inputfeil', titleImport: 'Ikke importert: Inputfeil', type: 'error', people: $scope.peopleInputError},
+                {statusType: 'peopleOtherError', titleValidator: 'Kan ikke importeres: Annet', type: 'error', titleImport: 'Ikke importert: Annet', people: $scope.peopleOtherError},
+                {statusType: 'peopleImportExisting', titleValidator: 'Legges til klyngen: Eksisterende personer', titleImport: 'Lagt til klyngen: Eksisterende personer', type: 'ok', people: $scope.peopleImportExisting},
+                {statusType: 'peopleImportNew', titleValidator: 'Legges til klyngen: Nye personer', type: 'ok', titleImport: 'Lagt til klyngen: Nye personer', people: $scope.peopleImportNew},
+                {statusType: 'peopleAllreadyInGroup', titleValidator: 'Legges ikke til: Allerede i klyngen', titleImport: 'Ikke lagt til: Allerede i klyngen', type: 'ok', people: $scope.peopleAllreadyInGroup},
+            ]
+        }
+
         $scope.getCurrentKommuneNr = function () {
             return CurrentSelection.currentSelection.orgUnit.code;
         }

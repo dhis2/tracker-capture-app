@@ -385,7 +385,6 @@ trackerCapture.controller('RelationshipController',
                         }
                     });
 
-                    console.log(contactDateMoment);
                     if (contactDateMoment && (!endDate || contactDateMoment.isBefore(endDate))) {
                         relative.contactDateMoment = contactDateMoment;
                         relative.contactDate = DateUtils.formatFromApiToUser(contactDateMoment);
