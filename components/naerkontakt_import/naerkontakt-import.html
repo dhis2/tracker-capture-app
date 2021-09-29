@@ -2,7 +2,11 @@
     <h2>Last opp Excel-fil med nærkontakter</h2>
 </div>
 
+
+
 <div class="modal-body">
+
+
     <!-- First page of modal -->
     <div ng-if="stage === 'start'">
         <p>Her kan du laste opp en liste med nærkontakter (klasseliste) fra regneark, og knytte de automatisk til
@@ -45,12 +49,7 @@
                         automatisk. Venligst legg disse til manuelt etter du har importert.
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleDuplikat">
-                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
-                        ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleDuplikat"></div>
             </tab>
             <tab ng-if="peopleInputError.length > 0">
                 <tab-heading class="ks-tab-heading--danger">
@@ -66,12 +65,7 @@
                         Oppdater Excel-arket og prøv igjen. Eventuelt legg disse til manuelt etter du har importert.
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleInputError">
-                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
-                        ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleInputError"></div>
             </tab>
             <tab ng-if="peopleOtherError.length > 0">
                 <tab-heading class="ks-tab-heading--danger">
@@ -82,12 +76,8 @@
                         Noe gikk galt ved import av denne personen. Det kan hende det vil fungere om du prøver igjen. Hvis det ikke fungerer, så må du legge disse personene til manuelt. Ta eventuelt kontakt med support om problemet vedvarer.
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleOtherError">
-                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
-                        ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleOtherError"></div>
+
             </tab>
             <tab ng-if="peopleImportExisting.length > 0">
                 <tab-heading class="ks-tab-heading--ok">
@@ -111,11 +101,7 @@
 
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleImportExisting">
-                        <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleImportExisting"></div>
             </tab>
             <tab ng-if="peopleImportNew.length > 0">
                 <tab-heading class="ks-tab-heading--ok">
@@ -129,11 +115,7 @@
                         i Excel-arket, og lagt til som nærkontakter.
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleImportNew">
-                        <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleImportNew"></div>
             </tab>
             <tab ng-if="peopleAllreadyInGroup.length > 0">
                 <tab-heading class="ks-tab-heading--ok">
@@ -144,11 +126,7 @@
                         Disse personene er allerede i klyngen. De vil ikke bli endret.
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleAllreadyInGroup">
-                        <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleAllreadyInGroup"></div>
             </tab>
         </tabset>
         <hr/>
@@ -189,12 +167,8 @@
                         automatisk. Venligst legg disse til manuelt.
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleDuplikat">
-                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
-                        ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleDuplikat"></div>
+
             </tab>
             <tab ng-if="peopleInputError.length > 0">
                 <tab-heading class="ks-tab-heading--danger">
@@ -205,12 +179,7 @@
                         Disse personene kunne ikke importeres på grunn av feil i Excel-arket. Venligst legg disse til manuelt.
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleInputError">
-                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
-                        ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleInputError"></div>
             </tab>
             <tab ng-if="peopleOtherError.length > 0">
                 <tab-heading class="ks-tab-heading--danger">
@@ -221,12 +190,7 @@
                         Noe gikk galt ved import av denne personen. Det kan hende det vil fungere om du prøver igjen. Hvis det ikke fungerer, så må du legge disse personene til manuelt. Ta eventuelt kontakt med support om problemet vedvarer.
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleOtherError">
-                        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
-                        ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleOtherError"></div>
             </tab>
             <tab ng-if="peopleImportExisting.length > 0">
                 <tab-heading class="ks-tab-heading--ok">
@@ -244,11 +208,7 @@
                         Personer som ikke er gyldig nærkontakt eller indeks</em> istedet for <em>Nærkontakter</em>.
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleImportExisting">
-                        <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleImportExisting"></div>
             </tab>
             <tab ng-if="peopleImportNew.length > 0">
                 <tab-heading class="ks-tab-heading--ok">
@@ -259,11 +219,7 @@
                         Disse personene er lagt til med informasjonen gitt i Excel-arket, og lagt til som nærkontakter.
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleImportNew">
-                        <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleImportNew"></div>
             </tab>
             <tab ng-if="peopleAllreadyInGroup.length > 0">
                 <tab-heading class="ks-tab-heading--ok">
@@ -274,11 +230,7 @@
                         Disse personene er allerede i klyngen. De er ikke endret.
                     </p>
                 </div>
-                <ul style="list-style: none">
-                    <li ng-repeat="person in peopleAllreadyInGroup">
-                        <i class="fa fa-check"></i> {{person.firstName}} {{person.lastName}} ({{person.fnr}})
-                    </li>
-                </ul>
+                <div ng-include="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleAllreadyInGroup"></div>
             </tab>
         </tabset>
 
@@ -299,6 +251,8 @@
     </div>
 
 </div>
+
+
 
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-ng-click="close()">{{'close' | translate}}</button>
