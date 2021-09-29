@@ -617,14 +617,9 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             }
 
             $scope.onGetDuplicateInternal = function(tei){
-                var dupe = $scope.onGetDuplicate({tei: tei});
-                if (dupe) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return $scope.onGetDuplicate({tei: tei});
             }
-            
+
             $scope.getPage = function(page){
                 $scope.pager.page = page;
 
@@ -734,14 +729,9 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             }
 
             $scope.onGetDuplicateInternal = function(tei){
-                var dupe = $scope.onGetDuplicate({tei: tei});
-                if (dupe) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return $scope.onGetDuplicate({tei: tei});
             }
-            
+
             $scope.onGetPage = function(page){
                 $scope.pager.page = page;
                 $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});
