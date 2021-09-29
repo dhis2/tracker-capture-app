@@ -2,10 +2,7 @@
     <h2>Last opp Excel-fil med nærkontakter</h2>
 </div>
 
-
-
 <div class="modal-body">
-
 
     <!-- First page of modal -->
     <div ng-if="stage === 'start'">
@@ -62,7 +59,6 @@
             </span>
         </button>
         <button class="btn btn-primary" ng-click="uploadAndImport()">Legg nærkontakter til klynge</button>
-
     </div>
 
     <!-- Import spinner page -->
@@ -83,7 +79,6 @@
                     <ng-include src="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleStruct.people;"></ng-include>
                 </tab>
         </tabset>
-
     </div>
 
     <!-- Upload failed page -->
@@ -101,8 +96,6 @@
     </div>
 
 </div>
-
-
 
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-ng-click="close()">{{'close' | translate}}</button>
