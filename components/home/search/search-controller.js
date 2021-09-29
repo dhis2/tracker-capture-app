@@ -207,18 +207,6 @@ trackerCapture.controller('SearchController',function(
                             openTei(gridData.rows.own[0]);
                             return;
                         }
-                    } else if(rowsCnt > 0){
-                        var teiList = [];
-                        
-                        angular.forEach(res.data.rows.own, function(ownTei) {
-                            teiList.push(ownTei.id);
-                        });
-
-                        var potentialDuplicatesPromise = TEIService.getPotentialDuplicates(teiList);
-                        return potentialDuplicatesPromise.then(function(duplicates) {
-                            $scope.searching = null;
-                            return showResultModal(res, searchGroup, duplicates.identifiableObjects ? duplicates.identifiableObjects : []);
-                        });
                     }
                     $scope.searching = null;
                     return showResultModal(res, searchGroup);
@@ -298,20 +286,17 @@ trackerCapture.controller('SearchController',function(
             return false; 
         }
 
-        var showResultModal = function(res, searchGroup, existingDuplicates){
+        var showResultModal = function(res, searchGroup){
             var internalService = {
                 translateWithOULevelName: translateWithOULevelName,
                 translateWithTETName: translateWithTETName,
                 base: $scope.base
             }
 
-            res.existingDuplicates = existingDuplicates;
-
             return $modal.open({
                 templateUrl: 'components/home/search/result-modal.html',
                 controller: function($scope,$modalInstance, TEIGridService,OrgUnitFactory, orgUnit, res, refetchDataFn, internalService, canOpenRegistration, TEIService, NotificationService)
                 {
-                    $scope.existingDuplicates = res.existingDuplicates;
                     $scope.gridData = null;
                     $scope.isUnique = false;
                     $scope.canOpenRegistration = canOpenRegistration;
@@ -349,36 +334,15 @@ trackerCapture.controller('SearchController',function(
                     }
 
                     $scope.markPotentialDuplicate = function(tei){
-                        TEIService.markPotentialDuplicate(tei).then(function(duplicate){
-                            $scope.existingDuplicates.push(duplicate);
-                        });
+                        TEIService.markPotentialDuplicate(tei, true);
                     }
 
                     $scope.unMarkPotentialDuplicate = function(tei){
-                        var newExistingDuplicatesList = [];
-                        var duplicateToDelete = {};
-                        angular.forEach($scope.existingDuplicates, function(duplicate){
-                            if(duplicate.teiA != tei.id && duplicate.teiB != tei.id) {
-                                newExistingDuplicatesList.push(duplicate);
-                            }
-                            else {
-                                duplicateToDelete = duplicate;
-                            }
-                        });
-                        if(duplicateToDelete) {
-                            TEIService.deletePotentialDuplicate(duplicateToDelete);
-                        }                     
-                        $scope.existingDuplicates = newExistingDuplicatesList;
+                        TEIService.markPotentialDuplicate(tei, false);
                     }
 
                     $scope.getPotentialDuplicate = function(tei){
-                        var returnDuplicate = null;
-                        angular.forEach($scope.existingDuplicates, function(duplicate){
-                            if(duplicate.teiA == tei.id || duplicate.teiB == tei.id){
-                                returnDuplicate = duplicate;
-                            }
-                        });
-                        return returnDuplicate;
+                        return tei.potentialDuplicate;
                     }
 
                     $scope.openTei = function(tei){

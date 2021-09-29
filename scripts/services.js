@@ -1030,35 +1030,16 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        getPotentialDuplicates: function(uidList) {
-            var uidUrl = "";
-            if(uidList.length > 0)
-            {
-                uidUrl += "?teis=";
-                for(var i = 0; i < uidList.length; i ++){
-                    if(i > 0) uidUrl += ",";
-                    uidUrl += uidList[i];
-                }
-            }
-            var promise = $http.get( DHIS2URL + '/potentialDuplicates' + uidUrl ).then(function(response){
-                return response.data;
-            });
-            return promise;
-        },
         getPotentialDuplicatesForTei: function(uid) {
             var promise = $http.get( DHIS2URL + '/potentialDuplicates?teis=' + uid ).then(function(response){
                 return response.data;
             });
             return promise;
         },
-        markPotentialDuplicate: function(tei) {
-            var promise = $http.post( DHIS2URL + '/potentialDuplicates/',{teiA:tei.id}).then(function(response){
-                return response.data;
-            });
-            return promise;
-        },
-        deletePotentialDuplicate: function(duplicate) {
-            var promise = $http.delete( DHIS2URL + '/potentialDuplicates/' + duplicate.id).then(function(response){
+        markPotentialDuplicate: function(tei, isDuplicate) {
+            tei.potentialDuplicate = isDuplicate;
+            var formattedTei = convertFromUserToApi(angular.copy(tei));
+            var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + tei.id, formattedTei).then(function(response){
                 return response.data;
             });
             return promise;
@@ -2030,10 +2011,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return;
             }
 
-            //grid.headers[0-6] = Instance, Created, Last updated, OU ID, Ou Name, Tracked entity, Inactive
-            //grid.headers[7..] = Attribute, Attribute,....
+            //grid.headers[0-7] = Instance, Created, Last updated, OU ID, Ou Name, Tracked entity, Inactive, Potential duplicate
+            //grid.headers[8..] = Attribute, Attribute,....
             var attributes = [];
-            for (var i = 6; i < grid.headers.length; i++) {
+            for (var i = 8; i < grid.headers.length; i++) {
                 attributes.push({
                     id: grid.headers[i].name,
                     displayName: grid.headers[i].column,
@@ -2056,10 +2037,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     entity.orgUnit = row[3];
                     entity.orgUnitName = row[4];
                     entity.type = row[5];
-                    entity.inactive = row[6] !== "" ? row[6] : false;
+                    entity.inactive = row[6] === "" ? "" : row[6];
+                    entity.potentialDuplicate = row[7] === "true";
                     entity.followUp = isFollowUp;
 
-                    for (var i = 7; i < row.length; i++) {
+                    for (var i = 8; i < row.length; i++) {
                         if (row[i] && row[i] !== '') {
                             var val = row[i];
 
@@ -2174,7 +2156,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             var columns = [];
 
             var returnAttributes = [];
-i
+
             if ( attributes )
             {
                 if( nonConfidential ) {
