@@ -70,14 +70,14 @@
     <!-- Import success page -->
     <div ng-if="stage === 'importSuccess'">
         <h2>Importsammendrag</h2>
-            <tabset ng-init="peopleArr = getImportResultAsArray()">
-                <tab ng-repeat="peopleStruct in peopleArr">
-                    <tab-heading ng-class="{true: 'ks-tab-heading--danger', false: 'ks-tab-heading--ok'}[peopleStruct.type=='error']">
-                        <i class="fa fa-exclamation-triangle" ng-if="peopleStruct.type=='error'"></i> {{peopleStruct.titleImport}} ({{peopleStruct.people.length}})
-                    </tab-heading>
-                    <ng-include src="'components/naerkontakt_import/import-status-import-message.html'" ng-init="statusType = peopleStruct.statusType"></ng-include>
-                    <ng-include src="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleStruct.people;"></ng-include>
-                </tab>
+        <tabset ng-init="peopleArr = getImportResultAsArray()">
+            <tab ng-repeat="peopleStruct in peopleArr">
+                <tab-heading ng-class="{true: 'ks-tab-heading--danger', false: 'ks-tab-heading--ok'}[peopleStruct.type=='error']">
+                    <i class="fa fa-exclamation-triangle" ng-if="peopleStruct.type=='error'"></i> {{peopleStruct.titleImport}} ({{peopleStruct.people.length}})
+                </tab-heading>
+                <ng-include src="'components/naerkontakt_import/import-status-import-message.html'" ng-init="statusType = peopleStruct.statusType"></ng-include>
+                <ng-include src="'components/naerkontakt_import/import-status.html'" ng-init="people = peopleStruct.people;"></ng-include>
+            </tab>
         </tabset>
     </div>
 
