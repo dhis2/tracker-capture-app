@@ -1,0 +1,13 @@
+<ul style="list-style: none">
+    <li ng-repeat="person in people">
+        <i class="fa fa-exclamation-triangle"></i> {{person.firstName}} {{person.lastName}}
+        ({{person.fnr}})
+        <span ng-if="person.status && person.status.valideringsfeil && person.status.valideringsfeil.length > 0">
+            - Feil gjelder:
+            <span style="font-weight: 600;" ng-repeat="feil in person.status.valideringsfeil">
+                <span ng-if="!$first && $last"> og </span>
+                {{feil}}<span ng-if="!$last">,</span><span ng-if="$last">.</span>
+            </span>
+        </span>
+    </li>
+</ul>

@@ -1,0 +1,55 @@
+
+
+<div ng-if="statusType === 'peopleDuplikat'" class="alert alert-warning">
+    <p>
+        Vi har funnet personer i Fiks Smittesporing som er mulig duplikat. Disse kan ikke importeres
+        automatisk. Venligst legg disse til manuelt etter du har importert.
+    </p>
+</div>
+
+<div ng-if="statusType === 'peopleOtherError'" class="alert alert-warning">
+    <p>
+        Noe gikk galt ved import av denne personen. Det kan hende det vil fungere om du prøver igjen. Hvis det ikke fungerer, så må du legge disse personene til manuelt. Ta eventuelt kontakt med support om problemet vedvarer.
+    </p>
+</div>
+<div ng-if="statusType === 'peopleInputError'" class="alert alert-warning">
+    <p>
+        Disse personene kunne ikke importeres på grunn av feil i Excel-arket. Dobbeltsjekk at alle
+        felter er fyllt ut korrekt. Husk <em>Dato for siste kontakt
+    </em>, gyldig <em>Fødselsnummer</em>, <em>Fornavn</em> og <em>Etternavn</em> er påkrevd.
+    </p>
+    <p>
+        Oppdater Excel-arket og prøv igjen. Eventuelt legg disse til manuelt etter du har importert.
+    </p>
+</div>
+<div ng-if="statusType === 'peopleImportExisting'" class="alert alert-warning">
+
+    <p>
+        Disse personene er allerede registrert i Fiks Smittesporing. De vil bli knyttet til klyngen. Informasjon
+        fra
+        Excel-arket vil legges til profilen, men vi vil ikke overskrive eksisterende felter.
+    </p>
+    <p>
+        Merk: Siden disse personene allerede er registrerte, så kan det hende de blir registrert under
+        <em>Indekser</em>,
+        <em>
+            Personer som følges opp av en annen kommune</em> eller <em>
+        Personer som ikke er gyldig nærkontakt eller indeks</em> istedet for <em>Nærkontakter</em>.
+        Dette må
+        eventuelt endres på etter at importen er gjenomført.
+
+    </p>
+</div>
+<div ng-if="statusType === 'peopleImportNew'" class="alert alert-warning">
+    <p>
+        Disse personene er ikke registrert i Fiks Smittesporing. De vil bli lagt til med informasjonen
+        gitt
+        i Excel-arket, og lagt til som nærkontakter.
+    </p>
+</div>
+<div ng-if="statusType === 'peopleAllreadyInGroup'" class="alert alert-warning">
+    <p>
+        Disse personene er allerede i klyngen. De vil oppdateres med ev. nye felter.
+    </p>
+</div>
+
