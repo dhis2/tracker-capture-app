@@ -1,0 +1,42 @@
+
+
+<div ng-if="statusType === 'peopleDuplikat'" class="alert alert-warning">
+    <p>
+        Vi har funnet personer i Fiks Smittesporing som er mulig duplikat. Disse kunne ikke importeres
+        automatisk. Venligst legg disse til manuelt.
+    </p>
+</div>
+
+<div ng-if="statusType === 'peopleOtherError'" class="alert alert-warning">
+    <p>
+        Noe gikk galt ved import av denne personen. Det kan hende det vil fungere om du prøver igjen. Hvis det ikke fungerer, så må du legge disse personene til manuelt. Ta eventuelt kontakt med support om problemet vedvarer.
+    </p>
+</div>
+<div ng-if="statusType === 'peopleInputError'" class="alert alert-warning">
+    <p>
+        Disse personene kunne ikke importeres på grunn av feil i Excel-arket. Venligst legg disse til manuelt.
+    </p>
+</div>
+<div ng-if="statusType === 'peopleImportExisting'" class="alert alert-warning">
+
+    <p>
+        Disse personene er allerede registrert i Fiks Smittesporing. De er blitt knyttet til klyngen.
+    <p>
+        Merk: Siden disse personene allerede er registrerte, så kan det hende de er blitt registrert under
+        <em>Indekser</em>,
+        <em>
+            Personer som følges opp av en annen kommune</em> eller <em>
+        Personer som ikke er gyldig nærkontakt eller indeks</em> istedet for <em>Nærkontakter</em>.
+    </p>
+</div>
+<div ng-if="statusType === 'peopleImportNew'" class="alert alert-warning">
+    <p>
+        Disse personene er lagt til med informasjonen gitt i Excel-arket, og lagt til som nærkontakter.
+    </p>
+</div>
+<div ng-if="statusType === 'peopleAllreadyInGroup'" class="alert alert-warning">
+    <p>
+        Disse personene er allerede i klyngen. De har eventuelt fått lagt til nye felter fra Excel-arket.
+    </p>
+</div>
+
