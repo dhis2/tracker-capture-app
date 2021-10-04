@@ -36,7 +36,7 @@
     <div ng-if="stage === 'importTestSuccess'">
         <h2>Importsammendrag</h2>
         <tabset ng-init="peopleArr = getImportResultAsArray()">
-            <tab ng-repeat="peopleStruct in peopleArr">
+            <tab ng-repeat="peopleStruct in peopleArr" ng-if="peopleStruct.people && peopleStruct.people.length > 0">
                 <tab-heading ng-class="{true: 'ks-tab-heading--danger', false: 'ks-tab-heading--ok'}[peopleStruct.type=='error']">
                     <i class="fa fa-exclamation-triangle" ng-if="peopleStruct.type=='error'"></i> {{peopleStruct.titleValidator}} ({{peopleStruct.people.length}})
                 </tab-heading>
@@ -71,7 +71,7 @@
     <div ng-if="stage === 'importSuccess'">
         <h2>Importsammendrag</h2>
         <tabset ng-init="peopleArr = getImportResultAsArray()">
-            <tab ng-repeat="peopleStruct in peopleArr">
+            <tab ng-repeat="peopleStruct in peopleArr" ng-if="peopleStruct.people && peopleStruct.people.length > 0">
                 <tab-heading ng-class="{true: 'ks-tab-heading--danger', false: 'ks-tab-heading--ok'}[peopleStruct.type=='error']">
                     <i class="fa fa-exclamation-triangle" ng-if="peopleStruct.type=='error'"></i> {{peopleStruct.titleImport}} ({{peopleStruct.people.length}})
                 </tab-heading>
