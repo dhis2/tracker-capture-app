@@ -345,9 +345,9 @@ trackerCapture.controller('EventCreationController',
                 newEvent.event = response.response.importSummaries[0].reference;
                 $modalInstance.close({dummyEvent: dummyEvent, ev: newEvent});
 
-                	/***		
-			03/08/2020 - edit here for adding totals - end here
-			***/
+                		
+			//03/08/2020 - edit here for adding totals - end here
+			
             var currentEventDetails = $scope.currentEvent;
 			var cumulativeTotal = 0;				
 			var selectedEntityid =  $scope.selectedEntity.trackedEntityInstance;			
@@ -1017,9 +1017,9 @@ trackerCapture.controller('EventCreationController',
 								})
 							}
 			})		
-			/***		
-			03/08/2020 - edit here for adding totals - end here
-			***/
+				
+			//03/08/2020 - edit here for adding totals - end here
+			
 
             
 

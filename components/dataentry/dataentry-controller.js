@@ -165,8 +165,8 @@ trackerCapture.controller('DataEntryController',
         {color: 'alert-warning', description: 'executed', showInStageLegend: true, showInEventLegend: true},        
         {color: 'alert-success', description: 'ontime', showInStageLegend: true, showInEventLegend: true},
         {color: 'alert-danger', description: 'overdue', showInStageLegend: true, showInEventLegend: true},        
-        {color: 'alert-default', description: 'skipped', showInStageLegend: false, showInEventLegend: true}/*,
-        {color: '', description: 'empty', showInStageLegend: true, showInEventLegend: false}*/
+        {color: 'alert-default', description: 'skipped', showInStageLegend: false, showInEventLegend: true}
+        /*,{color: '', description: 'empty', showInStageLegend: true, showInEventLegend: false}*/
     ];
  
     $scope.model= {};
@@ -217,9 +217,9 @@ trackerCapture.controller('DataEntryController',
     };
     
     
-    //listen for new events created
+    
     $scope.$on('eventcreated', function (event, args) {
-        //TODO: Sort this out:
+        
         $scope.addNewEvent(args.event);
     });
     
@@ -1459,9 +1459,9 @@ trackerCapture.controller('DataEntryController',
                             $scope.showLoadingEventSpinner = false;
 
 
-                            /***		
-			03/08/2020 - edit here for adding totals - end here
-			***/
+                          		
+			//03/08/2020 - edit here for adding totals - end here
+			
             var currentEventDetails = $scope.currentEvent;
 			var cumulativeTotal = 0;				
 			var selectedEntityid =  $scope.selectedEntity.trackedEntityInstance;			
@@ -3758,9 +3758,9 @@ trackerCapture.controller('DataEntryController',
 								$rootScope.$broadcast('tei-report-widget', { events: $scope.allEventsSorted });
 							}
 			})		
-			/***		
-			03/08/2020 - edit here for adding totals - end here
-			***/
+				
+			//03/08/2020 - edit here for adding totals - end here
+			
 
 
 
@@ -4111,9 +4111,9 @@ trackerCapture.controller('DataEntryController',
                     //Run rules on updated data:
                     $scope.executeRules();
                 }
-            /***		
-			03/08/2020 - edit here for adding totals - start here
-			***/			
+         		
+			//03/08/2020 - edit here for adding totals - start here
+			
 			var currentEventDetails = $scope.currentEvent;
 			var value = currentEventDetails[prStDe.dataElement.id];
 			//console.log(value);
@@ -9205,9 +9205,9 @@ trackerCapture.controller('DataEntryController',
                     */
                 }
             })		
-    /***		
-    03/08/2020 - edit here for adding totals - end here
-    ***/
+   		
+    //03/08/2020 - edit here for adding totals - end here
+    
 
 
 
