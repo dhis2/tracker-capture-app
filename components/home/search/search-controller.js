@@ -230,14 +230,18 @@ trackerCapture.controller('SearchController',function(
             }
         }
 
-        var openTei = function(tei, fromAudit){
+        var openTei = function(tei, fromAudit, programOwners){
             if($scope.searchingForRelatedTei) {
                 $rootScope.$broadcast('assignRelationshipTei', tei);
             } else {
-                $location.path('/dashboard').search({tei: tei.id,
-                    program: $scope.base.selectedProgramForSearch ? $scope.base.selectedProgramForSearch.id: null,
-                    ou: $scope.selectedOrgUnit.id, 
-                    fromAudit: fromAudit});
+                AccessUtils.withinUserHierarchy(programOwners[0].ownerOrgUnit).then(function(response) {
+                    $location.path('/dashboard').search({tei: tei.id,
+                        program: $scope.base.selectedProgramForSearch ? $scope.base.selectedProgramForSearch.id: null,
+                        ou: response ? programOwners[0].ownerOrgUnit : $scope.selectedOrgUnit.id,
+                        fromAudit: fromAudit});
+                }).catch(function(error) {
+                    console.log("error opening TEI from search modal: ", error);
+                });
             }
         }
 
@@ -385,7 +389,7 @@ trackerCapture.controller('SearchController',function(
                     $scope.openTei = function(tei){
                         if(internalService.base.selectedProgramForSearch && internalService.base.selectedProgramForSearch.id){
                             TEIService.getWithProgramData(tei.id, internalService.base.selectedProgramForSearch.id, internalService.base.optionSets, internalService.base.attributesById).then(function(resultTei){
-                                $modalInstance.close({ action: "OPENTEI", tei: tei, fromAudit: true});
+                                $modalInstance.close({ action: "OPENTEI", tei: tei, programOwners: resultTei.programOwners, fromAudit: true});
                             }, function(error){
                                 if(error && !error.auditDismissed && error.data && error.data.message){
                                     var headerText = $translate.instant('open_tei_error');
@@ -444,7 +448,7 @@ trackerCapture.controller('SearchController',function(
                 var def = $q.defer();
                 def.resolve();
                 if(res.action === "OPENTEI"){
-                    openTei(res.tei, res.fromAudit);
+                    openTei(res.tei, res.fromAudit, res.programOwners);
                 }else if(res.action === "OPENREGISTRATION")
                 {
                     var registrationPrefill = getRegistrationPrefill(searchGroup);
