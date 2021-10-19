@@ -442,7 +442,12 @@ trackerCapture.controller('DataEntryController',
                         $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEFIELD, bot does not have a field defined");
                     }
                 }
-            } else if (effect.action === "SHOWERROR" 
+            } 
+            
+            
+            
+            
+            else if (effect.action === "SHOWERROR" 
                     || effect.action === "ERRORONCOMPLETE") {
                 if (effect.ineffect) {
                     var message = effect.content + (effect.data ? effect.data : "");
@@ -8316,8 +8321,8 @@ trackerCapture.controller('DataEntryController',
                         $compile(el)(scope)
                     })
                     */
-                }
-                
+                }                
+                /* 19/10/2021 - bug  --- starts here
                 if (row.cells[3] != undefined && row.id == "row-OdcXvW9sRW7" && 'OdcXvW9sRW7' == prStDe.dataElement.id) {
                     if (value != null) {
                         console.log("value: " + value);
@@ -8409,8 +8414,9 @@ trackerCapture.controller('DataEntryController',
                     $injector.invoke(function ($compile) {
                         $compile(el)(scope)
                     })
-                    */
+                    
                 }
+                ends here --- 19/10/2021 - bug */
                 else if (row.cells[3] != undefined && row.id == "row-OdcXvW9sRW7" && 'aRgVJNx0zUo' == prStDe.dataElement.id) {
                     if (value != null) {
                         console.log("value: " + value);
@@ -8539,6 +8545,10 @@ trackerCapture.controller('DataEntryController',
                     })
                     */
                 }
+
+                
+                */
+
                 else if (row.cells[3] != undefined && row.id == "row-JoFnbRQT66J" && 'JoFnbRQT66J' == prStDe.dataElement.id) {
                     if (value != null) {
                         console.log("value: " + value);
@@ -8760,7 +8770,6 @@ trackerCapture.controller('DataEntryController',
                     })
                     */
                 }
-
                 //New DE - 05/07/2021
                 else if (row.cells[3] != undefined && row.id == "row-JoFnbRQT66J" && 'JoFnbRQT66J' == prStDe.dataElement.id) {
                     if (value != null) {
