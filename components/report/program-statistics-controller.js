@@ -83,13 +83,14 @@ trackerCapture.controller('ProgramStatisticsController',
         $scope.enrollments = {active: 0, completed: 0, cancelled: 0};
         $scope.enrollmentList = [];
         EnrollmentService.getByStartAndEndDate($scope.model.selectedProgram.id,
-                                        $scope.selectedOrgUnit.id, 
+                                        $scope.selectedOrgUnit.id,
                                         $scope.selectedOuMode.name,
-                                        DateUtils.formatFromUserToApi($scope.report.startDate), 
-                                        DateUtils.formatFromUserToApi($scope.report.endDate)).then(function(data){
+                                        DateUtils.formatFromUserToApi($scope.report.startDate),
+                                        DateUtils.formatFromUserToApi($scope.report.endDate),
+                                        301).then(function(data){
 
             if( data ) {
-                $scope.totalEnrollment = data.enrollments.length;                                
+                $scope.totalEnrollment = data.enrollments.length;
                 angular.forEach(data.enrollments, function(en){
                     $scope.enrollmentList[en.enrollment] = en;
                     if(en.status === 'ACTIVE'){
@@ -107,7 +108,7 @@ trackerCapture.controller('ProgramStatisticsController',
                                         {key: 'Active', y: $scope.enrollments.active},
                                         {key: 'Cancelled', y: $scope.enrollments.cancelled}];
 
-                DHIS2EventFactory.getByOrgUnitAndProgram($scope.selectedOrgUnit.id, $scope.selectedOuMode.name, $scope.model.selectedProgram.id, null, null).then(function(data){
+                DHIS2EventFactory.getByOrgUnitAndProgram($scope.selectedOrgUnit.id, $scope.selectedOuMode.name, $scope.model.selectedProgram.id, null, null, 301).then(function(data){
                     
                     if( data ) {
                         $scope.dhis2Events = {completed: 0, active: 0, skipped: 0, overdue: 0, ontime: 0};
