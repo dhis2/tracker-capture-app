@@ -1,3 +1,10 @@
+## [31.6.36](https://github.com/dhis2/tracker-capture-app/compare/v31.6.35...v31.6.36) (2021-10-22)
+
+
+### Bug Fixes
+
+* minor - removed illegal character ([fb61240](https://github.com/dhis2/tracker-capture-app/commit/fb612405ab560d33d2f7021891a65653066335b5))
+
 ## [31.6.35](https://github.com/dhis2/tracker-capture-app/compare/v31.6.34...v31.6.35) (2021-09-13)
 
 
