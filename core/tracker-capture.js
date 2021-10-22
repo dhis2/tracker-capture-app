@@ -26,6 +26,7 @@ var trackedEntityAttributeIds = [];
 var batchSize = 50;
 var programBatchSize = 50;
 var hasAllAccess = false;
+const reportEntriesLimit = 300;
 
 dhis2.tc.store = null;
 dhis2.tc.metaDataCached = dhis2.tc.metaDataCached || false;

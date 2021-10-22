@@ -31,7 +31,7 @@
     <img src="../images/ajax-loader-bar.gif" ng-if="!dataReady && reportStarted"/>
     <div ng-if="dataReady">
         <div class="row col-sm-12">
-            <div ng-if="totalEnrollment < 301" class="col-sm-6 align-center">
+            <div ng-if="!limitExceeded(enrollmentsReceived)" class="col-sm-6 align-center">
                 <h2>{{'enrollment_stats' | translate}}</h2>
                 <nvd3-pie-chart
                     data="enrollmentStat"
@@ -45,10 +45,10 @@
                         <svg height="200"></svg>
                 </nvd3-pie-chart>
             </div>
-            <div ng-if="totalEnrollment > 300">
-                Too many enrollments
+            <div ng-if="limitExceeded(enrollmentsReceived)">
+                <div class="alert alert-warning">{{'too_many_items_report' | translate}}</div>
             </div>
-            <div ng-if="totalEvents < 301" class="col-sm-6 align-center">
+            <div ng-if="!limitExceeded(eventsReceived)" class="col-sm-6 align-center">
                 <h2>{{'event_stats' | translate}}</h2>
                 <nvd3-pie-chart
                     data="eventStat"
@@ -62,8 +62,8 @@
                         <svg height="200"></svg>
                 </nvd3-pie-chart>
             </div>
-            <div ng-if="totalEvents > 300">
-                Too many events
+            <div ng-if="limitExceeded(eventsReceived)">
+                <div class="alert alert-warning">{{'too_many_items_report' | translate}}</div>
             </div>
         </div>
     </div>    
