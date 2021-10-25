@@ -689,8 +689,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 return null;
             });
         },
-        getByStartAndEndDate: function( program, orgUnit, ouMode, startDate, endDate ){
-            var promise = $http.get(  DHIS2URL + '/enrollments.json?program=' + program + '&ou=' + orgUnit + '&ouMode='+ ouMode + '&programStartDate=' + startDate + '&programEndDate=' + endDate + '&fields=:all&paging=false').then(function(response){
+        getByStartAndEndDate: function( program, orgUnit, ouMode, startDate, endDate, pageSize ){
+            var paging = pageSize ? '&pageSize=' + pageSize : '&paging=false'
+            var promise = $http.get(  DHIS2URL + '/enrollments.json?program=' + program + '&ou=' + orgUnit + '&ouMode='+ ouMode + '&programStartDate=' + startDate + '&programEndDate=' + endDate + '&fields=:all' + paging).then(function(response){
                 return convertFromApiToUser(response.data);
             }, function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
@@ -1487,13 +1488,14 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return promise;
         },
-        getByOrgUnitAndProgram: function(orgUnit, ouMode, program, startDate, endDate){
+        getByOrgUnitAndProgram: function(orgUnit, ouMode, program, startDate, endDate, pageSize){
             var url;
+            var paging = pageSize ? '&pageSize=' + pageSize : skipPaging;
             if(startDate && endDate){
-                url = DHIS2URL + '/events.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program + '&startDate=' + startDate + '&endDate=' + endDate + skipPaging;
+                url = DHIS2URL + '/events.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program + '&startDate=' + startDate + '&endDate=' + endDate + paging;
             }
             else{
-                url = DHIS2URL + '/events.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program + skipPaging;
+                url = DHIS2URL + '/events.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program + paging;
             }
             var promise = $http.get( url ).then(function(response){
                 return response.data.events;
@@ -1624,7 +1626,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 var pg = pager ? pager.page : 1;
                 pgSize = pgSize > 1 ? pgSize  : 1;
                 pg = pg > 1 ? pg : 1;
-                url = url + '&pageSize=' + pgSize + '&page=' + pg + '&totalPages=true';
+                url = url + '&pageSize=' + pgSize + '&page=' + pg;
             }
 
             var promise = $http.get( url ).then(function(response){
