@@ -33,7 +33,7 @@
         <div class="row col-sm-12">
             <div class="col-sm-6 align-center">
                 <h2>{{'enrollment_stats' | translate}}</h2>
-                <nvd3-pie-chart
+                <nvd3-pie-chart ng-if="!limitExceeded(enrollmentsReceived)"
                     data="enrollmentStat"
                     id="enrollmentChart"
                     width="350"
@@ -44,10 +44,11 @@
                     tooltips="true">
                         <svg height="200"></svg>
                 </nvd3-pie-chart>
+                <div ng-if="limitExceeded(enrollmentsReceived)" class="alert alert-warning">{{'too_many_items_report' | translate}}</div>
             </div>
             <div class="col-sm-6 align-center">
                 <h2>{{'event_stats' | translate}}</h2>
-                <nvd3-pie-chart
+                <nvd3-pie-chart ng-if="!limitExceeded(eventsReceived)"
                     data="eventStat"
                     id="eventChart"
                     width="350"
@@ -58,7 +59,8 @@
                     tooltips="true">
                         <svg height="200"></svg>
                 </nvd3-pie-chart>
+                <div ng-if="limitExceeded(eventsReceived)" class="alert alert-warning">{{'too_many_items_report' | translate}}</div>
             </div>
-        </div>        
+        </div>
     </div>    
 </div>
