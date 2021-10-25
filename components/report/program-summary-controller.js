@@ -10,11 +10,12 @@ trackerCapture.controller('ProgramSummaryController',
                 ProgramFactory,
                 CurrentSelection,
                 MetaDataFactory,
-                EventReportService) {    
+                EventReportService) {
     $scope.today = DateUtils.getToday();
     
     $scope.ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];         
     $scope.selectedOuMode = $scope.ouModes[0];
+    $scope.pager = { pageSize: reportEntriesLimit + 1, page: 1 };
     $scope.report = {};
     $scope.model = {};
     
@@ -75,7 +76,11 @@ trackerCapture.controller('ProgramSummaryController',
             });            
         }
     });
-    
+
+    $scope.ngSwitchParameter = function() {
+        return $scope.eventRows.length > reportEntriesLimit ? -1 : $scope.teiList.length;
+    }
+
     $scope.generateReport = function(program, report, ouMode){
         
         $scope.model.selectedProgram = program;
@@ -90,6 +95,7 @@ trackerCapture.controller('ProgramSummaryController',
         
         $scope.reportStarted = true;
         $scope.dataReady = false;
+        $scope.eventRows = [];
             
         AttributesFactory.getByProgram($scope.model.selectedProgram).then(function(atts){
             $scope.model.selectedProgram.attributesById = {};
@@ -112,6 +118,7 @@ trackerCapture.controller('ProgramSummaryController',
             $scope.teiList = [];
             
             if( data && data.eventRows ){
+                $scope.eventRows = data.eventRows;
                 angular.forEach(data.eventRows, function(ev){
                     if(ev.trackedEntityInstance){
                         var stage = $scope.stagesById[ev.programStage];
