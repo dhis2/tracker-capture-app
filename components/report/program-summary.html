@@ -30,18 +30,23 @@
     </form>    
     <img src="../images/ajax-loader-bar.gif" ng-if="!dataReady && reportStarted"/>
     <div ng-if="dataReady">
-        <div ng-switch="teiList.length">                    
+        <div ng-switch="ngSwitchParameter()">
             <div ng-switch-when="undefined">
                 <div class="alert alert-warning vertical-spacing">
                     {{'no_data_found'| translate}}
                 </div>
             </div>
-            <div ng-switch-when="0">  
+            <div ng-switch-when="0">
                 <div class="alert alert-warning vertical-spacing">
                     {{'no_data_found'| translate}}
                 </div>
-            </div>    
-            <div ng-switch-default> 
+            </div>
+            <div ng-switch-when="-1">
+                <div class="alert alert-warning vertical-spacing">
+                    {{'too_many_items_report'| translate}}
+                </div>
+            </div>
+            <div ng-switch-default>
 
                 <!-- report begins -->
                 <div class="vertical-spacing">

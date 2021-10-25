@@ -64,11 +64,17 @@ trackerCapture.controller('ProgramStatisticsController',
         };
     };
 
+    $scope.limitExceeded = function(entries) {
+        return entries > reportEntriesLimit;        
+    }
+
     $scope.generateReport = function(program, report, ouMode){
         
         $scope.model.selectedProgram = program;
         $scope.report = report;
         $scope.selectedOuMode = ouMode;
+        $scope.enrollmentsReceived = 0;
+        $scope.eventsReceived = 0;
 
         //check for form validity
         $scope.outerForm.submitted = true;        
@@ -83,13 +89,15 @@ trackerCapture.controller('ProgramStatisticsController',
         $scope.enrollments = {active: 0, completed: 0, cancelled: 0};
         $scope.enrollmentList = [];
         EnrollmentService.getByStartAndEndDate($scope.model.selectedProgram.id,
-                                        $scope.selectedOrgUnit.id, 
+                                        $scope.selectedOrgUnit.id,
                                         $scope.selectedOuMode.name,
-                                        DateUtils.formatFromUserToApi($scope.report.startDate), 
-                                        DateUtils.formatFromUserToApi($scope.report.endDate)).then(function(data){
+                                        DateUtils.formatFromUserToApi($scope.report.startDate),
+                                        DateUtils.formatFromUserToApi($scope.report.endDate),
+                                        reportEntriesLimit + 1).then(function(data){
 
             if( data ) {
-                $scope.totalEnrollment = data.enrollments.length;                                
+                $scope.enrollmentsReceived = data.enrollments.length;
+                $scope.totalEnrollment = $scope.enrollmentsReceived;
                 angular.forEach(data.enrollments, function(en){
                     $scope.enrollmentList[en.enrollment] = en;
                     if(en.status === 'ACTIVE'){
@@ -107,9 +115,15 @@ trackerCapture.controller('ProgramStatisticsController',
                                         {key: 'Active', y: $scope.enrollments.active},
                                         {key: 'Cancelled', y: $scope.enrollments.cancelled}];
 
-                DHIS2EventFactory.getByOrgUnitAndProgram($scope.selectedOrgUnit.id, $scope.selectedOuMode.name, $scope.model.selectedProgram.id, null, null).then(function(data){
+                DHIS2EventFactory.getByOrgUnitAndProgram($scope.selectedOrgUnit.id,
+                                            $scope.selectedOuMode.name,
+                                            $scope.model.selectedProgram.id,
+                                            DateUtils.formatFromUserToApi($scope.report.startDate),
+                                            DateUtils.formatFromUserToApi($scope.report.endDate),
+                                            reportEntriesLimit + 1).then(function(data){
                     
                     if( data ) {
+                        $scope.eventsReceived = data.length;
                         $scope.dhis2Events = {completed: 0, active: 0, skipped: 0, overdue: 0, ontime: 0};
                         $scope.totalEvents = 0;
                         angular.forEach(data, function(ev){
@@ -149,5 +163,5 @@ trackerCapture.controller('ProgramStatisticsController',
             $scope.dataReady = true; 
             
         });
-    };    
+    };
 });
