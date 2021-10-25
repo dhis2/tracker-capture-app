@@ -1,3 +1,10 @@
+## [31.6.37](https://github.com/dhis2/tracker-capture-app/compare/v31.6.36...v31.6.37) (2021-10-25)
+
+
+### Bug Fixes
+
+* [DHIS2-12022] limit the number of events/enrollments fetched for reports ([#1269](https://github.com/dhis2/tracker-capture-app/issues/1269)) ([dacab5a](https://github.com/dhis2/tracker-capture-app/commit/dacab5a368be18a361b4e08daf67b852354b35cc))
+
 ## [31.6.36](https://github.com/dhis2/tracker-capture-app/compare/v31.6.35...v31.6.36) (2021-10-22)
 
 
