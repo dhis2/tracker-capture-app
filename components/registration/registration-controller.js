@@ -707,23 +707,25 @@ trackerCapture.controller('RegistrationController',
 
         if ($scope.selectedProgram && $scope.selectedProgram.id) {
             var eventExists = $scope.currentEvent && $scope.currentEvent.event;
+            var enrollment = $scope.selectedEnrollment && $scope.selectedEnrollment.orgUnit ? $scope.selectedEnrollment : null;
             var evs = null;
             if( eventExists ){
                 evs = {all: [], byStage: {}};
                 evs.all = [$scope.currentEvent];
                 evs.byStage[$scope.currentStage.id] = [$scope.currentEvent];
             }
-            
-            TrackerRulesExecutionService.executeRules(
+            if (eventExists || enrollment) {
+                TrackerRulesExecutionService.executeRules(
                 $scope.allProgramRules, 
                 eventExists ? $scope.currentEvent : 'registration', 
                 evs,
                 $scope.prStDes, 
                 $scope.attributesById,
                 $scope.selectedTei, 
-                $scope.selectedEnrollment, 
+                enrollment,
                 $scope.optionSets, 
                 flag);
+            }
         }
     };
 
