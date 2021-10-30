@@ -1,3 +1,10 @@
+## [31.6.39](https://github.com/dhis2/tracker-capture-app/compare/v31.6.38...v31.6.39) (2021-10-30)
+
+
+### Bug Fixes
+
+* **translations:** sync translations from transifex (master) ([1244525](https://github.com/dhis2/tracker-capture-app/commit/1244525ec074db9422c380cbac53e583c691bde8))
+
 ## [31.6.38](https://github.com/dhis2/tracker-capture-app/compare/v31.6.37...v31.6.38) (2021-10-26)
 
 
