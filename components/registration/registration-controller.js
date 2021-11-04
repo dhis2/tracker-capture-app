@@ -216,7 +216,7 @@ trackerCapture.controller('RegistrationController',
             getProgramRules();
 
             if ($scope.registrationMode === 'REGISTRATION') {
-                $scope.getAttributes($scope.registrationMode);
+                $scope.getAttributes($scope.registrationMode, false);
             }
         }
         loadTrackedEntityTypes().then(function(){
@@ -294,7 +294,7 @@ trackerCapture.controller('RegistrationController',
             $scope.selectedEnrollment = args.enrollment ? args.enrollment : {};
         }
 
-        $scope.getAttributes($scope.registrationMode);
+        $scope.getAttributes($scope.registrationMode, args.generateAttributes);
 
         if ($scope.selectedProgram && $scope.selectedProgram.id) {
             getProgramRules().then( function (rules) {
@@ -303,7 +303,7 @@ trackerCapture.controller('RegistrationController',
         }
     });
 
-    $scope.getAttributes = function (_mode) {
+    $scope.getAttributes = function (_mode, generateAttributes) {
         var mode = _mode ? _mode : 'ENROLLMENT';
         $scope.customRegistrationFormExists = false;
         $scope.customDataEntryForm = null;
@@ -321,7 +321,9 @@ trackerCapture.controller('RegistrationController',
             }
             AttributesFactory.getByProgram($scope.selectedProgram).then(function (atts) {
                 $scope.attributes = TEIGridService.generateGridColumns(atts, null, false).columns;
-                fetchGeneratedAttributes();
+                if (generateAttributes) {
+                    fetchGeneratedAttributes();
+                }
                 if ($scope.selectedProgram && $scope.selectedProgram.id) {
                     if ($scope.selectedProgram.dataEntryForm && $scope.selectedProgram.dataEntryForm.htmlCode) {
                         $scope.customRegistrationFormExists = true;
@@ -378,7 +380,9 @@ trackerCapture.controller('RegistrationController',
                 
                 if(!$scope.selectedProgram){
                     $scope.attributes = TEIGridService.generateGridColumns(atts, null, false).columns;
-                    fetchGeneratedAttributes();
+                    if (generateAttributes) {
+                        fetchGeneratedAttributes();
+                    }
                 }
             });
         }
