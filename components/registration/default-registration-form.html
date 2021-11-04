@@ -401,5 +401,8 @@
                 </div>
             </ng-form>            
         </td>
-    </tr>           
+        <td ng-if="uninitializedGeneratedAttribute(attribute)">
+            <button type="button" class="btn btn-default" ng-click="fetchGeneratedAttribute(attribute)">{{'generate' | translate}}</span>
+        </td>
+    </tr>
 </table>
