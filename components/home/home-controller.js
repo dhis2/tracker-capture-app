@@ -40,7 +40,7 @@ trackerCapture.controller('HomeController',function(
                 shouldReset: false,
                 disabled: true,
                 onPostLoad: function(){
-                    $rootScope.$broadcast('registrationWidget', {registrationMode: 'REGISTRATION'});
+                    $rootScope.$broadcast('registrationWidget', {registrationMode: 'REGISTRATION', generateAttributes: true});
                }
             },
             lists: {
