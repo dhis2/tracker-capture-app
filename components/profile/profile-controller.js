@@ -46,8 +46,10 @@ trackerCapture.controller('ProfileController',
         listenToBroadCast();
     });
 
-    $scope.$watch('widget.useAsTopBar', function(event, args){
-        listenToBroadCast();
+    $scope.$watch('widget.useAsTopBar', function(newValue, oldValue){
+        if (newValue !== oldValue) {
+            listenToBroadCast();
+        }
     });
     
     //listen to changes in enrollment editing
