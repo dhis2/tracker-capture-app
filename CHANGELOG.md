@@ -1,3 +1,10 @@
+## [31.6.40](https://github.com/dhis2/tracker-capture-app/compare/v31.6.39...v31.6.40) (2021-11-05)
+
+
+### Bug Fixes
+
+* [DHIS2-12068] remove excessive calls to /generate ([#1285](https://github.com/dhis2/tracker-capture-app/issues/1285)) ([238f893](https://github.com/dhis2/tracker-capture-app/commit/238f893fe0b3ead82888f5b5479a680ca5fcd745))
+
 ## [31.6.39](https://github.com/dhis2/tracker-capture-app/compare/v31.6.38...v31.6.39) (2021-10-30)
 
 
