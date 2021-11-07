@@ -3011,25 +3011,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             }
                         }
                         else{
+                            numberOfSetAttributes++;
+                            filteredAttributes[attr.id] = true;
                             if(query.url){
-                                numberOfSetAttributes++;
-                                filteredAttributes[attr.id] = true;
-                                if(attr.operator === textOperators[0]){
-                                    query.url = query.url + '&attribute=' + attr.id + ':EQ:' + value;
-                                }else{
-                                    query.url = query.url + '&attribute=' + attr.id + ':LIKE:' + value;
-                                }
-                                
+                                query.url = query.url + '&attribute=' + attr.id + ':EQ:' + value;                                
                             }
                             else{
-                                numberOfSetAttributes++;
-                                filteredAttributes[attr.id] = true;
-                                if(attr.operator === textOperators[0]){
-                                    query.url = 'attribute=' + attr.id + ':EQ:' + value;
-                                }else{
-                                    query.url = 'attribute=' + attr.id + ':LIKE:' + value;
-                                }
-                                
+                                query.url = 'attribute=' + attr.id + ':EQ:' + value;
                             }
                         }
                     }
