@@ -3,6 +3,9 @@
     "name": "Tracker Capture",
     "description": "Tracker Capture App",
     "launch_path": "index.html",
+    "core_app": true,
+    "short_name": "tracker-capture",
+    "appType": "APP",
     "icons": {
         "16": "/img/icons/mortar-16.png",
         "48": "/img/icons/mortar-48.png",
