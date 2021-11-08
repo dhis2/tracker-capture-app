@@ -371,7 +371,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Factory to fetch relationships */
-.factory('RelationshipFactory', function($q, $http, $rootScope, $translate, TCStorageService, NotificationService) {
+.factory('RelationshipFactory', function($q, $http, $rootScope, $translate, TCStorageService, NotificationService, $cookies) {
     var errorHeader = $translate.instant("error");
     return {
         getAll: function(){
@@ -402,8 +402,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return def.promise;
         },
         delete: function(uid){
-            var promise = $http
-                .delete( DHIS2URL + '/relationships/' +  uid)
+           var promise = $http({method: 'DELETE', url: DHIS2URL + '/relationships/' +  uid, headers: {'ingress-csrf': $cookies['ingress-csrf']}})
                 .then(function(response){
                     if(!response || !response.data || response.data.status !== 'OK'){
                         var errorBody = $translate.instant('failed_to_delete_relationship');
@@ -662,7 +661,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service to deal with enrollment */
-.service('EnrollmentService', function($http, DHIS2URL, DateUtils, NotificationService, $translate, TeiAccessApiService) {
+.service('EnrollmentService', function($http, DHIS2URL, DateUtils, NotificationService, $translate, TeiAccessApiService, $cookies) {
 
     var convertFromApiToUser = function(enrollment){
         if(enrollment.enrollments){
@@ -703,7 +702,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
         },
         getByEntity: function( entity ){
-            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&fields=:all&paging=false').then(function(response){
+            var promise = $http({method: 'GET', url: DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&trackedEntityInstance=' + entity + '&fields=:all&paging=false', headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 return convertFromApiToUser(response.data);
             },function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
@@ -724,7 +723,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getByStartAndEndDate: function( program, orgUnit, ouMode, startDate, endDate ){
-            var promise = $http.get(  DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&program=' + program + '&orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&startDate=' + startDate + '&endDate=' + endDate + '&fields=:all&paging=false').then(function(response){
+            var promise = $http({method: 'GET', url: DHIS2URL + '/enrollments.json?ouMode=ACCESSIBLE&program=' + program + '&orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&startDate=' + startDate + '&endDate=' + endDate + '&fields=:all&paging=false', headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 return convertFromApiToUser(response.data);
             }, function(response){
                 var errorBody = $translate.instant('failed_to_fetch_enrollment');
@@ -790,7 +789,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 
-.factory('TeiAccessApiService', function($http,$q,$modal){
+.factory('TeiAccessApiService', function($http,$q,$modal, $cookies){
     var auditCancelledSettings = {};
     var needAuditError = {
         code: 401,
@@ -837,7 +836,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             program: program,
             reason: auditMessage
         }*/
-        return $http.post(DHIS2URL+'/tracker/ownership/override?trackedEntityInstance='+tei+'&program='+program+'&reason='+auditMessage, obj);
+        return $http({
+                method: 'POST',
+                url: DHIS2URL+'/tracker/ownership/override?trackedEntityInstance='+tei+'&program='+program+'&reason='+auditMessage,
+                data: obj,
+                headers: {'ingress-csrf': $cookies['ingress-csrf']}
+            });
     }
 
     var handleAudit = function(tei,program, postAuditApiFn){
@@ -870,19 +874,19 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         auditCancelledSettings = settings;
     }
     service.get = function(tei, program, url){
-        return callApi(function() { return $http.get(url) }, tei, program);
+        return callApi(function() { return $http({method: 'GET', url: url, headers: {'ingress-csrf': $cookies['ingress-csrf']} }) }, tei, program);
     }
 
     service.post = function(tei,program,url, data){
-        return callApi(function() { return $http.post(url, data) }, tei, program);
+        return callApi(function() { return $http({method: 'POST', url: url, data: data, headers: {'ingress-csrf': $cookies['ingress-csrf']}}) }, tei, program);
     }
 
     service.put = function(tei,program,url, data){
-        return callApi(function() { return $http.put(url, data) }, tei, program);
+        return callApi(function() { return $http({method: 'PUT', url: url, data: data, headers: {'ingress-csrf': $cookies['ingress-csrf']}}) }, tei, program);
     }
 
     service.delete = function(tei,program,url, data){
-        return callApi(function() { return $http.delete(url, data) }, tei, program);
+        return callApi(function() { return $http({method: 'DELETE', url: url, data: data, headers: {'ingress-csrf': $cookies['ingress-csrf']}}) }, tei, program);
     }
     return service;
 })
@@ -936,7 +940,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* Service for getting tracked entity instances */
-.factory('TEIService', function($http, orderByFilter, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService, TeiAccessApiService) {
+.factory('TEIService', function($http, orderByFilter, $translate, DHIS2URL, $q, AttributesFactory, CommonUtils, CurrentSelection, DateUtils, NotificationService, TeiAccessApiService, $cookies) {
     var cachedTeiWithProgramData = null;
     var errorHeader = $translate.instant("error");
     var getSearchUrl = function(type,ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
@@ -1104,7 +1108,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }
         },
         get: function(entityUid, optionSets, attributesById){
-            var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
+           var promise = $http({method: 'GET', url: DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json', headers: {'ingress-csrf': $cookies['ingress-csrf']} }).then(function(response){
                 var tei = response.data;
                 setTeiAttributeValues(tei.attributes, optionSets, attributesById);
                 return tei;
@@ -1126,14 +1130,14 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             return promise;
         },
         getRelationships: function(uid) {
-            var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' + uid + '.json?fields=relationships').then(function(response){
+            var promise = $http({method: 'GET', url: DHIS2URL + '/trackedEntityInstances/' + uid + '.json?fields=relationships', headers: {'ingress-csrf': $cookies['ingress-csrf']} }).then(function(response){
                 var tei = response.data;
                 return tei.relationships;
             });
             return promise;
         },
         getTeiWithAllAvailableFields: function(entityUid, optionSets, attributesById) {
-            var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json?fields=*').then(function(response){
+            var promise = $http({method: 'GET', url: DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json?fields=*', headers: {'ingress-csrf': $cookies['ingress-csrf']} }).then(function(response){
                 var tei = response.data;
                 setTeiAttributeValues(tei.attributes, optionSets, attributesById);
                 return tei;
@@ -1156,7 +1160,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
 
         saveRelationship: function(relationship) {
-            var promise = $http.post( DHIS2URL + '/relationships', relationship).then(function(response){
+            var promise = $http({method: 'POST', url:  DHIS2URL + '/relationships', data: relationship, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 return response.data;
             });
             return promise;
@@ -1171,31 +1175,31 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     uidUrl += uidList[i];
                 }
             }
-            var promise = $http.get( DHIS2URL + '/potentialDuplicates' + uidUrl ).then(function(response){
+            var promise = $http({method: 'GET', url: DHIS2URL + '/potentialDuplicates' + uidUrl, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 return response.data;
             });
             return promise;
         },
         getPotentialDuplicatesForTei: function(uid) {
-            var promise = $http.get( DHIS2URL + '/potentialDuplicates?teis=' + uid ).then(function(response){
+            var promise = $http({method: 'GET', url: DHIS2URL + '/potentialDuplicates?teis=' + uid, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 return response.data;
             });
             return promise;
         },
         markPotentialDuplicate: function(tei) {
-            var promise = $http.post( DHIS2URL + '/potentialDuplicates/',{teiA:tei.id}).then(function(response){
+            var promise = $http({method: 'POST', url: DHIS2URL + '/potentialDuplicates/', data: {teiA:tei.id}, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 return response.data;
             });
             return promise;
         },
         deletePotentialDuplicate: function(duplicate) {
-            var promise = $http.delete( DHIS2URL + '/potentialDuplicates/' + duplicate.id).then(function(response){
+            var promise = $http({method: 'DELETE', url: DHIS2URL + '/potentialDuplicates/' + duplicate.id, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 return response.data;
             });
             return promise;
         },
         delete: function(entityUid){
-            var promise = $http.delete(DHIS2URL + '/trackedEntityInstances/' + entityUid).then(function(response){
+            var promise = $http({method: 'DELETE', url: DHIS2URL + '/trackedEntityInstances/' + entityUid, headers: {'ingress-csrf': $cookies['ingress-csrf']} }).then(function(response){
                 return response.data;
             }, function (response) {
                 var errorBody;
@@ -1210,7 +1214,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         searchCount: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format){
             var url = getSearchUrl("count",ouId, ouMode,queryUrl, programOrTETUrl, attributeUrl, pager, paging, format);
-            return $http.get( url ).then(function(response)
+            return $http({method: 'GET', url: url, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response)
             {
                 if(response && response.data) return response.data;
                 return 0;
@@ -1219,7 +1223,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         search: function(ouId, ouMode, queryUrl, programOrTETUrl, attributeUrl, pager, paging, format, attributesList, attrNamesIdMap, optionSets) {
             var deferred = $q.defer();
             var url = getSearchUrl("query",ouId, ouMode,queryUrl, programOrTETUrl, attributeUrl, pager, paging, format);
-            $http.get( url ).then(function(response){
+            $http({method: 'GET', url: url, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 var xmlData, rows, headers, index, itemName, value, jsonData;
                 var trackedEntityInstance, attributesById;
                 if (format) {
@@ -1316,7 +1320,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             formattedTei.attributes = attributes;
             var programFilter = programId ? "?program=" + programId : "";
-            var promise = $http.put( DHIS2URL + '/trackedEntityInstances/' + formattedTei.trackedEntityInstance + programFilter, formattedTei ).then(function(response){
+            var promise = $http({method: 'PUT', url: DHIS2URL + '/trackedEntityInstances/' + formattedTei.trackedEntityInstance + programFilter, data: formattedTei, headers: {'ingress-csrf': $cookies['ingress-csrf']} }).then(function(response){
                 return response.data;
             }, function(response){
                 NotificationService.showNotifcationDialog($translate.instant('update_error'), $translate.instant('failed_to_update_tei'), response);
@@ -1332,7 +1336,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
 
             formattedTei.attributes = attributes;
-            var promise = $http.post( DHIS2URL + '/trackedEntityInstances' , formattedTei ).then(function(response){
+            var promise = $http({method: 'POST', url: DHIS2URL + '/trackedEntityInstances', data: formattedTei, headers: {'ingress-csrf': $cookies['ingress-csrf']} }).then(function(response){
                 return response.data;
             }, function(response){
                 return response.data;
@@ -1369,7 +1373,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         changeTeiProgramOwner: function(tei, program,ou){
             CurrentSelection.currentSelection.tei.programOwnersById[program] = ou;
             var url =  DHIS2URL+'/tracker/ownership/transfer?trackedEntityInstance='+tei+'&program='+program+'&ou='+ou;
-            return $http.put(url,{});
+            return $http({method: 'PUT', url: url, data: {}, headers: {'ingress-csrf': $cookies['ingress-csrf']}});
         }
     };
 })
@@ -1560,7 +1564,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* factory for handling events */
-.factory('DHIS2EventFactory', function($http, DHIS2URL, NotificationService, $translate, TeiAccessApiService) {
+.factory('DHIS2EventFactory', function($http, DHIS2URL, NotificationService, $translate, TeiAccessApiService, $cookies) {
 
     var skipPaging = "&skipPaging=true";
     var errorHeader = $translate.instant("error");
@@ -1625,7 +1629,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             else{
                 url = DHIS2URL + '/events.json?' + 'orgUnit=' + orgUnit + '&ouMode='+ ouMode + '&program=' + program + skipPaging;
             }
-            var promise = $http.get( url ).then(function(response){
+            var promise = $http({method: 'GET', url: url, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 return response.data.events;
             }, function(response){
                 if( response && response.data && response.data.status === 'ERROR'){
@@ -1649,7 +1653,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         getEventWithoutRegistration: function(eventId) {
             var url = DHIS2URL + '/events/' + eventId;
 
-            var promise = $http.get( url ).then(function(response){
+            var promise = $http({method: 'GET', url: url, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 return response.data;
             }, function(response){
                 var errorBody = $translate.instant('failed_to_update_event');
@@ -1729,7 +1733,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 })
 
 /* factory for handling event reports */
-.factory('EventReportService', function($http, DHIS2URL, $translate, NotificationService) {
+.factory('EventReportService', function($http, DHIS2URL, $translate, NotificationService, $cookies) {
     var errorHeader = $translate.instant("error");
     return {
 
@@ -1757,7 +1761,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 url = url + '&pageSize=' + pgSize + '&page=' + pg + '&totalPages=true';
             }
 
-            var promise = $http.get( url ).then(function(response){
+            var promise = $http({method: 'GET', url: url, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 return response.data;
             }, function(response){
                 var errorBody = $translate.instant('failed_to_update_event');
@@ -2764,10 +2768,10 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     this.eventCreationActions = { add: 'ADD',  schedule: 'SCHEDULE', referral: 'REFERRAL'};
 })
 
-.service('MessagingService', function($http, $translate,  NotificationService, DHIS2URL){
+.service('MessagingService', function($http, $translate,  NotificationService, DHIS2URL, $cookies){
     return {
         sendMessage: function(message){
-            var promise = $http.post( DHIS2URL + '/messages' , message).then(function(response){
+            var promise = $http({method: 'POST', url: DHIS2URL + '/messages', data: message, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 var headerText, bodyText;
                 if (response && response.data && response.data.summaries) {
                     var summary = response.data.summaries[0];
@@ -2797,7 +2801,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         }
     };
 })
-.service('ProgramWorkingListService', function($http,$q,$filter, orderByFilter,orderByKeyFilter, TEIService){
+.service('ProgramWorkingListService', function($http,$q,$filter, orderByFilter,orderByKeyFilter, TEIService, $cookies){
     var workingListsByProgram = null;
     var cachedMultipleEventFiltersData = {};
     var getDefaultWorkingLists = function(program){
@@ -2941,7 +2945,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         }
 
         var fetchPromise = workingListsByProgram ? $q.when() :
-            $http.get(DHIS2URL+"/trackedEntityInstanceFilters?fields=*&paging=false").then(function(response){
+            $http({method: 'GET', url: DHIS2URL+"/trackedEntityInstanceFilters?fields=*&paging=false", headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(response){
                 workingListsByProgram = {};
                 if(response && response.data && response.data.trackedEntityInstanceFilters && response.data.trackedEntityInstanceFilters.length > 0){
                     angular.forEach(response.data.trackedEntityInstanceFilters, function(workingList){
