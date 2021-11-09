@@ -1,3 +1,15 @@
+# [31.7.0](https://github.com/dhis2/tracker-capture-app/compare/v31.6.40...v31.7.0) (2021-11-09)
+
+
+### Bug Fixes
+
+* [DHIS2-9345] issues with creating new enrollment ([#1284](https://github.com/dhis2/tracker-capture-app/issues/1284)) ([a64e627](https://github.com/dhis2/tracker-capture-app/commit/a64e627ff2a271dd9e96eacbab20092b979db41f))
+
+
+### Features
+
+* [DHIS2-12040] empty pie chart message ([#1288](https://github.com/dhis2/tracker-capture-app/issues/1288)) ([4beada9](https://github.com/dhis2/tracker-capture-app/commit/4beada9d8a04186a55aebf94aadf1d2862597bfd))
+
 ## [31.6.40](https://github.com/dhis2/tracker-capture-app/compare/v31.6.39...v31.6.40) (2021-11-05)
 
 
