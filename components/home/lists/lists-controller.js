@@ -185,12 +185,6 @@ trackerCapture.controller('ListsController',function(
             }
             $scope.showCustomWorkingListInline = false;
             $scope.currentTrackedEntityList = { type: type, config: config, data: data };
-            if(!$scope.currentTrackedEntityList.sortColumn){
-                $scope.currentTrackedEntityList.sortColumn = {
-                    id: 'created',
-                    direction: 'desc',
-                }
-            }
         }
 
         var setCurrentTrackedEntityListData = function(serverResponse){
@@ -244,18 +238,6 @@ trackerCapture.controller('ListsController',function(
             setCurrentTrackedEntityList($scope.trackedEntityListTypes.CUSTOM, customConfig, null);
             $scope.fetchCustomWorkingList(customConfig);
         }
-
-        var getOrderUrl = function(urlToExtend){
-            if($scope.currentTrackedEntityList.sortColumn){
-                var sortColumn = $scope.currentTrackedEntityList.sortColumn;
-                if(urlToExtend){
-                    return urlToExtend += "&order="+sortColumn.id+':'+sortColumn.direction;
-                }
-                return "order="+sortColumn.id+":"+sortColumn.direction;
-            }
-
-        }
-
 
         $scope.fetchCustomWorkingList= function(){
             if(!$scope.currentTrackedEntityList.type == $scope.trackedEntityListTypes.CUSTOM) return;
