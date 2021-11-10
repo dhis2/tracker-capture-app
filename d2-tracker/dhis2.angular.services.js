@@ -405,7 +405,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
     };
 })
 
-.service('UsersService', function( $http, $translate) {
+.service('UsersService', function( $http, $translate, $cookies) {
 
     var mapUserLookupResponse = function( userLookup ) {
         return {userid: userLookup.id, username: userLookup.username, firstName: userLookup.firstName, lastName: userLookup.surname};
@@ -413,7 +413,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
 
     return {
         getByQuery: function( queryString ){
-            var promise = $http.get("../api/userLookup?paging=true&page=1&pageSize=10&query=" + queryString).then(function (response) {
+            var promise = $http({method: 'GET', url: "../api/userLookup?paging=true&page=1&pageSize=10&query=" + queryString, headers: {'ingress-csrf': $cookies['ingress-csrf']} }).then(function (response) {
                 var users = [];
                 angular.forEach(response.data.users, function (user) {
                     var userObj = mapUserLookupResponse(user);
@@ -424,7 +424,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             return promise;
         },
         getByUid: function( uid ){
-            var promise = $http.get("../api/userLookup/" + uid).then(function (response) {
+            var promise = $http({method: 'GET', url: "../api/userLookup/" + uid, headers: {'ingress-csrf': $cookies['ingress-csrf']} }).then(function (response) {
                 var userObj = mapUserLookupResponse(response.data);
                 return userObj;
             });
