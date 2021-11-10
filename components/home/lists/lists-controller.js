@@ -185,12 +185,6 @@ trackerCapture.controller('ListsController',function(
             }
             $scope.showCustomWorkingListInline = false;
             $scope.currentTrackedEntityList = { type: type, config: config, data: data };
-            if(!$scope.currentTrackedEntityList.sortColumn){
-                $scope.currentTrackedEntityList.sortColumn = {
-                    id: 'created',
-                    direction: 'desc',
-                }
-            }
         }
 
         var setCurrentTrackedEntityListData = function(serverResponse){
@@ -201,7 +195,7 @@ trackerCapture.controller('ListsController',function(
     
 
 
-        $scope.fetchTeis = function(pager, sortColumn){
+        $scope.fetchTeis = function(pager){
             var s = 1;
             if($scope.currentTrackedEntityList){
                 if($scope.currentTrackedEntityList.type === $scope.trackedEntityListTypes.CUSTOM){
@@ -244,18 +238,6 @@ trackerCapture.controller('ListsController',function(
             setCurrentTrackedEntityList($scope.trackedEntityListTypes.CUSTOM, customConfig, null);
             $scope.fetchCustomWorkingList(customConfig);
         }
-
-        var getOrderUrl = function(urlToExtend){
-            if($scope.currentTrackedEntityList.sortColumn){
-                var sortColumn = $scope.currentTrackedEntityList.sortColumn;
-                if(urlToExtend){
-                    return urlToExtend += "&order="+sortColumn.id+':'+sortColumn.direction;
-                }
-                return "order="+sortColumn.id+":"+sortColumn.direction;
-            }
-
-        }
-
 
         $scope.fetchCustomWorkingList= function(){
             if(!$scope.currentTrackedEntityList.type == $scope.trackedEntityListTypes.CUSTOM) return;
@@ -406,11 +388,12 @@ trackerCapture.controller('ListsController',function(
                     sortedTei = sortedTei.concat(data.rows.other);
                 }
                 sortedTei = $filter('orderBy')(sortedTei, function(tei) {
+                    var id = $scope.currentTrackedEntityList.sortColumn ? $scope.currentTrackedEntityList.sortColumn.id : 'created';
                     if($scope.currentTrackedEntityList.sortColumn && $scope.currentTrackedEntityList.sortColumn.valueType === 'date'){
-                        var d = tei[$scope.currentTrackedEntityList.sortColumn.id];
+                        var d = tei[id];
                         return DateUtils.getDate(d);
                     }
-                    return tei[$scope.currentTrackedEntityList.sortColumn.id];
+                    return tei[id];
                 }, $scope.currentTrackedEntityList.direction == 'desc');
         
                 angular.forEach(sortedTei, function(tei){
