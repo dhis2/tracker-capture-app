@@ -31,7 +31,8 @@ trackerCapture.controller('ListsController',function(
     FNrLookupService,
     OperatorFactory,
     ModalService,
-    $http) {
+    $http,
+    $cookies) {
         var ouModes = [{name: 'SELECTED'}, {name: 'CHILDREN'}, {name: 'DESCENDANTS'}, {name: 'ACCESSIBLE'}];
         var userGridColumns = null;
         var defaultCustomWorkingListValues = { ouMode: ouModes[0], programStatus: ""};
@@ -629,7 +630,7 @@ trackerCapture.controller('ListsController',function(
                 const programId = $scope.base.selectedProgram.id;
                 TEIService.getActiveEnrollments(selectedTeis, programId, $scope.selectedOrgUnit.id).then(function(enrollments) {
                     enrollments.enrollments.forEach((enrollment) => enrollment.status = 'COMPLETED');
-                    $http.post(DHIS2URL + '/enrollments', enrollments).then(function(){
+                    $http({method: 'POST', url: DHIS2URL + '/enrollments', data: enrollments, headers: {'ingress-csrf': $cookies['ingress-csrf']}}).then(function(){
                         $scope.setWorkingList($scope.currentTrackedEntityList.config);
                     });
                 })
