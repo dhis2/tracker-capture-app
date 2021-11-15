@@ -33,7 +33,7 @@
         <div class="row col-sm-12">
             <div class="col-sm-6 align-center">
                 <h2>{{'enrollment_stats' | translate}}</h2>
-                <div ng-if="enrollmentsReceived===0"> {{'empty' | translate}} </div>
+                <div ng-if="enrollmentsReceived===0"> {{'mo_matching_data' | translate}} </div>
                 <nvd3-pie-chart ng-if="!limitExceeded(enrollmentsReceived)" class="empty-event-container"
                     data="enrollmentStat"
                     id="enrollmentChart"
@@ -49,7 +49,7 @@
             </div>
             <div class="col-sm-6 align-center">
                 <h2>{{'event_stats' | translate}}</h2>
-                <div ng-if="totalEvents===0"> {{'empty' | translate}} </div>
+                <div ng-if="totalEvents===0"> {{'mo_matching_data' | translate}} </div>
                 <nvd3-pie-chart ng-if="!limitExceeded(eventsReceived)" class="empty-event-container"
                     data="eventStat"
                     id="eventChart"
