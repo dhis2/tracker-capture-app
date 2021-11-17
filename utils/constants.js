@@ -63,3 +63,5 @@ export const PROFIL_VAKSINE_1_TYPE_ID = 'cnSOCLFGmLz';
 export const PROFIL_VAKSINE_1_DATO_ID = 'dvNLTk22BAG';
 export const PROFIL_VAKSINE_2_TYPE_ID = 'dO29Prg9siS';
 export const PROFIL_VAKSINE_2_DATO_ID = 'q5Zc3PCGtC7';
+export const PROFIL_VAKSINE_3_TYPE_ID = 'zbLvlxnfL3i';
+export const PROFIL_VAKSINE_3_DATO_ID = 'TtvEl8Fjqjp';

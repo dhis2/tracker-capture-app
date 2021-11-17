@@ -2,12 +2,28 @@
     <h3>Vaksineringer</h3>
 </div>
 <div class="modal-body page">
+    {{profileVaccines}}
     <table class="dhis2-list-table-striped default-form-table">
-        <tr ng-repeat="vaccine in gridData">
-            <td><b>Dose {{$index +1}}</b> <br>{{dateFromItem(vaccine)}}
-            <td><div style="padding-bottom:5px">{{vaccine.vaccineCode.display}}</span>
-        </tr>
+            <th>Dose nr</th>
+        <th>Vaksinetype</th>
+        <th>Vaksine i profil</th>
+        <tr ng-repeat="vaccine in sysvakVaccines">
+            <td><b>Dose {{$index +1}}</b> <br>{{vaccine.date}}
+            <td><div style="padding-bottom:5px">{{vaccine.name}}</span>
+            <td>
+                <span ng-if="!vaccine.vaccineIsInProfile">Mangler</span>
+                <div ng-if="vaccine.vaccineIsInProfile && vaccine.dateMismatch">NB! Ulik dato: {{vaccine.profileDose.date}}</div>
+                <div ng-if="vaccine.vaccineIsInProfile && vaccine.nameMismatch">NB! Ulik vaksine: {{vaccine.profileDose.name}}</div>
+                <span ng-if="vaccine.vaccineIsInProfile && !vaccine.nameMismatch && !vaccine.dateMismatch">Ok</span>
+        </td>
     </table>
+    <div>
+        <h2>Registrer vaksinestatus i profil</h2>
+        <p>
+            NB: Dette vil overskrive alle feltene for vaksinestatus i profilen
+        </p>
+        <button class="btn btn-primary" data-ng-click="registerVaccineInProfile()"> Registrer vaksinestatuser</button>
+    </div>
     <div ng-if="!gridData || gridData.length == 0">
         {{noVaccinesMessage}}
     </div>

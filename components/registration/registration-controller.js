@@ -11,10 +11,15 @@ import {enableAutoTransferFromNaerkontakt} from "../../ks_patches/custom_overrid
 import {
     INDEKSERING_PROGRAM_ID,
     NAERKONTAKT_PROGRAM_ID, PROFIL_FNR, PROFIL_FNR_AS_WELL,
-    PROFIL_NASJONALT_FELLES_HJELPENUMMER
+    PROFIL_NASJONALT_FELLES_HJELPENUMMER, PROFIL_VAKSINE_1_TYPE_ID
 } from "../../utils/constants";
 import {makeHyphensInKodebeskrivelseNonBreaking} from "../../ks_patches/provesvar_utils";
 import {setCustomShowOnAttributes} from "../../ks_patches/hide_show_attributes";
+import {
+    createCombinedVaccineObject,
+    createEnrichedVaccineObject,
+    getVaksineObject
+} from "../../ks_patches/vaksine_utils";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RegistrationController', 
@@ -1510,13 +1515,13 @@ trackerCapture.controller('RegistrationController',
         $scope.vaccineLookup().then(function(response) {
             $scope.showFetchingDataSpinner = false;
             if(response) {
-                var modalData = response.immunizations;
+                var modalData = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
 
                 return $modal.open({
                     templateUrl: 'components/registration/vaccination-modal.html',
                     controller: function($scope, $modalInstance, modalData, orderByFilter)
                     {
-                        $scope.gridData = modalData;
+                        $scope.sysvakVaccines = modalData;
 
                         $scope.dateFromItem = function(item) {
                             var vaccinationDate = Object.assign([],item.vaccinationDate);
@@ -1533,6 +1538,10 @@ trackerCapture.controller('RegistrationController',
 
                         $scope.cancel = function() {
                             $modalInstance.close({ action: "OK" });
+                        }
+
+                        $scope.registerVaccineInProfile = function() {
+                            console.log($scope.sysvakVaccines);
                         }
                     },
                     resolve: {
