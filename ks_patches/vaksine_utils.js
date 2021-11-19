@@ -49,10 +49,11 @@ function getNameAndDate(ids, attributes) {
 }
 
 function convertVaccineDate(vaccinationDate, DateUtils) {
-    if(vaccinationDate[1]) {
-        vaccinationDate[1] = vaccinationDate[1] - 1;
+    const tmpDate = angular.copy(vaccinationDate);
+    if(tmpDate[1]) {
+        tmpDate[1] = tmpDate[1] - 1;
     }
-    return DateUtils.getDateFromUTCString(vaccinationDate);
+    return DateUtils.getDateFromUTCString(tmpDate);
 }
 
 function getVaccineNicenameAndType(vaccine) {
@@ -66,18 +67,25 @@ function getVaccineNicenameAndType(vaccine) {
 
 function enrichWithValidation(vaccine) {
     if(!vaccine.profileDose) {
-        return {...vaccine, vaccineIsInProfile: false, dateMismatch: false, nameMismatch: false};
+        return {...vaccine, vaccineIsInProfile: false, dateMismatch: false, nameMismatch: false, updatePossible: true};
     }
+    var dateMismatch = vaccine.date !== vaccine.profileDose.date;
+    var nameMismatch = vaccine.name !== vaccine.profileDose.name;
     return {...vaccine,
         vaccineIsInProfile: true,
-        dateMismatch: vaccine.date !== vaccine.profileDose.date,
-        nameMismatch: vaccine.name !== vaccine.profileDose.name,
+        dateMismatch,
+        nameMismatch,
+        updatePossible:  dateMismatch || nameMismatch
     }
 }
 
 export function saveVaccineToProfile(tei, vaccines, attributesById, TEIService) {
-    tei.attributes = getUpdatedVaccineAttributes(tei.attributes, vaccines);
-    TEIService.update(tei, [], attributesById).then(() => {});
+    var teiCopy = angular.copy(tei);
+
+    teiCopy.attributes = getUpdatedVaccineAttributes(teiCopy.attributes, vaccines);
+    return TEIService.update(teiCopy, [], attributesById).then(() => {
+        updateAttributes(tei, teiCopy.attributes);
+    });
 }
 
 function getUpdatedVaccineAttributes(attributes, vaccines) {
@@ -94,4 +102,12 @@ function getUpdatedVaccineAttributes(attributes, vaccines) {
 function getUpdatedAttribute(attributes, value, id) {
     var attribute = attributes.find(att => att.attribute === id);
     return {...attribute, value};
+}
+
+function updateAttributes(tei, attributesToUpdate) {
+    tei.attributes = tei.attributes.map(att => getUpdatedAttributeOrSelf(att, attributesToUpdate))
+}
+
+function getUpdatedAttributeOrSelf(attribute, attributesToUpdate) {
+    return attributesToUpdate.find(att => att.attribute === attribute.attribute) || attribute;
 }

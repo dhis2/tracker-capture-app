@@ -2,26 +2,33 @@
     <h3>Vaksineringer</h3>
 </div>
 <div class="modal-body page">
+    <div>
+        Her vises vaksinestatus fra Sysvak. Dersom de ikke er registrert i Fiks Smittesporing,
+        eller vaksinen registrert i Fiks Smittesporing er feil, så kan du overskrive med data fra Sysvak.
+    </div>
     <table class="dhis2-list-table-striped default-form-table">
-            <th>Dose nr</th>
-        <th>Vaksinetype</th>
-        <th>Vaksine i profil</th>
+        <th colspan="2" style="text-align: center">Fra Sysvak </th>
+        <th>Registrert i Fiks Smittesporing</th>
         <tr ng-repeat="vaccine in sysvakVaccines">
             <td><b>Dose {{$index +1}}</b> <br>{{vaccine.date}}
             <td><div style="padding-bottom:5px">{{vaccine.name}}</span>
             <td>
                 <span ng-if="!vaccine.vaccineIsInProfile">Mangler</span>
-                <div ng-if="vaccine.vaccineIsInProfile && vaccine.dateMismatch">NB! Ulik dato: {{vaccine.profileDose.date}}</div>
-                <div ng-if="vaccine.vaccineIsInProfile && vaccine.nameMismatch">NB! Ulik vaksine: {{vaccine.profileDose.name}}</div>
+                <div ng-if="vaccine.vaccineIsInProfile && vaccine.dateMismatch">NB! Ulik dato: {{vaccine.profileDose.date || 'mangler'}}</div>
+                <div ng-if="vaccine.vaccineIsInProfile && vaccine.nameMismatch">NB! Ulik vaksinetype: {{vaccine.profileDose.name || 'mangler'}}</div>
                 <span ng-if="vaccine.vaccineIsInProfile && !vaccine.nameMismatch && !vaccine.dateMismatch">Ok</span>
         </td>
     </table>
-    <div>
-        <h2>Registrer vaksinestatus i profil</h2>
+    <div ng-if="canUpdate">
+        <h3>Oppdater vaksinestatus i profil</h3>
         <p>
             NB: Dette vil overskrive alle feltene for vaksinestatus i profilen
         </p>
-        <button class="btn btn-primary" data-ng-click="registerVaccineInProfile()"> Registrer vaksinestatuser</button>
+        <button class="btn btn-primary" data-ng-click="registerVaccineInProfile()" > Oppdater vaksinestatuser</button>
+    </div>
+    <div ng-if="!canUpdate">
+        <h3>Vaksinestatus er synkronisert</h3>
+        <p>Vaksinestatus i Fiks Smittesporing samsvarer med sysvak</p>
     </div>
     <!--
     <div ng-if="!gridData || gridData.length == 0">

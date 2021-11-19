@@ -17,8 +17,7 @@ import {makeHyphensInKodebeskrivelseNonBreaking} from "../../ks_patches/provesva
 import {setCustomShowOnAttributes} from "../../ks_patches/hide_show_attributes";
 import {
     createCombinedVaccineObject,
-    createEnrichedVaccineObject,
-    getVaksineObject, saveVaccineToProfile
+    saveVaccineToProfile
 } from "../../ks_patches/vaksine_utils";
 
 var trackerCapture = angular.module('trackerCapture');
@@ -1516,7 +1515,7 @@ trackerCapture.controller('RegistrationController',
             $scope.showFetchingDataSpinner = false;
             if(response) {
                 var modalData = {
-                    sysvakVaccines: createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils),
+                    immunizations: response.immunizations,
                     attributesById: $scope.attributesById,
                     selectedTei: $scope.selectedTei
                 }
@@ -1525,20 +1524,12 @@ trackerCapture.controller('RegistrationController',
                     templateUrl: 'components/registration/vaccination-modal.html',
                     controller: function($scope, $modalInstance, modalData, orderByFilter)
                     {
-                        $scope.sysvakVaccines = modalData.sysvakVaccines;
+                        $scope.immunization = modalData.immunizations
                         $scope.attributesById = modalData.attributesById;
                         $scope.selectedTei = modalData.selectedTei;
+                        $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils),
+                        $scope.canUpdate = $scope.sysvakVaccines.some(vacc => vacc.updatePossible);
 
-
-
-                        $scope.dateFromItem = function(item) {
-                            var vaccinationDate = Object.assign([],item.vaccinationDate);
-                            // Backend returns an array with months starting with index 1 (for January), we assume it starts with index 0 (for January)
-                            if(vaccinationDate[1]) {
-                                vaccinationDate[1] = vaccinationDate[1] - 1;
-                            }
-                            return DateUtils.getDateFromUTCString(vaccinationDate);
-                        }
 
                         $scope.noVaccinesMessage = response.kanLevereUtData ?
                             "Det er ingen registrerte vaksineringer på dette fødselsnummeret." :
@@ -1549,10 +1540,9 @@ trackerCapture.controller('RegistrationController',
                         }
 
                         $scope.registerVaccineInProfile = function() {
-                            var tei = angular.copy($scope.selectedTei);
-                            saveVaccineToProfile(tei, $scope.sysvakVaccines, $scope.attributesById, TEIService);
-
-                            console.log($scope.sysvakVaccines);
+                            saveVaccineToProfile( $scope.selectedTei, $scope.sysvakVaccines, $scope.attributesById, TEIService).then(() => {
+                                $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
+                            });
                         }
                     },
                     resolve: {
