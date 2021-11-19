@@ -1527,7 +1527,8 @@ trackerCapture.controller('RegistrationController',
                         $scope.immunization = modalData.immunizations
                         $scope.attributesById = modalData.attributesById;
                         $scope.selectedTei = modalData.selectedTei;
-                        $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils),
+                        $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
+                        console.log($scope.sysvakVaccines);
                         $scope.canUpdate = $scope.sysvakVaccines.some(vacc => vacc.updatePossible);
 
 
@@ -1542,6 +1543,7 @@ trackerCapture.controller('RegistrationController',
                         $scope.registerVaccineInProfile = function() {
                             saveVaccineToProfile( $scope.selectedTei, $scope.sysvakVaccines, $scope.attributesById, TEIService).then(() => {
                                 $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
+                                $scope.canUpdate = false;
                             });
                         }
                     },

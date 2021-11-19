@@ -70,7 +70,7 @@ function enrichWithValidation(vaccine) {
         return {...vaccine, vaccineIsInProfile: false, dateMismatch: false, nameMismatch: false, updatePossible: true};
     }
     var dateMismatch = vaccine.date !== vaccine.profileDose.date;
-    var nameMismatch = vaccine.name !== vaccine.profileDose.name;
+    var nameMismatch = vaccine.name !== vaccine.profileDose.name && vaccine.type !== vaccine.profileDose.name;
     return {...vaccine,
         vaccineIsInProfile: true,
         dateMismatch,
