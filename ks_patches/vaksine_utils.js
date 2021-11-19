@@ -7,7 +7,7 @@ export function createCombinedVaccineObject(sysvakVaccine, selectedTei, DateUtil
 function createVaccineObject(selectedTei, vaccine, doseNr, DateUtils) {
     return enrichWithValidation({
         profileDose: getVaksineDoseFromProfile(selectedTei, doseNr),
-        name: getVaccineNicename(vaccine),
+        ...getVaccineNicenameAndType(vaccine),
         date: convertVaccineDate(vaccine.vaccinationDate, DateUtils)
     });
 }
@@ -55,12 +55,12 @@ function convertVaccineDate(vaccinationDate, DateUtils) {
     return DateUtils.getDateFromUTCString(vaccinationDate);
 }
 
-function getVaccineNicename(vaccine) {
+function getVaccineNicenameAndType(vaccine) {
     switch(vaccine.vaccineCode.code) {
         case "ASZ03":
-            return "Vaxzevria (AstraZeneca)";
+            return {name: "Vaxzevria (AstraZeneca)", type: "AstraZeneca"};
         default:
-            return vaccine.vaccineCode.display;
+            return {name: vaccine.vaccineCode.display + ' (ukjent)', type: "other"};
     }
 }
 
@@ -73,4 +73,25 @@ function enrichWithValidation(vaccine) {
         dateMismatch: vaccine.date !== vaccine.profileDose.date,
         nameMismatch: vaccine.name !== vaccine.profileDose.name,
     }
+}
+
+export function saveVaccineToProfile(tei, vaccines, attributesById, TEIService) {
+    tei.attributes = getUpdatedVaccineAttributes(tei.attributes, vaccines);
+    TEIService.update(tei, [], attributesById).then(() => {});
+}
+
+function getUpdatedVaccineAttributes(attributes, vaccines) {
+    return [
+        getUpdatedAttribute(attributes, vaccines[0].type, PROFIL_VAKSINE_1_TYPE_ID),
+        getUpdatedAttribute(attributes, vaccines[0].date, PROFIL_VAKSINE_1_DATO_ID),
+        getUpdatedAttribute(attributes, vaccines[1].type, PROFIL_VAKSINE_2_TYPE_ID),
+        getUpdatedAttribute(attributes, vaccines[1].date, PROFIL_VAKSINE_2_DATO_ID),
+        getUpdatedAttribute(attributes, vaccines[2].type, PROFIL_VAKSINE_3_TYPE_ID),
+        getUpdatedAttribute(attributes, vaccines[2].date, PROFIL_VAKSINE_3_DATO_ID),
+    ];
+}
+
+function getUpdatedAttribute(attributes, value, id) {
+    var attribute = attributes.find(att => att.attribute === id);
+    return {...attribute, value};
 }

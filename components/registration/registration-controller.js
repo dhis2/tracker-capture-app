@@ -18,7 +18,7 @@ import {setCustomShowOnAttributes} from "../../ks_patches/hide_show_attributes";
 import {
     createCombinedVaccineObject,
     createEnrichedVaccineObject,
-    getVaksineObject
+    getVaksineObject, saveVaccineToProfile
 } from "../../ks_patches/vaksine_utils";
 
 var trackerCapture = angular.module('trackerCapture');
@@ -1515,13 +1515,21 @@ trackerCapture.controller('RegistrationController',
         $scope.vaccineLookup().then(function(response) {
             $scope.showFetchingDataSpinner = false;
             if(response) {
-                var modalData = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
+                var modalData = {
+                    sysvakVaccines: createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils),
+                    attributesById: $scope.attributesById,
+                    selectedTei: $scope.selectedTei
+                }
 
                 return $modal.open({
                     templateUrl: 'components/registration/vaccination-modal.html',
                     controller: function($scope, $modalInstance, modalData, orderByFilter)
                     {
-                        $scope.sysvakVaccines = modalData;
+                        $scope.sysvakVaccines = modalData.sysvakVaccines;
+                        $scope.attributesById = modalData.attributesById;
+                        $scope.selectedTei = modalData.selectedTei;
+
+
 
                         $scope.dateFromItem = function(item) {
                             var vaccinationDate = Object.assign([],item.vaccinationDate);
@@ -1541,6 +1549,9 @@ trackerCapture.controller('RegistrationController',
                         }
 
                         $scope.registerVaccineInProfile = function() {
+                            var tei = angular.copy($scope.selectedTei);
+                            saveVaccineToProfile(tei, $scope.sysvakVaccines, $scope.attributesById, TEIService);
+
                             console.log($scope.sysvakVaccines);
                         }
                     },

@@ -2,7 +2,6 @@
     <h3>Vaksineringer</h3>
 </div>
 <div class="modal-body page">
-    {{profileVaccines}}
     <table class="dhis2-list-table-striped default-form-table">
             <th>Dose nr</th>
         <th>Vaksinetype</th>
@@ -24,9 +23,11 @@
         </p>
         <button class="btn btn-primary" data-ng-click="registerVaccineInProfile()"> Registrer vaksinestatuser</button>
     </div>
+    <!--
     <div ng-if="!gridData || gridData.length == 0">
         {{noVaccinesMessage}}
     </div>
+    -->
 </div>
 <div class="modal-footer page modal-search-bottom">
     <div class="modal-search-bottom-buttons">
