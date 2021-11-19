@@ -84,6 +84,7 @@ export function saveVaccineToProfile(tei, vaccines, attributesById, TEIService) 
 
     teiCopy.attributes = getUpdatedVaccineAttributes(teiCopy.attributes, vaccines);
     return TEIService.update(teiCopy, [], attributesById).then(() => {
+        console.log('here')
         updateAttributes(tei, teiCopy.attributes);
     });
 }

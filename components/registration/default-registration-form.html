@@ -17,16 +17,16 @@
 
             </td>
             <td ng-if="shouldShowVaccineButton()">
-                <button ng-click="showVaccine()" type="button" class="btn btn-secondary" ng-disabled="!shouldEnableLabTestAndVaccine()">Vis vaksinestatus</button>
+                <button ng-click="showVaccine()" type="button" class="btn btn-secondary" ng-disabled="!shouldEnableLabTestAndVaccine()">Hent vaksinestatus</button>
             </td>
         </tr>
     </table>
+    {{vaksineModalOpen}}
     <div ng-show="!shouldEnableLabTestAndVaccine()" class="alert alert-warning" style="font-size: 9pt;">Gyldig nasjonalt felles hjelpenummer eller F-nummer må være satt for å vise prøvesvar og vaksinestatus</div>
     <hr ng-if="selectedProgram.id == 'uYjxkTbwRNf' && selectedEnrollment.enrollment" />
     <button style="margin-left: 20px;margin-top:10px" ng-if="selectedProgram.id == 'uYjxkTbwRNf' && selectedEnrollment.enrollment" ng-disabled="(selectedTei['ZSt07qyq6Pt'].length != 11 && !selectedTei['NI0QRzJvQ0k']) || !selectedTei['ENRjVGxVL6l'] || !selectedTei['sB1IHYu2xQT']" ng-click="sendNotification()" class="btn btn-secondary">Send klinikermelding</button>
     <p></p>
 </div>
-
 <table class="dhis2-list-table-striped default-form-table">
     <tr ng-if="trackedEntityTypes.selected && !hiddenFields[attribute.id] && ((editingDisabled  && attribute.show) || !editingDisabled)" ng-repeat="attribute in attributes | filter: {attribute: 'true'} ">
         <td>

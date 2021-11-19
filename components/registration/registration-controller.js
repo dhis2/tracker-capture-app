@@ -1437,6 +1437,7 @@ trackerCapture.controller('RegistrationController',
             return $scope.fNrOrEquivalent;
         }
     }
+
     $scope.shouldEnableLabTestAndVaccine = function() {
         return $scope.fNrOrEquivalent && $scope.fNrOrEquivalent.toString().length === 11;
     }
@@ -1513,18 +1514,21 @@ trackerCapture.controller('RegistrationController',
         $scope.showFetchingDataSpinner = true;
         $scope.vaccineLookup().then(function(response) {
             $scope.showFetchingDataSpinner = false;
+            console.log($scope.vaksineModalOpen)
             if(response) {
                 var modalData = {
                     immunizations: response.immunizations,
                     attributesById: $scope.attributesById,
-                    selectedTei: $scope.selectedTei
+                    selectedTei: $scope.selectedTei,
+                    attributes: $scope.attributes
                 }
 
                 return $modal.open({
                     templateUrl: 'components/registration/vaccination-modal.html',
                     controller: function($scope, $modalInstance, modalData, orderByFilter)
                     {
-                        $scope.immunization = modalData.immunizations
+                        $scope.attributes = modalData.attributes;
+                        $scope.immunization = modalData.immunizations;
                         $scope.attributesById = modalData.attributesById;
                         $scope.selectedTei = modalData.selectedTei;
                         $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
@@ -1543,7 +1547,11 @@ trackerCapture.controller('RegistrationController',
                         $scope.registerVaccineInProfile = function() {
                             saveVaccineToProfile( $scope.selectedTei, $scope.sysvakVaccines, $scope.attributesById, TEIService).then(() => {
                                 $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
+                                console.log($scope);
                                 $scope.canUpdate = false;
+                                var tmp = $scope.selectedTei;
+                                $scope.selectedTei.attributes = undefined;
+                                //$scope.attributes = $scope.attributes.map(att => ({...att, show: true }));
                             });
                         }
                     },
