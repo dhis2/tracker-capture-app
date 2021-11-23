@@ -1516,7 +1516,6 @@ trackerCapture.controller('RegistrationController',
         $scope.showFetchingDataSpinner = true;
         $scope.vaccineLookup().then(function(response) {
             $scope.showFetchingDataSpinner = false;
-            console.log($scope.vaksineModalOpen)
             if(response) {
                 var modalData = {
                     immunizations: response.immunizations,
