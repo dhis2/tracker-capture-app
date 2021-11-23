@@ -1563,7 +1563,7 @@ trackerCapture.controller('RegistrationController',
                             return modalData;
                         }
                     }
-                })
+                });
             }
         });
     }
