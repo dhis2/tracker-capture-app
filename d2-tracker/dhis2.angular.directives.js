@@ -1948,10 +1948,6 @@ var d2Directives = angular.module('d2Directives', [])
                 scope.optionListOpen = true;
                 $(document).bind('click', onClickOutside);
             }
-            if(scope.d2Model.cnSOCLFGmLz) {
-                console.log(scope);
-                console.log(scope.d2Model.cnSOCLFGmLz);
-            }
         },
         controller: function($scope,$filter) {
             $scope.loadMoreId = "loadMore";
