@@ -1546,8 +1546,7 @@ trackerCapture.controller('RegistrationController',
                             $modalInstance.close({ action: "OK" });
                         }
 
-                        $scope.registerVaccineInProfile = function(success) {
-                            console.log(success);
+                        $scope.registerVaccineInProfile = function() {
                             saveVaccineToProfile( $scope.selectedTei, $scope.sysvakVaccines, $scope.attributesById, TEIService).then((success) => {
                                 if(success) {
                                     $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
