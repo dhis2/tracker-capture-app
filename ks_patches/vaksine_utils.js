@@ -60,9 +60,15 @@ function convertVaccineDate(vaccinationDate, DateUtils) {
 function getVaccineNicenameAndType(vaccine) {
     switch(vaccine.vaccineCode.code) {
         case "ASZ03":
-            return {name: "Vaxzevria (AstraZeneca)", type: "AstraZeneca"};
+            return {
+                name: "Vaxzevria (AstraZeneca)",
+                type: "AstraZeneca"
+            };
         default:
-            return {name: vaccine.vaccineCode.display + ' (ukjent)', type: "other"};
+            return {
+            name: vaccine.vaccineCode.display + ' (Annet)',
+                type: "annenvaksine"
+            };
     }
 }
 
@@ -118,10 +124,10 @@ function getUpdatedAttributeOrSelf(attribute, attributesToUpdate) {
 }
 
 export function hackToUpdateVaccineFieldsInProfile(selectedTei, sysvakVaccines) {
-    selectedTei[PROFIL_VAKSINE_1_TYPE_ID] = sysvakVaccines[0].type;
+    selectedTei[PROFIL_VAKSINE_1_TYPE_ID] = sysvakVaccines[0].name;
     selectedTei[PROFIL_VAKSINE_1_DATO_ID] = sysvakVaccines[0].date;
-    selectedTei[PROFIL_VAKSINE_2_TYPE_ID] = sysvakVaccines[1].type;
+    selectedTei[PROFIL_VAKSINE_2_TYPE_ID] = sysvakVaccines[1].name;
     selectedTei[PROFIL_VAKSINE_2_DATO_ID] = sysvakVaccines[1].date;
-    selectedTei[PROFIL_VAKSINE_3_TYPE_ID] = sysvakVaccines[2].type;
+    selectedTei[PROFIL_VAKSINE_3_TYPE_ID] = sysvakVaccines[2].name;
     selectedTei[PROFIL_VAKSINE_3_DATO_ID] = sysvakVaccines[2].date;
 }
