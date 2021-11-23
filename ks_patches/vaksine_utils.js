@@ -84,9 +84,12 @@ export function saveVaccineToProfile(tei, vaccines, attributesById, TEIService) 
     var teiCopy = angular.copy(tei);
 
     teiCopy.attributes = getUpdatedVaccineAttributes(teiCopy.attributes, vaccines);
-    return TEIService.update(teiCopy, [], attributesById).then(() => {
-        console.log('here')
-        updateAttributes(tei, teiCopy.attributes);
+    return TEIService.update(teiCopy, [], attributesById).then((status) => {
+        if(status && status.httpStatus === "OK") {
+            updateAttributes(tei, teiCopy.attributes);
+            return true;
+        }
+        return false;
     });
 }
 

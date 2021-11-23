@@ -39,6 +39,10 @@
             <p>
                 NB: Dette vil overskrive alle feltene for vaksinestatus i profilen
             </p>
+            <div ng-if="showError" class="alert alert-warning">
+                Noe feilet ved oppdatering av vaksinedata. Prøv igjen senere, ev. fyll ut manuelt.
+            </div>
+
             <button class="btn btn-primary" data-ng-click="registerVaccineInProfile()" > Oppdater vaksinestatuser</button>
         </div>
         <div ng-if="!canUpdate">

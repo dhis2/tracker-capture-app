@@ -1529,12 +1529,12 @@ trackerCapture.controller('RegistrationController',
                     templateUrl: 'components/registration/vaccination-modal.html',
                     controller: function($scope, $modalInstance, modalData, orderByFilter)
                     {
+                        $scope.showError = false;
                         $scope.attributes = modalData.attributes;
                         $scope.immunization = modalData.immunizations;
                         $scope.attributesById = modalData.attributesById;
                         $scope.selectedTei = modalData.selectedTei;
                         $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
-                        console.log($scope.sysvakVaccines);
                         $scope.canUpdate = $scope.sysvakVaccines.some(vacc => vacc.updatePossible);
 
 
@@ -1546,11 +1546,16 @@ trackerCapture.controller('RegistrationController',
                             $modalInstance.close({ action: "OK" });
                         }
 
-                        $scope.registerVaccineInProfile = function() {
-                            saveVaccineToProfile( $scope.selectedTei, $scope.sysvakVaccines, $scope.attributesById, TEIService).then(() => {
-                                $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
-                                $scope.canUpdate = false;
-                                hackToUpdateVaccineFieldsInProfile($scope.selectedTei, $scope.sysvakVaccines);
+                        $scope.registerVaccineInProfile = function(success) {
+                            console.log(success);
+                            saveVaccineToProfile( $scope.selectedTei, $scope.sysvakVaccines, $scope.attributesById, TEIService).then((success) => {
+                                if(success) {
+                                    $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
+                                    $scope.canUpdate = false;
+                                    hackToUpdateVaccineFieldsInProfile($scope.selectedTei, $scope.sysvakVaccines);
+                                } else {
+                                    $scope.showError = true;
+                                }
                             });
                         }
                     },
