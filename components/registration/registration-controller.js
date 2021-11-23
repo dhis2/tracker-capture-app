@@ -10,13 +10,15 @@ import {
 import {enableAutoTransferFromNaerkontakt} from "../../ks_patches/custom_override_flags";
 import {
     INDEKSERING_PROGRAM_ID,
-    NAERKONTAKT_PROGRAM_ID, PROFIL_FNR, PROFIL_FNR_AS_WELL,
-    PROFIL_NASJONALT_FELLES_HJELPENUMMER, PROFIL_VAKSINE_1_TYPE_ID
+    NAERKONTAKT_PROGRAM_ID,
+    PROFIL_FNR,
+    PROFIL_FNR_AS_WELL,
+    PROFIL_NASJONALT_FELLES_HJELPENUMMER,
 } from "../../utils/constants";
 import {makeHyphensInKodebeskrivelseNonBreaking} from "../../ks_patches/provesvar_utils";
 import {setCustomShowOnAttributes} from "../../ks_patches/hide_show_attributes";
 import {
-    createCombinedVaccineObject,
+    createCombinedVaccineObject, hackToUpdateVaccineFieldsInProfile,
     saveVaccineToProfile
 } from "../../ks_patches/vaksine_utils";
 
@@ -1547,11 +1549,8 @@ trackerCapture.controller('RegistrationController',
                         $scope.registerVaccineInProfile = function() {
                             saveVaccineToProfile( $scope.selectedTei, $scope.sysvakVaccines, $scope.attributesById, TEIService).then(() => {
                                 $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
-                                console.log($scope);
                                 $scope.canUpdate = false;
-                                var tmp = $scope.selectedTei;
-                                $scope.selectedTei.attributes = undefined;
-                                //$scope.attributes = $scope.attributes.map(att => ({...att, show: true }));
+                                hackToUpdateVaccineFieldsInProfile($scope.selectedTei, $scope.sysvakVaccines);
                             });
                         }
                     },
@@ -1560,7 +1559,7 @@ trackerCapture.controller('RegistrationController',
                             return modalData;
                         }
                     }
-                });
+                })
             }
         });
     }

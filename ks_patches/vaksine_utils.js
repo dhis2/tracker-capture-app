@@ -27,10 +27,11 @@ function getVaksineIds(doseNr) {
             dateId: PROFIL_VAKSINE_1_DATO_ID
         }
     }
-    if(doseNr === 2) {        return {
-        typeId: PROFIL_VAKSINE_2_TYPE_ID,
-        dateId: PROFIL_VAKSINE_2_DATO_ID
-    }
+    if(doseNr === 2) {
+        return {
+            typeId: PROFIL_VAKSINE_2_TYPE_ID,
+            dateId: PROFIL_VAKSINE_2_DATO_ID
+        }
     }
     if(doseNr === 3) {
         return {
@@ -111,4 +112,13 @@ function updateAttributes(tei, attributesToUpdate) {
 
 function getUpdatedAttributeOrSelf(attribute, attributesToUpdate) {
     return attributesToUpdate.find(att => att.attribute === attribute.attribute) || attribute;
+}
+
+export function hackToUpdateVaccineFieldsInProfile(selectedTei, sysvakVaccines) {
+    selectedTei[PROFIL_VAKSINE_1_TYPE_ID] = sysvakVaccines[0].type;
+    selectedTei[PROFIL_VAKSINE_1_DATO_ID] = sysvakVaccines[0].date;
+    selectedTei[PROFIL_VAKSINE_2_TYPE_ID] = sysvakVaccines[1].type;
+    selectedTei[PROFIL_VAKSINE_2_DATO_ID] = sysvakVaccines[1].date;
+    selectedTei[PROFIL_VAKSINE_3_TYPE_ID] = sysvakVaccines[2].type;
+    selectedTei[PROFIL_VAKSINE_3_DATO_ID] = sysvakVaccines[2].date;
 }
