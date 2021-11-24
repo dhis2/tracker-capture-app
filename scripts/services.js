@@ -611,9 +611,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             tei.attributes = [];
             var formEmpty = true;
             for(var k in attributesById){
-                if(originalTei && formTei[k] !== originalTei[k] && !formTei[k] && !originalTei[k]){
-                    formChanged = true;
-                }
                 if( k in formTei ){
                     var att = attributesById[k];
                     tei.attributes.push({attribute: att.id, value: formTei[k], displayName: att.displayName, valueType: att.valueType});
@@ -624,19 +621,19 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             formTei.attributes = tei.attributes;
 
             var formChanged = false;
-            for(var k in attributesById){
-                if(originalTei && formTei[k] !== originalTei[k]){
-                    if(!formEmpty){
-                        formChanged = true;
-                        break;
-                    }
-                    if(formEmpty && (formTei[k] || originalTei[k]) ){
-                        formChanged = true;
-                        break;
+            if (originalTei) {
+                for (var k in attributesById) {
+                    if (formTei[k] !== originalTei[k]) {
+                        if (!formEmpty) {
+                            formChanged = true;
+                            break;
+                        }
+                        if (formEmpty && (formTei[k] || originalTei[k])) {
+                            formChanged = true;
+                            break;
+                        }
                     }
                 }
-            }
-            if (originalTei) {
                 angular.forEach(originalTei.attributes, function (att) {
                     if (tei[att.attribute]) {
                         delete tei[att.attribute];
@@ -960,7 +957,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         return tei;
     }
     return {
-        getWithProgramData: function(entityUid,programUid, optionSets, attributesById, useCached){
+        getWithProgramData: function(entityUid, programUid, optionSets, attributesById, useCached){
             if(useCached && cachedTeiWithProgramData && cachedTeiWithProgramData.entityUid === entityUid && cachedTeiWithProgramData.programUid === programUid){
                 var def = $q.defer();
                 def.resolve(cachedTeiWithProgramData.data);
@@ -994,6 +991,9 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 def.reject(error);
                 return def.promise;
             });
+        },
+        flushCachedTei: function() {
+            cachedTeiWithProgramData = {};
         },
         get: function(entityUid, optionSets, attributesById){
             var promise = $http.get( DHIS2URL + '/trackedEntityInstances/' +  entityUid + '.json').then(function(response){
