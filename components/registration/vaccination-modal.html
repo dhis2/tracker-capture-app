@@ -18,7 +18,7 @@
                     <span ng-if="!vaccine.vaccineIsInProfile">Mangler</span>
                     <div ng-if="vaccine.vaccineIsInProfile && vaccine.dateMismatch">
                         <span ng-if="vaccine.profileDose.date">
-                            Ulik dato: {{vaccine.profileDose.date}}
+                            Ulik dato: <span class="ks-red-markup">{{vaccine.profileDose.date}}</span>
                         </span>
                         <span ng-if="!vaccine.profileDose.date">
                             Dato mangler
@@ -26,10 +26,10 @@
                     </div>
                     <div ng-if="vaccine.vaccineIsInProfile && vaccine.nameMismatch ">
                         <span ng-if="vaccine.profileDose.name">
-                            Ulik vaksinetype: {{vaccine.profileDose.name}}
+                            Ulik type: <span class="ks-red-markup">{{vaccine.profileDose.name}}</span>
                         </span>
                         <span ng-if="!vaccine.profileDose.name">
-                            Vaksinetype mangler
+                            Type mangler
                         </span>
                     </div>
                     <span ng-if="vaccine.vaccineIsInProfile && !vaccine.nameMismatch && !vaccine.dateMismatch">Registrert</span>
@@ -49,11 +49,12 @@
                 Noe feilet ved oppdatering av vaksinedata. Prøv igjen senere, ev. fyll ut manuelt.
             </div>
 
-            <button class="btn btn-primary" data-ng-click="registerVaccineInProfile()" > Oppdater vaksinestatuser</button>
+            <button class="btn btn-primary" data-ng-click="registerVaccineInProfile()" > Oppdater vaksineinfo
+            </button>
         </div>
         <div ng-if="!canUpdate">
-            <h3>Vaksinestatus er synkronisert</h3>
-            <p>Vaksinestatus i Fiks Smittesporing samsvarer med Sysvak</p>
+            <h3>Vaksineinfo er synkronisert</h3>
+            <p>Vaksineinfo i Fiks Smittesporing samsvarer med Sysvak</p>
         </div>
     </div>
     <div ng-if="!immunization || immunization.length == 0">
