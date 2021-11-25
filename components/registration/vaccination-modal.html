@@ -14,6 +14,7 @@
                 <td><b>Dose {{$index +1}}</b> <br>{{vaccine.date}}
                 <td><div style="padding-bottom:5px">{{vaccine.name}}</span>
                 <td style="border-left-style: solid; border-left-width: 1px">
+                <div ng-if="$index < 3">
                     <span ng-if="!vaccine.vaccineIsInProfile">Mangler</span>
                     <div ng-if="vaccine.vaccineIsInProfile && vaccine.dateMismatch">
                         <span ng-if="vaccine.profileDose.date">
@@ -23,7 +24,7 @@
                             Dato mangler
                         </span>
                     </div>
-                    <div ng-if="vaccine.vaccineIsInProfile && vaccine.nameMismatch">
+                    <div ng-if="vaccine.vaccineIsInProfile && vaccine.nameMismatch ">
                         <span ng-if="vaccine.profileDose.name">
                             Ulik vaksinetype: {{vaccine.profileDose.name}}
                         </span>
@@ -32,6 +33,11 @@
                         </span>
                     </div>
                     <span ng-if="vaccine.vaccineIsInProfile && !vaccine.nameMismatch && !vaccine.dateMismatch">Registrert</span>
+                </div>
+                <div ng-if="$index >= 3">
+                    Kan ikke registrere med enn 3 doser
+                </div>
+
             </td>
         </table>
         <div ng-if="canUpdate">

@@ -64,6 +64,22 @@ function getVaccineNicenameAndType(vaccine) {
                 name: "Vaxzevria (AstraZeneca)",
                 type: "AstraZeneca"
             };
+        case "MOD03":
+            return {
+                name: "Covid-19 Vaccine Moderna",
+                type: "Moderna"
+            };
+        case "BNT03":
+            return {
+                name: "Comirnaty (BioNTech og Pfizer)",
+                type: "Comirnaty"
+            };
+        case "JAN03":
+            return {
+                name: "Covid-19 Vaccine Janssen",
+                type: "Janssen"
+            };
+        case "CUR03":  // Not supported in DHIS2 yet
         default:
             return {
             name: vaccine.vaccineCode.display + ' (Annet)',
@@ -71,6 +87,7 @@ function getVaccineNicenameAndType(vaccine) {
             };
     }
 }
+
 
 function enrichWithValidation(vaccine) {
     if(!vaccine.profileDose) {
