@@ -11,7 +11,7 @@
             <th colspan="2" style="text-align: center">Fra Sysvak </th>
             <th style="text-align: center">Registrert i Fiks Smittesporing</th>
             <tr ng-repeat="vaccine in sysvakVaccines">
-                <td><b>Dose {{$index +1}}</b> <br>{{vaccine.date}}
+                <td><b>Dose {{$index +1}}</b>  <br>{{vaccine.date}} <span class="ks-grey" ng-if="vaccine.monthsAgo || vaccine.monthsAgo === 0">({{vaccine.monthsAgo}}+ mnd)</span>
                 <td><div style="padding-bottom:5px">{{vaccine.name}}</span>
                 <td style="border-left-style: solid; border-left-width: 1px">
                 <div ng-if="$index < 3">

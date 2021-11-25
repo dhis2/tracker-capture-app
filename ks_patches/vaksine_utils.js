@@ -5,11 +5,24 @@ export function createCombinedVaccineObject(sysvakVaccine, selectedTei, DateUtil
 }
 
 function createVaccineObject(selectedTei, vaccine, doseNr, DateUtils) {
+    var vaccinationDate = convertVaccineDate(vaccine.vaccinationDate, DateUtils);
     return enrichWithValidation({
         profileDose: getVaksineDoseFromProfile(selectedTei, doseNr),
         ...getVaccineNicenameAndType(vaccine),
-        date: convertVaccineDate(vaccine.vaccinationDate, DateUtils)
+        date: vaccinationDate,
+        monthsAgo: getNrOfMonthsAgo(vaccinationDate, DateUtils)
     });
+}
+
+function getNrOfMonthsAgo(date, DateUtils) {
+    if (!date) {
+        return undefined;
+    }
+    var age = DateUtils.getAge(date);
+    if(age.years > 0) {
+        return 12;
+    }
+    return age.months;
 }
 
 function getVaksineDoseFromProfile(selectedTei, doseNr) {
