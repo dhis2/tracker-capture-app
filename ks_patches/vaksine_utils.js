@@ -123,13 +123,13 @@ export function saveVaccineToProfile(tei, vaccines, attributesById, shouldSaveTo
     teiCopy.attributes = getUpdatedVaccineAttributes(teiCopy.attributes, vaccines);
 
     if(shouldSaveToBackend) {
-        return updateVaccineInProfileAndSaveToBackend(tei, teiCopy, TEIService);
+        return updateVaccineInProfileAndSaveToBackend(tei, teiCopy,attributesById, TEIService);
     } else {
         return updateVaccineInProfileWithoutSavingToBackend(tei, teiCopy, $q);
     }
 }
 
-function updateVaccineInProfileAndSaveToBackend(tei, teiCopy, TEIService) {
+function updateVaccineInProfileAndSaveToBackend(tei, teiCopy,attributesById, TEIService) {
     return TEIService.update(teiCopy, [], attributesById).then((status) => {
         if(status && status.httpStatus === "OK") {
             updateAttributes(tei, teiCopy.attributes);
