@@ -118,24 +118,24 @@ function enrichWithValidation(vaccine) {
     }
 }
 
-export function saveVaccineToProfile(tei, vaccines, attributesById, TEIService, $q) {
-
+export function saveVaccineToProfile(tei, vaccines, attributesById, shouldSaveToBackend, TEIService, $q) {
     var teiCopy = angular.copy(tei);
-
     teiCopy.attributes = getUpdatedVaccineAttributes(teiCopy.attributes, vaccines);
-    if(!tei.trackedEntityInstance) { // If trackedEntityInstance is not set, we assume we are registering
+
+    if(shouldSaveToBackend) {
+        return TEIService.update(teiCopy, [], attributesById).then((status) => {
+            if(status && status.httpStatus === "OK") {
+                updateAttributes(tei, teiCopy.attributes);
+                return true;
+            }
+            return false;
+        });
+    } else {
         updateAttributes(tei, teiCopy.attributes);
         var promiseMaker = $q.defer();
         promiseMaker.resolve(true);
         return promiseMaker.promise;
     }
-    return TEIService.update(teiCopy, [], attributesById).then((status) => {
-        if(status && status.httpStatus === "OK") {
-            updateAttributes(tei, teiCopy.attributes);
-            return true;
-        }
-        return false;
-    });
 }
 
 function getUpdatedVaccineAttributes(attributes, vaccines) {
