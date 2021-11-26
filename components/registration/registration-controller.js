@@ -1522,7 +1522,7 @@ trackerCapture.controller('RegistrationController',
                     attributesById: $scope.attributesById,
                     selectedTei: $scope.selectedTei,
                     attributes: $scope.attributes,
-                    searchFnr: $scope.$scope.fNrOrEquivalentGetterSetter()
+                    searchFnr: $scope.fNrOrEquivalentGetterSetter()
                 }
 
                 return $modal.open({
