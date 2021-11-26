@@ -123,19 +123,27 @@ export function saveVaccineToProfile(tei, vaccines, attributesById, shouldSaveTo
     teiCopy.attributes = getUpdatedVaccineAttributes(teiCopy.attributes, vaccines);
 
     if(shouldSaveToBackend) {
-        return TEIService.update(teiCopy, [], attributesById).then((status) => {
-            if(status && status.httpStatus === "OK") {
-                updateAttributes(tei, teiCopy.attributes);
-                return true;
-            }
-            return false;
-        });
+        return updateVaccineInProfileAndSaveToBackend(tei, teiCopy, TEIService);
     } else {
-        updateAttributes(tei, teiCopy.attributes);
-        var promiseMaker = $q.defer();
-        promiseMaker.resolve(true);
-        return promiseMaker.promise;
+        return updateVaccineInProfileWithoutSavingToBackend(tei, teiCopy, $q);
     }
+}
+
+function updateVaccineInProfileAndSaveToBackend(tei, teiCopy, TEIService) {
+    return TEIService.update(teiCopy, [], attributesById).then((status) => {
+        if(status && status.httpStatus === "OK") {
+            updateAttributes(tei, teiCopy.attributes);
+            return true;
+        }
+        return false;
+    });
+}
+
+function updateVaccineInProfileWithoutSavingToBackend(tei, teiCopy, $q) {
+    updateAttributes(tei, teiCopy.attributes);
+    var promiseMaker = $q.defer();
+    promiseMaker.resolve(true);
+    return promiseMaker.promise;
 }
 
 function getUpdatedVaccineAttributes(attributes, vaccines) {
