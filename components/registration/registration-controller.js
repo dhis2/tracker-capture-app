@@ -11,8 +11,8 @@ import {enableAutoTransferFromNaerkontakt} from "../../ks_patches/custom_overrid
 import {
     INDEKSERING_PROGRAM_ID,
     NAERKONTAKT_PROGRAM_ID,
-    PROFIL_FNR,
-    PROFIL_FNR_AS_WELL,
+    PROFIL_FNR_INDEKS,
+    PROFIL_FNR_OR_SIMILAR_INNREISE,
     PROFIL_NASJONALT_FELLES_HJELPENUMMER,
 } from "../../utils/constants";
 import {makeHyphensInKodebeskrivelseNonBreaking} from "../../ks_patches/provesvar_utils";
@@ -1449,11 +1449,11 @@ trackerCapture.controller('RegistrationController',
     }
 
     $scope.getBestNumberForLabTestAndVaccine = function() {
-        if($scope.selectedTei[PROFIL_FNR] && $scope.selectedTei[PROFIL_FNR].length === 11) {
-            return $scope.selectedTei[PROFIL_FNR];
+        if($scope.selectedTei[PROFIL_FNR_INDEKS] && $scope.selectedTei[PROFIL_FNR_INDEKS].length === 11) {
+            return $scope.selectedTei[PROFIL_FNR_INDEKS];
         }
-        if($scope.selectedTei[PROFIL_FNR_AS_WELL] && $scope.selectedTei[PROFIL_FNR_AS_WELL].length === 11) {
-            return $scope.selectedTei[PROFIL_FNR_AS_WELL];
+        if($scope.selectedTei[PROFIL_FNR_OR_SIMILAR_INNREISE] && $scope.selectedTei[PROFIL_FNR_OR_SIMILAR_INNREISE].length === 11) {
+            return $scope.selectedTei[PROFIL_FNR_OR_SIMILAR_INNREISE];
         }
         if($scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER] && $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER].toString().length === 11) {
             return $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER];
@@ -1521,7 +1521,8 @@ trackerCapture.controller('RegistrationController',
                     immunizations: response.immunizations,
                     attributesById: $scope.attributesById,
                     selectedTei: $scope.selectedTei,
-                    attributes: $scope.attributes
+                    attributes: $scope.attributes,
+                    searchFnr: $scope.$scope.fNrOrEquivalentGetterSetter();
                 }
 
                 return $modal.open({
@@ -1533,6 +1534,7 @@ trackerCapture.controller('RegistrationController',
                         $scope.immunization = modalData.immunizations;
                         $scope.attributesById = modalData.attributesById;
                         $scope.selectedTei = modalData.selectedTei;
+                        $scope.searchFnr = modalData.searchFnr;
                         $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
                         $scope.canUpdate = $scope.sysvakVaccines.some((vacc, ind) => vacc.updatePossible && ind < 3);
 

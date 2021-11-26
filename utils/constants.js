@@ -37,8 +37,8 @@ export const INNREISE_OPPHOLDSSTED_ID = 'LYrjfgwVNVn';
 export const INNREISE_ARBEIDSGIVER_NAVN_ID = 'uncjwHvpOWP';
 
 export const PROFIL_NASJONALT_FELLES_HJELPENUMMER = 'WBjHgYajTsb';
-export const PROFIL_FNR = 'fkUN6jLp7K4';
-export const PROFIL_FNR_AS_WELL = 'ZSt07qyq6Pt';
+export const PROFIL_FNR_INDEKS = 'fkUN6jLp7K4';
+export const PROFIL_FNR_OR_SIMILAR_INNREISE = 'ZSt07qyq6Pt';
 // Lookup IDs
 
 export const COUNTRY_LOOKUP_ID = 'ynHtyLDVeJO';
