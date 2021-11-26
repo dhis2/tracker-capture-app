@@ -12,7 +12,7 @@ import {
     INDEKSERING_PROGRAM_ID,
     NAERKONTAKT_PROGRAM_ID,
     PROFIL_FNR_INDEKS,
-    PROFIL_FNR_OR_SIMILAR_INNREISE,
+    PROFIL_FNR_OR_EQUIVALENT_INNREISE,
     PROFIL_NASJONALT_FELLES_HJELPENUMMER,
 } from "../../utils/constants";
 import {makeHyphensInKodebeskrivelseNonBreaking} from "../../ks_patches/provesvar_utils";
@@ -1452,8 +1452,8 @@ trackerCapture.controller('RegistrationController',
         if($scope.selectedTei[PROFIL_FNR_INDEKS] && $scope.selectedTei[PROFIL_FNR_INDEKS].length === 11) {
             return $scope.selectedTei[PROFIL_FNR_INDEKS];
         }
-        if($scope.selectedTei[PROFIL_FNR_OR_SIMILAR_INNREISE] && $scope.selectedTei[PROFIL_FNR_OR_SIMILAR_INNREISE].length === 11) {
-            return $scope.selectedTei[PROFIL_FNR_OR_SIMILAR_INNREISE];
+        if($scope.selectedTei[PROFIL_FNR_OR_EQUIVALENT_INNREISE] && $scope.selectedTei[PROFIL_FNR_OR_EQUIVALENT_INNREISE].length === 11) {
+            return $scope.selectedTei[PROFIL_FNR_OR_EQUIVALENT_INNREISE];
         }
         if($scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER] && $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER].toString().length === 11) {
             return $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER];
