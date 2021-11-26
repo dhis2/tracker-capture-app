@@ -65,6 +65,8 @@ function getNameAndDate(ids, attributes) {
 function convertVaccineDate(vaccinationDate, DateUtils) {
     const tmpDate = angular.copy(vaccinationDate);
     if(tmpDate[1]) {
+        // vaccine month starts indexing on 1 (i.e. January is 1, December is 12), while it is assumed that months are
+        // indexed from 0 (i.e. January is 0, December is 11). This corrects the off by one on the month part of the date
         tmpDate[1] = tmpDate[1] - 1;
     }
     return DateUtils.getDateFromUTCString(tmpDate);
