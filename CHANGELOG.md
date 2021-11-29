@@ -1,3 +1,10 @@
+## [31.7.5](https://github.com/dhis2/tracker-capture-app/compare/v31.7.4...v31.7.5) (2021-11-29)
+
+
+### Bug Fixes
+
+* corrected translation key casing ([#1316](https://github.com/dhis2/tracker-capture-app/issues/1316)) ([c05765c](https://github.com/dhis2/tracker-capture-app/commit/c05765c21390cdcb87324e65a5404fdebf1af29a))
+
 ## [31.7.4](https://github.com/dhis2/tracker-capture-app/compare/v31.7.3...v31.7.4) (2021-11-29)
 
 
