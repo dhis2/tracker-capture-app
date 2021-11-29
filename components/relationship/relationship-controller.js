@@ -166,7 +166,7 @@ trackerCapture.controller('RelationshipController',
     };
 
     $scope.showEventInCaptureApp = function(eventId){
-        location.href = '../dhis-web-capture/index.html#/viewEvent/' + eventId;
+        location.href = '../dhis-web-capture/index.html#/viewEvent?viewEventId=' + eventId;
     };
     
     var setRelationships = function(){
