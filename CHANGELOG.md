@@ -1,3 +1,10 @@
+## [31.7.6](https://github.com/dhis2/tracker-capture-app/compare/v31.7.5...v31.7.6) (2021-11-29)
+
+
+### Bug Fixes
+
+* update redirection url to capture-app ([#1320](https://github.com/dhis2/tracker-capture-app/issues/1320)) ([094d478](https://github.com/dhis2/tracker-capture-app/commit/094d4788eaf6b5f47dd2a3f03dc6bdfd059e8f4e))
+
 ## [31.7.5](https://github.com/dhis2/tracker-capture-app/compare/v31.7.4...v31.7.5) (2021-11-29)
 
 
