@@ -10,11 +10,17 @@ import {
 import {enableAutoTransferFromNaerkontakt} from "../../ks_patches/custom_override_flags";
 import {
     INDEKSERING_PROGRAM_ID,
-    NAERKONTAKT_PROGRAM_ID, PROFIL_FNR, PROFIL_FNR_AS_WELL,
-    PROFIL_NASJONALT_FELLES_HJELPENUMMER
+    NAERKONTAKT_PROGRAM_ID,
+    PROFIL_FNR_INDEKS,
+    PROFIL_FNR_OR_EQUIVALENT_INNREISE,
+    PROFIL_NASJONALT_FELLES_HJELPENUMMER,
 } from "../../utils/constants";
 import {makeHyphensInKodebeskrivelseNonBreaking} from "../../ks_patches/provesvar_utils";
 import {setCustomShowOnAttributes} from "../../ks_patches/hide_show_attributes";
+import {
+    createCombinedVaccineObject, hackToUpdateVaccineFieldsInProfile,
+    saveVaccineToProfile
+} from "../../ks_patches/vaksine_utils";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('RegistrationController', 
@@ -1433,6 +1439,7 @@ trackerCapture.controller('RegistrationController',
             return $scope.fNrOrEquivalent;
         }
     }
+
     $scope.shouldEnableLabTestAndVaccine = function() {
         return $scope.fNrOrEquivalent && $scope.fNrOrEquivalent.toString().length === 11;
     }
@@ -1442,11 +1449,11 @@ trackerCapture.controller('RegistrationController',
     }
 
     $scope.getBestNumberForLabTestAndVaccine = function() {
-        if($scope.selectedTei[PROFIL_FNR] && $scope.selectedTei[PROFIL_FNR].length === 11) {
-            return $scope.selectedTei[PROFIL_FNR];
+        if($scope.selectedTei[PROFIL_FNR_INDEKS] && $scope.selectedTei[PROFIL_FNR_INDEKS].length === 11) {
+            return $scope.selectedTei[PROFIL_FNR_INDEKS];
         }
-        if($scope.selectedTei[PROFIL_FNR_AS_WELL] && $scope.selectedTei[PROFIL_FNR_AS_WELL].length === 11) {
-            return $scope.selectedTei[PROFIL_FNR_AS_WELL];
+        if($scope.selectedTei[PROFIL_FNR_OR_EQUIVALENT_INNREISE] && $scope.selectedTei[PROFIL_FNR_OR_EQUIVALENT_INNREISE].length === 11) {
+            return $scope.selectedTei[PROFIL_FNR_OR_EQUIVALENT_INNREISE];
         }
         if($scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER] && $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER].toString().length === 11) {
             return $scope.selectedTei[PROFIL_NASJONALT_FELLES_HJELPENUMMER];
@@ -1510,22 +1517,27 @@ trackerCapture.controller('RegistrationController',
         $scope.vaccineLookup().then(function(response) {
             $scope.showFetchingDataSpinner = false;
             if(response) {
-                var modalData = response.immunizations;
+                var modalData = {
+                    immunizations: response.immunizations,
+                    attributesById: $scope.attributesById,
+                    selectedTei: $scope.selectedTei,
+                    attributes: $scope.attributes,
+                    searchFnr: $scope.fNrOrEquivalentGetterSetter()
+                }
 
                 return $modal.open({
                     templateUrl: 'components/registration/vaccination-modal.html',
                     controller: function($scope, $modalInstance, modalData, orderByFilter)
                     {
-                        $scope.gridData = modalData;
+                        $scope.showError = false;
+                        $scope.attributes = modalData.attributes;
+                        $scope.immunization = modalData.immunizations;
+                        $scope.attributesById = modalData.attributesById;
+                        $scope.selectedTei = modalData.selectedTei;
+                        $scope.searchFnr = modalData.searchFnr;
+                        $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
+                        $scope.canUpdate = $scope.sysvakVaccines.some((vacc, ind) => vacc.updatePossible && ind < 3);
 
-                        $scope.dateFromItem = function(item) {
-                            var vaccinationDate = Object.assign([],item.vaccinationDate);
-                            // Backend returns an array with months starting with index 1 (for January), we assume it starts with index 0 (for January)
-                            if(vaccinationDate[1]) {
-                                vaccinationDate[1] = vaccinationDate[1] - 1;
-                            }
-                            return DateUtils.getDateFromUTCString(vaccinationDate);
-                        }
 
                         $scope.noVaccinesMessage = response.kanLevereUtData ?
                             "Det er ingen registrerte vaksineringer på dette fødselsnummeret." :
@@ -1533,6 +1545,20 @@ trackerCapture.controller('RegistrationController',
 
                         $scope.cancel = function() {
                             $modalInstance.close({ action: "OK" });
+                        }
+
+                        $scope.registerVaccineInProfile = function() {
+                            var teiHasBeenRegistered = !!$scope.selectedTei.trackedEntityInstance;
+
+                            saveVaccineToProfile( $scope.selectedTei, $scope.sysvakVaccines, $scope.attributesById, teiHasBeenRegistered, TEIService, $q).then((success) => {
+                                if(success) {
+                                    $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
+                                    $scope.canUpdate = false;
+                                    hackToUpdateVaccineFieldsInProfile($scope.selectedTei, $scope.sysvakVaccines);
+                                } else {
+                                    $scope.showError = true;
+                                }
+                            });
                         }
                     },
                     resolve: {

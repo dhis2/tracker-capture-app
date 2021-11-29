@@ -2480,3 +2480,12 @@ button.list-group-item-danger.active:focus {
     font-weight: 600;
     font-size: 8pt;
 }
+
+.ks-red-markup {
+    color: red;
+    font-weight: 600;
+}
+
+.ks-grey {
+    color: grey;
+}
