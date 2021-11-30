@@ -8,7 +8,7 @@ import {
     INNREISE_AVREISELAND_ATTRIBUTE_ID,
     INNREISE_INNREISE_DATO_ATTRIBUTE_ID,
     INNREISE_KARANTENEKODE_2_ATTRIBUTE_ID,
-    INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID, INNREISE_KARANTENETYPE_ATTRIBUTE_ID,
+    INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID, INNREISE_KARANTENETYPE_ATTRIBUTE_ID, INNREISE_KORONA_SERTIFIKAT_ATTRIBUTE_ID,
     INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID, INNREISE_OPPFOLGINGSTATUS_ID
 } from "../utils/constants";
 
@@ -810,6 +810,15 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                     }
                     if(value === 'Ikke OK') {
                         return 'tei-status-not-ok';
+                    }
+                }
+                if(attrId === INNREISE_KORONA_SERTIFIKAT_ATTRIBUTE_ID) {
+                    var value = $scope.getBackupValueFromEvent(tei, attrId)
+                    if(value === true || value == "true" ) {
+                        return 'tei-has-koronasertifikat';
+                    }
+                    if(value === false || value == "false") {
+                        return 'tei-has-not-koronasertifikat';
                     }
                 }
             }
