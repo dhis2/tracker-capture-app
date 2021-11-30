@@ -800,25 +800,25 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                 if(attrId === INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID) {
                     var value = $scope.getBackupValueFromEvent(tei, attrId)
                     if(value === 'OK') {
-                        return 'tei-status-ok';
+                        return 'ks-tei-status-ok';
                     }
                     if(value === 'Ikke satt') {
-                        return 'tei-status-not-satt';
+                        return 'ks-tei-status-not-satt';
                     }
                     if(value === 'Ikke svar') {
-                        return 'tei-status-not-svar';
+                        return 'ks-tei-status-not-svar';
                     }
                     if(value === 'Ikke OK') {
-                        return 'tei-status-not-ok';
+                        return 'ks-tei-status-not-ok';
                     }
                 }
                 if(attrId === INNREISE_KORONA_SERTIFIKAT_ATTRIBUTE_ID) {
                     var value = $scope.getBackupValueFromEvent(tei, attrId)
                     if(value === true || value == "true" ) {
-                        return 'tei-has-koronasertifikat';
+                        return 'ks-tei-has-koronasertifikat';
                     }
                     if(value === false || value == "false") {
-                        return 'tei-has-not-koronasertifikat';
+                        return 'ks-tei-has-not-koronasertifikat';
                     }
                 }
             }
