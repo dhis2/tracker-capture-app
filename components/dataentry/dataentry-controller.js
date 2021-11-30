@@ -8417,7 +8417,7 @@ trackerCapture.controller('DataEntryController',
                     
                 }
                 ends here --- 19/10/2021 - bug */
-                else if (row.cells[3] != undefined && row.id == "row-OdcXvW9sRW7" && 'aRgVJNx0zUo' == prStDe.dataElement.id) {
+                else if (row.cells[3] != undefined && row.id == "row-JoFnbRQT66J" && 'aRgVJNx0zUo' == prStDe.dataElement.id) {
                     if (value != null) {
                         console.log("value: " + value);
                         $.getJSON(selectedEntityUrl,
@@ -8451,10 +8451,10 @@ trackerCapture.controller('DataEntryController',
                                         })
 
                                         if (newupdateValue >= 0) {
-                                            $scope.currentEvent.OdcXvW9sRW7 = newupdateValue;
+                                            $scope.currentEvent.JoFnbRQT66J = newupdateValue;
                                             //console.log($scope);
 
-                                            var newvalueDE = "OdcXvW9sRW7";
+                                            var newvalueDE = "JoFnbRQT66J";
                                             var ev = {
                                                 event: eventToSave.event,
                                                 orgUnit: eventToSave.orgUnit,
@@ -8547,7 +8547,7 @@ trackerCapture.controller('DataEntryController',
                 }
 
                 
-                */
+                
 
                 else if (row.cells[3] != undefined && row.id == "row-JoFnbRQT66J" && 'JoFnbRQT66J' == prStDe.dataElement.id) {
                     if (value != null) {
@@ -8678,7 +8678,6 @@ trackerCapture.controller('DataEntryController',
                                         if (newupdateValue >= 0) {
                                             $scope.currentEvent.JoFnbRQT66J = newupdateValue;
                                             //console.log($scope);
-
                                             var newvalueDE = "JoFnbRQT66J";
                                             var ev = {
                                                 event: eventToSave.event,
@@ -8864,6 +8863,9 @@ trackerCapture.controller('DataEntryController',
                     })
                     */
                 }
+
+                /*
+                
                 else if (row.cells[3] != undefined && row.id == "row-JoFnbRQT66J" && 'aRgVJNx0zUo' == prStDe.dataElement.id) {
                     if (value != null) {
                         console.log("value: " + value);
@@ -8983,15 +8985,13 @@ trackerCapture.controller('DataEntryController',
                     $scope.currentEventOriginal = angular.copy($scope.currentEvent);
                     $scope.currentStageEventsOriginal = angular.copy($scope.currentStageEvents);
                     $rootScope.$broadcast('tei-report-widget', { events: $scope.allEventsSorted });
-                    /*
-                    var el = angular.element(row);
-                    var scope = el.scope();
-                    var $injector = el.injector();
-                    $injector.invoke(function ($compile) {
-                        $compile(el)(scope)
-                    })
-                    */
+                    
                 }
+
+                */
+
+
+                
                 else if (row.cells[3] != undefined && row.id == "row-OdcXvW9sRW7" && 'OdcXvW9sRW7' == prStDe.dataElement.id) {
                     if (value != null) {
                         console.log("value: " + value);
