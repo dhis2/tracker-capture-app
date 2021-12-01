@@ -148,18 +148,21 @@ function updateVaccineInProfileWithoutSavingToBackend(tei, teiCopy, $q) {
 
 function getUpdatedVaccineAttributes(attributes, vaccines) {
     return [
-        getUpdatedAttribute(attributes, vaccines[0].type, PROFIL_VAKSINE_1_TYPE_ID),
-        getUpdatedAttribute(attributes, vaccines[0].date, PROFIL_VAKSINE_1_DATO_ID),
-        getUpdatedAttribute(attributes, vaccines[1].type, PROFIL_VAKSINE_2_TYPE_ID),
-        getUpdatedAttribute(attributes, vaccines[1].date, PROFIL_VAKSINE_2_DATO_ID),
-        getUpdatedAttribute(attributes, vaccines[2].type, PROFIL_VAKSINE_3_TYPE_ID),
-        getUpdatedAttribute(attributes, vaccines[2].date, PROFIL_VAKSINE_3_DATO_ID),
+        getUpdatedAttribute(attributes, vaccines[0] && vaccines[0].type, PROFIL_VAKSINE_1_TYPE_ID),
+        getUpdatedAttribute(attributes, vaccines[0] && vaccines[0].date, PROFIL_VAKSINE_1_DATO_ID),
+        getUpdatedAttribute(attributes, vaccines[1] && vaccines[1].type, PROFIL_VAKSINE_2_TYPE_ID),
+        getUpdatedAttribute(attributes, vaccines[1] && vaccines[1].date, PROFIL_VAKSINE_2_DATO_ID),
+        getUpdatedAttribute(attributes, vaccines[2] && vaccines[2].type, PROFIL_VAKSINE_3_TYPE_ID),
+        getUpdatedAttribute(attributes, vaccines[2] && vaccines[2].date, PROFIL_VAKSINE_3_DATO_ID),
     ];
 }
 
 function getUpdatedAttribute(attributes, value, id) {
-    var attribute = attributes.find(att => att.attribute === id);
-    return {...attribute, value};
+    if(value) {
+        var attribute = attributes.find(att => att.attribute === id);
+        return {...attribute, value};
+    }
+    return undefined;
 }
 
 function updateAttributes(tei, attributesToUpdate) {
@@ -167,14 +170,14 @@ function updateAttributes(tei, attributesToUpdate) {
 }
 
 function getUpdatedAttributeOrSelf(attribute, attributesToUpdate) {
-    return attributesToUpdate.find(att => att.attribute === attribute.attribute) || attribute;
+    return attributesToUpdate.find(att => att && attribute && att.attribute === attribute.attribute) || attribute;
 }
 
 export function hackToUpdateVaccineFieldsInProfile(selectedTei, sysvakVaccines) {
-    selectedTei[PROFIL_VAKSINE_1_TYPE_ID] = sysvakVaccines[0].name;
-    selectedTei[PROFIL_VAKSINE_1_DATO_ID] = sysvakVaccines[0].date;
-    selectedTei[PROFIL_VAKSINE_2_TYPE_ID] = sysvakVaccines[1].name;
-    selectedTei[PROFIL_VAKSINE_2_DATO_ID] = sysvakVaccines[1].date;
-    selectedTei[PROFIL_VAKSINE_3_TYPE_ID] = sysvakVaccines[2].name;
-    selectedTei[PROFIL_VAKSINE_3_DATO_ID] = sysvakVaccines[2].date;
+    selectedTei[PROFIL_VAKSINE_1_TYPE_ID] = sysvakVaccines[0] && sysvakVaccines[0].name;
+    selectedTei[PROFIL_VAKSINE_1_DATO_ID] = sysvakVaccines[0] && sysvakVaccines[0].date;
+    selectedTei[PROFIL_VAKSINE_2_TYPE_ID] = sysvakVaccines[1] && sysvakVaccines[1].name;
+    selectedTei[PROFIL_VAKSINE_2_DATO_ID] = sysvakVaccines[1] && sysvakVaccines[1].date;
+    selectedTei[PROFIL_VAKSINE_3_TYPE_ID] = sysvakVaccines[2] && sysvakVaccines[2].name;
+    selectedTei[PROFIL_VAKSINE_3_DATO_ID] = sysvakVaccines[2] && sysvakVaccines[2].date;
 }
