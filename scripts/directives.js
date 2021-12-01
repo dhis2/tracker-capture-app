@@ -8,7 +8,7 @@ import {
     INNREISE_AVREISELAND_ATTRIBUTE_ID,
     INNREISE_INNREISE_DATO_ATTRIBUTE_ID,
     INNREISE_KARANTENEKODE_2_ATTRIBUTE_ID,
-    INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID, INNREISE_KARANTENETYPE_ATTRIBUTE_ID,
+    INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID, INNREISE_KARANTENETYPE_ATTRIBUTE_ID, INNREISE_KORONA_SERTIFIKAT_ATTRIBUTE_ID,
     INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID, INNREISE_OPPFOLGINGSTATUS_ID
 } from "../utils/constants";
 
@@ -800,16 +800,25 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                 if(attrId === INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID) {
                     var value = $scope.getBackupValueFromEvent(tei, attrId)
                     if(value === 'OK') {
-                        return 'tei-status-ok';
+                        return 'ks-tei-status-ok';
                     }
                     if(value === 'Ikke satt') {
-                        return 'tei-status-not-satt';
+                        return 'ks-tei-status-not-satt';
                     }
                     if(value === 'Ikke svar') {
-                        return 'tei-status-not-svar';
+                        return 'ks-tei-status-not-svar';
                     }
                     if(value === 'Ikke OK') {
-                        return 'tei-status-not-ok';
+                        return 'ks-tei-status-not-ok';
+                    }
+                }
+                if(attrId === INNREISE_KORONA_SERTIFIKAT_ATTRIBUTE_ID) {
+                    var value = $scope.getBackupValueFromEvent(tei, attrId)
+                    if(value === true || value == "true" ) {
+                        return 'ks-tei-has-koronasertifikat';
+                    }
+                    if(value === false || value == "false") {
+                        return 'ks-tei-has-not-koronasertifikat';
                     }
                 }
             }
