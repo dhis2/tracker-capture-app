@@ -1,14 +1,13 @@
 <div class="modal-header page">
-    <h3>Vaksineringer</h3>
+    <h3>Vaksinestatus</h3>
 </div>
 <div class="modal-body page">
     <div ng-if="immunization && immunization.length > 0">
         <div>
-            Her vises vaksinestatus fra Sysvak. Dersom de ikke er registrert i Fiks Smittesporing,
-            eller vaksinen registrert i Fiks Smittesporing er feil, så kan du overskrive med data fra Sysvak.
+            Informasjon hentet fra SYSVAK er vist nedenfor. Dersom feltene i Fiks Smittesporing ikke er utfylt eller registrert med ukorrekte data, så kan du enkelt overskrive med informasjon hentet fra SYSVAK.
         </div>
         <table class="dhis2-list-table-striped default-form-table">
-            <th colspan="2" style="text-align: center">Fra Sysvak </th>
+            <th colspan="2" style="text-align: center">Fra SYSVAK </th>
             <th style="text-align: center">Registrert i Fiks Smittesporing</th>
             <tr ng-repeat="vaccine in sysvakVaccines">
                 <td><b>Dose {{$index +1}}</b>  <br>{{vaccine.date}} <span class="ks-grey" ng-if="vaccine.monthsAgo || vaccine.monthsAgo === 0">({{vaccine.monthsAgo}}+ mnd)</span>
@@ -35,7 +34,7 @@
                     <span ng-if="vaccine.vaccineIsInProfile && !vaccine.nameMismatch && !vaccine.dateMismatch">Registrert</span>
                 </div>
                 <div ng-if="$index >= 3">
-                    Kan ikke registrere med enn 3 doser
+                    Kan ikke registrere mer enn 3 doser
                 </div>
 
             </td>
@@ -43,18 +42,18 @@
         <div ng-if="canUpdate">
             <h3>Oppdater vaksinestatus i profil</h3>
             <p>
-                NB: Dette vil overskrive alle feltene for vaksinestatus i profilen
+                NB: Dette vil overskrive alle vaksinetype- og datofeltene i profilen
             </p>
             <div ng-if="showError" class="alert alert-warning">
-                Noe feilet ved oppdatering av vaksinedata. Prøv igjen senere, ev. fyll ut manuelt.
+                Noe feilet ved oppdatering av vaksinestatus. Prøv igjen senere, ev. fyll ut manuelt.
             </div>
 
-            <button class="btn btn-primary" data-ng-click="registerVaccineInProfile()">Oppdater vaksineinfo
+            <button class="btn btn-primary" data-ng-click="registerVaccineInProfile()">Oppdater vaksinestatus
             </button>
         </div>
         <div ng-if="!canUpdate">
-            <h3>Vaksineinfo er synkronisert</h3>
-            <p>Vaksineinfo i Fiks Smittesporing samsvarer med Sysvak</p>
+            <h3>Vaksinestatus er synkronisert</h3>
+            <p>Vaksinestatus i Fiks Smittesporing samsvarer med SYSVAK</p>
         </div>
     </div>
     <div ng-if="!immunization || immunization.length == 0">
