@@ -6,6 +6,9 @@
     "icons": {
         "48": "img/dhis-web-tracker-capture.png"
     },
+    "appType": "APP",
+    "core_app": true,
+    "short_name": "tracker-capture",
     "developer": {
         "name": "HISP",
         "url": "http://dhis2.org"
