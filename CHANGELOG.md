@@ -1,3 +1,10 @@
+## [31.7.7](https://github.com/dhis2/tracker-capture-app/compare/v31.7.6...v31.7.7) (2021-12-03)
+
+
+### Bug Fixes
+
+* removed faulty orgunit-attribute operation ([#1328](https://github.com/dhis2/tracker-capture-app/issues/1328)) ([28911f0](https://github.com/dhis2/tracker-capture-app/commit/28911f0692824b82787e972a094777c8180016d5))
+
 ## [31.7.6](https://github.com/dhis2/tracker-capture-app/compare/v31.7.5...v31.7.6) (2021-11-29)
 
 
