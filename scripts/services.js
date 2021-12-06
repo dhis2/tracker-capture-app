@@ -2992,8 +2992,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         if(sortColumn){
             searchParams.sortUrl = "&order="+sortColumn.id+':'+sortColumn.direction;
         }
-        if(workingList.id == 'vo6JLWsbyMj') {
+        if(workingList.id === 'vo6JLWsbyMj') { //ikke sendte klinikermeldinger
             searchParams.programUrl += '&filter=C225m3EOPRo:IN:false';
+        }
+        if(workingList.id === 'QtdRocAYCCU') { //selvregistrering
+            searchParams.programUrl += '&filter=FKviB19WReU:IN:true';
         }
         if(workingList.enrollmentCreatedPeriod){
             var enrollmentStartDate = moment().add(workingList.enrollmentCreatedPeriod.periodFrom, 'days').format("YYYY-MM-DD");
