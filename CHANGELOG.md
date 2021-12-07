@@ -1,3 +1,10 @@
+## [31.7.8](https://github.com/dhis2/tracker-capture-app/compare/v31.7.7...v31.7.8) (2021-12-07)
+
+
+### Bug Fixes
+
+* resolve $scope.dashBoardLayout race condition ([#1330](https://github.com/dhis2/tracker-capture-app/issues/1330)) ([cf973d0](https://github.com/dhis2/tracker-capture-app/commit/cf973d0d193d873be050a51d0cd9883af05f5ba6))
+
 ## [31.7.7](https://github.com/dhis2/tracker-capture-app/compare/v31.7.6...v31.7.7) (2021-12-03)
 
 
