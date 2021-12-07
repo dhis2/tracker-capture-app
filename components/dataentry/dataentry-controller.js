@@ -95,7 +95,7 @@ trackerCapture.controller('DataEntryController',
     $scope.attributesById = CurrentSelection.getAttributesById();
     $scope.optionGroupsById = CurrentSelection.getOptionGroupsById();
 
-    DashboardLayoutService.get().then(function(response) {
+    var dashBoardLayoutPromise = DashboardLayoutService.get().then(function(response) {
         $scope.dashBoardLayout = response;
         if($scope.dashBoardLayout.customLayout && 
             $scope.dashBoardLayout.customLayout[$scope.selectedProgramId] && 
@@ -1383,7 +1383,7 @@ trackerCapture.controller('DataEntryController',
         $scope.showAttributeCategoryOptions = false;
 
         if( $scope.currentEvent ){
-            $scope.getDataEntryForm();
+            $scope.dashBoardLayout ? $scope.getDataEntryForm() : dashBoardLayoutPromise.then(getDataEntryForm);
         }
     };
 
@@ -1396,7 +1396,7 @@ trackerCapture.controller('DataEntryController',
             }
             else {
                 $scope.showLoadingEventSpinner = true;
-                $timeout(function(){
+                dashBoardLayoutPromise.then(function(){
                     TCOrgUnitService.get(event.orgUnit).then(function(orgUnit){
                         event.orgUnitPath = orgUnit.path;
                         $scope.currentElement = {};                
