@@ -1,3 +1,10 @@
+## [31.7.9](https://github.com/dhis2/tracker-capture-app/compare/v31.7.8...v31.7.9) (2021-12-08)
+
+
+### Reverts
+
+* Revert "chore: copy manifest file" ([79b4348](https://github.com/dhis2/tracker-capture-app/commit/79b43484bc1d7ec1433235bc375b8b4829347723))
+
 ## [31.7.8](https://github.com/dhis2/tracker-capture-app/compare/v31.7.7...v31.7.8) (2021-12-07)
 
 
