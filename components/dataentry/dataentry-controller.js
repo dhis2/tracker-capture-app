@@ -2,6 +2,10 @@
 
 import {disableCompleteIncompleteEventConfirmation} from "../../ks_patches/custom_override_flags";
 import { INNREISEINFORMASJON_PROGRAM_STAGE_ID} from "../../utils/constants";
+import {
+    INDEKS_SISTE_ISOLASJONSDATO,
+    NAERKONTAKT_SISTE_KARANTENEDATO
+} from "../../utils/constants";
 
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('DataEntryController',
@@ -1798,6 +1802,13 @@ trackerCapture.controller('DataEntryController',
                     $scope.executeRules();
                 }
 
+                //Handle updated last isolation date
+                if( prStDe.id == INDEKS_SISTE_ISOLASJONSDATO ) {
+                    $rootScope.$broadcast('last-isolation-date-updated', {date: value});
+                }
+                else if ( prStDe.id == NAERKONTAKT_SISTE_KARANTENEDATO ) {
+                    $rootScope.$broadcast('last-quarantine-date-updated', {date: value});
+                }
             });
 
         }

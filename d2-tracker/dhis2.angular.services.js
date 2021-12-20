@@ -521,7 +521,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                     val = DateUtils.formatFromUserToApi(val);
                 }
             }
-            if(obj.valueType === 'TRUE_ONLY'){
+            if(val && obj.valueType === 'TRUE_ONLY'){
                 if(destination === 'USER'){
                     val = val === 'true' ? true : '';
                 }

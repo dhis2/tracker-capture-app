@@ -13,6 +13,8 @@ import {
     NAERKONTAKT_PROGRAM_ID,
     PROFIL_FNR_INDEKS,
     PROFIL_FNR_OR_EQUIVALENT_INNREISE,
+    PROFIL_SISTE_ISOLASJONSDATO,
+    PROFIL_SISTE_KARANTENEDATO,
     PROFIL_NASJONALT_FELLES_HJELPENUMMER,
 } from "../../utils/constants";
 import {makeHyphensInKodebeskrivelseNonBreaking} from "../../ks_patches/provesvar_utils";
@@ -1574,6 +1576,20 @@ trackerCapture.controller('RegistrationController',
     $scope.allEventsSorted = [];
     $scope.$on('tei-report-widget', function(event, allEventsSorted) {
         $scope.allEventsSorted = allEventsSorted.events;
+    });
+
+    $scope.$on('last-isolation-date-updated', function(event, args) {
+        $scope.tei[PROFIL_SISTE_ISOLASJONSDATO] = args.date;
+        $scope.selectedTei[PROFIL_SISTE_ISOLASJONSDATO] = args.date;
+
+        $scope.registerEntity(null);
+    });
+
+    $scope.$on('last-quarantine-date-updated', function(event, args) {
+        $scope.tei[PROFIL_SISTE_KARANTENEDATO] = args.date;
+        $scope.selectedTei[PROFIL_SISTE_KARANTENEDATO] = args.date;
+
+        $scope.registerEntity(null);
     });
 
 
