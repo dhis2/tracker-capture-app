@@ -1579,15 +1579,17 @@ trackerCapture.controller('RegistrationController',
     });
 
     $scope.$on('last-isolation-date-updated', function(event, args) {
-        $scope.tei[PROFIL_SISTE_ISOLASJONSDATO] = args.date;
-        $scope.selectedTei[PROFIL_SISTE_ISOLASJONSDATO] = args.date;
+        var dateFormatted = DateUtils.formatFromApiToUser(args.date);
+        $scope.tei[PROFIL_SISTE_ISOLASJONSDATO] = dateFormatted;
+        $scope.selectedTei[PROFIL_SISTE_ISOLASJONSDATO] = dateFormatted;
 
         $scope.registerEntity(null);
     });
 
     $scope.$on('last-quarantine-date-updated', function(event, args) {
-        $scope.tei[PROFIL_SISTE_KARANTENEDATO] = args.date;
-        $scope.selectedTei[PROFIL_SISTE_KARANTENEDATO] = args.date;
+        var dateFormatted = DateUtils.formatFromApiToUser(args.date);
+        $scope.tei[PROFIL_SISTE_KARANTENEDATO] = dateFormatted;
+        $scope.selectedTei[PROFIL_SISTE_KARANTENEDATO] = dateFormatted;
 
         $scope.registerEntity(null);
     });
