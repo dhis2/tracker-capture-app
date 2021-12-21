@@ -2213,9 +2213,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     for (var i = 7; i < row.length; i++) {
                         if (row[i] && row[i] !== '') {
                             var val = row[i];
-                            if(!grid.headers[i]) 
-                            {debugger};
-
                             if (attributesById[grid.headers[i].name] &&
                                 attributesById[grid.headers[i].name].optionSetValue &&
                                 optionSets &&
