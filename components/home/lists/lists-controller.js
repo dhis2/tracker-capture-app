@@ -186,9 +186,24 @@ trackerCapture.controller('ListsController',function(
             $scope.showCustomWorkingListInline = false;
             $scope.currentTrackedEntityList = { type: type, config: config, data: data };
             if(!$scope.currentTrackedEntityList.sortColumn){
-                $scope.currentTrackedEntityList.sortColumn = {
-                    id: 'created',
-                    direction: 'asc',
+                if( $scope.currentTrackedEntityList.config.program && $scope.currentTrackedEntityList.config.program.id == 'uYjxkTbwRNf') {
+                    //Indeks
+                    $scope.currentTrackedEntityList.sortColumn = {
+                        id: 'X4VPaAa0RZ8',
+                        direction: 'asc',
+                    }
+                } else if( $scope.currentTrackedEntityList.config.program && $scope.currentTrackedEntityList.config.program.id == 'DM9n1bUw8W8') {
+                    //Nærkontakt
+                    $scope.currentTrackedEntityList.sortColumn = {
+                        id: 'LSHcKMBLofN',
+                        direction: 'asc',
+                    }
+                }
+                else {
+                    $scope.currentTrackedEntityList.sortColumn = {
+                        id: 'created',
+                        direction: 'asc',
+                    }
                 }
             }
         }
