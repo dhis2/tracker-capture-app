@@ -190,19 +190,19 @@ trackerCapture.controller('ListsController',function(
                     //Indeks
                     $scope.currentTrackedEntityList.sortColumn = {
                         id: 'X4VPaAa0RZ8',
-                        direction: 'asc',
+                        direction: 'desc',
                     }
                 } else if( $scope.currentTrackedEntityList.config.program && $scope.currentTrackedEntityList.config.program.id == 'DM9n1bUw8W8') {
                     //Nærkontakt
                     $scope.currentTrackedEntityList.sortColumn = {
                         id: 'LSHcKMBLofN',
-                        direction: 'asc',
+                        direction: 'desc',
                     }
                 }
                 else {
                     $scope.currentTrackedEntityList.sortColumn = {
                         id: 'created',
-                        direction: 'asc',
+                        direction: 'desc',
                     }
                 }
             }
@@ -254,12 +254,6 @@ trackerCapture.controller('ListsController',function(
                     });
 
                     serverResponse.headers.push( {column: "TransferStatus", hidden: false, meta: false, name: "Overføringsstatus", type:"java.lang.String" });
-
-                    if( $scope.currentTrackedEntityList.sortColumn.id == 'created' ) {
-                        serverResponse.rows = $filter('orderBy')(serverResponse.rows, function(tei) {
-                            return tei[1];
-                        }, $scope.currentTrackedEntityList.sortColumn.direction != 'desc');
-                    }
 
                     $scope.addTildeltToTildeltListConditionally(serverResponse);
                     $scope.setServerResponse(serverResponse);
