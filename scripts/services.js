@@ -2206,10 +2206,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     entity.inactive = row[6] !== "" ? row[6] : false;
                     entity.followUp = isFollowUp;
 
-                    if(grid.headers[grid.headers.length-2].name == 'lastdate'){
-                        entity.lastdate = row[row.length-2];
-                    }
-
                     if(grid.headers[grid.headers.length-1].column == 'TransferStatus'){
                         //entity.followUp =  entity.followUp || row[row.length-1] == "ACTIVE";
                     }
@@ -2217,7 +2213,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     for (var i = 7; i < row.length; i++) {
                         if (row[i] && row[i] !== '') {
                             var val = row[i];
-
                             if (attributesById[grid.headers[i].name] &&
                                 attributesById[grid.headers[i].name].optionSetValue &&
                                 optionSets &&
@@ -2299,7 +2294,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             });
             return {columns: columns, filterTypes: filterTypes, filterText: filterText};
         },
-        makeGridColumns: function(attributes,config, savedGridColumnsKeyMap,lastDateName){
+        makeGridColumns: function(attributes,config, savedGridColumnsKeyMap){
             var gridColumns = [
                 {id: 'orgUnitName', displayName: $translate.instant('registering_unit'), show: true, valueType: 'TEXT'},
                 {id: 'created', displayName: $translate.instant('registration_date'), show: true, valueType: 'DATE'},
@@ -2319,10 +2314,6 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     gridColumns.push(gridColumn);
                 }
             });
-
-            if(lastDateName) {
-                gridColumns.push({id: 'last_date', displayName: $translate.instant(lastDateName), show: true, valueType: 'DATE'});
-            }
 
             return gridColumns;
         },
