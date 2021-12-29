@@ -2981,7 +2981,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             searchParams.programUrl += "&followUp=true"
         }
         if(sortColumn){
-            searchParams.sortUrl = "&order="+sortColumn.id+':'+sortColumn.direction;
+            searchParams.sortUrl = "&order="+sortColumn.id+':'+sortColumn.direction + ',created:desc';
         }
         if(workingList.id === 'vo6JLWsbyMj') { //ikke sendte klinikermeldinger
             searchParams.programUrl += '&filter=C225m3EOPRo:IN:false';
