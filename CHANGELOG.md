@@ -1,3 +1,10 @@
+## [31.7.11](https://github.com/dhis2/tracker-capture-app/compare/v31.7.10...v31.7.11) (2022-01-04)
+
+
+### Bug Fixes
+
+* [DHIS2-11529] don't crash if a program doesn't have assigned orgUnits ([#1340](https://github.com/dhis2/tracker-capture-app/issues/1340)) ([b1e14d2](https://github.com/dhis2/tracker-capture-app/commit/b1e14d28fcb5afdecc661b2ab0b3a23035fe4b03))
+
 ## [31.7.10](https://github.com/dhis2/tracker-capture-app/compare/v31.7.9...v31.7.10) (2021-12-30)
 
 
