@@ -2986,7 +2986,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         if(workingList.id === 'vo6JLWsbyMj') { //ikke sendte klinikermeldinger
             searchParams.programUrl += '&filter=C225m3EOPRo:IN:false';
         }
-        if(workingList.id === 'QtdRocAYCCU') { //selvregistrering
+        if(workingList.id === 'QtdRocAYCCU' || workingList.id === 'VZOuDZ7p7mz') { //selvregistrering
             searchParams.programUrl += '&filter=FKviB19WReU:IN:true';
         }
         if(workingList.enrollmentCreatedPeriod){
