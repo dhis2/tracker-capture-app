@@ -552,6 +552,10 @@ trackerCapture.controller('DashboardController',
         }, 500);
     };
 
+    $scope.$on('registrationControllerReady', function() {
+        $rootScope.$broadcast('selectedItems', {programExists: $scope.programs.length > 0});
+    });
+
 
 
     $scope.activiateTEI = function () {

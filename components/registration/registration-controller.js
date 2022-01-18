@@ -67,6 +67,11 @@ trackerCapture.controller('RegistrationController',
     $scope.fileNames = CurrentSelection.getFileNames();
     $scope.currentFileNames = $scope.fileNames;
 
+    // Slow connection fix: this signal is emitted after all listeners on the enrollment dashboard has been set up
+    $timeout(function() {
+        $scope.$emit('registrationControllerReady', {});
+    });
+
     //Placeholder till proper settings for time is implemented. Currently hard coded to 24h format.
     $scope.timeFormat = '24h';
 
