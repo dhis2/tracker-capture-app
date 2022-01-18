@@ -1,3 +1,10 @@
+## [31.7.13](https://github.com/dhis2/tracker-capture-app/compare/v31.7.12...v31.7.13) (2022-01-18)
+
+
+### Bug Fixes
+
+* [DHIS2-12213] load enrollment dashboard correctly for the first TEI ([#1353](https://github.com/dhis2/tracker-capture-app/issues/1353)) ([678f680](https://github.com/dhis2/tracker-capture-app/commit/678f68088d74278900680919827335f70d69cc7e))
+
 ## [31.7.12](https://github.com/dhis2/tracker-capture-app/compare/v31.7.11...v31.7.12) (2022-01-13)
 
 
