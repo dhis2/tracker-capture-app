@@ -47,9 +47,9 @@ trackerCapture.controller('ProfileController',
     });
 
     $scope.$watch('widget.useAsTopBar', function(newValue, oldValue){
-        if (newValue !== oldValue) {
-            listenToBroadCast();
-        }
+        // Omit comparing newValue/oldValue to get an extra update with convenient timing:
+        // see the difference in the profile widget when opening a tracked entity instance.
+        listenToBroadCast();
     });
     
     //listen to changes in enrollment editing
