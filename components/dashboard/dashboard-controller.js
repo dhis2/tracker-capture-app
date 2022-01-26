@@ -50,6 +50,9 @@ trackerCapture.controller('DashboardController',
         }
     });
 
+    var registrationWidgetReady = false;
+    var selectedItemsBroadcasted = false;
+
     $scope.duplicateExists = false;
     $rootScope.hasAccess = false;
     $scope.APIURL = DHIS2URL;
@@ -548,12 +551,16 @@ trackerCapture.controller('DashboardController',
             orgUnit: $scope.selectedOrgUnit
         });
         $timeout(function () {
+            selectedItemsBroadcasted = true;
             $rootScope.$broadcast('selectedItems', {programExists: $scope.programs.length > 0});
         }, 500);
     };
 
     $scope.$on('registrationControllerReady', function() {
-        $rootScope.$broadcast('selectedItems', {programExists: $scope.programs.length > 0});
+        if (!registrationWidgetReady && selectedItemsBroadcasted) {
+            $rootScope.$broadcast('selectedItems', {programExists: $scope.programs.length > 0});
+        }
+        registrationWidgetReady = true;
     });
 
 
