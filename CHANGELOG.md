@@ -1,3 +1,10 @@
+## [31.7.14](https://github.com/dhis2/tracker-capture-app/compare/v31.7.13...v31.7.14) (2022-01-26)
+
+
+### Bug Fixes
+
+* [DHIS2-12501] fix "add new" in enrollment widget ([#1357](https://github.com/dhis2/tracker-capture-app/issues/1357)) ([6de906d](https://github.com/dhis2/tracker-capture-app/commit/6de906d991b20c4dd7ad5f82d6b4fabbaae34600))
+
 ## [31.7.13](https://github.com/dhis2/tracker-capture-app/compare/v31.7.12...v31.7.13) (2022-01-18)
 
 
