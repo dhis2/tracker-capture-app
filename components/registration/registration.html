@@ -27,7 +27,7 @@
             </tr>
         </table>
     </script>
-    <div ng-if="!selectedProgram && registrationMode === 'REGISTRATION'">
+    <div ng-if="!selectedProgram && registrationMode === 'REGISTRATION' && widgetTitle !== 'profile'">
         <h2>
             {{'register'| translate}}
             <select
