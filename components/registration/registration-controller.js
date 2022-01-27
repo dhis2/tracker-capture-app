@@ -1416,7 +1416,7 @@ trackerCapture.controller('RegistrationController',
     }
 
     $scope.showRegistrationButtons = function(){
-        return $scope.registrationMode === 'REGISTRATION' && ($scope.selectedProgram || showTetRegistrationButtons());
+        return $scope.registrationMode === 'REGISTRATION' && $scope.widgetTitle !== 'profile' && ($scope.selectedProgram || showTetRegistrationButtons());
     }
 
     $scope.showTetRegistrationWarning =  function(){
