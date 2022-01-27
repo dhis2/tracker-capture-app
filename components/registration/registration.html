@@ -59,7 +59,7 @@
 
             <!-- default registration form begins -->
             <div class="vertical-spacing" ng-if="!customRegistrationFormExists">
-                <div ng-if="selectedProgram && registrationMode !== 'PROFILE'" ng-include="'components/registration/enrollment-dates-form.html'"></div>
+                <div ng-if="selectedProgram && widgetTitle !== 'profile'" ng-include="'components/registration/enrollment-dates-form.html'"></div>
                 <div ng-include="'components/registration/default-registration-form.html'"></div>            
             </div>
             <!-- default registration form ends -->
