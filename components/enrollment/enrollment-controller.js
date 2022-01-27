@@ -80,9 +80,13 @@ trackerCapture.controller('EnrollmentController',
 
         var setOwnerOrgUnit = function() {
             var owningOrgUnitId = CurrentSelection.currentSelection.tei.programOwnersById[$scope.selectedProgram.id];
-            OrgUnitFactory.getFromStoreOrServer(owningOrgUnitId).then(function(orgUnit){
-                $scope.owningOrgUnitName = orgUnit.displayName;
-            });
+            if (owningOrgUnitId) {
+                OrgUnitFactory.getFromStoreOrServer(owningOrgUnitId).then(function(orgUnit){
+                    $scope.owningOrgUnitName = orgUnit.displayName;
+                });
+            } else {
+                $scope.owningOrgUnitName = CurrentSelection.get().orgUnit.displayName;
+            }
         }
 
         $scope.$on('ownerUpdated', function(event, args){
