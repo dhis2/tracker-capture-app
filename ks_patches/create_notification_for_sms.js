@@ -1,4 +1,4 @@
-export function createNotificationForSms(smsMsg, phoneNumber, dateUtils, currentSelection, sessionStorageService, enrollmentService, scope) {
+export function createNotificationForSms(smsMsg, phoneNumber, dateUtils, currentSelection, sessionStorageService, enrollmentService) {
     var selections = currentSelection.get();
     var enrollment = selections.selectedEnrollment && selections.selectedEnrollment.enrollment;
     if (enrollment) {
