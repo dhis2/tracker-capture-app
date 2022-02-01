@@ -20,6 +20,5 @@ export function createNotificationForSms(smsMsg, phoneNumber, dateUtils, current
             selectedEnrollment.notes = [newNote];
         }
         enrollmentService.updateForNote(selectedEnrollment);
-        console.log(scope)
     }
 }

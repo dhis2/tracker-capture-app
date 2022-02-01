@@ -87,7 +87,7 @@ trackerCapture.controller('MessagingController',
         }
 
         MessagingService.sendMessage(message).then(response => {
-            if(response&& response.summaries && response.summaries[0] && response.summaries[0].status === "COMPLETED") {
+            if(response && response.summaries && response.summaries[0] && response.summaries[0].status === "COMPLETED") {
                 createNotificationForSms($scope.message.smsMessage, $scope.message.phoneNumber, DateUtils, CurrentSelection, SessionStorageService, EnrollmentService, $scope);
                 $scope.clear();
             }
