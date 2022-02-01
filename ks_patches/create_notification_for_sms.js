@@ -7,7 +7,7 @@ export function createNotificationForSms(smsMsg, phoneNumber, dateUtils, current
         var userProfile = sessionStorageService.get('USER_PROFILE');
         var storedBy = userProfile && userProfile.userCredentials && userProfile.userCredentials.username ? userProfile.userCredentials.username : '';
 
-        var noteText = "SMS sendt til " + phoneNumber + " : " + smsMsg;
+        var noteText = `SMS sendt til ${phoneNumber}: ${smsMsg}`;
         var newNote = {
             value: noteText,
             storedDate: dateUtils.formatFromUserToApi(today),
