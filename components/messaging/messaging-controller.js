@@ -1,10 +1,15 @@
 /* global trackerCapture, angular */
 
+import {createNotificationForSms} from "../../ks_patches/create_notification_for_sms";
+
 var trackerCapture = angular.module('trackerCapture');
 trackerCapture.controller('MessagingController',
         function($scope, $translate,
                 MessagingService,
-                CurrentSelection) {
+                CurrentSelection,
+                EnrollmentService,
+                DateUtils,
+                SessionStorageService) {
 
     $scope.messagingForm = {};
     $scope.note = {};
@@ -81,7 +86,11 @@ trackerCapture.controller('MessagingController',
             };
         }
 
-        MessagingService.sendMessage(message);
+        MessagingService.sendMessage(message).then(response => {
+            if(response&& response.summaries && response.summaries[0] && response.summaries[0].status === "COMPLETED") {
+                createNotificationForSms($scope.message.smsMessage, $scope.message.phoneNumber, DateUtils, CurrentSelection, SessionStorageService, EnrollmentService, $scope)
+            }
+        });
 
     };
 
