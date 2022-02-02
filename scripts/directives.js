@@ -758,12 +758,12 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                 }
             };
 
-            $scope.getSaveMethod = function(tei, hackyDataSending) {
-                return () => $scope.setAssignedUser(tei, hackyDataSending);
+            $scope.getSaveMethod = function(tei, extraData) {
+                return () => $scope.setAssignedUser(tei, extraData);
             };
 
-            $scope.setAssignedUser = function (tei, hackyDataSending) {
-                setAssignedUser(tei.id, hackyDataSending.assignedUser, hackyDataSending.program, hackyDataSending.assignedUserStage, DHIS2EventFactory, TEIService, DateUtils);
+            $scope.setAssignedUser = function (tei, extraData) {
+                setAssignedUser(tei.id, extraData.assignedUser, extraData.program, extraData.assignedUserStage, DHIS2EventFactory, TEIService, DateUtils);
             };
 
             $scope.onGetPage = function(page){
