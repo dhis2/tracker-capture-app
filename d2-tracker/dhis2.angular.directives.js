@@ -705,8 +705,7 @@ var d2Directives = angular.module('d2Directives', [])
             $scope.userDisplayName = "";
 
             $scope.getNameForUserOject = function(userObject){
-                return userObject.firstName + " " + userObject.lastName +
-                    " (" + userObject.username + ")";
+                return userObject.firstName + " " + userObject.lastName;
             }
 
             UsersService.getByQuery('').then(function(users){
