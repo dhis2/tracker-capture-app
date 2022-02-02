@@ -36,4 +36,3 @@ function createNewEventAndAssignUser(teiId, programId, programStage, enrollmentI
     };
     DHIS2EventFactory.create(newEvent);
 }
-
