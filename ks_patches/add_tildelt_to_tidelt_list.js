@@ -16,14 +16,14 @@ export function addTildeltToTildeltList(scope, serverResponse, teiAccessApiServi
     var programAndStage = getEnrollmentProgramAndStage(scope);
 
     getTildeltBrukerForTeiAsync(teis, programAndStage.program, programAndStage.assignedUserStage, scope.selectedOrgUnit.id, teiAccessApiService, q).then(function (response) {
-        setHeader(serverResponse, 'tildelt_bruker');
-        setDataValue(serverResponse, response);
+        setHeader(serverResponse, 'tildelt_data');
+        setDataValue(serverResponse, response, programAndStage);
         scope.setServerResponse(serverResponse);
     });
 }
 
 export function addIkkeTildeltToTildeltList(scope, serverResponse) {
-    setHeader(serverResponse, 'ikke_tildelt');
+    setHeader(serverResponse, 'tildelt_data');
     var programAndStage = getEnrollmentProgramAndStage(scope);
     serverResponse.rows.forEach((row) => {
         row.push({...programAndStage, assignedUser: ''});
@@ -65,9 +65,10 @@ function setHeader(serverResponse, headerName) {
     });
 }
 
-function setDataValue(serverResponse, values) {
+function setDataValue(serverResponse, values, programAndStage) {
     serverResponse.rows.forEach((row, index) => {
-        row.push(values[index]);
+        // Setting full name in first name to get correct name in dropdown
+        row.push({...programAndStage, assignedUser: values[index]});
     });
 
 }
@@ -75,14 +76,14 @@ function setDataValue(serverResponse, values) {
 function getTildeltBrukerForTeiAsync(teis, programId, assignedUserStage, orgUnitId, teiAccessApiService, q) {
     var promises = [];
     teis.forEach(teiId => {
-        promises.push(teiAccessApiService.get(null, programId, DHIS2URL + '/trackedEntityInstances/' + teiId + '.json?program=' + programId + '&fields=enrollments[program,events[programStage,assignedUserDisplayName,eventDate,status]]').then(result => result && result.data && result.data.enrollments));
+        promises.push(teiAccessApiService.get(null, programId, DHIS2URL + '/trackedEntityInstances/' + teiId + '.json?program=' + programId + '&fields=enrollments[program,events[programStage,assignedUser,eventDate,status]]').then(result => result && result.data && result.data.enrollments));
     });
     return q.all(promises).then(teiEnrollments => {
         return teiEnrollments.map(enrollments => {
             var result = enrollments.find(enrollment => enrollment.program === programId);
-            var events = result && result.events && result.events.filter(event => event.programStage === assignedUserStage && event.assignedUserDisplayName);
-            var assignedUsers = _.uniq(events && events.map(event => event.assignedUserDisplayName));
-            return assignedUsers.join(' & ');
-        })
-    })
+            var events = result && result.events && result.events.filter(event => event.programStage === assignedUserStage && event.assignedUser);
+            var assignedUsers = _.uniq(events && events.map(event => event.assignedUser));
+            return assignedUsers[0]; // No longer support for showing more than one assigned users
+        });
+    });
 }

@@ -14,8 +14,7 @@
                         </span>
                         <!-- sort icon ends -->
                     </th>
-                    <th ng-if="data.rows.own[0]['tildelt_bruker']">Tildelt programbruker</th>
-                    <th ng-if="data.rows.own[0]['ikke_tildelt']">Tildel programbruker</th>
+                    <th ng-if="data.rows.own[0]['tildelt_data']">Tildel programbruker</th>
 
                     <td ng-if="isListOfActiveEnrollments" style="cursor: default; text-align: center; vertical-align: middle;">
                         <input type="checkbox" ng-model="data.selectAllChecked" ng-click="selectAll()" />
@@ -55,10 +54,9 @@
                             <a ng-click="onUnMarkDuplicateInternal(tei)">{{'unflag' | translate}}</a>
                         </span>
                     </td>
-                    <td ng-if="data.rows.own[0]['tildelt_bruker']">{{tei['tildelt_bruker']}}</td>
-                    <td ng-if="data.rows.own[0]['ikke_tildelt']">
-                        <d2-assign-users-input d2-model="tei['ikke_tildelt']"
-                                               d2-save-method="getSaveMethod(tei, tei['ikke_tildelt'])"
+                    <td ng-if="data.rows.own[0]['tildelt_data']">
+                        <d2-assign-users-input d2-model="tei['tildelt_data']"
+                                               d2-save-method="getSaveMethod(tei, tei['tildelt_data'])"
                         >
                         </d2-assign-users-input>
 
