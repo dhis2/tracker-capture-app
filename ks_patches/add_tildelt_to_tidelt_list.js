@@ -22,6 +22,15 @@ export function addTildeltToTildeltList(scope, serverResponse, teiAccessApiServi
     });
 }
 
+export function addIkkeTildeltToTildeltList(scope, serverResponse) {
+    setHeader(serverResponse, 'ikke_tildelt');
+    var programAndStage = getEnrollmentProgramAndStage(scope);
+    serverResponse.rows.forEach((row) => {
+        row.push({...programAndStage, assignedUser: ''});
+    });
+    scope.setServerResponse(serverResponse);
+}
+
 function getEnrollmentProgramAndStage(scope) {
     var currentProgram = scope.base.selectedProgram.id;
     switch (currentProgram) {
