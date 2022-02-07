@@ -67,14 +67,14 @@ function setDataValue(serverResponse, values, programAndStage) {
 function getTildeltBrukerForTeiAsync(teis, programId, assignedUserStage, orgUnitId, teiAccessApiService, q) {
     var promises = [];
     teis.forEach(teiId => {
-        promises.push(teiAccessApiService.get(null, programId, DHIS2URL + '/trackedEntityInstances/' + teiId + '.json?program=' + programId + '&fields=enrollments[program,events[programStage,assignedUser,eventDate,status]]')
+        promises.push(teiAccessApiService.get(null, programId, DHIS2URL + '/trackedEntityInstances/' + teiId + '.json?program=' + programId + '&fields=enrollments[program,status,events[programStage,assignedUser,eventDate,status]]')
             .then(result => result && result.data && result.data.enrollments));
     });
     return q.all(promises).then(teiEnrollments => {
         return teiEnrollments.map(enrollments => {
-            var result = enrollments.find(enrollment => enrollment.program === programId);
-            var nrNonCompletedEvents = result && result.events && result.events.filter(event => event.programStage === assignedUserStage && event.status !== "COMPLETED")
-            if(nrNonCompletedEvents.length !== 1) {
+            var result = enrollments.find(enrollment => enrollment.program === programId && enrollment.status === 'ACTIVE');
+            var nonCompletedEvents = result && result.events && result.events.filter(event => event.programStage === assignedUserStage && event.status !== "COMPLETED" )
+            if(!nonCompletedEvents || nonCompletedEvents.length !== 1) {
                 return 'CANNOT_ASSIGN_USER';
             }
             var events = result && result.events && result.events.filter(event => event.programStage === assignedUserStage && event.assignedUser  && event.status !== "COMPLETED");
