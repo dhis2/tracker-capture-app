@@ -5,7 +5,8 @@ import {
     PROFIL_VAKSINE_2_DATO_ID,
     PROFIL_VAKSINE_3_TYPE_ID,
     PROFIL_VAKSINE_3_DATO_ID,
-    PROFIL_VAKSINE_4_TYPE_ID, PROFIL_VAKSINE_4_DATO_ID
+    PROFIL_VAKSINE_4_TYPE_ID,
+    PROFIL_VAKSINE_4_DATO_ID
 } from "../utils/constants";
 
 export function createCombinedVaccineObject(sysvakVaccine, selectedTei, DateUtils) {
