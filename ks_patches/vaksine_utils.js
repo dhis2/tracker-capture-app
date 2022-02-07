@@ -1,4 +1,13 @@
-import {PROFIL_VAKSINE_1_TYPE_ID, PROFIL_VAKSINE_1_DATO_ID, PROFIL_VAKSINE_2_TYPE_ID, PROFIL_VAKSINE_2_DATO_ID, PROFIL_VAKSINE_3_TYPE_ID, PROFIL_VAKSINE_3_DATO_ID} from "../utils/constants";
+import {
+    PROFIL_VAKSINE_1_TYPE_ID,
+    PROFIL_VAKSINE_1_DATO_ID,
+    PROFIL_VAKSINE_2_TYPE_ID,
+    PROFIL_VAKSINE_2_DATO_ID,
+    PROFIL_VAKSINE_3_TYPE_ID,
+    PROFIL_VAKSINE_3_DATO_ID,
+    PROFIL_VAKSINE_4_TYPE_ID,
+    PROFIL_VAKSINE_4_DATO_ID
+} from "../utils/constants";
 
 export function createCombinedVaccineObject(sysvakVaccine, selectedTei, DateUtils) {
     return sysvakVaccine.map((vaccine, index) => createVaccineObject(selectedTei, vaccine, index + 1, DateUtils));
@@ -26,7 +35,7 @@ function getNrOfMonthsAgo(date, DateUtils) {
 }
 
 function getVaksineDoseFromProfile(selectedTei, doseNr) {
-    if(doseNr > 3 || doseNr < 1) {
+    if(doseNr > 4 || doseNr < 1) {
         return undefined;
     }
     var ids = getVaksineIds(doseNr);
@@ -50,6 +59,12 @@ function getVaksineIds(doseNr) {
         return {
             typeId: PROFIL_VAKSINE_3_TYPE_ID,
             dateId: PROFIL_VAKSINE_3_DATO_ID
+        }
+    }
+    if(doseNr === 4) {
+        return {
+            typeId: PROFIL_VAKSINE_4_TYPE_ID,
+            dateId: PROFIL_VAKSINE_4_DATO_ID
         }
     }
 }
@@ -154,6 +169,8 @@ function getUpdatedVaccineAttributes(attributes, vaccines) {
         getUpdatedAttribute(attributes, vaccines[1] && vaccines[1].date, PROFIL_VAKSINE_2_DATO_ID),
         getUpdatedAttribute(attributes, vaccines[2] && vaccines[2].type, PROFIL_VAKSINE_3_TYPE_ID),
         getUpdatedAttribute(attributes, vaccines[2] && vaccines[2].date, PROFIL_VAKSINE_3_DATO_ID),
+        getUpdatedAttribute(attributes, vaccines[3] && vaccines[3].type, PROFIL_VAKSINE_4_TYPE_ID),
+        getUpdatedAttribute(attributes, vaccines[3] && vaccines[3].date, PROFIL_VAKSINE_4_DATO_ID),
     ];
 }
 
@@ -180,4 +197,6 @@ export function hackToUpdateVaccineFieldsInProfile(selectedTei, sysvakVaccines) 
     selectedTei[PROFIL_VAKSINE_2_DATO_ID] = sysvakVaccines[1] && sysvakVaccines[1].date;
     selectedTei[PROFIL_VAKSINE_3_TYPE_ID] = sysvakVaccines[2] && sysvakVaccines[2].name;
     selectedTei[PROFIL_VAKSINE_3_DATO_ID] = sysvakVaccines[2] && sysvakVaccines[2].date;
+    selectedTei[PROFIL_VAKSINE_4_TYPE_ID] = sysvakVaccines[3] && sysvakVaccines[3].name;
+    selectedTei[PROFIL_VAKSINE_4_DATO_ID] = sysvakVaccines[3] && sysvakVaccines[3].date;
 }
