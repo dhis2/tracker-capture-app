@@ -22,15 +22,6 @@ export function addTildeltToTildeltList(scope, serverResponse, teiAccessApiServi
     });
 }
 
-export function addIkkeTildeltToTildeltList(scope, serverResponse) {
-    setHeader(serverResponse, 'tildelt_data');
-    var programAndStage = getEnrollmentProgramAndStage(scope);
-    serverResponse.rows.forEach((row) => {
-        row.push({...programAndStage, assignedUser: ''});
-    });
-    scope.setServerResponse(serverResponse);
-}
-
 function getEnrollmentProgramAndStage(scope) {
     var currentProgram = scope.base.selectedProgram.id;
     switch (currentProgram) {
@@ -76,14 +67,19 @@ function setDataValue(serverResponse, values, programAndStage) {
 function getTildeltBrukerForTeiAsync(teis, programId, assignedUserStage, orgUnitId, teiAccessApiService, q) {
     var promises = [];
     teis.forEach(teiId => {
-        promises.push(teiAccessApiService.get(null, programId, DHIS2URL + '/trackedEntityInstances/' + teiId + '.json?program=' + programId + '&fields=enrollments[program,events[programStage,assignedUser,eventDate,status]]').then(result => result && result.data && result.data.enrollments));
+        promises.push(teiAccessApiService.get(null, programId, DHIS2URL + '/trackedEntityInstances/' + teiId + '.json?program=' + programId + '&fields=enrollments[program,events[programStage,assignedUser,eventDate,status]]')
+            .then(result => result && result.data && result.data.enrollments));
     });
     return q.all(promises).then(teiEnrollments => {
         return teiEnrollments.map(enrollments => {
             var result = enrollments.find(enrollment => enrollment.program === programId);
-            var events = result && result.events && result.events.filter(event => event.programStage === assignedUserStage && event.assignedUser);
+            var nrNonCompletedEvents = result && result.events && result.events.filter(event => event.programStage === assignedUserStage && event.status !== "COMPLETED")
+            if(nrNonCompletedEvents.length !== 1) {
+                return 'CANNOT_ASSIGN_USER';
+            }
+            var events = result && result.events && result.events.filter(event => event.programStage === assignedUserStage && event.assignedUser  && event.status !== "COMPLETED");
             var assignedUsers = _.uniq(events && events.map(event => event.assignedUser));
-            return assignedUsers[0]; // No longer support for showing more than one assigned users
+            return assignedUsers[0];
         });
     });
 }

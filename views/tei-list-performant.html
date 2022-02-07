@@ -55,10 +55,15 @@
                         </span>
                     </td>
                     <td ng-if="data.rows.own[0]['tildelt_data']">
-                        <d2-assign-users-input d2-model="tei['tildelt_data']"
-                                               d2-save-method="getSaveMethod(tei, tei['tildelt_data'])"
+                        <d2-assign-users-input
+                                ng-if="tei['tildelt_data']['assignedUser'] !== 'CANNOT_ASSIGN_USER'"
+                                d2-model="tei['tildelt_data']"
+                               d2-save-method="getSaveMethod(tei, tei['tildelt_data'])"
                         >
                         </d2-assign-users-input>
+                        <span ng-if="tei['tildelt_data']['assignedUser'] === 'CANNOT_ASSIGN_USER'">
+                            Uregelmessighet i helsestatus
+                        </span>
 
                     </td>
 

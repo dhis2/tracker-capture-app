@@ -228,7 +228,7 @@ trackerCapture.controller('ListsController', function (
     };
 
     $scope.addTildeltToTildeltListConditionally = function (serverResponse) {
-        if ($scope.isAlleTildelteOppgaver()) {
+        if ($scope.isAlleTildelteOppgaver() || $scope.isIkkeTildelteOppgaver()) {
             try {
                 addTildeltToTildeltList($scope, serverResponse, TeiAccessApiService, MetaDataFactory, $q);
             } catch (err) {
@@ -236,18 +236,6 @@ trackerCapture.controller('ListsController', function (
                 $scope.setServerResponse(serverResponse);
             }
         }
-
-
-        if ($scope.isIkkeTildelteOppgaver()) {
-            try {
-                addIkkeTildeltToTildeltList($scope, serverResponse);
-            } catch (err) {
-                console.log(err);
-                $scope.setServerResponse(serverResponse);
-            }
-
-        }
-
     };
 
     var setCurrentTrackedEntityListData = function (serverResponse) {
