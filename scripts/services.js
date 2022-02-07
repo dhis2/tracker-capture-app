@@ -2772,9 +2772,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 if (response && response.data && response.data.summaries) {
                     var summary = response.data.summaries[0];
                     if (summary.status) {
-                        headerText = summary.status;
+                        if(summary.status === "COMPLETED") {
+                            headerText = "SMS sendt"
+                        } else {
+                            headerText = summary.status;
+                        }
                         if (summary.responseMessage) {
-                            bodyText = summary.responseMessage;
+                            if(summary.responseMessage === "SENT") {
+                                bodyText = "Meldingen ble sendt og lagret som notat. (Last siden på nytt for å se notatet)"
+                            } else {
+                                bodyText = summary.responseMessage;
+                            }
                         } else if (summary.errorMessage) {
                             bodyText = summary.errorMessage;
                         }else {
