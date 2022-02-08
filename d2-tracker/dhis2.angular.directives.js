@@ -705,13 +705,17 @@ var d2Directives = angular.module('d2Directives', [])
             $scope.userDisplayName = "";
 
             $scope.getNameForUserOject = function(userObject){
-                return userObject.firstName + " " + userObject.lastName +
-                    " (" + userObject.username + ")";
+                return userObject.firstName + " " + userObject.lastName;
             }
+
+            // This code does not seem to be needed and causes a lot of extra calls to backend.
+            // The list gets populated in time without this code by calling $scope.search
+            /*
 
             UsersService.getByQuery('').then(function(users){
                 $scope.displayOptions = users;
             });
+             */
 
             if( $scope.d2Model.assignedUser ) {
                 UsersService.getByUid($scope.d2Model.assignedUser).then(function(user){

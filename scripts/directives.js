@@ -11,6 +11,7 @@ import {
     INNREISE_KARANTENEKODE_4_ATTRIBUTE_ID, INNREISE_KARANTENETYPE_ATTRIBUTE_ID, INNREISE_KORONA_SERTIFIKAT_ATTRIBUTE_ID,
     INNREISE_OPPFOLGINGSTATUS_ATTRIBUTE_ID, INNREISE_OPPFOLGINGSTATUS_ID
 } from "../utils/constants";
+import {setAssignedUser} from "../ks_patches/set_assigned_user";
 
 var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
 
@@ -672,7 +673,7 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
             numberOfSelectedRows: "=selectedRowsCount",
             isListOfActiveEnrollments: "=activeEnrollments"
         },
-        controller: function($scope, Paginator,TEIGridService, CurrentSelection){
+        controller: function($scope, Paginator,TEIGridService, CurrentSelection, DHIS2EventFactory, TEIService, DateUtils){
             var attributesById = CurrentSelection.getAttributesById();
 
             if (!$scope.pager) {
@@ -755,8 +756,16 @@ var trackerCaptureDirectives = angular.module('trackerCaptureDirectives', [])
                 } else {
                     return false;
                 }
-            }
-            
+            };
+
+            $scope.getSaveMethod = function(tei, extraData) {
+                return () => $scope.setAssignedUser(tei, extraData);
+            };
+
+            $scope.setAssignedUser = function (tei, extraData) {
+                setAssignedUser(tei.id, extraData.assignedUser, extraData.program, extraData.assignedUserStage, DHIS2EventFactory, TEIService, DateUtils);
+            };
+
             $scope.onGetPage = function(page){
                 $scope.pager.page = page;
                 $scope.refetchData({pager: $scope.pager, sortColumn: $scope.sortColumn});

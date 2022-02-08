@@ -73,3 +73,13 @@ export const PROFIL_VAKSINE_3_TYPE_ID = 'zbLvlxnfL3i';
 export const PROFIL_VAKSINE_3_DATO_ID = 'TtvEl8Fjqjp';
 export const PROFIL_VAKSINE_4_TYPE_ID = 'g25zWgTxeyW';
 export const PROFIL_VAKSINE_4_DATO_ID = 'qP0ThbF052n';
+
+// Arbeidslister
+export const INDEKS_ALLE_TILDELTE_OPPGAVER = 'xipDDlS3VGt';
+export const NAERKONTAKT_ALLE_TILDELTE_OPPGAVER = 'ECj5zLvbP1y';
+export const INNREISE_ALLE_TILDELTE_OPPGAVER = 'wfcwPCAJZzX';
+export const INDEKS_IKKE_TILDELTE_OPPGAVER = 'qhZI9qjnvIU';
+export const NAERKONTAKT_IKKE_TILDELTE_OPPGAVER = 'jtmtrzAAIcf';
+export const INNREISE_IKKE_TILDELTE_OPPGAVER = 'uTVW4JPHoN0';
+
+
