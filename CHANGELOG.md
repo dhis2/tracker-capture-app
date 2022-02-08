@@ -1,3 +1,11 @@
+## [31.7.15](https://github.com/dhis2/tracker-capture-app/compare/v31.7.14...v31.7.15) (2022-02-08)
+
+
+### Bug Fixes
+
+* [DHIS2-12527] various errors in the profile widget ([#1362](https://github.com/dhis2/tracker-capture-app/issues/1362)) ([e2399b3](https://github.com/dhis2/tracker-capture-app/commit/e2399b32d9ca6480fafc4b80fc7e8b1946c74db7))
+* owningOrgUnit is undefined until TEI is enrolled in program ([#1361](https://github.com/dhis2/tracker-capture-app/issues/1361)) ([a044aba](https://github.com/dhis2/tracker-capture-app/commit/a044abaa5653cf29dce34a2ee678156118385851))
+
 ## [31.7.14](https://github.com/dhis2/tracker-capture-app/compare/v31.7.13...v31.7.14) (2022-01-26)
 
 
