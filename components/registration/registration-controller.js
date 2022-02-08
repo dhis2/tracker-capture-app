@@ -1538,7 +1538,7 @@ trackerCapture.controller('RegistrationController',
                         $scope.selectedTei = modalData.selectedTei;
                         $scope.searchFnr = modalData.searchFnr;
                         $scope.sysvakVaccines = createCombinedVaccineObject(response.immunizations, $scope.selectedTei, DateUtils);
-                        $scope.canUpdate = $scope.sysvakVaccines.some((vacc, ind) => vacc.updatePossible && ind < 3);
+                        $scope.canUpdate = $scope.sysvakVaccines.some((vacc, ind) => vacc.updatePossible && ind < 4);
 
 
                         $scope.noVaccinesMessage = response.kanLevereUtData ?

@@ -13,7 +13,7 @@
                 <td><b>Dose {{$index +1}}</b>  <br>{{vaccine.date}} <span class="ks-grey" ng-if="vaccine.monthsAgo || vaccine.monthsAgo === 0">({{vaccine.monthsAgo}}+ mnd)</span>
                 <td><div style="padding-bottom:5px">{{vaccine.name}}</span>
                 <td style="border-left-style: solid; border-left-width: 1px">
-                <div ng-if="$index < 3">
+                <div ng-if="$index < 4">
                     <span ng-if="!vaccine.vaccineIsInProfile">Mangler</span>
                     <div ng-if="vaccine.vaccineIsInProfile && vaccine.dateMismatch">
                         <span ng-if="vaccine.profileDose.date">
@@ -33,8 +33,8 @@
                     </div>
                     <span ng-if="vaccine.vaccineIsInProfile && !vaccine.nameMismatch && !vaccine.dateMismatch">Registrert</span>
                 </div>
-                <div ng-if="$index >= 3">
-                    Kan ikke registrere mer enn 3 doser
+                <div ng-if="$index >= 4">
+                    Kan ikke registrere mer enn 4 doser
                 </div>
 
             </td>
