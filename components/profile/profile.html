@@ -26,4 +26,10 @@
         </div>
         
     </div>
+    <div class="panel-heading handle bold">
+    <span class="nav-pills" ng-if="!enrollmentEditing && !selectedTei.inactive && selectedProgram.id !=='B7gOGodZkcs'  && selectedProgram.id !=='STKyXc3OT7i'">
+            <a href ng-click="enableEdit()" ng-attr-title="{{'edit_profile'| translate}}" ng-if="trackedEntityType.access.data.write"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [!editingDisabled]">{{'edit'| translate}}</span></a>
+            <a href ng-click="enableEdit()" ng-attr-title="{{'show_all'| translate}}" ng-if="!trackedEntityType.access.data.write"><span ng-class="{true: 'widget-link-active', false: 'widget-link'} [!editingDisabled]">{{'show_all'| translate}}</span></a>
+        </span>
+    </div>
 </div>
