@@ -708,9 +708,16 @@ trackerCapture.controller('DashboardController',
 
     $rootScope.getCurrentWidget = function(scope){
         var widgetLoaderScope = scope.$parent.$parent;
-        if(widgetLoaderScope.biggerWidget) return widgetLoaderScope.biggerWidget;
-        if(widgetLoaderScope.smallerWidget) return widgetLoaderScope.smallerWidget;
-        return null;
+        var widget = (() => {
+            if(widgetLoaderScope.biggerWidget) return widgetLoaderScope.biggerWidget;
+            if(widgetLoaderScope.smallerWidget) return widgetLoaderScope.smallerWidget;
+            return null;
+        })()
+
+        if (widget) {
+            scope.widgetTitle = widget.title;
+        }
+        return widget;
     }
 
     $scope.openTopBarSettings = function(){
