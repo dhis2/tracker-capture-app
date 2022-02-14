@@ -154,12 +154,17 @@ trackerCapture.controller('RegistrationController',
         if($scope.selectedProgram){
             $scope.trackedEntityTypes.selected = trackedEntityTypesById[$scope.selectedProgram.trackedEntityType.id];
         }else if(currentTet){
-            $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.writable.find(function(t) { return t.id === currentTet });
-            $scope.setTrackedEntityType();
+            setWritableTrackedEntityType(currentTet);
+        } else if(CurrentSelection.get().tei.trackedEntityType) {
+            setWritableTrackedEntityType(CurrentSelection.get().tei.trackedEntityType);
         } else if($location.search().tracked_entity_type) {
-            $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.writable.find(function(t) { return t.id === $location.search().tracked_entity_type });
-            $scope.setTrackedEntityType();
+            setWritableTrackedEntityType($location.search().tracked_entity_type);
         }
+    }
+
+    var setWritableTrackedEntityType = function(tet) {
+        $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.writable.find(function(t) { return t.id === tet });
+        $scope.setTrackedEntityType();
     }
 
 
@@ -1416,7 +1421,7 @@ trackerCapture.controller('RegistrationController',
     }
 
     $scope.showRegistrationButtons = function(){
-        return $scope.registrationMode === 'REGISTRATION' && ($scope.selectedProgram || showTetRegistrationButtons());
+        return $scope.registrationMode === 'REGISTRATION' && $scope.widgetTitle !== 'profile' && ($scope.selectedProgram || showTetRegistrationButtons());
     }
 
     $scope.showTetRegistrationWarning =  function(){
