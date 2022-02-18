@@ -1,8 +1,13 @@
 import {
     DUPLIKAT_PROGRAM_ID,
     INDEKS_ALLE_TILDELTE_OPPGAVER,
-    INDEKS_IKKE_TILDELTE_OPPGAVER, INNREISE_ALLE_TILDELTE_OPPGAVER, INNREISE_IKKE_TILDELTE_OPPGAVER,
-    INNREISE_PROGRAM_ID, NAERKONTAKT_ALLE_TILDELTE_OPPGAVER, NAERKONTAKT_IKKE_TILDELTE_OPPGAVER
+    INDEKS_IKKE_TILDELTE_OPPGAVER,
+    INDEKSERING_PROGRAM_ID,
+    INNREISE_ALLE_TILDELTE_OPPGAVER,
+    INNREISE_IKKE_TILDELTE_OPPGAVER,
+    INNREISE_PROGRAM_ID,
+    NAERKONTAKT_ALLE_TILDELTE_OPPGAVER,
+    NAERKONTAKT_IKKE_TILDELTE_OPPGAVER
 } from "../../../utils/constants";
 import {convertDatestringToFullTime} from "../../../utils/converters";
 import {addEventDataToInnreiseList} from "../../../ks_patches/add_event_data_to_innreise_list";
@@ -443,6 +448,10 @@ trackerCapture.controller('ListsController', function (
         return program && program.id == INNREISE_PROGRAM_ID;
     }
 
+    $scope.isIndeksProgram = function (program) {
+        return program && program.id == INDEKSERING_PROGRAM_ID;
+    }
+
     $scope.proveSvarSyncIsLoading = false;
     $scope.syncLabTests = function () {
         if ($scope.isInnreiseProgram($scope.selectedProgram)) {
@@ -505,11 +514,26 @@ trackerCapture.controller('ListsController', function (
         }
     };
 
+    $scope.getMsisStatus = function () {
+        if ($scope.isIndeksProgram($scope.selectedProgram)) {
+            var userId;
+            try {
+                userId = JSON.parse(sessionStorage.USER_PROFILE).id
+            } finally {
+            }
+            FNrLookupService.getMsisStatus($scope.selectedOrgUnit.code, userId).then(function (svar) {
+                console.log(svar)
+            });
+        }
+    }
+
+
     $scope.showNoProvesvardataHentet = function () {
         return !$scope.innreiseProvesvarSistOppdatert && !$scope.hasStartedSync;
     };
 
     $scope.checkLabTestStatus();
+    $scope.getMsisStatus();
 
 
     $scope.getExportList = function (format) {
