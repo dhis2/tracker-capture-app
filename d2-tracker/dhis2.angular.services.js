@@ -1,5 +1,6 @@
 /* Pagination service */
 /* global angular, dhis2, moment */
+import { extractDataMatrixValue } from './dhis2.d2GS1DataMatrix.js';
 
 var d2Services = angular.module('d2Services', ['ngResource'])
 
@@ -2735,7 +2736,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 {name:"d2:length",parameters:1},
                 {name:"d2:inOrgUnitGroup",parameters:1},
                 {name:"d2:hasUserRole",parameters:1},
-                {name:"d2:condition",parameters:3}];
+                {name:"d2:condition",parameters:3},
+                {name:"d2:extractDataMatrixValue",parameters:2}];
             var continueLooping = true;
             //Safety harness on 10 loops, in case of unanticipated syntax causing unintencontinued looping
             for(var i = 0; i < 10 && continueLooping; i++ ) {
@@ -3185,6 +3187,10 @@ var d2Services = angular.module('d2Services', ['ngResource'])
 
                             //Replace the end evaluation of the dhis function:
                             expression = expression.replace(callToThisFunction, valueFound);
+                            expressionUpdated = true;
+                        }
+                        else if(dhisFunction.name === "d2:extractDataMatrixValue") {
+                            expression = expression.replace(callsToThisFunction, extractDataMatrixValue( parameters[0], parameters[1] ) );
                             expressionUpdated = true;
                         }
                     });
