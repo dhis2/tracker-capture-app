@@ -200,37 +200,38 @@ gs1Elements.set( 'COMPANY_INTERNAL_7', '97' );
 gs1Elements.set( 'COMPANY_INTERNAL_8', '98' );
 gs1Elements.set( 'COMPANY_INTERNAL_9', '99' );
 
-const aiFixedLengthMap = new Map();
-aiFixedLengthMap.set( 'SSCC', 20 );
-aiFixedLengthMap.set( 'GTIN', 16 );
-aiFixedLengthMap.set( 'CONTENT', 16 );
-aiFixedLengthMap.set( '03', 16);
-aiFixedLengthMap.set( '04', 18);
-aiFixedLengthMap.set( 'PROD_DATE', 8 );
-aiFixedLengthMap.set( 'DUE_DATE', 8 );
-aiFixedLengthMap.set( 'PACK_DATE', 8 );
-aiFixedLengthMap.set( '14', 8);
-aiFixedLengthMap.set( 'BEST_BEFORE_DATE', 8 );
-aiFixedLengthMap.set( 'SELL_BY', 8 );
-aiFixedLengthMap.set( 'EXP_DATE', 8 );
-aiFixedLengthMap.set( '18', 8);
-aiFixedLengthMap.set( '19', 8);
-aiFixedLengthMap.set( 'VARIANT', 4 );
-aiFixedLengthMap.set( '31', 10);
-aiFixedLengthMap.set( '32', 10);
-aiFixedLengthMap.set( '33', 10);
-aiFixedLengthMap.set( '34', 10);
-aiFixedLengthMap.set( '35', 10);
-aiFixedLengthMap.set( '36', 10);
-aiFixedLengthMap.set( '41', 10);
+const aiFixedLengthMap = {
+SSCC: 20,
+GTIN: 16,
+CONTENT: 16,
+'03': 16,
+'04': 18,
+PROD_DATE: 8,
+DUE_DATE: 8,
+PACK_DATE: 8,
+'14': 8,
+BEST_BEFORE_DATE: 8,
+SELL_BY: 8,
+EXP_DATE: 8,
+'18': 8,
+'19': 8,
+VARIANT: 4,
+'31': 10,
+'32': 10,
+'33': 10,
+'34': 10,
+'35': 10,
+'36': 10,
+'41': 10,
+};
 
-function removeGS1Identifier( value ) {
+const removeGS1Identifier = ( value ) => {
     return value.substring( 3 );
 }
 
 const getApplicationIdentifier = ( gs1Group ) => {
-    for ( let element of gs1Elements.keys() ) {
-        var ai = gs1Elements.get( element );
+    for ( const element of gs1Elements.keys() ) {
+        let ai = gs1Elements.get( element );
         if ( ai.endsWith( "*" ) ) {
             ai = ai.substring( 0, ai.length - 1 );
         }
@@ -263,13 +264,13 @@ const translateKey = ( keyToTranslate ) => {
     }
 }
 
-var dataMap = new Map();
+const dataMap = new Map();
 
-var handleGroupData = ( gs1Group ) => {
+const handleGroupData = ( gs1Group ) => {
     if ( gs1Group ) {
-        var gs1GroupLength = gs1Group.length;
-        var ai = getApplicationIdentifier( gs1Group );
-        var nextValueLength = aiFixedLengthMap.get( ai );
+        const gs1GroupLength = gs1Group.length;
+        const ai = getApplicationIdentifier( gs1Group );
+        let nextValueLength = aiFixedLengthMap[ ai ];
         if ( nextValueLength == null )
             nextValueLength = gs1GroupLength;
         dataMap.set( ai, gs1Group.substring( 2, nextValueLength ) );
@@ -277,10 +278,10 @@ var handleGroupData = ( gs1Group ) => {
     }
 }
 
-var extractGS1DataMatrixValue = ( key, dataMatrix ) => {
-    var keyToReturn = translateKey( key );
+const extractGS1DataMatrixValue = ( key, dataMatrix ) => {
+    const keyToReturn = translateKey( key );
 
-    var gs1Groups = removeGS1Identifier( dataMatrix ).split( gs1Elements.get( 'GS1_GROUP_SEPARATOR' ) );
+    const gs1Groups = removeGS1Identifier( dataMatrix ).split( gs1Elements.get( 'GS1_GROUP_SEPARATOR' ) );
     gs1Groups.forEach( function(gs1Group) {
         handleGroupData(gs1Group);
     });
@@ -288,9 +289,9 @@ var extractGS1DataMatrixValue = ( key, dataMatrix ) => {
     return dataMap.get( gs1Elements.get( keyToReturn ) );
 }
 
-export var extractDataMatrixValue = ( key, dataMatrix ) => {
+export const extractDataMatrixValue = ( key, dataMatrix ) => {
     if( dataMatrix && dataMatrix.length >= 3 ) {
-        var gs1Identifier = dataMatrix.substring( 0, 3 );
+        const gs1Identifier = dataMatrix.substring( 0, 3 );
         if( gs1Elements.get( 'GS1_d2_IDENTIFIER' ) === gs1Identifier 
             || gs1Elements.get( 'GS1_Q3_IDENTIFIER' ) === gs1Identifier ) {
             return "'" + extractGS1DataMatrixValue( key, dataMatrix ) + "'";
