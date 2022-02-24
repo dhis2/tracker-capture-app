@@ -1,13 +1,13 @@
 import {
     DUPLIKAT_PROGRAM_ID,
     INDEKS_ALLE_TILDELTE_OPPGAVER,
-    INDEKS_IKKE_TILDELTE_OPPGAVER,
+    INDEKS_IKKE_TILDELTE_OPPGAVER, INDEKS_STATUS_ARBEIDSLISTE,
     INDEKSERING_PROGRAM_ID,
     INNREISE_ALLE_TILDELTE_OPPGAVER,
     INNREISE_IKKE_TILDELTE_OPPGAVER,
     INNREISE_PROGRAM_ID,
     NAERKONTAKT_ALLE_TILDELTE_OPPGAVER,
-    NAERKONTAKT_IKKE_TILDELTE_OPPGAVER
+    NAERKONTAKT_IKKE_TILDELTE_OPPGAVER,
 } from "../../../utils/constants";
 import {convertDatestringToFullTime} from "../../../utils/converters";
 import {addEventDataToInnreiseList} from "../../../ks_patches/add_event_data_to_innreise_list";
@@ -452,6 +452,10 @@ trackerCapture.controller('ListsController', function (
         return program && program.id == INDEKSERING_PROGRAM_ID;
     }
 
+    $scope.isStatusArbeidsliste = function () {
+        return $scope.currentTrackedEntityList.config.id === INDEKS_STATUS_ARBEIDSLISTE;
+    }
+
     $scope.proveSvarSyncIsLoading = false;
     $scope.syncLabTests = function () {
         if ($scope.isInnreiseProgram($scope.selectedProgram)) {
@@ -514,6 +518,46 @@ trackerCapture.controller('ListsController', function (
         }
     };
 
+    $scope.importLabTests = function () {
+        if ($scope.isStatusArbeidsliste()) {
+            $scope.msisStartFailed = false;
+            var userId;
+            try {
+                userId = JSON.parse(sessionStorage.USER_PROFILE).id
+            } finally {
+            }
+            $scope.msisImportIsLoading = true;
+            FNrLookupService.startMsisSync($scope.selectedOrgUnit.code, userId).then(function (svar) {
+                $scope.msisImportIsLoading = false;
+                if (svar) {
+                    $scope.mapMsisStatusToScope(svar);
+                    fetchWorkingList();
+                } else {
+                    $scope.msisStartFailed = true;
+                    $scope.kanStarteNyMsisSynk = false;
+                }
+            });
+        }
+    }
+
+    $scope.msisStatusLastet = false;
+    $scope.msisStartFailed = false;
+    $scope.msisAktivert = false;
+    $scope.harTilgangTilMsis = false;
+    $scope.msisSistOppdatert = false;
+    $scope.kanStarteNyMsisSynk = null;
+    $scope.msisStatus = null;
+    $scope.msisStatusQueryFailed = false;
+
+    $scope.mapMsisStatusToScope = function (svar) {
+        $scope.msisStatusLastet = true;
+        $scope.msisAktivert = svar.importAktivert;
+        $scope.msisSistOppdatert = svar.sistOppdatert ? convertDatestringToFullTime(svar.sistOppdatert) : undefined;
+        $scope.kanStarteNyMsisSynk = svar.kanStarteNySynk;
+        $scope.harTilgangTilProvesvar = svar.harTilgangTilProvesvar;
+        $scope.msisStatus = svar.status;
+    }
+
     $scope.getMsisStatus = function () {
         if ($scope.isIndeksProgram($scope.selectedProgram)) {
             var userId;
@@ -522,7 +566,11 @@ trackerCapture.controller('ListsController', function (
             } finally {
             }
             FNrLookupService.getMsisStatus($scope.selectedOrgUnit.code, userId).then(function (svar) {
-                console.log(svar)
+                if (svar) {
+                    $scope.mapMsisStatusToScope(svar);
+                } else {
+                    $scope.msisStatusQueryFailed = true;
+                }
             });
         }
     }
