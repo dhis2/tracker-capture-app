@@ -104,7 +104,7 @@
                     <div style="display: flex" ng-if="!msisStatusQueryFailed">
                         <div style="align-self: center">
                             <div ng-if="msisStatus === 'AVSLUTTET'">Siste import av prøvesvar fra MSIS: {{msisSistOppdatert}}.</div>
-                            <div ng-if="msisStatus === 'KJORER'">Prøvesvar ble importeres fra MSIS. <br />Dette kan ta flere minutter. Oppdater siden for å hente inn nye data.</div>
+                            <div ng-if="msisStatus === 'KJORER'">Prøvesvar importeres fra MSIS. <br />Dette kan ta flere minutter. Oppdater siden for å hente inn nye data.</div>
                             <div ng-if="msisStatus === 'FEIL'" class="error">Det skjedde en feil ved sist import av prøvesvar fra MSIS. <br />Vennligst prøv igjen. <br />Ta kontakt med support dersom problemet vedvarer.</div>
                             <div ng-if="msisStatus === 'ALDRI_KJORT'">Import av prøvesvar fra MSIS har aldri blitt kjørt</div>
                             <div ng-if="!msisStatus" class="error">Kunne ikke laste inn status på import av prøvesvar fra MSIS</div>
