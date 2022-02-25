@@ -4997,7 +4997,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                   return null;
               });
               return promise;
-          },
+            },
             getMsisStatus: function(kommuneNr, userId) {
                 var url = '../' + DHIS2URL + '/provesvar/import/synkroniser/status';
                 var promise = $http({
@@ -5011,7 +5011,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                     return null;
                 });
                 return promise;
-          },
+            },
             startLabTestSync: function(kommuneNr, userId) {
                 var url = '../' + DHIS2URL + '/innreise/synkroniser/start';
                 var promise = $http({
