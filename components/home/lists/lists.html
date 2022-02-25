@@ -95,6 +95,36 @@
                 <div ng-if="isInnreiseProgram(selectedProgram) && !provesvarStatusLastet">
                     <img id="ouwt_loader" src="../images/ajax-loader-bar.gif" alt="{{'in_progress'| translate}}"/>
                 </div>
+                <span ng-if="isStatusArbeidsliste()">
+                    <span ng-if="msisStatusQueryFailed">
+                        <hr>
+                        Kunne ikke hente status på import av prøvesvar fra MSIS.
+                    </span>
+                    <hr>
+                    <div style="display: flex" ng-if="!msisStatusQueryFailed">
+                        <div style="align-self: center">
+                            <div ng-if="msisStatus === 'AVSLUTTET'">Siste import av prøvesvar fra MSIS: {{msisSistOppdatert}}.</div>
+                            <div ng-if="msisStatus === 'KJORER'">Prøvesvar importeres fra MSIS. <br />Dette kan ta flere minutter. Oppdater siden for å hente inn nye data.</div>
+                            <div ng-if="msisStatus === 'FEIL'" class="error">Det skjedde en feil ved sist import av prøvesvar fra MSIS. <br />Vennligst prøv igjen. <br />Ta kontakt med support dersom problemet vedvarer.</div>
+                            <div ng-if="msisStatus === 'ALDRI_KJORT'">Import av prøvesvar fra MSIS har aldri blitt kjørt</div>
+                            <div ng-if="!msisStatus" class="error">Kunne ikke laste inn status på import av prøvesvar fra MSIS</div>
+                        </div>
+                        <div style="padding-left: 1em;">
+                            <span ng-if="!harTilgangTilProvesvar && msisAktivert">Du har ikke tilgang til å starte import av prøvesvar fra MSIS. </span>
+                            <span ng-if="!msisAktivert">Kommunen har ikke aktivert import av prøvesvar fra MSIS. </span>
+                            <span ng-if="provesvarStartFailed" class="error">
+                                Noe feilet ved henting import av prøvesvar fra MSIS. Last siden på nytt og prøv igjen.
+                            </span>
+                            <button ng-if="kanStarteNyMsisSynk && !msisImportIsLoading" ng-click="importLabTests()" class="btn btn-primary" style="margin-left: 1em">
+                                Start import av prøvesvar fra MSIS nå
+                            </button>
+                            <button ng-if="kanStarteNyMsisSynk && msisImportIsLoading" ng-click="importLabTests()" class="btn btn-primary" disabled style="margin-left: 1em">
+                                Importerer prøvesvar fra MSIS <img id="ouwt_loader" src="../images/ajax-loader-bar.gif" alt="{{'in_progress'| translate}}"/>
+                            </button>
+                        </div>
+                    </div>
+                </span>
+
             </div>
         </div>
     </div>

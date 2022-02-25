@@ -4997,9 +4997,37 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
                   return null;
               });
               return promise;
-          },
+            },
+            getMsisStatus: function(kommuneNr, userId) {
+                var url = '../' + DHIS2URL + '/provesvar/import/synkroniser/status';
+                var promise = $http({
+                    method: 'POST',
+                    url: url,
+                    data: { kommunenr:kommuneNr, userid:userId},
+                    headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']},
+                }).then(function(response){
+                    return response.data;
+                },function(error) {
+                    return null;
+                });
+                return promise;
+            },
             startLabTestSync: function(kommuneNr, userId) {
                 var url = '../' + DHIS2URL + '/innreise/synkroniser/start';
+                var promise = $http({
+                    method: 'POST',
+                    url: url,
+                    data: { kommunenr:kommuneNr, userid:userId},
+                    headers: {'Content-Type': 'application/json', 'ingress-csrf': $cookies['ingress-csrf']},
+                }).then(function(response){
+                    return response.data;
+                },function(error) {
+                    return null;
+                });
+                return promise;
+            },
+            startMsisSync: function(kommuneNr, userId) {
+                var url = '../' + DHIS2URL + '/provesvar/import/synkroniser/start';
                 var promise = $http({
                     method: 'POST',
                     url: url,
