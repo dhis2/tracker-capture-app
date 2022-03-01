@@ -1,3 +1,11 @@
+# [31.8.0](https://github.com/dhis2/tracker-capture-app/compare/v31.7.15...v31.8.0) (2022-03-01)
+
+
+### Features
+
+* [DHIS2-12365] add d2:extractDataMatrixValue ([#1376](https://github.com/dhis2/tracker-capture-app/issues/1376)) ([760676d](https://github.com/dhis2/tracker-capture-app/commit/760676de4c91a973539a1bdf82af79fee4144c59))
+* support translation of program rule actions ([#1378](https://github.com/dhis2/tracker-capture-app/issues/1378)) ([c15112d](https://github.com/dhis2/tracker-capture-app/commit/c15112d0d638f5fd88136542055d1e3164db02ad))
+
 ## [31.7.15](https://github.com/dhis2/tracker-capture-app/compare/v31.7.14...v31.7.15) (2022-02-08)
 
 
