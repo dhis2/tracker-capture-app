@@ -1746,6 +1746,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                         displayName:variableName,
                                         programRuleVariableSourceType:'DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE',
                                         dataElement:variableNameParts[1],
+                                        valueType:'TEXT',
                                         programStage:variableNameParts[0],
                                         program:programUid,
                                         useCodeForOptionSet:true
@@ -1757,6 +1758,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                                     newVariableObject = {
                                         displayName:variableName,
                                         programRuleVariableSourceType:'TEI_ATTRIBUTE',
+                                        valueType:'TEXT',
                                         trackedEntityAttribute:variableNameParts[0],
                                         program:programUid,
                                         useCodeForOptionSet:true

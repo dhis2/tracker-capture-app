@@ -1563,6 +1563,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                                         displayName:variableName,
                                         programRuleVariableSourceType:'DATAELEMENT_CURRENT_EVENT',
                                         dataElement:variableNameParts[1],
+                                        valueType:'TEXT',
                                         program:programUid,
                                         useCodeForOptionSet:true
                                     };
@@ -1574,6 +1575,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                                         displayName:variableName,
                                         programRuleVariableSourceType:'TEI_ATTRIBUTE',
                                         trackedEntityAttribute:variableNameParts[0],
+                                        valueType:'TEXT',
                                         program:programUid,
                                         useCodeForOptionSet:true
                                     };
@@ -1892,16 +1894,16 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                             variables = pushVariable(variables, programVariable.displayName, "", null, dataElement.dataElement.valueType, false, '#', '', programVariable.useCodeForOptionSet );
                         }
                         else {
-                            variables = pushVariable(variables, programVariable.displayName, "", null, "TEXT",false, '#', '', programVariable.useCodeForOptionSet );
+                            variables = pushVariable(variables, programVariable.displayName, "", null, programVariable.valueType,false, '#', '', programVariable.useCodeForOptionSet );
                         }
                     }
                     else if (programVariable.trackedEntityAttribute) {
                         //The variable is an attribute, set correct prefix and a blank value
-                        variables = pushVariable(variables, programVariable.displayName, "", null, "TEXT",false, 'A', '', programVariable.useCodeForOptionSet );
+                        variables = pushVariable(variables, programVariable.displayName, "", null, programVariable.valueType,false, 'A', '', programVariable.useCodeForOptionSet );
                     }
                     else {
                         //Fallback for calculated(assigned) values:
-                        variables = pushVariable(variables, programVariable.displayName, "", null, "TEXT",false, '#', '', programVariable.useCodeForOptionSet );
+                        variables = pushVariable(variables, programVariable.displayName, "", null, programVariable.valueType,false, '#', '', programVariable.useCodeForOptionSet );
                     }
                 }
             });
@@ -3542,7 +3544,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                                 if(variablesHash[variabletoassign]){
                                     var updatedValue = $rootScope.ruleeffects[ruleEffectKey][action.id].data;
 
-                                    var valueType = determineValueType(updatedValue);
+                                    var valueType = variablesHash[variabletoassign].variableType || determineValueType(updatedValue);
 
                                     if($rootScope.ruleeffects[ruleEffectKey][action.id].dataElement) {
                                         updatedValue = VariableService.getDataElementValueOrCodeForValue(variablesHash[variabletoassign].useCodeForOptionSet, updatedValue, $rootScope.ruleeffects[ruleEffectKey][action.id].dataElement.id, allDataElements, optionSets);
