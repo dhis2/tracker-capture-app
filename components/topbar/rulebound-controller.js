@@ -39,7 +39,7 @@ trackerCapture.controller('RuleBoundController',
                 if(rule.programRuleActions){
                     angular.forEach(rule.programRuleActions, function(action){
                         if(action.location && action.location === $scope.widgetTitle && (action.programRuleActionType === 'DISPLAYTEXT' || action.programRuleActionType === 'DISPLAYKEYVALUEPAIR')){
-                            fields.push({ id: action.id, name: action.content});
+                            fields.push({ id: action.id, name: action.displayContent});
                         }
                     });
                 }

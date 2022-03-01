@@ -199,9 +199,9 @@ trackerCapture.controller('TopBarController',
                         angular.forEach(rule.programRuleActions, function(action){
                             if(action.location && (action.programRuleActionType === 'DISPLAYTEXT' || action.programRuleActionType === 'DISPLAYKEYVALUEPAIR')){
                                 if(action.location ==='feedback'){
-                                    feedBackFields[action.id] = action.content + " " + action.data;
+                                    feedBackFields[action.id] = action.displayContent + " " + action.data;
                                 }else if(action.location ==='indicators'){
-                                    inidicatorFields[action.id] = action.content + " " + action.data;
+                                    inidicatorFields[action.id] = action.displayContent + " " + action.data;
                                 }
                             }
                         });

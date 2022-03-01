@@ -3459,7 +3459,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                                     programStage: action.programStage,
                                     programIndicator: action.programIndicator,
                                     programStageSection: action.programStageSection && action.programStageSection.id ? action.programStageSection.id : null,
-                                    content:action.content,
+                                    content:action.displayContent,
                                     data:action.data,
                                     ineffect:undefined
                                 };
