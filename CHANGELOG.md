@@ -1,3 +1,10 @@
+# [31.9.0](https://github.com/dhis2/tracker-capture-app/compare/v31.8.0...v31.9.0) (2022-03-01)
+
+
+### Features
+
+* [DHIS2-12996] support program rule variable types ([#1379](https://github.com/dhis2/tracker-capture-app/issues/1379)) ([276fb21](https://github.com/dhis2/tracker-capture-app/commit/276fb2168dfb06789b3e852f0781c99384f3b32d))
+
 # [31.8.0](https://github.com/dhis2/tracker-capture-app/compare/v31.7.15...v31.8.0) (2022-03-01)
 
 
