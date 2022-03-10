@@ -1963,12 +1963,26 @@ var d2Directives = angular.module('d2Directives', [])
                 currentFilteredOptions = filteredOptions;
             }
 
+            var compareWithoutDiacritics = function(actual,expected){
+                var normalizedString = String(actual).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return normalizedString.search(expected) >= 0;
+            }
+
+            var compareWithDiacritics = function(actual,expected){
+                var normalizedString = String(actual).normalize("NFD");
+                return normalizedString.search(expected) >= 0;
+            }
+
             $scope.search = function(searchParam){
                 if(!searchParam){
                     currentFilteredOptions = filteredOptions;
                 } else {
-                    currentFilteredOptions = $filter('filter')(filteredOptions, searchParam);
-                }                
+                    var needleWithDiacritics = String(searchParam).normalize("NFD");
+                    var needleWithoutDiacritics = String(needleWithDiacritics).replace(/[\u0300-\u036f]/g, "");
+                    currentFilteredOptions = (needleWithDiacritics == needleWithoutDiacritics)
+                        ? $filter('filter')(filteredOptions, needleWithoutDiacritics, compareWithoutDiacritics)
+                        : $filter('filter')(filteredOptions, needleWithDiacritics, compareWithDiacritics);
+                }
                 setOptions();
             }
 
