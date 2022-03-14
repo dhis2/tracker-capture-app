@@ -1,3 +1,10 @@
+# [31.10.0](https://github.com/dhis2/tracker-capture-app/compare/v31.9.0...v31.10.0) (2022-03-14)
+
+
+### Features
+
+* [DHIS2-12298] diacritics insensitive option group search ([#1381](https://github.com/dhis2/tracker-capture-app/issues/1381)) ([96e84c6](https://github.com/dhis2/tracker-capture-app/commit/96e84c6a9f53fdc084e2bebcffdcbae6a8b4f84c))
+
 # [31.9.0](https://github.com/dhis2/tracker-capture-app/compare/v31.8.0...v31.9.0) (2022-03-01)
 
 
