@@ -1,3 +1,10 @@
+## [31.10.1](https://github.com/dhis2/tracker-capture-app/compare/v31.10.0...v31.10.1) (2022-03-25)
+
+
+### Bug Fixes
+
+* display rule effects in feedback widget based on selected event ([#1385](https://github.com/dhis2/tracker-capture-app/issues/1385)) ([485d536](https://github.com/dhis2/tracker-capture-app/commit/485d5366cf6b5fb23e573e66d10f399d0ded0f43))
+
 # [31.10.0](https://github.com/dhis2/tracker-capture-app/compare/v31.9.0...v31.10.0) (2022-03-14)
 
 
