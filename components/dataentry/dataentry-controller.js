@@ -1448,6 +1448,7 @@ trackerCapture.controller('DataEntryController',
         $scope.currentEvent = null;
         $scope.currentElement = {id: '', saved: false};
         $scope.showDataEntryDiv = !$scope.showDataEntryDiv;
+        $rootScope.$broadcast("dataEntryEventChanged", {event: null});
     };
     
     $scope.tableRowIsEditable = function(eventRow){
@@ -3260,6 +3261,14 @@ trackerCapture.controller('DataEntryController',
             $scope.stageOpenInEventLayout = "";            
         }
     });
+
+    $scope.$watch(function(scope) {
+        return scope.currentEvent && scope.currentEvent.status;
+    }, function(newValue, oldValue) {
+        if(newValue){
+            $scope.executeRules(); // needed by rules using e.g. V{event_status}
+        }
+    })
     
     $scope.getValueTitleCompareForm = function(event){
 	return event.eventDate;
