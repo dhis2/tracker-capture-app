@@ -52,7 +52,9 @@ trackerCapture.controller('RuleBoundController',
 
         //listen for updated rule effects
     $scope.$on('ruleeffectsupdated', function(event, args) {
-        setOrderedData(RuleBoundFactory.getDisplayEffects($scope.data, args.event, $rootScope.ruleeffects, $scope.widgetTitle));
+        if(currentEventId && currentEventId === args.event){
+            setOrderedData(RuleBoundFactory.getDisplayEffects($scope.data, args.event, $rootScope.ruleeffects, $scope.widgetTitle));
+        }
     });
 
     $scope.$on('dataEntryEventChanged', function(event,args){
