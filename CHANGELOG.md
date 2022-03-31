@@ -1,3 +1,10 @@
+## [31.10.2](https://github.com/dhis2/tracker-capture-app/compare/v31.10.1...v31.10.2) (2022-03-31)
+
+
+### Bug Fixes
+
+* [DHIS2-12364] use correct fixed length aicode ([#1390](https://github.com/dhis2/tracker-capture-app/issues/1390)) ([4b26c65](https://github.com/dhis2/tracker-capture-app/commit/4b26c652098a352c97759459744b692e1ecb2ed8))
+
 ## [31.10.1](https://github.com/dhis2/tracker-capture-app/compare/v31.10.0...v31.10.1) (2022-03-25)
 
 
