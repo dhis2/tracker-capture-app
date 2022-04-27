@@ -4429,7 +4429,7 @@ var externalLookupServices = angular.module('externalLookupServices', ['ngResour
         }
 
         var getKjonn = function(kjonn) {
-            var codes = [{"id": 1,"verdi": "1","beskrivelse": "Mann","oid": 3101}, {"id": 2,"verdi": "2","beskrivelse": "Kvinne","oid": 3101}, {"id": 3,"verdi": "9","beskrivelse": "Ikke kjent","oid": 3101}];
+            var codes = [{"id": 1,"verdi": "1","beskrivelse": "Mann","oid": 3101}, {"id": 2,"verdi": "2","beskrivelse": "Kvinne","oid": 3101}, {"id": 3,"verdi": "0","beskrivelse": "Ikke kjent","oid": 3101}];
             return codeLookup(codes,"beskrivelse",kjonn);
         }
 
