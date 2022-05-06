@@ -1728,6 +1728,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             var newAction = {
                                 id:pi.id,
                                 content:pi.displayDescription ? pi.displayDescription : pi.displayName,
+                                displayContent:pi.displayName,
                                 data:pi.expression,
                                 programRuleActionType:'DISPLAYKEYVALUEPAIR',
                                 location:'indicators'
