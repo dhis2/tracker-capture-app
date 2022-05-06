@@ -601,7 +601,7 @@ function getObjectIds(data){
 function getMetaProgramIndicators( programs, programIds )
 {   
     programs.programIds = programIds;
-    return dhis2.tracker.getTrackerMetaObjects(programs, 'programIndicators', DHIS2URL + '/programIndicators.json', 'paging=false&fields=id&filter=program.id:in:');
+    return dhis2.tracker.getTrackerMetaObjects(programs, 'programIndicators', DHIS2URL + '/programIndicators.json', 'paging=false&fields=id&filter=displayInForm:eq:true&filter=program.id:in:');
 }
 
 function getProgramIndicators(data)
