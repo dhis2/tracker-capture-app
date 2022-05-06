@@ -1,3 +1,10 @@
+## [31.10.4](https://github.com/dhis2/tracker-capture-app/compare/v31.10.3...v31.10.4) (2022-05-06)
+
+
+### Bug Fixes
+
+* [DHIS2-12188] filter program indicators by displayInForm=true ([#1408](https://github.com/dhis2/tracker-capture-app/issues/1408)) ([f5b5265](https://github.com/dhis2/tracker-capture-app/commit/f5b5265c51db4c746b1007288f685956363ecc21))
+
 ## [31.10.3](https://github.com/dhis2/tracker-capture-app/compare/v31.10.2...v31.10.3) (2022-04-22)
 
 
