@@ -1,3 +1,10 @@
+## [31.10.5](https://github.com/dhis2/tracker-capture-app/compare/v31.10.4...v31.10.5) (2022-05-09)
+
+
+### Bug Fixes
+
+* remove RulesFactory from list of dependencies ([#1413](https://github.com/dhis2/tracker-capture-app/issues/1413)) ([16bc818](https://github.com/dhis2/tracker-capture-app/commit/16bc818e8fd940480e37815bbc6ee36a66ceba73))
+
 ## [31.10.4](https://github.com/dhis2/tracker-capture-app/compare/v31.10.3...v31.10.4) (2022-05-06)
 
 
