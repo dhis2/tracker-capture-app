@@ -1779,7 +1779,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
 })
 
 /* service for executing tracker rules and broadcasting results */
-.service('TrackerRulesExecutionService', function($translate, SessionStorageService, VariableService, DateUtils, NotificationService, DHIS2EventFactory, OrgUnitFactory, RulesFactory, CalendarService, OptionSetService, $rootScope, $q, $log, $filter, orderByFilter, MetaDataFactory){
+.service('TrackerRulesExecutionService', function($translate, SessionStorageService, VariableService, DateUtils, NotificationService, DHIS2EventFactory, OrgUnitFactory, CalendarService, OptionSetService, $rootScope, $q, $log, $filter, orderByFilter, MetaDataFactory){
     var NUMBER_OF_EVENTS_IN_SCOPE = 10;
 
     //Variables for storing scope and rules in memory from rules execution to rules execution:
