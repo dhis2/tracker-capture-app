@@ -1,12 +1,20 @@
 {
   "name": "tracker-capture-app",
+<<<<<<< HEAD
   "version": "31.9.0",
+=======
+  "version": "31.0.17",
+>>>>>>> ac3102d94d65dc306329e5895813481f3da7d57b
   "description": "DHIS2 tracker capture app",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild": "(rm -r build && mkdir build) || mkdir build",
+<<<<<<< HEAD
     "build": "webpack && cp package.json build && cp -r i18n build/i18n && cp -r core build/core && cp -r vendor build/vendor && cp -r d2-tracker build/d2-tracker && cp -r views build/views && cp -r styles build/styles && cp manifest.webapp build/ && cp -r img build/img && find ./components -iname \"*.html\" -exec rsync -R '{}' ./build/ \\;",
+=======
+    "build": "webpack && cp package.json build && cp -r i18n build/i18n && cp -r core build/core && cp -r vendor build/vendor && cp -r views build/views && cp -r styles build/styles && find ./components -iname \"*.html\" -exec rsync -R '{}' ./build/ \\;",
+>>>>>>> ac3102d94d65dc306329e5895813481f3da7d57b
     "start": "webpack-dev-server"
   },
   "repository": {
@@ -24,10 +32,14 @@
   "homepage": "https://github.com/dhis2/tracker-capture-app#readme",
   "dependencies": {
     "angular-vs-repeat": "^2.0.9",
+<<<<<<< HEAD
+=======
+    "d2-tracker": "35.0.7",
+>>>>>>> ac3102d94d65dc306329e5895813481f3da7d57b
     "file-loader": "^1.1.11",
-    "leaflet": "^1.3.1",
+    "leaflet": "^1.7.1",
     "leaflet-contextmenu": "^1.1.0",
-    "leaflet-control-geocoder": "^1.5.8",
+    "leaflet-control-geocoder": "^2.3.0",
     "leaflet-draw": "^1.0.2"
   },
   "devDependencies": {
