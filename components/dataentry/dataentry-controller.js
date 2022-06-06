@@ -419,7 +419,10 @@ trackerCapture.controller('DataEntryController',
                         $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEFIELD, bot does not have a field defined");                        
                     }
                 }
-            } else if (effect.action === "HIDEFIELDNODELETE") {
+            }
+            
+            /*
+            else if (effect.action === "HIDEFIELDNODELETE") {
                 if (effect.dataElement) {
 
                     if (affectedEvent.status !== 'SCHEDULE' && affectedEvent.status !== 'SKIPPED' && !affectedEvent.editingNotAllowed) {
@@ -443,6 +446,8 @@ trackerCapture.controller('DataEntryController',
                     }
                 }
             } 
+
+            */
             
             
             
