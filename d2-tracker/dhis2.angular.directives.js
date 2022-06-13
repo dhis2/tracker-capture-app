@@ -1964,12 +1964,12 @@ var d2Directives = angular.module('d2Directives', [])
             }
 
             var compareWithoutDiacritics = function(actual,expected){
-                var normalizedString = String(actual).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                var normalizedString = actual.normalize("NFD").toLowerCase().replace(/[\u0300-\u036f]/g, "");
                 return normalizedString.search(expected) >= 0;
             }
 
             var compareWithDiacritics = function(actual,expected){
-                var normalizedString = String(actual).normalize("NFD");
+                var normalizedString = actual.normalize("NFD").toLowerCase();
                 return normalizedString.search(expected) >= 0;
             }
 
@@ -1977,11 +1977,11 @@ var d2Directives = angular.module('d2Directives', [])
                 if(!searchParam){
                     currentFilteredOptions = filteredOptions;
                 } else {
-                    var needleWithDiacritics = String(searchParam).normalize("NFD");
-                    var needleWithoutDiacritics = String(needleWithDiacritics).replace(/[\u0300-\u036f]/g, "");
+                    var needleWithDiacritics = searchParam.normalize("NFD").toLowerCase();
+                    var needleWithoutDiacritics = needleWithDiacritics.replace(/[\u0300-\u036f]/g, "");
                     currentFilteredOptions = (needleWithDiacritics == needleWithoutDiacritics)
-                        ? $filter('filter')(filteredOptions, needleWithoutDiacritics, compareWithoutDiacritics)
-                        : $filter('filter')(filteredOptions, needleWithDiacritics, compareWithDiacritics);
+                        ? filteredOptions.filter((option) => compareWithoutDiacritics(option.displayName, needleWithoutDiacritics))
+                        : filteredOptions.filter((option) => compareWithDiacritics(option.displayName, needleWithDiacritics));
                 }
                 setOptions();
             }
