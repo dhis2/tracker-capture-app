@@ -228,7 +228,7 @@ function getOrgUnits()
         if(res.length > 0){
             return;
         }
-        return dhis2.tracker.getTrackerObjects('organisationUnits', 'organisationUnits', DHIS2URL + '/organisationUnits.json', 'paging=false&fields=id,displayName,path', 'idb', dhis2.tc.store);        
+        return dhis2.tracker.getTrackerObjects('organisationUnits', 'organisationUnits', DHIS2URL + '/organisationUnits.json', 'paging=true&pageSize=1000&fields=id,displayName,path', 'idb', dhis2.tc.store);        
     });    
 }
 

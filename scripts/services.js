@@ -3345,15 +3345,19 @@ i
         return writable;
     }
 })
-.service('TCOrgUnitService', function($q, $rootScope, TCStorageService, OrgUnitFactory){
+.service('TCOrgUnitService', function($q, $http, $rootScope, TCStorageService, OrgUnitFactory){
     this.get = function(uid) {
         var def = $q.defer();
         TCStorageService.currentStore.open().done(function(){
-            TCStorageService.currentStore.get('organisationUnits', uid).done(function(orgUnit){
-                $rootScope.$apply(function(){
-                    def.resolve(orgUnit);
+            TCStorageService.currentStore.get('organisationUnits', uid)
+                .then(function(orgUnit){
+                    return orgUnit || getOrgUnitFromServer(uid);
+                })
+                .then(function(orgUnit){
+                    $rootScope.$apply(function(){
+                        def.resolve(orgUnit);
+                    });
                 });
-            });
         });
         return def.promise;
     };
@@ -3380,6 +3384,16 @@ i
             });
         });
     }
+    var getOrgUnitFromServer = function(uid) {
+        const promise = $http.get(DHIS2URL + `/organisationUnits/${uid}.json?paging=false&fields=id,displayName,path`)
+            .then(function(response){
+                return response.data;
+            });
+
+        // Insert downloaded organisation unit in IndexedDB
+        promise.then(function(orgUnit) {
+            TCStorageService.currentStore.set('organisationUnits', orgUnit);
+        });
+        return promise;
+    }
 });
-
-
