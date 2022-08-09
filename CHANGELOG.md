@@ -1,3 +1,10 @@
+## [31.10.15](https://github.com/dhis2/tracker-capture-app/compare/v31.10.14...v31.10.15) (2022-08-09)
+
+
+### Bug Fixes
+
+* allow complex expressions in d2-function arguments ([#1502](https://github.com/dhis2/tracker-capture-app/issues/1502)) ([8113502](https://github.com/dhis2/tracker-capture-app/commit/81135021750caf6483225aea83809b6267fed535))
+
 ## [31.10.14](https://github.com/dhis2/tracker-capture-app/compare/v31.10.13...v31.10.14) (2022-07-28)
 
 
