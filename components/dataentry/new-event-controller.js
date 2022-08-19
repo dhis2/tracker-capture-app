@@ -220,6 +220,47 @@ trackerCapture.controller('EventCreationController',
         $scope.orgUnitError =  false;
         
         var newEvents = {events: []};
+
+            /********************
+			25/09/2020 - Get last Update Date and set the value of adding new event - start
+			********************/
+			var newEvent;
+			var reportDate = new Date();   
+			reportDate.setDate(reportDate.getDate());		  
+			var dd = reportDate.getDate();  
+			var mm = reportDate.getMonth() + 1;
+			var yyyy = reportDate.getFullYear();
+			if (dd < 10) {
+			dd = '0' + dd;
+			}
+			if (mm < 10) {
+			mm = '0' + mm;
+			}
+
+			var minutes = reportDate.getMinutes();
+			var hours = reportDate.getHours();
+
+			if (hours < 10) {
+				hours = '0' + hours;
+			}
+
+			if (minutes < 10) {
+					minutes = '0' + minutes;
+			}
+			var timeNow = hours + ":" + minutes;
+			var reportDate = yyyy + '-'+ mm + '-' + dd + 'T'+ timeNow;
+			var eventlastupdatedDateUid = "eszSkeX2wzN";
+			var userIdUid = "LFi3vm9dd5A";
+
+			var SessionStorageService = angular.element('body').injector().get('SessionStorageService');
+			var settings = SessionStorageService.get('USER_PROFILE');	
+			var usernameCurrent = settings.userCredentials.username.toUpperCase();		
+
+			/********************
+			25/09/2020 - Get last Update Date and set the value of adding new event - end
+			********************/	
+
+            /*
         var newEvent = {
             trackedEntityInstance: dummyEvent.trackedEntityInstance,
             program: dummyEvent.program,
@@ -230,6 +271,44 @@ trackerCapture.controller('EventCreationController',
             dataValues: [],
             status: 'ACTIVE'
         };
+
+        */
+
+        if (dummyEvent.programStage == "mRDg7F9tAZH")
+			{	       
+	        newEvent = {
+	            trackedEntityInstance: dummyEvent.trackedEntityInstance,
+	            program: dummyEvent.program,
+	            programStage: dummyEvent.programStage,
+	            enrollment: dummyEvent.enrollment,
+	            orgUnit: dummyEvent.orgUnit,
+				notes: [],
+				//origin dataValues assigned - replaced 25/09/2020
+				//dataValues: [],
+				//25/09/2020 - default event last update date 
+				dataValues: [{"dataElement": eventlastupdatedDateUid, "value": reportDate},
+							 {"dataElement": userIdUid, "value": usernameCurrent}],	
+	            status: 'ACTIVE'
+			};
+				
+			
+			}
+			else 
+			{
+				newEvent = {
+					trackedEntityInstance: dummyEvent.trackedEntityInstance,
+					program: dummyEvent.program,
+					programStage: dummyEvent.programStage,
+					enrollment: dummyEvent.enrollment,
+					orgUnit: dummyEvent.orgUnit,
+					notes: [],
+					//origin dataValues assigned - replaced 25/09/2020
+					//dataValues: [],
+					//25/09/2020 - default event last update date 
+					dataValues: [{"dataElement": eventlastupdatedDateUid, "value": reportDate}],	
+					status: 'ACTIVE'
+				};
+			}
         
         if ($scope.model.selectedStage.periodType) {
             if( $scope.isNewEvent ){
@@ -265,6 +344,685 @@ trackerCapture.controller('EventCreationController',
             if (response && response.response && response.response.importSummaries[0].status === 'SUCCESS') {
                 newEvent.event = response.response.importSummaries[0].reference;
                 $modalInstance.close({dummyEvent: dummyEvent, ev: newEvent});
+
+                		
+			//03/08/2020 - edit here for adding totals - end here
+			
+            var currentEventDetails = $scope.currentEvent;
+			var cumulativeTotal = 0;				
+			var selectedEntityid =  $scope.selectedEntity.trackedEntityInstance;			
+			var selectedEntityUrl = '../api/trackedEntityInstances/'+selectedEntityid + '?paging=false&fields=enrollments[events]&program=JRuLW57woOB&programStatus=ACTIVE';
+            									
+			$('#TableCaptureForm tr').each(function (i, row) {				
+							//console.log('row id: '+ row.id);
+							if (row.cells[3] != undefined && row.id == "row-OdcXvW9sRW7") {								
+								$.getJSON(selectedEntityUrl,
+									function (json) {					
+									var enrollmentsjson = json;
+									var cumulativeTotal = 0;
+									if (enrollmentsjson.enrollments != undefined) {										
+										if (enrollmentsjson.enrollments[0].events.length > 0) {											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'OdcXvW9sRW7') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+							}
+							else if (row.cells[3] != undefined && row.id == "row-sheYRpw3hy5")
+							{
+									$.getJSON(selectedEntityUrl,
+									function (json) {	
+									var cumulativeTotal = 0;				
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'sheYRpw3hy5') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)* 1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);	
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';				
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-N9YnWLhO5YT")
+							{
+									$.getJSON(selectedEntityUrl,
+									function (json) {	
+									var cumulativeTotal = 0;				
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'N9YnWLhO5YT') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);	
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';				
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-VnHmmfDZRL8")
+							{
+								  var cumulativeTotal = 0.0;
+
+									$.getJSON(selectedEntityUrl,
+									function (json) {		
+									var cumulativeTotal = 0;			
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'VnHmmfDZRL8') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-bsOhL5gMiA2")
+							{
+									$.getJSON(selectedEntityUrl,
+									function (json) {	
+									var cumulativeTotal = 0;				
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'bsOhL5gMiA2') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);		
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)			
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-lOl69tQ4SsN")
+							{
+									$.getJSON(selectedEntityUrl,
+									function (json) {
+									var cumulativeTotal = 0;					
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'lOl69tQ4SsN') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);	
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)				
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-YWT49rK48Kv")
+							{
+									$.getJSON(selectedEntityUrl,
+									function (json) {
+									var cumulativeTotal = 0;					
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'YWT49rK48Kv') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-Avuy4qMx47D")
+							{
+								
+								$.getJSON(selectedEntityUrl,
+									function (json) {	
+									var cumulativeTotal = 0;				
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'Avuy4qMx47D') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-XE0l3snpzH8" )
+							{							
+
+								$.getJSON(selectedEntityUrl,
+									function (json) {	
+										var cumulativeTotal = 0;				
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'XE0l3snpzH8') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-kL42B2XHokE")
+							{						
+
+								$.getJSON(selectedEntityUrl,
+									function (json) {	
+									var cumulativeTotal = 0;				
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'kL42B2XHokE') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-xp2cVKbT7z8")
+							{
+							
+
+								$.getJSON(selectedEntityUrl,
+									function (json) {		
+										var cumulativeTotal = 0;			
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'xp2cVKbT7z8') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-A3h8GTMv3CK")
+							{
+								$.getJSON(selectedEntityUrl,
+									function (json) {		
+										var cumulativeTotal = 0;			
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'A3h8GTMv3CK') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);	
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)				
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+								
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-jfJfoWAp5xb")
+							{
+
+								$.getJSON(selectedEntityUrl,
+									function (json) {	
+										var cumulativeTotal = 0;				
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'jfJfoWAp5xb') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-Pg1qZvjwNLd")
+							{
+								$.getJSON(selectedEntityUrl,
+									function (json) {	
+										var cumulativeTotal = 0;				
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'Pg1qZvjwNLd') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-Vg7NPVpmPvi")
+							{
+								
+								$.getJSON(selectedEntityUrl,
+									function (json) {	
+										var cumulativeTotal = 0;				
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'Vg7NPVpmPvi') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+							}
+							else if (row.cells[3] != undefined && row.id == "row-TlyT82eTiFU")
+							{							
+								$.getJSON(selectedEntityUrl,
+									function (json) {	
+										var cumulativeTotal = 0;				
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'TlyT82eTiFU') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+
+
+							}
+
+							else if (row.cells[3] != undefined && row.id == "row-SnGNuVm0fbD")
+							{							
+								$.getJSON(selectedEntityUrl,
+									function (json) {	
+										var cumulativeTotal = 0;				
+									var enrollmentsjson = json;
+									if (enrollmentsjson.enrollments != undefined) {
+												
+										if (enrollmentsjson.enrollments[0].events.length > 0) {
+											
+											$.each(enrollmentsjson.enrollments[0].events, function (i, event) {
+												if (event.programStage == 'mRDg7F9tAZH') {
+													$.each(event.dataValues, function (s, dataValue) {
+														var dataElement = dataValue.dataElement;
+														if (dataElement == 'SnGNuVm0fbD') {
+															if (dataValue.value != undefined) {
+																cumulativeTotal = 1.0*cumulativeTotal + (dataValue.value)*1.0;
+																//console.log('event: ' + event.event +'  dataValue: ' + dataValue.value);
+																row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)					
+															}
+															return false;
+														}
+													})
+												}
+											})
+										}
+									}
+									})
+
+								//row.cells[3].innerHTML = '<p style="margin-bottom:.0001pt; padding:0cm 5.4pt 0cm 5.4pt">' + cumulativeTotal + '</p>';	//console.log(row.cells[3].innerHTML)
+								var el = angular.element(row);
+								var scope = el.scope();
+								var $injector = el.injector();
+								$injector.invoke(function ($compile) {
+									$compile(el)(scope)
+								})
+							}
+			})		
+				
+			//03/08/2020 - edit here for adding totals - end here
+			
+
+            
+
             } else {
                 $scope.eventCreationForm.submitted = false;
             }

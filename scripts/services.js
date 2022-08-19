@@ -3293,7 +3293,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         }
     }
 })
-.service('AccessUtils', function($q, TCStorageService){
+.service('AccessUtils', function($http, $q, TCStorageService){
 
     this.anyWritable = function(accessKeyValuePair){
         if(accessKeyValuePair){
@@ -3327,6 +3327,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             }
         });
         return writable;
+    }
+
+    this.withinUserHierarchy = function(ou) {
+        return $http.get(DHIS2URL + '/organisationUnits?withinUserHierarchy=true&fields=id&filter=id:eq:' + ou).then(function(response) {
+            return response.data.organisationUnits.length !== 0;
+        });
     }
 })
 .service('TCOrgUnitService', function($q, $http, $rootScope, TCStorageService, OrgUnitFactory){

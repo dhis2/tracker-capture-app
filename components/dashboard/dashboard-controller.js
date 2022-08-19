@@ -176,7 +176,6 @@ trackerCapture.controller('DashboardController',
                         $scope.optionSets[optionSet.id] = optionSet;
                     });
                     return AttributesFactory.getAll();
-
                 }).then(function(atts) {
                     $scope.attributesById = [];
                     angular.forEach(atts, function (att) {
