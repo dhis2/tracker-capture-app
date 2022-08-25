@@ -1,3 +1,10 @@
+## [31.10.17](https://github.com/dhis2/tracker-capture-app/compare/v31.10.16...v31.10.17) (2022-08-25)
+
+
+### Bug Fixes
+
+* use only the first two characters of `ai` to determine fixed length ([#1506](https://github.com/dhis2/tracker-capture-app/issues/1506)) ([7d2c8aa](https://github.com/dhis2/tracker-capture-app/commit/7d2c8aa09f8515c35edcf2c29d0e19afe3bd663c))
+
 ## [31.10.16](https://github.com/dhis2/tracker-capture-app/compare/v31.10.15...v31.10.16) (2022-08-25)
 
 
