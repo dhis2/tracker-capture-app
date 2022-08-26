@@ -1,3 +1,10 @@
+## [31.10.18](https://github.com/dhis2/tracker-capture-app/compare/v31.10.17...v31.10.18) (2022-08-26)
+
+
+### Bug Fixes
+
+* **translations:** sync translations from transifex (master) ([0965b21](https://github.com/dhis2/tracker-capture-app/commit/0965b21a17fa4edc7db1af900b4cff8786488b5e))
+
 ## [31.10.17](https://github.com/dhis2/tracker-capture-app/compare/v31.10.16...v31.10.17) (2022-08-25)
 
 
