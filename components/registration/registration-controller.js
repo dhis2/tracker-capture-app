@@ -913,10 +913,6 @@ trackerCapture.controller('RegistrationController',
         }
     });
 
-    $scope.showFieldIssues = function(field) {
-        return field.$modelValue || $scope.interacted(field);
-    }
-
     $scope.interacted = function (field) {
         var status = false;
         if (field) {
