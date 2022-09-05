@@ -1,3 +1,10 @@
+## [31.10.19](https://github.com/dhis2/tracker-capture-app/compare/v31.10.18...v31.10.19) (2022-09-05)
+
+
+### Bug Fixes
+
+* [DHIS2-13617] show warnings and errors on non-empty fields ([#1515](https://github.com/dhis2/tracker-capture-app/issues/1515)) ([5f41692](https://github.com/dhis2/tracker-capture-app/commit/5f41692c98663ab35a3d96109d1d66625f31dbbb))
+
 ## [31.10.18](https://github.com/dhis2/tracker-capture-app/compare/v31.10.17...v31.10.18) (2022-08-26)
 
 
