@@ -1247,13 +1247,29 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             this.getAll().then(function(atts){
 
                 if(program && program.id){
-                    var attributes = [];
+                    var attributes = {};
                     var programAttributes = [];
+                    var trackedEntityAttributes = [];
                     angular.forEach(atts, function(attribute){
                         attributes[attribute.id] = attribute;
                     });
 
-                    angular.forEach(program.programTrackedEntityAttributes, function(pAttribute){
+                    if (program.programSections.length) {
+                        var programTrackedEntityAttributes = program.programTrackedEntityAttributes.reduce(function(acc, pAttribute){
+                            acc[pAttribute.trackedEntityAttribute.id] = pAttribute;
+                            return acc;
+                        }, {});
+
+                        angular.forEach(program.programSections, function(programSection){
+                            angular.forEach(programSection.trackedEntityAttributes, function(trackedEntityAttribute){
+                                trackedEntityAttributes.push(programTrackedEntityAttributes[trackedEntityAttribute.id]);
+                            });
+                        });
+                    } else {
+                        trackedEntityAttributes = program.programTrackedEntityAttributes;
+                    }
+
+                    angular.forEach(trackedEntityAttributes, function(pAttribute){
                         var att = attributes[pAttribute.trackedEntityAttribute.id];
                         
                         if (att) {
