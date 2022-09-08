@@ -4298,7 +4298,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             });
         },
         defaultAttributeSections: function(attributes) {
-            return [{ attributes: attributes.filter(({attribute}) => attribute) }];
+            const attributeSections = [{ attributes: attributes.filter(({attribute}) => attribute) }];
+            return { [true]: attributeSections, [false]: attributeSections };
         },
         customAttributeSections: function(attributes, programSections) {
             var programTrackedEntityAttributes = attributes.reduce(function(acc, attribute){
@@ -4308,17 +4309,19 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 return acc;
             }, {});
 
-            var attributeSections = programSections.reduce(function(acc, programSection) {
-                acc.push({
+            // `true`: all attributes combined into a single section
+            // `false`: attributes distributed into multiple sections
+            return programSections.reduce(function(acc, programSection) {
+                const attributeList = acc[false][0].attributes;
+                acc[true].push({
                     displayName: programSection.displayName,
-                    attributes: programSection.trackedEntityAttributes.map(({id}) => programTrackedEntityAttributes[id]),
+                    attributes: programSection.trackedEntityAttributes.map(({id}) => {
+                        attributeList.push(programTrackedEntityAttributes[id])
+                        return programTrackedEntityAttributes[id];
+                    }),
                 });
                 return acc;
-            }, []);
-
-            attributeSections.custom = true;
-
-            return attributeSections;
+            }, { [true]: [], [false]: [{ attributes: [] }], custom: true });
         }
     }
 
