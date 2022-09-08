@@ -1,8 +1,10 @@
-<div ng-if="widgetTitle !== 'profile' && trackedEntityTypes.selected" class="section-label section-spacing vertical-spacing">
+<div ng-if="widgetTitle !== 'profile' && trackedEntityTypes.selected && !attributeSections.custom" class="section-label section-spacing vertical-spacing">
     {{'profile'| translate}}
 </div>
-<table class="dhis2-list-table-striped default-form-table">
-    <tr ng-if="trackedEntityTypes.selected && trackedEntityTypes.selected.featureType && ['POLYGON','POINT'].includes(trackedEntityTypes.selected.featureType) && !editingDisabled">
+<div ng-repeat="section in attributeSections">
+    <div ng-if="section.displayName" class="section-label section-spacing vertical-spacing">{{section.displayName}}</div>
+    <table class="dhis2-list-table-striped default-form-table">
+    <tr ng-if="$first && trackedEntityTypes.selected && trackedEntityTypes.selected.featureType && ['POLYGON','POINT'].includes(trackedEntityTypes.selected.featureType) && !editingDisabled" class="dhis2-list-table-striped default-form-table">
         <td>
             {{ trackedEntityTypes.selected.featureType.toLowerCase()+'_on_map' | translate }}
         </td>
@@ -16,7 +18,7 @@
             </d2-geometry>
         </td>
     </tr>
-    <tr ng-if="trackedEntityTypes.selected && !hiddenFields[attribute.id] && ((editingDisabled  && attribute.show) || !editingDisabled)" ng-repeat="attribute in attributes | filter: {attribute: 'true'} ">
+    <tr ng-if="trackedEntityTypes.selected && !hiddenFields[attribute.id] && ((editingDisabled  && attribute.show) || !editingDisabled)" ng-repeat="attribute in section.attributes | filter: {attribute: 'true'} ">
         <td>
             <span d2-pop-over
                 details="{{'details'| translate}}"
@@ -405,4 +407,5 @@
             <button type="button" class="btn btn-default" ng-click="fetchGeneratedAttribute(attribute)">{{'generate' | translate}}</span>
         </td>
     </tr>
-</table>
+    </table>
+</div>

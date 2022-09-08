@@ -4296,6 +4296,29 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                     return response.data;
                 });
             });
+        },
+        defaultAttributeSections: function(attributes) {
+            return [{ attributes: attributes.filter(({attribute}) => attribute) }];
+        },
+        customAttributeSections: function(attributes, programSections) {
+            var programTrackedEntityAttributes = attributes.reduce(function(acc, attribute){
+                if (attribute.programTrackedEntityAttribute) {
+                    acc[attribute.programTrackedEntityAttribute.trackedEntityAttribute.id] = attribute;
+                }
+                return acc;
+            }, {});
+
+            var attributeSections = programSections.reduce(function(acc, programSection) {
+                acc.push({
+                    displayName: programSection.displayName,
+                    attributes: programSection.trackedEntityAttributes.map(({id}) => programTrackedEntityAttributes[id]),
+                });
+                return acc;
+            }, []);
+
+            attributeSections.custom = true;
+
+            return attributeSections;
         }
     }
 
