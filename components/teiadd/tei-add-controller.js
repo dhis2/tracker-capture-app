@@ -761,14 +761,19 @@ trackerCapture.controller('TEIAddController',
         $scope.customFormExists = false;        
         AttributesFactory.getByProgram($scope.base.selectedProgramForRelative).then(function(atts){
             $scope.attributes = TEIGridService.generateGridColumns(atts, null,false).columns;        
-            if($scope.base.selectedProgramForRelative && $scope.base.selectedProgramForRelative.id && $scope.base.selectedProgramForRelative.dataEntryForm && $scope.base.selectedProgramForRelative.dataEntryForm.htmlCode){
-                $scope.customFormExists = true;
-                $scope.trackedEntityForm = $scope.base.selectedProgramForRelative.dataEntryForm;  
-                $scope.trackedEntityForm.attributes = $scope.attributes;
-                $scope.trackedEntityForm.selectIncidentDatesInFuture = $scope.base.selectedProgramForRelative.selectIncidentDatesInFuture;
-                $scope.trackedEntityForm.selectEnrollmentDatesInFuture = $scope.base.selectedProgramForRelative.selectEnrollmentDatesInFuture;
-                $scope.trackedEntityForm.displayIncidentDate = $scope.base.selectedProgramForRelative.displayIncidentDate;
-                $scope.customRegistrationForm = CustomFormService.getForTrackedEntity($scope.trackedEntityForm, 'RELATIONSHIP');
+            if($scope.base.selectedProgramForRelative) {
+                if($scope.base.selectedProgramForRelative.id && $scope.base.selectedProgramForRelative.dataEntryForm && $scope.base.selectedProgramForRelative.dataEntryForm.htmlCode){
+                    $scope.customFormExists = true;
+                    $scope.trackedEntityForm = $scope.base.selectedProgramForRelative.dataEntryForm;
+                    $scope.trackedEntityForm.attributes = $scope.attributes;
+                    $scope.trackedEntityForm.selectIncidentDatesInFuture = $scope.base.selectedProgramForRelative.selectIncidentDatesInFuture;
+                    $scope.trackedEntityForm.selectEnrollmentDatesInFuture = $scope.base.selectedProgramForRelative.selectEnrollmentDatesInFuture;
+                    $scope.trackedEntityForm.displayIncidentDate = $scope.base.selectedProgramForRelative.displayIncidentDate;
+                    $scope.customRegistrationForm = CustomFormService.getForTrackedEntity($scope.trackedEntityForm, 'RELATIONSHIP');
+                }
+                $scope.attributeSections = ($scope.base.selectedProgramForRelative.programSections.length)
+                    ? AttributeUtils.customAttributeSections($scope.attributes, $scope.base.selectedProgramForRelative.programSections)
+                    : AttributeUtils.defaultAttributeSections($scope.attributes);
             }
             assignInheritance();
             fetchGeneratedAttributes(); 
