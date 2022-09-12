@@ -1,3 +1,10 @@
+## [31.10.20](https://github.com/dhis2/tracker-capture-app/compare/v31.10.19...v31.10.20) (2022-09-12)
+
+
+### Bug Fixes
+
+* [DHIS2-13712] run rules engine when changing yes/no fields in add relationship ([#1528](https://github.com/dhis2/tracker-capture-app/issues/1528)) ([8516a97](https://github.com/dhis2/tracker-capture-app/commit/8516a979c4a59357a0d824cd8fbc5cb316deda58))
+
 ## [31.10.19](https://github.com/dhis2/tracker-capture-app/compare/v31.10.18...v31.10.19) (2022-09-05)
 
 
