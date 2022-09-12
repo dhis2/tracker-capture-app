@@ -948,7 +948,7 @@ trackerCapture.controller('TEIAddController',
     $scope.saveDataValueForRadio = function(field, context, value){
         // Minimal working implementation for executing program rules based on changes in Yes/No attributes.
         // The more complex implementation in registration-controller.js may contain the solution in case
-        // this contains deficiencies.
+        // this contains shortcomings.
         context[field.id] = value;
         return $scope.executeRules();
     }
