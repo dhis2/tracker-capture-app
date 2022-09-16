@@ -411,7 +411,9 @@ trackerCapture.controller('EnrollmentController',
         };
 
         $scope.updateEnrollmentDate = function(){
-            if($scope.enrollmentForm && $scope.enrollmentForm.enrollmentDateForm && $scope.enrollmentForm.enrollmentDateForm.$invalid){
+            if($scope.enrollmentForm && $scope.enrollmentForm.enrollmentDateForm && $scope.enrollmentForm.enrollmentDateForm.$invalid
+                || !DateUtils.isValid($scope.enrollmentDateState.date)
+                || !$scope.selectedProgram.selectEnrollmentDatesInFuture && DateUtils.isAfterToday($scope.enrollmentDateState.date)){
                 $scope.enrollmentDateState.date = $scope.selectedEnrollment.enrollmentDate;
                 return NotificationService.showNotifcationDialog($translate.instant('error'), $scope.selectedProgram.enrollmentDateLabel + ' ' + $translate.instant('invalid'));
             }
@@ -433,7 +435,9 @@ trackerCapture.controller('EnrollmentController',
         }
 
         $scope.updateIncidentDate = function(){
-            if($scope.enrollmentForm && $scope.enrollmentForm.incidentDateForm && $scope.enrollmentForm.incidentDateForm.$invalid){
+            if($scope.enrollmentForm && $scope.enrollmentForm.incidentDateForm && $scope.enrollmentForm.incidentDateForm.$invalid
+                || !DateUtils.isValid($scope.incidentDateState.date)
+                || !$scope.selectedProgram.selectIncidentDatesInFuture && DateUtils.isAfterToday($scope.incidentDateState.date)){
                 $scope.incidentDateState.date = $scope.selectedEnrollment.incidentDate;
                 return NotificationService.showNotifcationDialog($translate.instant('error'), $scope.selectedProgram.incidentDateLabel + ' ' + $translate.instant('invalid'));
             }
