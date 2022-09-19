@@ -1,3 +1,10 @@
+## [31.10.21](https://github.com/dhis2/tracker-capture-app/compare/v31.10.20...v31.10.21) (2022-09-19)
+
+
+### Bug Fixes
+
+* [DHIS2-13635] return extracted GS1 datamatrix values directly ([#1531](https://github.com/dhis2/tracker-capture-app/issues/1531)) ([7c15d3a](https://github.com/dhis2/tracker-capture-app/commit/7c15d3ae750240cf4b651e4d7b7812395162519d))
+
 ## [31.10.20](https://github.com/dhis2/tracker-capture-app/compare/v31.10.19...v31.10.20) (2022-09-12)
 
 
