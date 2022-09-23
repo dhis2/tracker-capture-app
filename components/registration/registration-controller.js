@@ -380,7 +380,7 @@ trackerCapture.controller('RegistrationController',
                 }
                 $scope.attributeSections = ($scope.selectedProgram.programSections.length)
                     ? AttributeUtils.userDefinedAttributeSections($scope.attributes, $scope.selectedProgram.programSections)
-                    : AttributeUtils.defaultAttributeSections($scope.attributes);
+                    : AttributeUtils.defaultAttributeSections($scope.attributes, $scope.widgetTitle);
             });
         }
 
@@ -396,7 +396,7 @@ trackerCapture.controller('RegistrationController',
                     if (generateAttributes) {
                         fetchGeneratedAttributes();
                     }
-                    $scope.attributeSections = AttributeUtils.defaultAttributeSections($scope.attributes);
+                    $scope.attributeSections = AttributeUtils.defaultAttributeSections($scope.attributes, $scope.widgetTitle);
                 }
             });
         }

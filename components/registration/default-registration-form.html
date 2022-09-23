@@ -1,6 +1,3 @@
-<div ng-if="widgetTitle !== 'profile' && trackedEntityTypes.selected && attributeSections[false][0].displayName === ''" class="section-label section-spacing vertical-spacing">
-    {{'profile'| translate}}
-</div>
 <div ng-repeat="section in attributeSections[!editingDisabled]">
     <div ng-if="section.displayName && (registrationMode !== 'PROFILE' || !editingDisabled)" class="section-label section-spacing vertical-spacing">{{section.displayName}}</div>
     <table class="dhis2-list-table-striped default-form-table">

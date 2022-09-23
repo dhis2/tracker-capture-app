@@ -4240,7 +4240,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         }
     };
 })
-.factory("AttributeUtils", function($http,DHIS2URL){
+.factory("AttributeUtils", function($http,DHIS2URL,$translate){
     var getValueUrl = function(valueToSet, selectedTei, program, orgUnit, required){
         var valueUrlBase = valueToSet+"=";
         var valueUrl = null;
@@ -4297,8 +4297,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 });
             });
         },
-        defaultAttributeSections: function(attributes) {
-            const attributeSections = [{ attributes: attributes.filter(({attribute}) => attribute) }];
+        defaultAttributeSections: function(attributes, widgetTitle) {
+            const attributeSections = [{ displayName: widgetTitle === 'profile' ? '' : $translate.instant('profile'), attributes }];
             return { [true]: attributeSections, [false]: attributeSections };
         },
         userDefinedAttributeSections: function(attributes, programSections) {
