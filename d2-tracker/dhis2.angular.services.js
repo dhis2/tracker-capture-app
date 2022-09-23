@@ -4301,7 +4301,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             const attributeSections = [{ attributes: attributes.filter(({attribute}) => attribute) }];
             return { [true]: attributeSections, [false]: attributeSections };
         },
-        customAttributeSections: function(attributes, programSections) {
+        userDefinedAttributeSections: function(attributes, programSections) {
             var programTrackedEntityAttributes = attributes.reduce(function(acc, attribute){
                 if (attribute.programTrackedEntityAttribute) {
                     acc[attribute.programTrackedEntityAttribute.trackedEntityAttribute.id] = attribute;
@@ -4321,7 +4321,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                     }),
                 });
                 return acc;
-            }, { [true]: [], [false]: [{ attributes: [] }], custom: true });
+            }, { [true]: [], [false]: [{ attributes: [] }] });
         }
     }
 

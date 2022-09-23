@@ -1,4 +1,4 @@
-<div ng-if="widgetTitle !== 'profile' && trackedEntityTypes.selected && !attributeSections.custom" class="section-label section-spacing vertical-spacing">
+<div ng-if="widgetTitle !== 'profile' && trackedEntityTypes.selected && attributeSections[false][0].displayName === ''" class="section-label section-spacing vertical-spacing">
     {{'profile'| translate}}
 </div>
 <div ng-repeat="section in attributeSections[!editingDisabled]">

@@ -379,7 +379,7 @@ trackerCapture.controller('RegistrationController',
                     }
                 }
                 $scope.attributeSections = ($scope.selectedProgram.programSections.length)
-                    ? AttributeUtils.customAttributeSections($scope.attributes, $scope.selectedProgram.programSections)
+                    ? AttributeUtils.userDefinedAttributeSections($scope.attributes, $scope.selectedProgram.programSections)
                     : AttributeUtils.defaultAttributeSections($scope.attributes);
             });
         }

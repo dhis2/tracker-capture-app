@@ -772,7 +772,7 @@ trackerCapture.controller('TEIAddController',
                     $scope.customRegistrationForm = CustomFormService.getForTrackedEntity($scope.trackedEntityForm, 'RELATIONSHIP');
                 }
                 $scope.attributeSections = ($scope.base.selectedProgramForRelative.programSections.length)
-                    ? AttributeUtils.customAttributeSections($scope.attributes, $scope.base.selectedProgramForRelative.programSections)
+                    ? AttributeUtils.userDefinedAttributeSections($scope.attributes, $scope.base.selectedProgramForRelative.programSections)
                     : AttributeUtils.defaultAttributeSections($scope.attributes);
             }
             assignInheritance();
