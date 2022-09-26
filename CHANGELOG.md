@@ -1,3 +1,10 @@
+## [31.10.23](https://github.com/dhis2/tracker-capture-app/compare/v31.10.22...v31.10.23) (2022-09-26)
+
+
+### Bug Fixes
+
+* [DHIS2-11080] validate manually typed enrollment dates and incident dates ([#1544](https://github.com/dhis2/tracker-capture-app/issues/1544)) ([6439a3a](https://github.com/dhis2/tracker-capture-app/commit/6439a3abdf2cdc890db43f950da140838e3f3387))
+
 ## [31.10.22](https://github.com/dhis2/tracker-capture-app/compare/v31.10.21...v31.10.22) (2022-09-24)
 
 
