@@ -1,408 +1,408 @@
-<div ng-if="widgetTitle !== 'profile' && trackedEntityTypes.selected" class="section-label section-spacing vertical-spacing">
-    {{'profile'| translate}}
-</div>
-<table class="dhis2-list-table-striped default-form-table">
-    <tr ng-if="trackedEntityTypes.selected && trackedEntityTypes.selected.featureType && ['POLYGON','POINT'].includes(trackedEntityTypes.selected.featureType) && !editingDisabled">
-        <td>
-            {{ trackedEntityTypes.selected.featureType.toLowerCase()+'_on_map' | translate }}
-        </td>
-        <td class="absorbing-column">
-            <d2-geometry
-                d2-object-id="geometry"
-                d2-object="selectedTei"
-                d2-disabled=""
-                d2-geometry-type="trackedEntityTypes.selected.featureType"
-                >
-            </d2-geometry>
-        </td>
-    </tr>
-    <tr ng-if="trackedEntityTypes.selected && !hiddenFields[attribute.id] && ((editingDisabled  && attribute.show) || !editingDisabled)" ng-repeat="attribute in attributes | filter: {attribute: 'true'} ">
-        <td>
-            <span d2-pop-over
-                details="{{'details'| translate}}"
-                content="attribute"
-                class="popover-label hideInPrint small-horizontal-spacing"
-                template="attribute-details.html"
-                trigger="click"
-                placement="right">
-                <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{attribute.formName ? attribute.formName : attribute.displayName}}</a>
-            </span>
-            <span class="not-for-screen">
-                {{attribute.formName ? attribute.formName : attribute.displayName}}
-            </span>
-            <span ng-if="attributeIsRequired(attribute.id, attribute.mandatory)" class="required">*</span>
-        </td>
-        <td class="absorbing-column">
-            <ng-form name="innerForm">
-                <span ng-if="attribute.optionSetValue">
-                    <span class="hideInPrint" ng-if="!attribute.renderOptionsAsRadio || optionSets[attributesById[attribute.id].optionSet.id].options.length >= 7">
-                        <d2-option-list d2-model="selectedTei"
-                                        d2-model-id="attribute.id"
-                                        d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
-                                        d2-disabled="attributeFieldDisabled(attribute)"
-                                        d2-change="teiValueUpdated(selectedTei,attribute.id)"
-                                        d2-option-filter="optionVisibility"
-                                        d2-max-option-size="maxOptionSize"
-                                        d2-all-options="optionSets[attributesById[attribute.id].optionSet.id].options">
-                        </d2-option-list>
+<div ng-repeat="section in attributeSections[!editingDisabled]">
+    <div ng-if="section.displayName && (registrationMode !== 'PROFILE' || !editingDisabled)" class="section-label section-spacing vertical-spacing">{{section.displayName}}</div>
+    <table class="dhis2-list-table-striped default-form-table">
+        <tr ng-if="$first && trackedEntityTypes.selected && trackedEntityTypes.selected.featureType && ['POLYGON','POINT'].includes(trackedEntityTypes.selected.featureType) && !editingDisabled" class="dhis2-list-table-striped default-form-table">
+            <td>
+                {{ trackedEntityTypes.selected.featureType.toLowerCase()+'_on_map' | translate }}
+            </td>
+            <td class="absorbing-column">
+                <d2-geometry
+                    d2-object-id="geometry"
+                    d2-object="selectedTei"
+                    d2-disabled=""
+                    d2-geometry-type="trackedEntityTypes.selected.featureType"
+                    >
+                </d2-geometry>
+            </td>
+        </tr>
+        <tr ng-if="trackedEntityTypes.selected && !hiddenFields[attribute.id] && (!editingDisabled || attribute.show)" ng-repeat="attribute in section.attributes | filter: {attribute: 'true'} ">
+            <td>
+                <span d2-pop-over
+                    details="{{'details'| translate}}"
+                    content="attribute"
+                    class="popover-label hideInPrint small-horizontal-spacing"
+                    template="attribute-details.html"
+                    trigger="click"
+                    placement="right">
+                    <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">{{attribute.formName ? attribute.formName : attribute.displayName}}</a>
+                </span>
+                <span class="not-for-screen">
+                    {{attribute.formName ? attribute.formName : attribute.displayName}}
+                </span>
+                <span ng-if="attributeIsRequired(attribute.id, attribute.mandatory)" class="required">*</span>
+            </td>
+            <td class="absorbing-column">
+                <ng-form name="innerForm">
+                    <span ng-if="attribute.optionSetValue">
+                        <span class="hideInPrint" ng-if="!attribute.renderOptionsAsRadio || optionSets[attributesById[attribute.id].optionSet.id].options.length >= 7">
+                            <d2-option-list d2-model="selectedTei"
+                                            d2-model-id="attribute.id"
+                                            d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
+                                            d2-disabled="attributeFieldDisabled(attribute)"
+                                            d2-change="teiValueUpdated(selectedTei,attribute.id)"
+                                            d2-option-filter="optionVisibility"
+                                            d2-max-option-size="maxOptionSize"
+                                            d2-all-options="optionSets[attributesById[attribute.id].optionSet.id].options">
+                            </d2-option-list>
+                        </span>
+                        <span class="hideInPrint" ng-if="attribute.renderOptionsAsRadio && optionSets[attributesById[attribute.id].optionSet.id].options.length < 7">
+                            <d2-radio id="attribute.id"
+                                    d2-name="foo"
+                                    d2-object="selectedTei"
+                                    d2-option-filter="optionVisibility"
+                                    d2-options="optionSets[attributesById[attribute.id].optionSet.id].options"
+                                    d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
+                                    d2-disabled="attributeFieldDisabled(attribute)">
+                            </d2-radio>
+                        </span>
+                        <span class="not-for-screen">
+                            <input type="text" ng-attr-value={{selectedTei[attribute.id]}}>
+                        </span>
                     </span>
-                    <span class="hideInPrint" ng-if="attribute.renderOptionsAsRadio && optionSets[attributesById[attribute.id].optionSet.id].options.length < 7">
-                        <d2-radio id="attribute.id" 
-                                d2-name="foo" 
+
+                    <span ng-if="!attribute.optionSetValue" ng-switch="attribute.valueType">
+                        <span ng-switch-when="DATE">
+                            <input type="text"
+                                ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                                name="foo"
+                                class="form-control"
+                                d2-date
+                                d2-date-validator
+                                max-date="attribute.allowFutureDate ? '' : 0"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                blur-or-change="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                        </span>
+                        <span ng-switch-when="DATETIME">
+                            <d2-date-time datetime-model="selectedTei"
+                                        datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
+                                        datetime-model-id="attribute.id"
+                                        datetime-max-date="attribute.allowFutureDate ? '' : 0"
+                                        datetime-required="attributeIsRequired(attribute.id, attribute.mandatory)"
+                                        datetime-save-methode="teiValueUpdated"
+                                        datetime-save-methode-parameter1="selectedTei"
+                                        datetime-save-methode-parameter2="attribute.id"
+                                        datetime-use-notification="false"
+                                        datetime-disabled="attributeFieldDisabled(attribute)">
+                            </d2-date-time>
+                        </span>
+                        <span ng-switch-when="TIME">
+                            <d2-time time-model="selectedTei"
+                                    time-model-id="attribute.id"
+                                    time-required="attributeIsRequired(attribute.id, attribute.mandatory)"
+                                    time-save-methode="teiValueUpdated"
+                                    time-save-methode-parameter1="selectedTei"
+                                    time-save-methode-parameter2="attribute.id"
+                                    time-disabled="attributeFieldDisabled(attribute)"
+                                    time-format="timeFormat">
+                            </d2-time>
+                        </span>
+                        <span ng-switch-when="TRUE_ONLY">
+                            <input type="checkbox"
+                                name="foo"
+                                class="form-control-checkbox"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                ng-change="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                        </span>
+                        <span ng-switch-when="BOOLEAN" class="form-control">
+                            <span class="hideInPrint">
+                                <d2-radio-button
+                                    dh-required="attributeIsRequired(attribute.id, attribute.mandatory)"
+                                    dh-disabled="selectedOrgUnit.closedStatus || editingDisabled || !hasTeiWrite()"
+                                    dh-value="selectedTei[attribute.id]"
+                                    dh-name="foo"
+                                    dh-current-element="currentElement"
+                                    dh-event="currentEvent.event"
+                                    dh-id="attribute.id"
+                                    dh-click="saveDataValueForRadio(attribute, selectedTei, value)">
+                                </d2-radio-button>
+                            </span>
+                            <span class="not-for-screen">
+                                <label class="radio-inline"><input type="radio" ng-attr-value="true" ng-model="selectedTei[attribute.id]">{{'yes' | translate}}</label>
+                                <label class="radio-inline"><input type="radio" ng-attr-value="false" ng-model="selectedTei[attribute.id]" >{{'no' | translate}}</label>
+                            </span>
+                        </span>
+                        <span ng-switch-when="NUMBER">
+                            <span class="hideInPrint">
+                                <input type="number"
+                                    name="foo"
+                                    class="form-control"
+                                    ng-model="selectedTei[attribute.id]"
+                                    ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                    selected-tet={{trackedEntityTypes.selected.id}}
+                                    attribute-data={{attribute}}
+                                    selected-program-id={{selectedProgram.id}}
+                                    selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                    d2-number-validator
+                                    number-type={{attribute.valueType}}
+                                    ng-disabled="attributeFieldDisabled(attribute)"
+                                    ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                    ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                            </span>
+                            <span class="not-for-screen">
+                                <input type="text" class="form-control" ng-attr-value={{selectedTei[attribute.id]}}>
+                            </span>
+                        </span>
+                        <span ng-switch-when="PERCENTAGE">
+                            <input type="number"
+                                name="foo"
+                                class="form-control"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                d2-number-validator
+                                number-type={{attribute.valueType}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                        </span>
+                        <span ng-switch-when="INTEGER_POSITIVE">
+                            <input type="number"
+                                name="foo"
+                                class="form-control"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                d2-number-validator
+                                number-type={{attribute.valueType}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                        </span>
+                        <span ng-switch-when="INTEGER_NEGATIVE">
+                            <input type="number"
+                                name="foo"
+                                class="form-control"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                d2-number-validator
+                                number-type={{attribute.valueType}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                        </span>
+                        <span ng-switch-when="INTEGER_ZERO_OR_POSITIVE">
+                            <input type="number"
+                                name="foo"
+                                class="form-control"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                d2-number-validator
+                                number-type={{attribute.valueType}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                        </span>
+                        <span ng-switch-when="INTEGER">
+                            <input type="number"
+                                name="foo"
+                                class="form-control"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                d2-number-validator
+                                number-type={{attribute.valueType}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                        </span>
+                        <span ng-switch-when="AGE">
+                            <d2-age name="foo"
+                                id="{{attribute.id}}"
                                 d2-object="selectedTei"
-                                d2-option-filter="optionVisibility"
-                                d2-options="optionSets[attributesById[attribute.id].optionSet.id].options"
                                 d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
                                 d2-disabled="attributeFieldDisabled(attribute)">
-                        </d2-radio>
-                    </span>
-                    <span class="not-for-screen">
-                        <input type="text" ng-attr-value={{selectedTei[attribute.id]}}>
-                    </span>        
-                </span> 
-
-                <span ng-if="!attribute.optionSetValue" ng-switch="attribute.valueType">
-                    <span ng-switch-when="DATE">
-                        <input type="text"
-                               ng-attr-placeholder="{{dhis2CalendarFormat.keyDateFormat}}" 
-                               name="foo" 
-                               class="form-control"
-                               d2-date
-                               d2-date-validator 
-                               max-date="attribute.allowFutureDate ? '' : 0"
-                               ng-model="selectedTei[attribute.id]"                               
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               blur-or-change="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                    </span>
-                    <span ng-switch-when="DATETIME">
-                        <d2-date-time datetime-model="selectedTei"
-                                      datetime-date-placeholder="{{dhis2CalendarFormat.keyDateFormat}}"
-                                      datetime-model-id="attribute.id"
-                                      datetime-max-date="attribute.allowFutureDate ? '' : 0"
-                                      datetime-required="attributeIsRequired(attribute.id, attribute.mandatory)"
-                                      datetime-save-methode="teiValueUpdated"
-                                      datetime-save-methode-parameter1="selectedTei"
-                                      datetime-save-methode-parameter2="attribute.id"
-                                      datetime-use-notification="false"
-                                      datetime-disabled="attributeFieldDisabled(attribute)">
-                        </d2-date-time>
-                    </span>
-                    <span ng-switch-when="TIME">
-                        <d2-time time-model="selectedTei"
-                                 time-model-id="attribute.id"
-                                 time-required="attributeIsRequired(attribute.id, attribute.mandatory)"
-                                 time-save-methode="teiValueUpdated"
-                                 time-save-methode-parameter1="selectedTei"
-                                 time-save-methode-parameter2="attribute.id"
-                                 time-disabled="attributeFieldDisabled(attribute)"
-                                 time-format="timeFormat">
-                        </d2-time>
-                    </span>
-                    <span ng-switch-when="TRUE_ONLY">
-                        <input type="checkbox" 
-                               name="foo" 
-                               class="form-control-checkbox"
-                               ng-model="selectedTei[attribute.id]" 
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-change="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                    </span>
-                    <span ng-switch-when="BOOLEAN" class="form-control">
-                        <span class="hideInPrint">
-                            <d2-radio-button
-                                dh-required="attributeIsRequired(attribute.id, attribute.mandatory)"
-                                dh-disabled="selectedOrgUnit.closedStatus || editingDisabled || !hasTeiWrite()"
-                                dh-value="selectedTei[attribute.id]"
-                                dh-name="foo"
-                                dh-current-element="currentElement"
-                                dh-event="currentEvent.event"
-                                dh-id="attribute.id"
-                                dh-click="saveDataValueForRadio(attribute, selectedTei, value)">
-                            </d2-radio-button>
+                            </d2-age>
                         </span>
-                        <span class="not-for-screen">
-                            <label class="radio-inline"><input type="radio" ng-attr-value="true" ng-model="selectedTei[attribute.id]">{{'yes' | translate}}</label>
-                            <label class="radio-inline"><input type="radio" ng-attr-value="false" ng-model="selectedTei[attribute.id]" >{{'no' | translate}}</label>
+                        <span ng-switch-when="EMAIL">
+                            <input type="email"
+                                name="foo"
+                                class="form-control"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
                         </span>
-                    </span>                    
-                    <span ng-switch-when="NUMBER">
-                        <span class="hideInPrint">
-                            <input type="number"
-                                   name="foo" 
-                                   class="form-control"
-                                   ng-model="selectedTei[attribute.id]"
-                                   ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                                   selected-tet={{trackedEntityTypes.selected.id}}
-                                   attribute-data={{attribute}}
-                                   selected-program-id={{selectedProgram.id}}  
-                                   selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                                   d2-number-validator 
-                                   number-type={{attribute.valueType}} 
-                                   ng-disabled="attributeFieldDisabled(attribute)"
-                                   ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                                   ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                        <span ng-switch-when="URL">
+                            <input type="url"
+                                name="foo"
+                                class="form-control"
+                                d2-url-validator
+                                ng-attr-placeholder="{{'url_format' | translate}}"
+                                ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
                         </span>
-                        <span class="not-for-screen">
-                            <input type="text" class="form-control" ng-attr-value={{selectedTei[attribute.id]}}>
+                        <span ng-switch-when="IMAGE">
+                            <d2-image d2-display-open="true"
+                                    d2-can-edit="true"
+                                    d2-is-attribute="true"
+                                    d2-hide-image="selectedTei.trackedEntityInstance ? false : true"
+                                    d2-tei="selectedTei"
+                                    d2-event="selectedTei"
+                                    d2-data-element-id="attribute.id"
+                                    d2-file-names="fileNames"
+                                    d2-current-image-name="currentFileNames"
+                                    d2-delete-methode="deleteFile"
+                                    d2-download-methode="downloadFile"
+                                    d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
+                                    d2-disabled="attributeFieldDisabled(attribute)">
+                            </d2-image>
                         </span>
-                    </span>
-                    <span ng-switch-when="PERCENTAGE">
-                        <input type="number"
-                               name="foo"
-                               class="form-control"
-                               ng-model="selectedTei[attribute.id]"
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}
-                               d2-number-validator
-                               number-type={{attribute.valueType}}
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                    </span>
-                    <span ng-switch-when="INTEGER_POSITIVE">
-                        <input type="number"
-                               name="foo" 
-                               class="form-control"
-                               ng-model="selectedTei[attribute.id]"
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               d2-number-validator 
-                               number-type={{attribute.valueType}} 
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                    </span>
-                    <span ng-switch-when="INTEGER_NEGATIVE">
-                        <input type="number"
-                               name="foo" 
-                               class="form-control"
-                               ng-model="selectedTei[attribute.id]"
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }" 
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               d2-number-validator 
-                               number-type={{attribute.valueType}} 
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                    </span>
-                    <span ng-switch-when="INTEGER_ZERO_OR_POSITIVE">
-                        <input type="number"
-                               name="foo" 
-                               class="form-control"
-                               ng-model="selectedTei[attribute.id]"
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               d2-number-validator 
-                               number-type={{attribute.valueType}} 
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                    </span>
-                    <span ng-switch-when="INTEGER">
-                        <input type="number"
-                               name="foo" 
-                               class="form-control"
-                               ng-model="selectedTei[attribute.id]"
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               d2-number-validator 
-                               number-type={{attribute.valueType}} 
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                    </span>
-                    <span ng-switch-when="AGE">
-                        <d2-age name="foo" 
-                            id="{{attribute.id}}"                             
-                            d2-object="selectedTei" 
-                            d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
-                            d2-disabled="attributeFieldDisabled(attribute)">
-                        </d2-age>
-                    </span>
-                    <span ng-switch-when="EMAIL">
-                        <input type="email"
-                               name="foo" 
-                               class="form-control"
-                               ng-model="selectedTei[attribute.id]"
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                    </span>
-                    <span ng-switch-when="URL">
-                        <input type="url"
-                               name="foo" 
-                               class="form-control"
-                               d2-url-validator
-                               ng-attr-placeholder="{{'url_format' | translate}}"
-                               ng-pattern="/^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/"
-                               ng-model="selectedTei[attribute.id]"
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                               selected-tet={{trackedEntityTypes.selected.id}} 
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                    </span>
-                    <span ng-switch-when="IMAGE">
-                        <d2-image d2-display-open="true"
-                                  d2-can-edit="true"
-                                  d2-is-attribute="true"
-                                  d2-hide-image="selectedTei.trackedEntityInstance ? false : true"
-                                  d2-tei="selectedTei"
-                                  d2-event="selectedTei"
-                                  d2-data-element-id="attribute.id"
-                                  d2-file-names="fileNames"
-                                  d2-current-image-name="currentFileNames"
-                                  d2-delete-methode="deleteFile"
-                                  d2-download-methode="downloadFile"
-                                  d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
-                                  d2-disabled="attributeFieldDisabled(attribute)">
-                        </d2-image>
-                    </span>
-                    <span ng-switch-when="LONG_TEXT">
-                        <textarea row="3"
-                               name="foo" 
-                               class="form-control"
-                               ng-model="selectedTei[attribute.id]" 
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }" 
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)">
-                        </textarea>
-                    </span>
-                    <span ng-switch-when="USERNAME">
-                        <d2-users-input d2-model="selectedTei"
-                                        d2-model-id="attribute.id"
-                                        d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
-                                        d2-disabled="attributeFieldDisabled(attribute)"
-                                        d2-save-methode="teiValueUpdated"
-                                        d2-save-methode-parameter1="selectedTei"
-                                        d2-save-methode-parameter2="attribute.id"
-                                        d2-max-option-size="maxOptionSize">
-                        </d2-users-input>
-                    </span>
-                    <span ng-switch-when="TRACKER_ASSOCIATE">
-                        <d2-tracker-associate d2-selected-tei="selectedTei" 
-                                              d2-attribute="attribute" 
-                                              d2-selected-program="selectedProgram" 
-                                              d2-blur-methode="teiValueUpdated" 
-                                              d2-selected-orgunit="selectedOrgUnit" 
-                                              d2-get-ta-promise="getTrackerAssociate"
-                                              >
-                        </d2-tracker-associate>
-                    </span>
-                    <span ng-switch-when="COORDINATE">
-                        <d2-map id="{{attribute.id}}"
-                                name="foo" 
-                                d2-object="selectedTei" 
-                                d2-coordinate-format="'TEXT'"
-                                d2-value="selectedTei[attribute.id]"
-                                d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
-                                d2-disabled="attributeFieldDisabled(attribute)"
-                                d2-function="teiValueUpdated(selectedTei, attribute.id)">                            
-                        </d2-map>                        
-                    </span>
-                    <span ng-switch-when="ORGANISATION_UNIT">
-                        <d2-org-unit-tree
-                                selected-org-unit-id="{{selectedOrgUnit.id}}"
-                                id="{{attribute.id}}"
-                                d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
-                                d2-disabled="attributeFieldDisabled(attribute)"
-                                d2-object="selectedTei"
-                                d2-function="teiValueUpdated(selectedTei, attribute.id)"
-                                d2-orgunit-names="orgUnitNames">
-                        </d2-org-unit-tree>
-                    </span>
-                    <span ng-switch-when="TEXT">
-                        <input type="text"
-                               name="foo" 
-                               class="form-control"
-                               ng-model="selectedTei[attribute.id]" 
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                    </span>
-                    <span ng-switch-when="PHONE_NUMBER">
-                        <input type="text"
-                               name="foo" 
-                               class="form-control"
-                               ng-model="selectedTei[attribute.id]" 
-                               ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
-                               selected-tet={{trackedEntityTypes.selected.id}}
-                               attribute-data={{attribute}}
-                               selected-program-id={{selectedProgram.id}}  
-                               selected-tei-id={{selectedTei.trackedEntityInstance}}  
-                               ng-disabled="attributeFieldDisabled(attribute)"
-                               ng-blur="teiValueUpdated(selectedTei, attribute.id)"
-                               ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
-                    </span>
-                    <span ng-switch-default>
-                        <span class="alert alert-danger form-control">
-                            {{'unsupported_value_type' | translate}}:  {{attribute.valueType}}
+                        <span ng-switch-when="LONG_TEXT">
+                            <textarea row="3"
+                                name="foo"
+                                class="form-control"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)">
+                            </textarea>
+                        </span>
+                        <span ng-switch-when="USERNAME">
+                            <d2-users-input d2-model="selectedTei"
+                                            d2-model-id="attribute.id"
+                                            d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
+                                            d2-disabled="attributeFieldDisabled(attribute)"
+                                            d2-save-methode="teiValueUpdated"
+                                            d2-save-methode-parameter1="selectedTei"
+                                            d2-save-methode-parameter2="attribute.id"
+                                            d2-max-option-size="maxOptionSize">
+                            </d2-users-input>
+                        </span>
+                        <span ng-switch-when="TRACKER_ASSOCIATE">
+                            <d2-tracker-associate d2-selected-tei="selectedTei"
+                                                d2-attribute="attribute"
+                                                d2-selected-program="selectedProgram"
+                                                d2-blur-methode="teiValueUpdated"
+                                                d2-selected-orgunit="selectedOrgUnit"
+                                                d2-get-ta-promise="getTrackerAssociate"
+                                                >
+                            </d2-tracker-associate>
+                        </span>
+                        <span ng-switch-when="COORDINATE">
+                            <d2-map id="{{attribute.id}}"
+                                    name="foo"
+                                    d2-object="selectedTei"
+                                    d2-coordinate-format="'TEXT'"
+                                    d2-value="selectedTei[attribute.id]"
+                                    d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
+                                    d2-disabled="attributeFieldDisabled(attribute)"
+                                    d2-function="teiValueUpdated(selectedTei, attribute.id)">
+                            </d2-map>
+                        </span>
+                        <span ng-switch-when="ORGANISATION_UNIT">
+                            <d2-org-unit-tree
+                                    selected-org-unit-id="{{selectedOrgUnit.id}}"
+                                    id="{{attribute.id}}"
+                                    d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
+                                    d2-disabled="attributeFieldDisabled(attribute)"
+                                    d2-object="selectedTei"
+                                    d2-function="teiValueUpdated(selectedTei, attribute.id)"
+                                    d2-orgunit-names="orgUnitNames">
+                            </d2-org-unit-tree>
+                        </span>
+                        <span ng-switch-when="TEXT">
+                            <input type="text"
+                                name="foo"
+                                class="form-control"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                        </span>
+                        <span ng-switch-when="PHONE_NUMBER">
+                            <input type="text"
+                                name="foo"
+                                class="form-control"
+                                ng-model="selectedTei[attribute.id]"
+                                ng-model-options="{ updateOn: 'default blur', allowInvalid: true }"
+                                selected-tet={{trackedEntityTypes.selected.id}}
+                                attribute-data={{attribute}}
+                                selected-program-id={{selectedProgram.id}}
+                                selected-tei-id={{selectedTei.trackedEntityInstance}}
+                                ng-disabled="attributeFieldDisabled(attribute)"
+                                ng-blur="teiValueUpdated(selectedTei, attribute.id)"
+                                ng-required="attributeIsRequired(attribute.id, attribute.mandatory)"/>
+                        </span>
+                        <span ng-switch-default>
+                            <span class="alert alert-danger form-control">
+                                {{'unsupported_value_type' | translate}}:  {{attribute.valueType}}
+                            </span>
                         </span>
                     </span>
-                </span>
-                <div ng-messages="innerForm.foo.$error" class="required hideInPrint" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
-                    <div class="alert alert-warning alert-dismissible" role="alert" ng-if="warningMessages[attribute.id]">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close" tabindex="-1"><span aria-hidden="true">&times;</span></button>
-                        {{warningMessages[attribute.id]}}
+                    <div ng-messages="innerForm.foo.$error" class="required hideInPrint" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
+                        <div class="alert alert-warning alert-dismissible" role="alert" ng-if="warningMessages[attribute.id]">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" tabindex="-1"><span aria-hidden="true">&times;</span></button>
+                            {{warningMessages[attribute.id]}}
+                        </div>
+                        <div class="alert alert-danger alert-dismissible" role="alert" ng-if="errorMessages[attribute.id]">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" tabindex="-1"><span aria-hidden="true">&times;</span></button>
+                            {{errorMessages[attribute.id]}}
+                        </div>
+                        <div ng-if="attributeUniquenessError[attribute.id]">
+                            {{'value_not_unique' | translate}}
+                        </div>
+                        <!-- URL error message is temporarily placed here. Should be placed with the other error messages in the core. -->
+                        <span ng-message="urlValidator">{{'url_error' | translate}}</span>
                     </div>
-                    <div class="alert alert-danger alert-dismissible" role="alert" ng-if="errorMessages[attribute.id]">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close" tabindex="-1"><span aria-hidden="true">&times;</span></button>
-                        {{errorMessages[attribute.id]}}
-                    </div>
-                    <div ng-if="attributeUniquenessError[attribute.id]">                       
-                        {{'value_not_unique' | translate}}
-                    </div>
-                    <!-- URL error message is temporarily placed here. Should be placed with the other error messages in the core. -->
-                    <span ng-message="urlValidator">{{'url_error' | translate}}</span>
-                </div>
-            </ng-form>            
-        </td>
-        <td ng-if="uninitializedGeneratedAttribute(attribute)">
-            <button type="button" class="btn btn-default" ng-click="fetchGeneratedAttribute(attribute)">{{'generate' | translate}}</span>
-        </td>
-    </tr>
-</table>
+                </ng-form>
+            </td>
+            <td ng-if="uninitializedGeneratedAttribute(attribute)">
+                <button type="button" class="btn btn-default" ng-click="fetchGeneratedAttribute(attribute)">{{'generate' | translate}}</span>
+            </td>
+        </tr>
+    </table>
+</div>
