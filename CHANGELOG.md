@@ -1,3 +1,10 @@
+# [31.11.0](https://github.com/dhis2/tracker-capture-app/compare/v31.10.23...v31.11.0) (2022-09-27)
+
+
+### Features
+
+* [DHIS2-8210] TEA sections in TEI registration forms ([#1529](https://github.com/dhis2/tracker-capture-app/issues/1529)) ([675bff4](https://github.com/dhis2/tracker-capture-app/commit/675bff40277d23509d74bf83afd24922ee465a01))
+
 ## [31.10.23](https://github.com/dhis2/tracker-capture-app/compare/v31.10.22...v31.10.23) (2022-09-26)
 
 
