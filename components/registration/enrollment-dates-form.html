@@ -37,10 +37,10 @@
                    name="enrollmentDate" 
                    class="form-control hideInPrint" 
                    d2-date 
-                   ng-model="selectedEnrollment.enrollmentDate"
+                   ng-model="enrollmentDateState.date"
                    min-date="model.minEnrollmentDate"
                    max-date="selectedProgram.selectEnrollmentDatesInFuture ? '' : 0"
-                   ng-change="verifyExpiryDate('selectedEnrollment.enrollmentDate')"
+                   blur-or-change="updateEnrollmentDate()"
                    ng-disabled="selectedOrgUnit.closedStatus"
                    ng-required="true"/>
             <input type="text" ng-attr-value={{selectedEnrollment.enrollmentDate}} class="form-control not-for-screen"/>
@@ -59,9 +59,9 @@
                 d2-date 
                 max-date="selectedProgram.selectIncidentDatesInFuture ? '' : 0"
                 min-date=""
-                ng-model="selectedEnrollment.incidentDate"
+                ng-model="incidentDateState.date"
                 ng-disabled="selectedOrgUnit.closedStatus"
-                ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
+                blur-or-change="updateIncidentDate()"/>
             <input type="text" ng-attr-value={{selectedEnrollment.incidentDate}} class="form-control not-for-screen"/>
         </td>
     </tr>
@@ -85,9 +85,9 @@
                 d2-date 
                 max-date="selectedProgramForRelative.selectIncidentDatesInFuture ? '' : 0"
                 min-date=""
-                ng-model="selectedEnrollment.incidentDate"
+                ng-model="incidentDateState.date"
                 ng-disabled="selectedOrgUnit.closedStatus"
-                ng-change="verifyExpiryDate('selectedEnrollment.incidentDate')"/>
+                blur-or-change="updateIncidentDate()"/>
             <input type="text" ng-attr-value={{selectedEnrollment.incidentDate}} class="form-control not-for-screen"/>
         </td>
     </tr>
