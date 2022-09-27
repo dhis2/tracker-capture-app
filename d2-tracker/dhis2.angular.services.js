@@ -216,7 +216,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             if (!dateValue) {
                 return;
             }
-            dateValue = moment(dateValue, "YYYY-MM-DD");
+            dateValue = moment(dateValue, CalendarService.getSetting().momentFormat);
             if (dateValue.isBefore(moment())) {
                 return true;
             }
@@ -226,7 +226,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             if (!dateValue) {
                 return;
             }
-            dateValue = moment(dateValue, "YYYY-MM-DD");
+            dateValue = moment(dateValue, CalendarService.getSetting().momentFormat);
             if (dateValue.isAfter(moment())) {
                 return true;
             }

@@ -663,6 +663,8 @@ trackerCapture.controller('TEIAddController',
                 AttributeUtils) {
     $scope.selectedOrgUnit = SessionStorageService.get('SELECTED_OU');
     $scope.enrollment = {enrollmentDate: '', incidentDate: ''};
+    $scope.enrollmentDateState = { date: $scope.selectedEnrollment && $scope.selectedEnrollment.enrollmentDate || '' };
+    $scope.incidentDateState = { date: $scope.selectedEnrollment && $scope.selectedEnrollment.incidentDate || '' };
     $scope.today = DateUtils.getToday();
     $scope.trackedEntityForm = null;
     $scope.customRegistrationForm = null;
@@ -965,4 +967,23 @@ trackerCapture.controller('TEIAddController',
         }
         return status;        
     };
+
+    $scope.updateEnrollmentDate = function(){
+        if(!DateUtils.isValid($scope.enrollmentDateState.date) || !$scope.selectedProgram.selectEnrollmentDatesInFuture && DateUtils.isAfterToday($scope.enrollmentDateState.date)){
+            $scope.enrollmentDateState.date = $scope.selectedEnrollment.enrollmentDate;
+            return NotificationService.showNotifcationDialog($translate.instant('error'), $scope.selectedProgram.enrollmentDateLabel + ' ' + $translate.instant('invalid'));
+        } else {
+            $scope.selectedEnrollment.enrollmentDate = $scope.enrollmentDateState.date;
+        }
+    }
+
+    $scope.updateIncidentDate = function(){
+        if(!DateUtils.isValid($scope.incidentDateState.date) || !$scope.selectedProgram.selectIncidentDatesInFuture && DateUtils.isAfterToday($scope.incidentDateState.date)){
+            $scope.incidentDateState.date = $scope.selectedEnrollment.incidentDate;
+            return NotificationService.showNotifcationDialog($translate.instant('error'), $scope.selectedProgram.incidentDateLabel + ' ' + $translate.instant('invalid'));
+        }
+        else {
+            $scope.selectedEnrollment.incidentDate = $scope.incidentDateState.date;
+        }
+    }
 });
