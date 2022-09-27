@@ -357,7 +357,7 @@ function getBatchPrograms( programs, batch )
         'incidentDateLabel,selectEnrollmentDatesInFuture,registration,favorite,useFirstStageDuringRegistration,displayName,onlyEnrollOnce,' +
         'completeEventsExpiryDays,description,displayShortName,externalAccess,withoutRegistration,minAttributesRequiredToSearch,' + 
         'displayFrontPageList,programType,accessLevel,displayIncidentDate,expiryDays,style[*],' +
-        'dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],featureType,trackedEntityType[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],userRoles[id,displayName],programStages[*,dataEntryForm[*],programStageSections[id,displayName,description,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique,orgunitScope]],minAttributesRequiredToSearch,maxTeiCountToReturn&paging=false&filter=id:in:' + ids
+        'dataEntryForm[*],relatedProgram[id,displayName],relationshipType[id,displayName],featureType,trackedEntityType[id,displayName],categoryCombo[id,displayName,isDefault,categories[id,displayName,categoryOptions[id,displayName,organisationUnits[id]]]],userRoles[id,displayName],programSections[*],programStages[*,dataEntryForm[*],programStageSections[id,displayName,description,sortOrder,dataElements[id]],programStageDataElements[*,dataElement[*,optionSet[id]]]],programTrackedEntityAttributes[*,trackedEntityAttribute[id,unique,orgunitScope]],minAttributesRequiredToSearch,maxTeiCountToReturn&paging=false&filter=id:in:' + ids
     }).done( function( response ){
 
         if(response.programs){
