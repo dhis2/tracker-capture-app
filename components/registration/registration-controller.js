@@ -342,7 +342,7 @@ trackerCapture.controller('RegistrationController',
                 if (generateAttributes) {
                     fetchGeneratedAttributes();
                 }
-                if ($scope.selectedProgram && $scope.selectedProgram.id) {
+                if ($scope.selectedProgram.id) {
                     if ($scope.selectedProgram.dataEntryForm && $scope.selectedProgram.dataEntryForm.htmlCode) {
                         $scope.customRegistrationFormExists = true;
                         $scope.trackedEntityForm = $scope.selectedProgram.dataEntryForm;
@@ -386,6 +386,9 @@ trackerCapture.controller('RegistrationController',
                         $scope.customDataEntryForm = CustomFormService.getForProgramStage($scope.currentStage, $scope.prStDes);
                     }
                 }
+                $scope.attributeSections = ($scope.selectedProgram.programSections.length)
+                    ? AttributeUtils.userDefinedAttributeSections($scope.attributes, $scope.selectedProgram.programSections)
+                    : AttributeUtils.defaultAttributeSections($scope.attributes, $scope.widgetTitle);
             });
         }
 
@@ -401,6 +404,7 @@ trackerCapture.controller('RegistrationController',
                     if (generateAttributes) {
                         fetchGeneratedAttributes();
                     }
+                    $scope.attributeSections = AttributeUtils.defaultAttributeSections($scope.attributes, $scope.widgetTitle);
                 }
             });
         }

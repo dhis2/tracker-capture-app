@@ -4240,7 +4240,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         }
     };
 })
-.factory("AttributeUtils", function($http,DHIS2URL){
+.factory("AttributeUtils", function($http,DHIS2URL,$translate){
     var getValueUrl = function(valueToSet, selectedTei, program, orgUnit, required){
         var valueUrlBase = valueToSet+"=";
         var valueUrl = null;
@@ -4296,6 +4296,32 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                     return response.data;
                 });
             });
+        },
+        defaultAttributeSections: function(attributes, widgetTitle) {
+            const attributeSections = [{ displayName: widgetTitle === 'profile' ? '' : $translate.instant('profile'), attributes }];
+            return { [true]: attributeSections, [false]: attributeSections };
+        },
+        userDefinedAttributeSections: function(attributes, programSections) {
+            var programTrackedEntityAttributes = attributes.reduce(function(acc, attribute){
+                if (attribute.programTrackedEntityAttribute) {
+                    acc[attribute.programTrackedEntityAttribute.trackedEntityAttribute.id] = attribute;
+                }
+                return acc;
+            }, {});
+
+            // `true`: all attributes combined into a single section
+            // `false`: attributes distributed into multiple sections
+            return programSections.reduce(function(acc, programSection) {
+                const attributeList = acc[false][0].attributes;
+                acc[true].push({
+                    displayName: programSection.displayName,
+                    attributes: programSection.trackedEntityAttributes.map(({id}) => {
+                        attributeList.push(programTrackedEntityAttributes[id])
+                        return programTrackedEntityAttributes[id];
+                    }),
+                });
+                return acc;
+            }, { [true]: [], [false]: [{ attributes: [] }] });
         }
     }
 
