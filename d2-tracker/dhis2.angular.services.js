@@ -2736,8 +2736,12 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             },
         },
         "d2:round": {
-            parameters: 1,
+            parameters: { min: 1, max: 2 },
             execute: function(parameters) {
+                if (parameters[1]) {
+                    const decimalCorrection = 10**Math.round(parameters[1]);
+                    return Math.round((parameters[0] + Number.EPSILON)*decimalCorrection)/decimalCorrection;
+                }
                 return Math.round(parameters[0]);
             },
         },
@@ -3032,7 +3036,9 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             // a defined set of parameters(concatenate, for example, does not have a fixed number);
             const numParameters = parameters.length || 0;
 
-            return numParameters !== dhisFunctionParameters;
+            return dhisFunctionParameters.min
+                ? numParameters < dhisFunctionParameters.min || dhisFunctionParameters.max < numParameters
+                : numParameters !== dhisFunctionParameters;
         }
         return false;
     };
