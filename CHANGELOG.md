@@ -1,3 +1,10 @@
+# [31.12.0](https://github.com/dhis2/tracker-capture-app/compare/v31.11.0...v31.12.0) (2022-09-29)
+
+
+### Features
+
+* [DHIS2-13680] optional decimal places argument for d2:round ([#1566](https://github.com/dhis2/tracker-capture-app/issues/1566)) ([af8a847](https://github.com/dhis2/tracker-capture-app/commit/af8a847d36d184d3a7f1f0ec28881dcccdf5f9d4))
+
 # [31.11.0](https://github.com/dhis2/tracker-capture-app/compare/v31.10.23...v31.11.0) (2022-09-27)
 
 
