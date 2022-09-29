@@ -485,6 +485,9 @@ trackerCapture.controller('DataEntryController',
                             $scope.saveDataValueForEvent(prStDe, null, affectedEvent, true);
                         }
                     }
+                } else {
+                    // Assignment aborted, mark effect as ineffectual
+                    effect.ineffect = false;
                 }
             }
             else if (effect.action === "SETMANDATORYFIELD"){
