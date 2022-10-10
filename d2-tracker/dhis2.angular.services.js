@@ -1519,14 +1519,14 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             if(processedValue === "Yes") {
             processedValue = true;
             }
-            else if(processedValue === "No") {
+            else if(processedValue === "No" || processedValue === "false") {
                 processedValue = false;
             }
             else if(processedValue && eval(processedValue)) {
                 processedValue = true;
             }
             else {
-                processedValue = false;
+                processedValue = '';
             }
         }
         else if( valueType === "INTEGER" || valueType === "NUMBER" || valueType === "INTEGER_POSITIVE"
