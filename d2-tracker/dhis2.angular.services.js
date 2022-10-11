@@ -1691,7 +1691,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 processedValue = true;
             }
             else {
-                processedValue = '';
+                processedValue = "''";
             }
         }
         else if( valueType === "INTEGER" || valueType === "NUMBER" || valueType === "INTEGER_POSITIVE"
