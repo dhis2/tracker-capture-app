@@ -1,3 +1,10 @@
+## [31.12.2](https://github.com/dhis2/tracker-capture-app/compare/v31.12.1...v31.12.2) (2022-10-10)
+
+
+### Bug Fixes
+
+* [DHIS2-13889] distinguish between "No/false" and empty selection ([#1572](https://github.com/dhis2/tracker-capture-app/issues/1572)) ([23d6523](https://github.com/dhis2/tracker-capture-app/commit/23d6523b622b1cffdc33ea7f5463b6bb100fc5d7))
+
 ## [31.12.1](https://github.com/dhis2/tracker-capture-app/compare/v31.12.0...v31.12.1) (2022-10-05)
 
 
