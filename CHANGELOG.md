@@ -1,3 +1,10 @@
+## [31.12.4](https://github.com/dhis2/tracker-capture-app/compare/v31.12.3...v31.12.4) (2022-10-11)
+
+
+### Bug Fixes
+
+* [DHIS2-13145] enable coordinate selection button in profile widget ([#1585](https://github.com/dhis2/tracker-capture-app/issues/1585)) ([19d462e](https://github.com/dhis2/tracker-capture-app/commit/19d462ea6c598510e2982b861d5a165e9a609ff1))
+
 ## [31.12.3](https://github.com/dhis2/tracker-capture-app/compare/v31.12.2...v31.12.3) (2022-10-11)
 
 
