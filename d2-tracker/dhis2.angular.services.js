@@ -1727,16 +1727,16 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                             variables = pushVariable(variables, programVariable.displayName, "", null, dataElement.dataElement.valueType, false, '#', '', programVariable.useCodeForOptionSet );
                         }
                         else {
-                            variables = pushVariable(variables, programVariable.displayName, "", null, programVariable.valueType,false, '#', '', programVariable.useCodeForOptionSet );
+                            variables = pushVariable(variables, programVariable.displayName, "", null, "TEXT",false, '#', '', programVariable.useCodeForOptionSet );
                         }
                     }
                     else if (programVariable.trackedEntityAttribute) {
                         //The variable is an attribute, set correct prefix and a blank value
-                        variables = pushVariable(variables, programVariable.displayName, "", null, programVariable.valueType,false, 'A', '', programVariable.useCodeForOptionSet );
+                        variables = pushVariable(variables, programVariable.displayName, "", null, "TEXT",false, 'A', '', programVariable.useCodeForOptionSet );
                     }
                     else {
                         //Fallback for calculated(assigned) values:
-                        variables = pushVariable(variables, programVariable.displayName, "", null, programVariable.valueType,false, '#', '', programVariable.useCodeForOptionSet );
+                        variables = pushVariable(variables, programVariable.displayName, "", null, "TEXT",false, '#', '', programVariable.useCodeForOptionSet );
                     }
                 }
             });
@@ -3328,7 +3328,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                                     programStage: action.programStage,
                                     programIndicator: action.programIndicator,
                                     programStageSection: action.programStageSection && action.programStageSection.id ? action.programStageSection.id : null,
-                                    content:action.displayContent,
+                                    content:action.content,
                                     data:action.data,
                                     ineffect:undefined
                                 };
