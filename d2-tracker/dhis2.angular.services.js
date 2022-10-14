@@ -2931,7 +2931,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         },
         "d2:inOrgUnitGroup": {
             parameters: 1,
-            execute: function(parameters) {
+            execute: function(parameters, _, selectedOrgUnit) {
                 var group = parameters[0];
                 var isInGroup = "false";
                 var orgUnitGroups = (selectedOrgUnit && selectedOrgUnit.g) || [];
@@ -3030,7 +3030,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         return false;
     };
 
-    function internalExecuteExpression(applicableDhisFunctions, expression, expressionModuloStrings, variablesHash) {
+    function internalExecuteExpression(applicableDhisFunctions, expression, expressionModuloStrings, variablesHash, selectedOrgUnit) {
         // Find all d2-functions appearing in the given expression
         const includedDhisFunctions = applicableDhisFunctions
             .filter(({ name }) => expressionModuloStrings.includes(`${name}`));
@@ -3063,7 +3063,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             accExpression += expression.substring(currentExpressionIndex, functionCall.index);
             const { args, closingIndex } = extractArguments(expression, expressionModuloStrings, functionCall.index);
             const evaluatedArguments = args.map(({ argument, argumentModuloStrings }) =>
-                internalExecuteExpression(includedDhisFunctions, argument, argumentModuloStrings, variablesHash));
+                internalExecuteExpression(includedDhisFunctions, argument, argumentModuloStrings, variablesHash, selectedOrgUnit));
             const functionName = functionCall[0];
             const dhisFunction = dhisFunctions[functionName];
             if (isFunctionSignatureBroken(dhisFunction.parameters, evaluatedArguments)) {
@@ -3071,7 +3071,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 // Function call is not possible to evaluate, remove the call
                 accExpression += 'false';
             } else {
-                const dhisFunctionResult = dhisFunction.execute(evaluatedArguments, variablesHash);
+                const dhisFunctionResult = dhisFunction.execute(evaluatedArguments, variablesHash, selectedOrgUnit);
                 accExpression += dhisFunctionResult;
             }
 
@@ -3092,7 +3092,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         try {
             const expressionModuloStrings = expression.replace(/'[^']*'|"[^"]*"/g, match => ' '.repeat(match.length));
             const applicableDhisFunctions = Object.entries(dhisFunctions).map(([key, value]) => ({ ...value, name: key }));
-            answer = internalExecuteExpression(applicableDhisFunctions, expression, expressionModuloStrings, variablesHash);
+            answer = internalExecuteExpression(applicableDhisFunctions, expression, expressionModuloStrings, variablesHash, selectedOrgUnit);
 
             if(flag.verbose) {
                 $log.info("Expression with id " + identifier + " was successfully run. Original condition was: " + beforereplacement + " - Evaluation ended up as:" + expression + " - Result of evaluation was:" + answer);
