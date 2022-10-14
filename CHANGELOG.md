@@ -1,3 +1,10 @@
+## [31.12.5](https://github.com/dhis2/tracker-capture-app/compare/v31.12.4...v31.12.5) (2022-10-14)
+
+
+### Bug Fixes
+
+* [DHIS2-13944] d2:inOrgUnitGroup ([#1593](https://github.com/dhis2/tracker-capture-app/issues/1593)) ([bf6d0c1](https://github.com/dhis2/tracker-capture-app/commit/bf6d0c153167d706b13392fdcd3aa6e033d00ff5))
+
 ## [31.12.4](https://github.com/dhis2/tracker-capture-app/compare/v31.12.3...v31.12.4) (2022-10-11)
 
 
