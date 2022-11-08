@@ -61,6 +61,7 @@ trackerCapture.controller('RegistrationController',
     var flag = {debug: true, verbose: $location.search().verbose ? true : false};
     $rootScope.ruleeffects = {};
     $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
+    $scope.selectedCategoryOptions = {};
 
     $scope.attributesById = CurrentSelection.getAttributesById();
     $scope.optionGroupsById = CurrentSelection.getOptionGroupsById();
@@ -261,6 +262,7 @@ trackerCapture.controller('RegistrationController',
     $scope.$on('registrationWidget', function (event, args) {
         $scope.selectedTei = {};
         $scope.apiFormattedTei = {};
+        $scope.selectedCategoryOptions = {};
         $scope.registrationMode = args.registrationMode;
         $scope.orgUnitNames = CurrentSelection.getOrgUnitNames();
 
@@ -518,7 +520,19 @@ trackerCapture.controller('RegistrationController',
         }
         return false;
     }
+
+    $scope.selectCategoryOption = function(item, category) {
+        $scope.selectedCategoryOptions[category.id] = item.id;
+    }
+
     var performRegistration = function (destination) {
+        if ($scope.categoryRequiredDuringTEIRegistration()) {
+            if ($scope.selectedProgram.categoryCombo.categories.find(category => !$scope.selectedCategoryOptions[category.id])) {
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("fill_all_category_options"));
+                return;
+            }
+        }
+
         if (destination === "DASHBOARD" || destination === "SELF" || destination === "ENROLLMENT") {
            $scope.model.savingRegistration = true;
         }
