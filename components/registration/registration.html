@@ -66,6 +66,17 @@
         </form>
         <!--registration form ends -->
 
+        <!-- category selection starts -->
+        <form name="outerCategorySelectionForm" novalidate>
+            <div ng-if="categoryRequiredDuringTEIRegistration()">
+                <div class="section-label section-spacing vertical-spacing">
+                    {{'category'| translate}}
+                </div>
+                <div ng-include="'components/registration/category-selection-form.html'"></div>
+            </div>
+        </form>
+        <!-- category selection ends -->
+
         <!-- data entry form starts -->
         <form name="outerDataEntryForm" novalidate>
             <div ng-if="registrationAndDataEntry">            

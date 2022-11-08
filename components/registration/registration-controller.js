@@ -509,6 +509,15 @@ trackerCapture.controller('RegistrationController',
         $scope.apiFormattedTei.orgUnit = args.orgUnit;
     });
 
+    $scope.categoryRequiredDuringTEIRegistration = function() {
+        if ($scope.selectedProgram.categoryCombo && !$scope.selectedProgram.categoryCombo.isDefault && $scope.selectedProgram.categoryCombo.categories) {
+            if ($scope.registrationAndDataEntry) {
+                return true;
+            }
+            return $scope.selectedProgram.programStages.find(stage => stage.autoGenerateEvent) !== undefined;
+        }
+        return false;
+    }
     var performRegistration = function (destination) {
         if (destination === "DASHBOARD" || destination === "SELF" || destination === "ENROLLMENT") {
            $scope.model.savingRegistration = true;
