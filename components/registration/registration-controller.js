@@ -526,11 +526,14 @@ trackerCapture.controller('RegistrationController',
     }
 
     var performRegistration = function (destination) {
+        var selectedCategoryOptions = null;
         if ($scope.categoryRequiredDuringTEIRegistration()) {
             if ($scope.selectedProgram.categoryCombo.categories.find(category => !$scope.selectedCategoryOptions[category.id])) {
                 NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("fill_all_category_options"));
                 return;
             }
+            selectedCategoryOptions = $scope.selectedProgram.categoryCombo.categories
+                .map(category => $scope.selectedCategoryOptions[category.id]).join(';');
         }
 
         if (destination === "DASHBOARD" || destination === "SELF" || destination === "ENROLLMENT") {
@@ -599,7 +602,7 @@ trackerCapture.controller('RegistrationController',
                                     }
                                     enrollment.enrollment = en.importSummaries[0].reference;
                                     var availableEvent = $scope.currentEvent && $scope.currentEvent.event ? $scope.currentEvent : null;
-                                    var dhis2Events = EventUtils.autoGenerateEvents($scope.apiFormattedTei.trackedEntityInstance, $scope.selectedProgram, $scope.selectedOrgUnit, enrollment, availableEvent);
+                                    var dhis2Events = EventUtils.autoGenerateEvents($scope.apiFormattedTei.trackedEntityInstance, $scope.selectedProgram, $scope.selectedOrgUnit, enrollment, availableEvent, selectedCategoryOptions);
                                     if (dhis2Events.events.length > 0) {
                                         DHIS2EventFactory.create(dhis2Events).then(function () {
                                             notifyRegistrtaionCompletion(destination, $scope.apiFormattedTei.trackedEntityInstance);
