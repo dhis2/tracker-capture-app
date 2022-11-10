@@ -68,7 +68,7 @@
 
         <!-- category selection starts -->
         <form name="outerCategorySelectionForm" novalidate>
-            <div ng-if="categoryRequiredDuringTEIRegistration()">
+            <div ng-if="categoryRequiredDuringTEIRegistration() && widgetTitle !== 'profile'">
                 <div class="section-label section-spacing vertical-spacing">
                     {{'category'| translate}}
                 </div>
