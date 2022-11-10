@@ -804,6 +804,14 @@ trackerCapture.controller('TEIAddController',
         $scope.trackedEntityTypes.available = entities;   
         $scope.trackedEntityTypes.selected = $scope.trackedEntityTypes.available[0];
     });
+
+    $scope.categoryRequiredDuringTEIRegistration = function() {
+        const selectedProgram = $scope.base.selectedProgramForRelative;
+        if (selectedProgram && selectedProgram.categoryCombo && !selectedProgram.categoryCombo.isDefault && selectedProgram.categoryCombo.categories) {
+            return selectedProgram.programStages.find(stage => stage.autoGenerateEvent) !== undefined;
+        }
+        return false;
+    }
     
     $scope.registerEntity = function(){
         
