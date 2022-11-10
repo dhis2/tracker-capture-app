@@ -512,7 +512,7 @@ trackerCapture.controller('RegistrationController',
     });
 
     $scope.categoryRequiredDuringTEIRegistration = function() {
-        if ($scope.selectedProgram.categoryCombo && !$scope.selectedProgram.categoryCombo.isDefault && $scope.selectedProgram.categoryCombo.categories) {
+        if ($scope.selectedProgram && $scope.selectedProgram.categoryCombo && !$scope.selectedProgram.categoryCombo.isDefault && $scope.selectedProgram.categoryCombo.categories) {
             if ($scope.registrationAndDataEntry) {
                 return true;
             }
