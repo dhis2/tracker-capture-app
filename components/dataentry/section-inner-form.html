@@ -247,6 +247,7 @@
                 <input type="checkbox"
                        class="form-control-checkbox"
                        ng-model="currentEvent[de.id]"
+                       ng-false-value="null"
                        ng-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
                        ng-disabled="!dataElementEditable(prStDes[de.id])"
                        ng-change="saveDatavalue(prStDes[de.id], innerForm.foo)"
