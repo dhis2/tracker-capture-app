@@ -2403,7 +2403,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                 }
             }
         },
-        autoGenerateEvents: function(teiId, program, orgUnit, enrollment, availableEvent){
+        autoGenerateEvents: function(teiId, program, orgUnit, enrollment, availableEvent, selectedCategoryOptions){
             var dhis2Events = {events: []};
             if(teiId && program && orgUnit && enrollment){
                 angular.forEach(program.programStages, function(stage){
@@ -2447,6 +2447,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
                         dhis2Events.events.push(newEvent);
                     }
+                });
+            }
+
+            if (selectedCategoryOptions) {
+                angular.forEach(dhis2Events.events, function(event) {
+                    event.attributeCategoryOptions = selectedCategoryOptions;
                 });
             }
 
