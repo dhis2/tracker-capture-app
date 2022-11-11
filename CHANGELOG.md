@@ -1,3 +1,11 @@
+## [31.12.8](https://github.com/dhis2/tracker-capture-app/compare/v31.12.7...v31.12.8) (2022-11-11)
+
+
+### Bug Fixes
+
+* [DHIS2-13832] data element assignment in scheduled events ([#1567](https://github.com/dhis2/tracker-capture-app/issues/1567)) ([02a4c26](https://github.com/dhis2/tracker-capture-app/commit/02a4c26abad0003d3f83cb99ab3dbc32e5c7b080))
+* [DHIS2-7778] program stage-wise compulsory DE setting ([#1586](https://github.com/dhis2/tracker-capture-app/issues/1586)) ([8e014de](https://github.com/dhis2/tracker-capture-app/commit/8e014de5cb85963882ac1bd726a6575f66d5b77c))
+
 ## [31.12.7](https://github.com/dhis2/tracker-capture-app/compare/v31.12.6...v31.12.7) (2022-11-11)
 
 
