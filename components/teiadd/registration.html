@@ -45,6 +45,15 @@
         </div>
         <!-- default registration form ends -->
 
+        <!-- category selection starts -->
+        <div ng-if="categoryRequiredDuringTEIRegistration()">
+            <div class="section-label section-spacing vertical-spacing">
+                {{'category'| translate}}
+            </div>
+            <div ng-include="'components/registration/category-selection-form.html'"></div>
+        </div>
+        <!-- category selection ends -->
+
         <div ng-if="formEmpty && outerForm.submitted">
             <div class="alert alert-warning">{{'form_is_empty_fill_at_least_one'| translate}}</div> 
         </div>
@@ -54,7 +63,6 @@
 
     </form>
     <!--registration form ends -->
-  
 
     <div ng-if="warningMessages.length > 0">
         <div ng-include="'views/warnings.html'"></div>
