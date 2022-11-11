@@ -361,6 +361,7 @@ trackerCapture.controller('RegistrationController',
                         $scope.currentEvent = {};
                         $scope.registrationAndDataEntry = true;
                         $scope.prStDes = [];
+                        $scope.prStDesInStage = {};
                         $scope.currentStage = $scope.selectedProgram.programStages[0];
                         $scope.currentEvent.event = 'SINGLE_EVENT';
                         $scope.currentEvent.providedElsewhere = {};
@@ -382,8 +383,13 @@ trackerCapture.controller('RegistrationController',
                                 $scope.allowProvidedElsewhereExists[$scope.currentStage.id] = true;
                             }
                         });
+                        $scope.prStDesInStage[$scope.currentStage.id] = $scope.prStDes;
                         $scope.currentEventOriginal = angular.copy($scope.currentEvent);
                         $scope.customDataEntryForm = CustomFormService.getForProgramStage($scope.currentStage, $scope.prStDes);
+
+                        angular.forEach($scope.currentStage.programStageSections, function (section) {
+                            section.open = true;
+                        });
                     }
                 }
                 $scope.attributeSections = ($scope.selectedProgram.programSections.length)
