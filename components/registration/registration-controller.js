@@ -61,6 +61,7 @@ trackerCapture.controller('RegistrationController',
     var flag = {debug: true, verbose: $location.search().verbose ? true : false};
     $rootScope.ruleeffects = {};
     $scope.userAuthority = AuthorityService.getUserAuthorities(SessionStorageService.get('USER_PROFILE'));
+    $scope.selectedCategoryOptions = {};
 
     $scope.attributesById = CurrentSelection.getAttributesById();
     $scope.optionGroupsById = CurrentSelection.getOptionGroupsById();
@@ -261,6 +262,7 @@ trackerCapture.controller('RegistrationController',
     $scope.$on('registrationWidget', function (event, args) {
         $scope.selectedTei = {};
         $scope.apiFormattedTei = {};
+        $scope.selectedCategoryOptions = {};
         $scope.registrationMode = args.registrationMode;
         $scope.orgUnitNames = CurrentSelection.getOrgUnitNames();
 
@@ -515,7 +517,31 @@ trackerCapture.controller('RegistrationController',
         $scope.apiFormattedTei.orgUnit = args.orgUnit;
     });
 
+    $scope.categoryRequiredDuringTEIRegistration = function() {
+        if ($scope.selectedProgram && $scope.selectedProgram.categoryCombo && !$scope.selectedProgram.categoryCombo.isDefault && $scope.selectedProgram.categoryCombo.categories) {
+            if ($scope.registrationAndDataEntry) {
+                return true;
+            }
+            return $scope.selectedProgram.programStages.find(stage => stage.autoGenerateEvent) !== undefined;
+        }
+        return false;
+    }
+
+    $scope.selectCategoryOption = function(item, category) {
+        $scope.selectedCategoryOptions[category.id] = item.id;
+    }
+
     var performRegistration = function (destination) {
+        var selectedCategoryOptions = null;
+        if ($scope.categoryRequiredDuringTEIRegistration()) {
+            if ($scope.selectedProgram.categoryCombo.categories.find(category => !$scope.selectedCategoryOptions[category.id])) {
+                NotificationService.showNotifcationDialog($translate.instant("error"), $translate.instant("fill_all_category_options"));
+                return;
+            }
+            selectedCategoryOptions = $scope.selectedProgram.categoryCombo.categories
+                .map(category => $scope.selectedCategoryOptions[category.id]).join(';');
+        }
+
         if (destination === "DASHBOARD" || destination === "SELF" || destination === "ENROLLMENT") {
            $scope.model.savingRegistration = true;
         }
@@ -582,7 +608,7 @@ trackerCapture.controller('RegistrationController',
                                     }
                                     enrollment.enrollment = en.importSummaries[0].reference;
                                     var availableEvent = $scope.currentEvent && $scope.currentEvent.event ? $scope.currentEvent : null;
-                                    var dhis2Events = EventUtils.autoGenerateEvents($scope.apiFormattedTei.trackedEntityInstance, $scope.selectedProgram, $scope.selectedOrgUnit, enrollment, availableEvent);
+                                    var dhis2Events = EventUtils.autoGenerateEvents($scope.apiFormattedTei.trackedEntityInstance, $scope.selectedProgram, $scope.selectedOrgUnit, enrollment, availableEvent, selectedCategoryOptions);
                                     if (dhis2Events.events.length > 0) {
                                         DHIS2EventFactory.create(dhis2Events).then(function () {
                                             notifyRegistrtaionCompletion(destination, $scope.apiFormattedTei.trackedEntityInstance);

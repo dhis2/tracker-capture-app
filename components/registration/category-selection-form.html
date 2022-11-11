@@ -1,0 +1,18 @@
+<table class="dhis2-list-table-striped default-form-table">
+    <tr ng-repeat="category in selectedProgram.categoryCombo.categories">
+        <td>
+            {{category.displayName}}
+        </td>
+        <td class="absorbing-column">
+            <ui-select ng-model="category.selectedOption"
+                theme="select2"
+                on-select="selectCategoryOption($item, category)"
+                style="width:100%;">
+                <ui-select-match allow-clear="true" class="form-control-ui-select" ng-attr-placeholder="{{category.categoryOptions && category.categoryOptions.length > 0 ? 'select_or_search' : 'empty'| translate}}">{{$select.selected.displayName|| $select.selected}}</ui-select-match>
+                <ui-select-choices  repeat="option in category.categoryOptions | categoryOptionFilter:selectedOrgUnit | filter:{displayName:$select.search} | limitTo:maxOptionSize">
+                    <span ng-bind-html="option.displayName | highlight: $select.search"></span>
+                </ui-select-choices>
+            </ui-select>
+        </td>
+    </tr>
+</table>
