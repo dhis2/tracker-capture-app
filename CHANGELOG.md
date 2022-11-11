@@ -1,3 +1,10 @@
+## [31.12.6](https://github.com/dhis2/tracker-capture-app/compare/v31.12.5...v31.12.6) (2022-11-11)
+
+
+### Bug Fixes
+
+* [DHIS2-14104] make sure deselected checkboxes evaluate `d2:hasValue` to `false` ([#1602](https://github.com/dhis2/tracker-capture-app/issues/1602)) ([d999b0f](https://github.com/dhis2/tracker-capture-app/commit/d999b0f8cc3d6c9fba50e9664f88ade2298f26e8))
+
 ## [31.12.5](https://github.com/dhis2/tracker-capture-app/compare/v31.12.4...v31.12.5) (2022-10-14)
 
 
