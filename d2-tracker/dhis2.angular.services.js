@@ -3436,7 +3436,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                             }
                         });
                     });
-                    var result = { event: ruleEffectKey, callerId:flag.callerId, eventsCreated:eventsCreated };
+                    var result = { event: ruleEffectKey, callerId:flag.callerId, eventsCreated:eventsCreated, ruleeffectsupdated:updatedEffectsExits };
                     //Broadcast rules finished if there was any actual changes to the event.
                     if(updatedEffectsExits){
                         $rootScope.$broadcast("ruleeffectsupdated", result);
