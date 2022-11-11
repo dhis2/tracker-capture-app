@@ -1,3 +1,10 @@
+## [31.12.7](https://github.com/dhis2/tracker-capture-app/compare/v31.12.6...v31.12.7) (2022-11-11)
+
+
+### Bug Fixes
+
+* [DHIS2-12649] support auto-generated events in programs using category options ([#1598](https://github.com/dhis2/tracker-capture-app/issues/1598)) ([fc5bf02](https://github.com/dhis2/tracker-capture-app/commit/fc5bf02d4531a146c9122b307dca4b620dd2ac54))
+
 ## [31.12.6](https://github.com/dhis2/tracker-capture-app/compare/v31.12.5...v31.12.6) (2022-11-11)
 
 
