@@ -95,7 +95,7 @@
                                 <span class="not-for-screen">
                                     {{prStDes[de.id].dataElement.displayFormName}}
                                 </span>
-                                <span ng-if="prStDes[de.id].compulsory" class="required">*</span>
+                                <span ng-if="prStDesInStage[currentStage.id][de.id].compulsory" class="required">*</span>
                                 <span class="hideInPrint">
                                     <d2-info ng-if="prStDes[de.id].dataElement.description" data-content='[{"name":"{{"description" | translate}}", "data":"{{prStDes[de.id].dataElement.description}}"}]'>
                                     </d2-info>
