@@ -854,6 +854,7 @@ trackerCapture.controller('DataEntryController',
         $scope.tabularEntryStages = [];
         $rootScope.ruleeffects = {};        
         $scope.prStDes = [];
+        $scope.prStDesInStage = {};
         $scope.allProgramRules = [];
         $scope.allowProvidedElsewhereExists = [];
         $scope.optionsReady = false;
@@ -901,11 +902,13 @@ trackerCapture.controller('DataEntryController',
                     }
 
                     stage.programStageDataElementsCollection = {};
+                    $scope.prStDesInStage[stage.id] = {};
 
                     stage.executionDateLabel = stage.executionDateLabel ? stage.executionDateLabel : $translate.instant('report_date');
                     stage.dueDateLabel = stage.dueDateLabel ? stage.dueDateLabel : $translate.instant('due_date');
                     angular.forEach(stage.programStageDataElements, function (prStDe) {
                         $scope.prStDes[prStDe.dataElement.id] = prStDe;
+                        $scope.prStDesInStage[stage.id][prStDe.dataElement.id] = prStDe;
                         if(prStDe.allowProvidedElsewhere){
                             $scope.allowProvidedElsewhereExists[stage.id] = true;
                         }
