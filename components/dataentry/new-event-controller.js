@@ -315,7 +315,8 @@ trackerCapture.controller('EventCreationController',
             return;
         }
         
-        $scope.periodOffset = period === 'NEXT' ? $scope.periodOffset + 1 : $scope.periodOffset - 1;
+        const periodOffset = $scope.periodOffset || 0
+        $scope.periodOffset = period === 'NEXT' ? periodOffset + 1 : periodOffset - 1;
         $scope.dhis2Event.selectedPeriod = null;
         
         var prds = PeriodService.getPeriods(eventsByStage[stage.id], $scope.model.selectedStage, $scope.selectedEnrollment, $scope.periodOffset);
