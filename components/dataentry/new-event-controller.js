@@ -315,7 +315,7 @@ trackerCapture.controller('EventCreationController',
             return;
         }
         
-        const periodOffset = $scope.periodOffset || 0
+        const periodOffset = $scope.periodOffset || 0;
         $scope.periodOffset = period === 'NEXT' ? periodOffset + 1 : periodOffset - 1;
         $scope.dhis2Event.selectedPeriod = null;
         
