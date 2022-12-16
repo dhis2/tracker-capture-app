@@ -2788,14 +2788,17 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 return number;
             },
         },
-        "d2:oizp": function(parameters) {
-            var number = parameters[0];
-            var output = 1;
-            if( number < 0 ) {
-                output = 0;
-            }
-            return output;
-        },
+        "d2:oizp": {
+            parameters: 1,
+            execute: function(parameters) {
+                var number = parameters[0];
+                var output = 1;
+                if( number < 0 ) {
+                    output = 0;
+                }
+                return output;
+            },
+        }
         "d2:count": {
             parameters: 1,
             execute: function(parameters, variablesHash) {
