@@ -1,3 +1,10 @@
+## [31.12.15](https://github.com/dhis2/tracker-capture-app/compare/v31.12.14...v31.12.15) (2022-12-22)
+
+
+### Bug Fixes
+
+* [DHIS2-14352] remove merge conflict artifact ([#1646](https://github.com/dhis2/tracker-capture-app/issues/1646)) ([5602931](https://github.com/dhis2/tracker-capture-app/commit/5602931b70002086d357f516ee05948b16064e37))
+
 ## [31.12.14](https://github.com/dhis2/tracker-capture-app/compare/v31.12.13...v31.12.14) (2022-12-22)
 
 
