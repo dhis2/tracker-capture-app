@@ -2633,8 +2633,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                     output = 0;
                 }
                 return output;
-            },
-        }
+            },sssssssssssssssssssssssssssssssssssssssssssss
+        },
         "d2:count": {
             parameters: 1,
             execute: function(parameters, variablesHash) {
