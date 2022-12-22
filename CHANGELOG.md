@@ -1,3 +1,10 @@
+## [31.12.13](https://github.com/dhis2/tracker-capture-app/compare/v31.12.12...v31.12.13) (2022-12-22)
+
+
+### Bug Fixes
+
+* [DHIS2-14352] d2:oizp ([#1645](https://github.com/dhis2/tracker-capture-app/issues/1645)) ([ca2d47f](https://github.com/dhis2/tracker-capture-app/commit/ca2d47f1ce7b2a32fcce90b7fa6b08055366dce2))
+
 ## [31.12.12](https://github.com/dhis2/tracker-capture-app/compare/v31.12.11...v31.12.12) (2022-12-16)
 
 
