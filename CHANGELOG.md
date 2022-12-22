@@ -1,3 +1,10 @@
+## [31.12.14](https://github.com/dhis2/tracker-capture-app/compare/v31.12.13...v31.12.14) (2022-12-22)
+
+
+### Bug Fixes
+
+* [DHIS2-14265] period change when periodOffset undefined ([#1634](https://github.com/dhis2/tracker-capture-app/issues/1634)) ([4911bc7](https://github.com/dhis2/tracker-capture-app/commit/4911bc7d37586039903b96e0d5eeab731fe70eb0))
+
 ## [31.12.13](https://github.com/dhis2/tracker-capture-app/compare/v31.12.12...v31.12.13) (2022-12-22)
 
 
