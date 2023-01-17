@@ -1,3 +1,10 @@
+## [31.12.16](https://github.com/dhis2/tracker-capture-app/compare/v31.12.15...v31.12.16) (2023-01-17)
+
+
+### Bug Fixes
+
+* [DHIS2-14266] prevent period skipping for new periodic event ([#1635](https://github.com/dhis2/tracker-capture-app/issues/1635)) ([8bcf286](https://github.com/dhis2/tracker-capture-app/commit/8bcf28653325c85aa452a9fc69267db31af5c52a))
+
 ## [31.12.15](https://github.com/dhis2/tracker-capture-app/compare/v31.12.14...v31.12.15) (2022-12-22)
 
 
