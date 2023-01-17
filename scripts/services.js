@@ -258,7 +258,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
             var startDate = DateUtils.format( moment(referenceDate, calendarSetting.momentFormat).add(offset, 'days') );
             var yearsSinceEnrollment = splitDate(DateUtils.getToday()).year - splitDate(startDate).year;
-            var periodOffset = (dhis2.validation.isNumber(_periodOffset) || 0) - yearsSinceEnrollment;
+            var periodOffset = dhis2.validation.isNumber(_periodOffset) ? _periodOffset : -yearsSinceEnrollment
             var eventDateOffSet = moment(referenceDate, calendarSetting.momentFormat).add('d', offset)._d;
             eventDateOffSet = $filter('date')(eventDateOffSet, calendarSetting.keyDateFormat);
 
