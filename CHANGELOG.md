@@ -1,3 +1,10 @@
+## [31.12.17](https://github.com/dhis2/tracker-capture-app/compare/v31.12.16...v31.12.17) (2023-02-09)
+
+
+### Bug Fixes
+
+* [DHIS2-14698] remove unintended character ([#1656](https://github.com/dhis2/tracker-capture-app/issues/1656)) ([fb05862](https://github.com/dhis2/tracker-capture-app/commit/fb058623fdc2d6f2e8990212785f489c791e01ab))
+
 ## [31.12.16](https://github.com/dhis2/tracker-capture-app/compare/v31.12.15...v31.12.16) (2023-01-17)
 
 
