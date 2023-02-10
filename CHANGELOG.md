@@ -1,3 +1,10 @@
+## [31.12.18](https://github.com/dhis2/tracker-capture-app/compare/v31.12.17...v31.12.18) (2023-02-10)
+
+
+### Bug Fixes
+
+* [DHIS2-14266] minor corrections in the periodic events-code ([#1658](https://github.com/dhis2/tracker-capture-app/issues/1658)) ([f200274](https://github.com/dhis2/tracker-capture-app/commit/f200274ed1a928d26fa6a9a8d0fabb256ff74538))
+
 ## [31.12.17](https://github.com/dhis2/tracker-capture-app/compare/v31.12.16...v31.12.17) (2023-02-09)
 
 
