@@ -218,9 +218,11 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         var index = -1;
         var occupied = null;
         for(var i=0; i<periods.length && index === -1; i++){
-            if(moment(periods[i].endDate).isSame(event.sortingDate) ||
-                moment(periods[i].startDate).isSame(event.sortingDate) ||
-                moment(periods[i].endDate).isAfter(event.sortingDate) && moment(event.sortingDate).isAfter(periods[i].endDate)){
+            const startMoment = moment(periods[i].startDate, calendarSetting.momentFormat);
+            const endMoment = moment(periods[i].endDate, calendarSetting.momentFormat);
+            if(startMoment.isSame(event.sortingDate) ||
+                endMoment.isSame(event.sortingDate) ||
+                endMoment.isAfter(event.sortingDate) && startMoment.isBefore(event.sortingDate)){
                 index = i;
                 occupied = angular.copy(periods[i]);
             }
@@ -2352,13 +2354,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             if(programStage.periodType){
                 var prds = getEventDuePeriod(eventsPerStage, programStage, enrollment);
                 var periods = prds && prds.availablePeriods && prds.availablePeriods.length ? prds.availablePeriods : [];
+                dummyEvent.periods = periods;
+                dummyEvent.periodOffset = prds.periodOffset;
+                dummyEvent.hasFuturePeriod = prds.hasFuturePeriod;
                 if( periods.length > 0 ){
                     dummyEvent.dueDate = periods[0].endDate;
                     dummyEvent.periodName = periods[0].displayName;
                     dummyEvent.eventDate = dummyEvent.dueDate;
-                    dummyEvent.periods = periods;
-                    dummyEvent.periodOffset = prds.periodOffset;
-                    dummyEvent.hasFuturePeriod = prds.hasFuturePeriod;
                 }
             }
             else{
