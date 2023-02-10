@@ -426,9 +426,10 @@ var d2Directives = angular.module('d2Directives', [])
                 dateFormat = 'dd-mm-yyyy';
             }
 
+            $.calendars.picker.setDefaults($.calendars.picker.regional[calendarSetting.locale]);
             var minDate = $parse(attrs.minDate)(scope);
             var maxDate = $parse(attrs.maxDate)(scope);
-            var calendar = $.calendars.instance(calendarSetting.keyCalendar);
+            var calendar = $.calendars.instance(calendarSetting.keyCalendar, calendarSetting.locale);
             var pickerClass = attrs.pickerClass;
 
             var initializeDatePicker = function( sDate, eDate ){
