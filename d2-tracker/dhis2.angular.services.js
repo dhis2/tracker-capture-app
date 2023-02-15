@@ -141,7 +141,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             var storedFormat = storage.get('SYSTEM_SETTING');
             var userSettings = SessionStorageService.get('USER_SETTING');
 
-            dhis2CalendarFormat.locale = userSettings.keyUiLocale;
+            dhis2CalendarFormat.locale = userSettings.keyUiLocale.replace('_', '-');
             
             if (angular.isObject(storedFormat) && storedFormat.keyDateFormat && storedFormat.keyCalendar) {
                 if (storedFormat.keyCalendar === 'iso8601') {
