@@ -1,3 +1,10 @@
+## [31.12.19](https://github.com/dhis2/tracker-capture-app/compare/v31.12.18...v31.12.19) (2023-02-16)
+
+
+### Bug Fixes
+
+* [DHIS2-14733] prevent assignment of data elements outside current program stage ([#1662](https://github.com/dhis2/tracker-capture-app/issues/1662)) ([0fe86b1](https://github.com/dhis2/tracker-capture-app/commit/0fe86b1e5f5211557adbe6e2e96361a02aad0d01))
+
 ## [31.12.18](https://github.com/dhis2/tracker-capture-app/compare/v31.12.17...v31.12.18) (2023-02-10)
 
 
