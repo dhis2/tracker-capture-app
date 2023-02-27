@@ -2929,7 +2929,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         },
         "d2:lastEventDate": {
             parameters: 1,
-            execute: function(parameters, variablesHash) {z
+            execute: function(parameters, variablesHash) {
                 var variableName = parameters[0];
                 var variableObject = variablesHash[variableName];
                 var valueFound = "''";
