@@ -131,13 +131,16 @@ var d2Services = angular.module('d2Services', ['ngResource'])
 })
 
 /* service for getting calendar setting */
-.service('CalendarService', function (storage, $rootScope) {
+.service('CalendarService', function (storage, SessionStorageService, $rootScope) {
 
     return {
         getSetting: function () {
 
             var dhis2CalendarFormat = {keyDateFormat: 'yyyy-MM-dd', keyCalendar: 'gregorian', momentFormat: 'YYYY-MM-DD'};
             var storedFormat = storage.get('SYSTEM_SETTING');
+            var userSettings = SessionStorageService.get('USER_SETTING');
+
+            dhis2CalendarFormat.locale = userSettings.keyUiLocale.replace('_', '-');
             
             if (angular.isObject(storedFormat) && storedFormat.keyDateFormat && storedFormat.keyCalendar) {
                 if (storedFormat.keyCalendar === 'iso8601') {
