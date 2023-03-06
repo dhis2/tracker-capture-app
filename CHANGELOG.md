@@ -1,3 +1,10 @@
+# [31.13.0](https://github.com/dhis2/tracker-capture-app/compare/v31.12.19...v31.13.0) (2023-03-06)
+
+
+### Features
+
+* [DHIS2-14597] add translations in calendar picker ([#1663](https://github.com/dhis2/tracker-capture-app/issues/1663)) ([57a42d2](https://github.com/dhis2/tracker-capture-app/commit/57a42d23056262b5f1ec36f21eb9bb2142cfb672))
+
 ## [31.12.19](https://github.com/dhis2/tracker-capture-app/compare/v31.12.18...v31.12.19) (2023-02-16)
 
 
