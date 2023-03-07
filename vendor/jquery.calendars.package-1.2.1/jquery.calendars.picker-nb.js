@@ -2,7 +2,7 @@
    Norwegian localisation for calendars datepicker for jQuery.
    Written by Naimdjon Takhirov (naimdjon@gmail.com). */
 (function($) {
-	$.calendars.picker.regional['no'] = {
+	$.calendars.picker.regional['nb'] = {
 		renderer: $.calendars.picker.defaultRenderer,
 		prevText: '&laquo;Forrige',  prevStatus: '',
 		prevJumpText: '&#x3c;&#x3c;', prevJumpStatus: '',
@@ -17,5 +17,5 @@
 		dayStatus: 'DD, M d', defaultStatus: '',
 		isRTL: false
 	};
-	$.calendars.picker.setDefaults($.calendars.picker.regional['no']);
+	$.calendars.picker.setDefaults($.calendars.picker.regional['nb']);
 })(jQuery);
