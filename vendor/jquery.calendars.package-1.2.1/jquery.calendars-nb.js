@@ -2,7 +2,7 @@
    Norwegian localisation for Gregorian/Julian calendars for jQuery.
    Written by Naimdjon Takhirov (naimdjon@gmail.com). */
 (function($) {
-	$.calendars.calendars.gregorian.prototype.regional['no'] = {
+	$.calendars.calendars.gregorian.prototype.regional['nb'] = {
 		name: 'Gregorian',
 		epochs: ['BCE', 'CE'],
 		monthNames: ['Januar','Februar','Mars','April','Mai','Juni',
@@ -17,7 +17,7 @@
 		isRTL: false
 	};
 	if ($.calendars.calendars.julian) {
-		$.calendars.calendars.julian.prototype.regional['no'] =
-			$.calendars.calendars.gregorian.prototype.regional['no'];
+		$.calendars.calendars.julian.prototype.regional['nb'] =
+			$.calendars.calendars.gregorian.prototype.regional['nb'];
 	}
 })(jQuery);
