@@ -52,6 +52,7 @@
         <script src="vendor/jquery.calendars.package-1.2.1/jquery.calendars.plus.min.js"></script>
         <script src="vendor/jquery.calendars.package-1.2.1/jquery.calendars.picker.ext.js"></script>
 
+        <!-- The following array should be manually kept in sync with the one in `CalendarService` -->
         <% const supportedCalendarLocales = ['ar', 'ar-EG', 'zn-CH', 'cs', 'da', 'nl', 'fr', 'km', 'lo', 'nb', 'pt-BR', 'ro', 'ru', 'es', 'sv', 'uk', 'ur', 'vi']; %>
         <% supportedCalendarLocales.forEach(locale => { %>
             <script src="vendor/jquery.calendars.package-1.2.1/jquery.calendars-<%= locale %>.js"></script>
