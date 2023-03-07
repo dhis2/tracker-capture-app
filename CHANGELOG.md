@@ -1,3 +1,10 @@
+## [31.13.1](https://github.com/dhis2/tracker-capture-app/compare/v31.13.0...v31.13.1) (2023-03-07)
+
+
+### Bug Fixes
+
+* [DHIS2-14596] use English as fallback in date picker ([#1672](https://github.com/dhis2/tracker-capture-app/issues/1672)) ([bb81315](https://github.com/dhis2/tracker-capture-app/commit/bb8131528e20e71e2ab98460a00f54519866ceb2))
+
 # [31.13.0](https://github.com/dhis2/tracker-capture-app/compare/v31.12.19...v31.13.0) (2023-03-06)
 
 
