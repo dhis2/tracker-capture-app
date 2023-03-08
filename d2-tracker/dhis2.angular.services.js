@@ -133,6 +133,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
 
 /* service for getting calendar setting */
 .service('CalendarService', function (storage, SessionStorageService, $rootScope) {
+    // The following array should be manually kept in sync with the one in `index.ejs`
+    const supportedCalendarLocales = ['ar', 'ar-EG', 'zn-CH', 'cs', 'da', 'nl', 'fr', 'km', 'lo', 'nb', 'pt-BR', 'ro', 'ru', 'es', 'sv', 'uk', 'ur', 'vi'];
 
     return {
         getSetting: function () {
@@ -142,6 +144,9 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             var userSettings = SessionStorageService.get('USER_SETTING');
 
             dhis2CalendarFormat.locale = userSettings.keyUiLocale.replace('_', '-');
+            if (!supportedCalendarLocales.find(locale => locale === dhis2CalendarFormat.locale)) {
+                dhis2CalendarFormat.locale = 'en';
+            }
             
             if (angular.isObject(storedFormat) && storedFormat.keyDateFormat && storedFormat.keyCalendar) {
                 if (storedFormat.keyCalendar === 'iso8601') {
