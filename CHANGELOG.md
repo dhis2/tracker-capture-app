@@ -1,3 +1,10 @@
+## [31.13.2](https://github.com/dhis2/tracker-capture-app/compare/v31.13.1...v31.13.2) (2023-03-22)
+
+
+### Bug Fixes
+
+* [DHIS2-14190] assign null instead of non-existing option ([#1677](https://github.com/dhis2/tracker-capture-app/issues/1677)) ([37a6cdd](https://github.com/dhis2/tracker-capture-app/commit/37a6cdd724e920296c4a7047a448a6301709f220))
+
 ## [31.13.1](https://github.com/dhis2/tracker-capture-app/compare/v31.13.0...v31.13.1) (2023-03-07)
 
 
