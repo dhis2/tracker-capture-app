@@ -134,7 +134,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
 /* service for getting calendar setting */
 .service('CalendarService', function (storage, SessionStorageService, $rootScope) {
     // The following array should be manually kept in sync with the one in `index.ejs`
-    const supportedCalendarLocales = ['ar', 'ar-EG', 'zn-CH', 'cs', 'da', 'nl', 'fr', 'km', 'lo', 'nb', 'pt-BR', 'ro', 'ru', 'es', 'sv', 'uk', 'ur', 'vi'];
+    const supportedCalendarLocales = ['ar', 'ar-EG', 'zh-CN', 'cs', 'da', 'nl', 'fr', 'km', 'lo', 'nb', 'pt-BR', 'ro', 'ru', 'es', 'sv', 'uk', 'ur', 'vi'];
 
     return {
         getSetting: function () {
