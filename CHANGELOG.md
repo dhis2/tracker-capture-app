@@ -1,3 +1,10 @@
+## [31.13.3](https://github.com/dhis2/tracker-capture-app/compare/v31.13.2...v31.13.3) (2023-03-30)
+
+
+### Bug Fixes
+
+* [DHIS2-9190] use `displayFormName` instead of `formName` for TEAs ([#1681](https://github.com/dhis2/tracker-capture-app/issues/1681)) ([eb2ce94](https://github.com/dhis2/tracker-capture-app/commit/eb2ce946f71317faa28515368106f0e150ee52c9))
+
 ## [31.13.2](https://github.com/dhis2/tracker-capture-app/compare/v31.13.1...v31.13.2) (2023-03-22)
 
 
