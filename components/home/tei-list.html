@@ -14,7 +14,7 @@
                                 <span ng-class="{true: 'red'} [currentTrackedEntityList.sortColumn.id === gridColumn.id && currentTrackedEntityList.sortColumn.direction === 'asc']"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
                                 <span ng-class="{true: 'red'} [currentTrackedEntityList.sortColumn.id === gridColumn.id && currentTrackedEntityList.sortColumn.direction === 'desc']"><i class="fa fa-sort-desc fa-stack-1x"></i></span>
                             </span>
-                            {{gridColumn.formName ? gridColumn.formName : gridColumn.displayName}}
+                            {{gridColumn.displayFormName ? gridColumn.displayFormName : gridColumn.displayName}}
                         </span>
                         <!-- sort icon ends -->                            
                     </th>                              
