@@ -28,7 +28,7 @@
                                 <span ng-class="{true: 'red'} [sortColumn.id === gridColumn.id && !reverse]"><i class="fa fa-sort-asc fa-stack-1x"></i></span>
                                 <span ng-class="{true: 'red'} [sortColumn.id === gridColumn.id && reverse]"><i class="fa fa-sort-desc fa-stack-1x"></i></span>
                             </span>
-                            {{gridColumn.formName ? gridColumn.formName : gridColumn.displayName}}
+                            {{gridColumn.displayFormName ? gridColumn.displayFormName : gridColumn.displayName}}
                         </span>
                         <!-- sort icon ends -->                            
                     </th>                              
