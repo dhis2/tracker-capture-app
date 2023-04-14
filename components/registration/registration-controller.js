@@ -43,10 +43,10 @@ trackerCapture.controller('RegistrationController',
     $scope.customRegistrationForm = null;    
     $scope.selectedTei = {};       // Attribute values in the current form
     $scope.apiFormattedTei = {};   // API formatted version of $scope.selectedTei; see $scope.registerEntity(...) for details
-    $scope.warningMessages = [];
+    $scope.errorMessages = {};
+    $scope.warningMessages = {};
     $scope.hiddenFields = [];    
     $scope.assignedFields = [];
-    $scope.errorMessages = {};
     $scope.attributeUniquenessError = {};
     $scope.hiddenSections = [];
     $scope.mandatoryFields = [];
@@ -726,6 +726,28 @@ trackerCapture.controller('RegistrationController',
             }
         }
 
+        var context = $scope.registrationAndDataEntry ? 'SINGLE_EVENT' : 'registration';
+
+        if(angular.isDefined($scope.errorMessages[context]) && $scope.errorMessages[context].length > 0) {
+            //There are unresolved program rule errors - show error message.
+            $scope.validatingRegistration = false;
+            var sections = [
+                {
+                    bodyList:$scope.errorMessages[context],
+                    itemType:'danger'
+                }
+            ];
+
+            var dialogOptions = {
+                headerText: 'errors',
+                bodyText: 'please_fix_errors_before_submitting',
+                sections: sections
+            };
+
+            NotificationService.showNotifcationWithOptions({}, dialogOptions);
+            return false;
+        }
+
         //form is valid, continue the registration
         //get selected entity
         if (!$scope.selectedTei.trackedEntityInstance) {
@@ -922,11 +944,12 @@ trackerCapture.controller('RegistrationController',
 
     //listen for rule effect changes
     $scope.$on('ruleeffectsupdated', function (event, args) {
-        if (args.event === "registration" || args.event === 'SINGLE_EVENT') {
-            $scope.warningMessages = [];
+        var context = args.event;
+        if (context === "registration" || context === 'SINGLE_EVENT') {
             $scope.hiddenFields = [];
             $scope.assignedFields = [];
-            $scope.errorMessages = {};
+            $scope.errorMessages[context] = [];
+            $scope.warningMessages[context] = [];
             $scope.hiddenSections = [];
 
             var effectResult = TrackerRulesExecutionService.processRuleEffectAttribute(args.event, $scope.selectedTei, $scope.apiFormattedTei, $scope.currentEvent, {}, $scope.currentEvent, $scope.attributesById, $scope.prStDes,$scope.optionSets, $scope.optionGroupsById);
@@ -935,7 +958,8 @@ trackerCapture.controller('RegistrationController',
             $scope.hiddenFields = effectResult.hiddenFields;
             $scope.hiddenSections = effectResult.hiddenSections;
             $scope.assignedFields = effectResult.assignedFields;
-            $scope.warningMessages = effectResult.warningMessages;
+            $scope.errorMessages[context] = effectResult.errorMessages;
+            $scope.warningMessages[context] = effectResult.warningMessages;
             $scope.mandatoryFields = effectResult.mandatoryFields;
             $scope.optionVisibility = effectResult.optionVisibility;
             if($scope.assignedFields){
