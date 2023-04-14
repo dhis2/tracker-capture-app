@@ -728,12 +728,12 @@ trackerCapture.controller('RegistrationController',
 
         var context = $scope.registrationAndDataEntry ? 'SINGLE_EVENT' : 'registration';
 
-        if(angular.isDefined($scope.errorMessages[context]) && $scope.errorMessages[context].length > 0) {
+        if(angular.isDefined($scope.errorMessages[context]) && Object.keys($scope.errorMessages[context]).length > 0) {
             //There are unresolved program rule errors - show error message.
             $scope.validatingRegistration = false;
             var sections = [
                 {
-                    bodyList:$scope.errorMessages[context],
+                    bodyList: Object.values($scope.errorMessages[context]),
                     itemType:'danger'
                 }
             ];
@@ -962,6 +962,9 @@ trackerCapture.controller('RegistrationController',
             $scope.warningMessages[context] = effectResult.warningMessages;
             $scope.mandatoryFields = effectResult.mandatoryFields;
             $scope.optionVisibility = effectResult.optionVisibility;
+            if ($scope.registrationAndDataEntry) {
+                $scope.errorMessages[$scope.currentStage.id] = effectResult.errorMessages;
+            }
             if($scope.assignedFields){
                 var searchedGroups = {};
                 angular.forEach($scope.assignedFields, function(field){
