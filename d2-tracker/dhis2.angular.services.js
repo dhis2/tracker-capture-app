@@ -3566,8 +3566,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             var assignedFields = {};
             var hiddenSections = {};
             var mandatoryFields = {};
-            var errorMessages = [];
-            var warningMessages = [];
+            var errorMessages = {};
+            var warningMessages = {};
             var optionVisibility = { showOnly: null, hidden: {}};
             
             var attributeOptionsChanged = [];
@@ -3597,12 +3597,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                         }
                     } else if (effect.action === "SHOWWARNING" && effect.trackedEntityAttribute) {
                         if(effect.ineffect) {
-                            var message = effect.content + (angular.isDefined(effect.data) ? effect.data : "");
-                            
-                            if( effect.trackedEntityAttribute ) {
-                                warningMessages[effect.trackedEntityAttribute.id] = message;
-                            }
-                            warningMessages.push(message);
+                            warningMessages[effect.trackedEntityAttribute.id] = effect.content + (effect.data ? effect.data : "");
                         }
                     }
                     else if (effect.action === "ASSIGN" && effect.trackedEntityAttribute) {
@@ -3667,8 +3662,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             var assignedFields = {};
             var mandatoryFields = {};
             var hiddenSections = {};
-            var errorMessages = [];
-            var warningMessages = [];
+            var errorMessages = {};
+            var warningMessages = {};
             var optionVisibility = { showOnly: null, hidden: {}};
 
             var dataElementOptionsChanged = [];
@@ -3700,8 +3695,10 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                             errorMessages[effect.dataElement.id] = effect.content + (effect.data ? effect.data : "");
                         }
                     }
-                    else if(effect.action === "SHOWWARNING"){
-                        warningMessages.push(effect.content + (effect.data ? effect.data : ""));
+                    else if(effect.action === "SHOWWARNING" && effect.dataElement && effect.dataElement.id){
+                        if (effect.ineffect) {
+                            warningMessages[effect.dataElement.id] = effect.content + (effect.data ? effect.data : "");
+                        }
                     }
                     else if (effect.action === "ASSIGN" && effect.dataElement) {
                         var processedValue = $filter('trimquotes')(effect.data);

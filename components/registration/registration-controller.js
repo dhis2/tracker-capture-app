@@ -948,8 +948,6 @@ trackerCapture.controller('RegistrationController',
         if (context === "registration" || context === 'SINGLE_EVENT') {
             $scope.hiddenFields = [];
             $scope.assignedFields = [];
-            $scope.errorMessages[context] = [];
-            $scope.warningMessages[context] = [];
             $scope.hiddenSections = [];
 
             var effectResult = TrackerRulesExecutionService.processRuleEffectAttribute(args.event, $scope.selectedTei, $scope.apiFormattedTei, $scope.currentEvent, {}, $scope.currentEvent, $scope.attributesById, $scope.prStDes,$scope.optionSets, $scope.optionGroupsById);
@@ -958,12 +956,13 @@ trackerCapture.controller('RegistrationController',
             $scope.hiddenFields = effectResult.hiddenFields;
             $scope.hiddenSections = effectResult.hiddenSections;
             $scope.assignedFields = effectResult.assignedFields;
-            $scope.errorMessages[context] = effectResult.errorMessages;
-            $scope.warningMessages[context] = effectResult.warningMessages;
+            $scope.errorMessages['registration'] = effectResult.errorMessages;
+            $scope.warningMessages['registration'] = effectResult.warningMessages;
             $scope.mandatoryFields = effectResult.mandatoryFields;
             $scope.optionVisibility = effectResult.optionVisibility;
             if ($scope.registrationAndDataEntry) {
-                $scope.errorMessages[$scope.currentStage.id] = effectResult.errorMessages;
+                $scope.errorMessages['SINGLE_EVENT'] = effectResult.errorMessages;
+                $scope.warningMessages['SINGLE_EVENT'] = effectResult.warningMessages;
             }
             if($scope.assignedFields){
                 var searchedGroups = {};
