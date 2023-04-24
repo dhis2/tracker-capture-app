@@ -1,3 +1,10 @@
+## [31.13.4](https://github.com/dhis2/tracker-capture-app/compare/v31.13.3...v31.13.4) (2023-04-24)
+
+
+### Bug Fixes
+
+* [DHIS2-13679] show error and warning messages on TEAs ([#1687](https://github.com/dhis2/tracker-capture-app/issues/1687)) ([445e0bd](https://github.com/dhis2/tracker-capture-app/commit/445e0bdcc4b9e9fc422a8ea6852d49c153702a9b))
+
 ## [31.13.3](https://github.com/dhis2/tracker-capture-app/compare/v31.13.2...v31.13.3) (2023-03-30)
 
 
