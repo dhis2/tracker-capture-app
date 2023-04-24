@@ -740,7 +740,7 @@ trackerCapture.controller('RegistrationController',
 
             var dialogOptions = {
                 headerText: 'errors',
-                bodyText: 'please_fix_errors_before_submitting',
+                bodyText: 'please_fix_errors_before_saving',
                 sections: sections
             };
 
