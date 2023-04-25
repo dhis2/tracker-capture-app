@@ -387,13 +387,13 @@
                         </span>
                     </span>
                     <div ng-messages="innerForm.foo.$error" class="required hideInPrint" ng-messages-include="../dhis-web-commons/angular-forms/error-messages.html">
-                        <div class="alert alert-warning alert-dismissible" role="alert" ng-if="warningMessages[attribute.id]">
+                        <div class="alert alert-warning alert-dismissible" role="alert" ng-if="warningMessages['registration'][attribute.id]">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close" tabindex="-1"><span aria-hidden="true">&times;</span></button>
-                            {{warningMessages[attribute.id]}}
+                            {{warningMessages['registration'][attribute.id]}}
                         </div>
-                        <div class="alert alert-danger alert-dismissible" role="alert" ng-if="errorMessages[attribute.id]">
+                        <div class="alert alert-danger alert-dismissible" role="alert" ng-if="errorMessages['registration'][attribute.id]">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close" tabindex="-1"><span aria-hidden="true">&times;</span></button>
-                            {{errorMessages[attribute.id]}}
+                            {{errorMessages['registration'][attribute.id]}}
                         </div>
                         <div ng-if="attributeUniquenessError[attribute.id]">
                             {{'value_not_unique' | translate}}
