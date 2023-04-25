@@ -3540,7 +3540,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             var assignedFields = {};
             var hiddenSections = {};
             var mandatoryFields = {};
-            var warningMessages = [];
+            var errorMessages = {};
+            var warningMessages = {};
             var optionVisibility = { showOnly: null, hidden: {}};
             
             var attributeOptionsChanged = [];
@@ -3566,25 +3567,11 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                         hiddenFields[effect.trackedEntityAttribute.id] = true;
                     } else if (effect.action === "SHOWERROR" && effect.trackedEntityAttribute) {
                         if(effect.ineffect) {
-                            var headerText =  $translate.instant('validation_error');
-                            var bodyText = effect.content + (effect.data ? effect.data : "");
-
-                            NotificationService.showNotifcationDialog(headerText, bodyText);
-                            if( effect.trackedEntityAttribute ) {
-                                currentTei[effect.trackedEntityAttribute.id] = teiOriginalValues[effect.trackedEntityAttribute.id];
-                            }
+                            errorMessages[effect.trackedEntityAttribute.id] = effect.content + (effect.data ? effect.data : "");
                         }
                     } else if (effect.action === "SHOWWARNING" && effect.trackedEntityAttribute) {
                         if(effect.ineffect) {
-                            var message = effect.content + (angular.isDefined(effect.data) ? effect.data : "");
-                            
-                            if( effect.trackedEntityAttribute ) {
-                                warningMessages[effect.trackedEntityAttribute.id] = message;
-                            }
-                            else
-                            {
-                                warningMessages.push(message);
-                            }
+                            warningMessages[effect.trackedEntityAttribute.id] = effect.content + (effect.data ? effect.data : "");
                         }
                     }
                     else if (effect.action === "ASSIGN" && effect.trackedEntityAttribute) {
@@ -3642,14 +3629,15 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 }
             });
             clearAttributeValueForShowHideOptionActions(attributeOptionsChanged, currentTei,optionVisibility,attributesById,optionSets);
-            return {currentTei: currentTei, hiddenFields: hiddenFields, hiddenSections: hiddenSections, warningMessages: warningMessages, assignedFields: assignedFields, mandatoryFields: mandatoryFields, optionVisibility: optionVisibility};
+            return { currentTei, hiddenFields, hiddenSections, errorMessages, warningMessages, assignedFields, mandatoryFields, optionVisibility };
         },
         processRuleEffectsForEvent: function(eventId, currentEvent, currentEventOriginalValues, prStDes, optionSets,optionGroupsById) {
             var hiddenFields = {};
             var assignedFields = {};
             var mandatoryFields = {};
             var hiddenSections = {};
-            var warningMessages = [];
+            var errorMessages = {};
+            var warningMessages = {};
             var optionVisibility = { showOnly: null, hidden: {}};
 
             var dataElementOptionsChanged = [];
@@ -3676,15 +3664,11 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                             hiddenSections[effect.programStageSection] = effect.programStageSection;
                         }
                     }
-                    else if(effect.action === "SHOWERROR" && effect.dataElement.id){
-                        var headerTxt =  $translate.instant('validation_error');
-                        var bodyTxt = effect.content + (effect.data ? effect.data : "");
-                        NotificationService.showNotifcationDialog(headerTxt, bodyTxt);
-
-                        currentEvent[effect.dataElement.id] = currentEventOriginalValues[effect.dataElement.id];
+                    else if(effect.action === "SHOWERROR" && effect.dataElement && effect.dataElement.id){
+                        errorMessages[effect.dataElement.id] = effect.content + (effect.data ? effect.data : "");
                     }
-                    else if(effect.action === "SHOWWARNING"){
-                        warningMessages.push(effect.content + (effect.data ? effect.data : ""));
+                    else if(effect.action === "SHOWWARNING" && effect.dataElement && effect.dataElement.id){
+                        warningMessages[effect.dataElement.id] = effect.content + (effect.data ? effect.data : "");
                     }
                     else if (effect.action === "ASSIGN" && effect.dataElement) {
                         var processedValue = $filter('trimquotes')(effect.data);
@@ -3741,7 +3725,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 }
             });
             clearDataElementValueForShowHideOptionActions(dataElementOptionsChanged, currentEvent,optionVisibility,prStDes,optionSets);
-            return {currentEvent: currentEvent, hiddenFields: hiddenFields, hiddenSections: hiddenSections, warningMessages: warningMessages, assignedFields: assignedFields, mandatoryFields: mandatoryFields, optionVisibility: optionVisibility};
+            return { currentEvent, hiddenFields, hiddenSections, errorMessages, warningMessages, assignedFields, mandatoryFields, optionVisibility };
         },
         processRuleEffectAttribute: function(context, selectedTei, tei, currentEvent, currentEventOriginialValue, affectedEvent, attributesById, prStDes,optionSets,optionGroupsById){
             //Function used from registration controller to process effects for the tracked entity instance and for the events in the same operation
@@ -3750,7 +3734,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             
             if(context === "SINGLE_EVENT" && currentEvent && prStDes ) {
                 var eventEffects = this.processRuleEffectsForEvent("SINGLE_EVENT", currentEvent, currentEventOriginialValue, prStDes, optionSets,optionGroupsById);
-                teiAttributesEffects.warningMessages = angular.extend(teiAttributesEffects.warningMessages,eventEffects.warningMessages);
+                angular.extend(teiAttributesEffects.errorMessages, eventEffects.errorMessages);
+                angular.extend(teiAttributesEffects.warningMessages, eventEffects.warningMessages);
                 teiAttributesEffects.hiddenFields[context] = eventEffects.hiddenFields;
                 teiAttributesEffects.hiddenSections[context] = eventEffects.hiddenSections;
                 teiAttributesEffects.assignedFields[context] = eventEffects.assignedFields;
