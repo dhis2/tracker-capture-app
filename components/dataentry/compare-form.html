@@ -200,6 +200,7 @@
                                         <input type="checkbox"     
                                                class="form-control-checkbox"
                                                ng-model="otherEvent[prStDe.dataElement.id]"                                                               
+                                               ng-false-value="null"
                                                ng-required={{prStDe.compulsory}}                                        
                                                ng-disabled="true" 
                                                name="foo"/>
@@ -244,6 +245,7 @@
                                     <input type="checkbox"     
                                            class="form-control-checkbox"
                                            ng-model="currentEvent[prStDe.dataElement.id]"                                                               
+                                           ng-false-value="null"
                                            ng-required={{prStDe.compulsory}}                                        
                                            ng-disabled="true" 
                                            name="foo"/>
@@ -372,6 +374,7 @@
                                                         <input type="checkbox"     
                                                                class="form-control-checkbox"
                                                                ng-model="otherEvent[prStDes[de.id].dataElement.id]"                                                               
+                                                               ng-false-value="null"
                                                                ng-required={{prStDesInStage[currentStage.id][de.id].compulsory}}
                                                                ng-disabled="true" 
                                                                name="foo"/>
