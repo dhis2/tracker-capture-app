@@ -304,6 +304,7 @@
                                            class="form-control"
                                            ng-class='getInputNotifcationClass(prStDe.dataElement.id,false)'
                                            ng-model="selectedOrgUnit.closedStatus || eventRow[prStDe.dataElement.id]"
+                                           ng-false-value="null"
                                            ng-required={{prStDe.compulsory}}
                                            ng-attr-title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                            ng-dblclick="$event.stopPropagation();"
@@ -368,6 +369,7 @@
                                     <input type="checkbox"
                                            class="form-control"
                                            ng-model="eventRow[prStDe.dataElement.id]"
+                                           ng-false-value="null"
                                            ng-required={{prStDe.compulsory}}
                                            ng-attr-title="{{prStDe.dataElement.formName ? prStDe.dataElement.formName : prStDe.dataElement.displayName}}"
                                            ng-disabled="true"
