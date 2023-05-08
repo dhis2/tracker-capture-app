@@ -2935,7 +2935,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         "d2:length": {
             parameters: 1,
             execute: function(parameters) {
-                return String(parameters[0]).length;
+                const text = typeof parameters[0] === 'string' ? parameters[0] : String(parameters[0]);
+                return text.replace(/\n/g,'').length;
             },
         },
         "d2:condition": {
@@ -2987,7 +2988,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
      * @returns {*}
      */
     function evaluate(code) {
-        const func = new Function(`"use strict";return ${code}`);
+        const codeWithNewline = code.replace(/\n/g, '\\n');
+        const func = new Function(`"use strict";return ${codeWithNewline}`);
         return func();
     }
 
