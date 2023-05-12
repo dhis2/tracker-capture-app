@@ -1,3 +1,10 @@
+## [31.13.6](https://github.com/dhis2/tracker-capture-app/compare/v31.13.5...v31.13.6) (2023-05-12)
+
+
+### Bug Fixes
+
+* [DHIS2-14357] support single quotes in program rule expressions ([#1712](https://github.com/dhis2/tracker-capture-app/issues/1712)) ([7883618](https://github.com/dhis2/tracker-capture-app/commit/7883618f9814c3c230eba7e004e2009a3a852508))
+
 ## [31.13.5](https://github.com/dhis2/tracker-capture-app/compare/v31.13.4...v31.13.5) (2023-05-02)
 
 
