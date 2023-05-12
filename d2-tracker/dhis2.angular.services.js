@@ -1543,10 +1543,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         if(valueType === 'LONG_TEXT' || valueType === 'TEXT' || valueType === 'DATE' || valueType === 'AGE' || valueType === 'OPTION_SET' ||
             valueType === 'URL' || valueType === 'DATETIME' || valueType === 'TIME' || valueType === 'PHONE_NUMBER' || 
             valueType === 'ORGANISATION_UNIT' || valueType === 'USERNAME') {
-            if(processedValue) {
-                processedValue = "'" + processedValue + "'";
-            } else {
-                processedValue = "''";
+            if(!processedValue) {
+                processedValue = "";
             }
         }
         else if(valueType === 'BOOLEAN' || valueType === 'TRUE_ONLY') {
@@ -1560,7 +1558,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 processedValue = true;
             }
             else {
-                processedValue = "''";
+                processedValue = "";
             }
         }
         else if( valueType === "INTEGER" || valueType === "NUMBER" || valueType === "INTEGER_POSITIVE"
@@ -1822,6 +1820,24 @@ var d2Services = angular.module('d2Services', ['ngResource'])
     var lastEventDate = null;
     var lastProgramId = null;
     var eventScopeExceptCurrent = false;
+    var passOnTypes = ['number', 'boolean'];
+
+    var getInjectionValue = (rawValue) => {
+        const nonEmptyValue = rawValue != null ? rawValue : '';
+
+        const typeOfValue = typeof nonEmptyValue;
+
+        if (typeOfValue === 'string') {
+            // we will sanitize and encapsulate string values
+            return `"${nonEmptyValue.replace(/"/g, '\'')}"`;
+        }
+
+        if (passOnTypes.includes(typeOfValue)) {
+            return nonEmptyValue.toString();
+        }
+
+        return false.toString();
+    };
 
     var replaceVariables = function(expression, variablesHash){
         //replaces the variables in an expression with actual variable values.
@@ -1845,7 +1861,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 if(angular.isDefined(variablesHash[variablepresent])) {
                     //Replace all occurrences of the variable name(hence using regex replacement):
                     expression = expression.replace(new RegExp( variablesHash[variablepresent].variablePrefix + "\\{" + variablepresent + "\\}", 'g'),
-                        variablesHash[variablepresent].variableValue);
+                        getInjectionValue(variablesHash[variablepresent].variableValue));
                 }
                 else {
                     $log.warn("Expression " + expression + " contains variable " + variablepresent
@@ -1867,7 +1883,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                     variablesHash[variablepresent].variablePrefix === 'V') {
                     //Replace all occurrences of the variable name(hence using regex replacement):
                     expression = expression.replace(new RegExp("V{" + variablepresent + "}", 'g'),
-                        variablesHash[variablepresent].variableValue);
+                        getInjectionValue(variablesHash[variablepresent].variableValue));
                 }
                 else {
                     $log.warn("Expression " + expression + " conains context variable " + variablepresent
@@ -1889,7 +1905,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                     variablesHash[variablepresent].variablePrefix === 'A') {
                     //Replace all occurrences of the variable name(hence using regex replacement):
                     expression = expression.replace(new RegExp("A{" + variablepresent + "}", 'g'),
-                        variablesHash[variablepresent].variableValue);
+                        getInjectionValue(variablesHash[variablepresent].variableValue));
                 }
                 else {
                     $log.warn("Expression " + expression + " conains attribute " + variablepresent
@@ -1911,7 +1927,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                     variablesHash[variablepresent].variablePrefix === 'C') {
                     //Replace all occurrences of the variable name(hence using regex replacement):
                     expression = expression.replace(new RegExp("C{" + variablepresent + "}", 'g'),
-                        variablesHash[variablepresent].variableValue);
+                        getInjectionValue(variablesHash[variablepresent].variableValue));
                 }
                 else {
                     $log.warn("Expression " + expression + " conains constant " + variablepresent
