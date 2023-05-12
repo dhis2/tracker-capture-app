@@ -2956,8 +2956,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         "d2:length": {
             parameters: 1,
             execute: function(parameters) {
-                const text = typeof parameters[0] === 'string' ? parameters[0] : String(parameters[0]);
-                return text.replace(/\n/g,'').length;
+                return String(parameters[0]).length;
             },
         },
         "d2:condition": {
@@ -3003,8 +3002,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
      * @returns {*}
      */
     function evaluate(code) {
-        const codeWithNewline = code.replace(/\n/g, '\\n');
-        const func = new Function(`"use strict";return ${codeWithNewline}`);
+        const func = new Function(`"use strict";return ${code.replace(/\n/g, '\\n')}`);
         return func();
     }
 
@@ -3126,12 +3124,31 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         return evaluate(expressionToEvaluate);
     };
 
+    function removeNewLinesFromNonStrings(expression, expressionModuloStrings) {
+        const fragments = expressionModuloStrings.split(/\n+/g);
+        const result = fragments.reduce(({ reducedExpression, remainder }, fragment) => {
+            remainder = remainder.replace(/^\n*/, '');
+            reducedExpression += remainder.substring(0, fragment.length);
+
+            return {
+                reducedExpression,
+                remainder: remainder.substring(fragment.length),
+            };
+        }, { reducedExpression: '', remainder: expression });
+
+        return {
+            reducedExpression: result.reducedExpression,
+            reducedExpressionModuloStrings: fragments.join(''),
+        };
+    };
+
     var runExpression = function(expression, beforereplacement, identifier, flag, variablesHash, selectedOrgUnit) {
         let answer = false;
         try {
             const expressionModuloStrings = expression.replace(/'[^']*'|"[^"]*"/g, match => ' '.repeat(match.length));
             const applicableDhisFunctions = Object.entries(dhisFunctions).map(([key, value]) => ({ ...value, name: key }));
-            answer = internalExecuteExpression(applicableDhisFunctions, expression, expressionModuloStrings, variablesHash, selectedOrgUnit);
+            const { reducedExpression, reducedExpressionModuloStrings } = removeNewLinesFromNonStrings(expression, expressionModuloStrings);
+            answer = internalExecuteExpression(applicableDhisFunctions, reducedExpression, reducedExpressionModuloStrings, variablesHash, selectedOrgUnit);
 
             if(flag.verbose) {
                 $log.info("Expression with id " + identifier + " was successfully run. Original condition was: " + beforereplacement + " - Evaluation ended up as:" + expression + " - Result of evaluation was:" + answer);
