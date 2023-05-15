@@ -1,3 +1,10 @@
+## [31.13.7](https://github.com/dhis2/tracker-capture-app/compare/v31.13.6...v31.13.7) (2023-05-15)
+
+
+### Bug Fixes
+
+* [DHIS2-11345] support newline in program rule expressions ([#1713](https://github.com/dhis2/tracker-capture-app/issues/1713)) ([171b106](https://github.com/dhis2/tracker-capture-app/commit/171b1062fdf2dc6c425600b84ba0bcadcee068cd))
+
 ## [31.13.6](https://github.com/dhis2/tracker-capture-app/compare/v31.13.5...v31.13.6) (2023-05-12)
 
 
