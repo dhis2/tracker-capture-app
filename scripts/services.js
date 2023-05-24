@@ -3248,17 +3248,17 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             ruleBoundData.textInEffect = false;
             ruleBoundData.keyDataInEffect = false;
 
-            if(!event || event === 'registration') return;
+            var ruleEffectKey = event || 'registration';
     
             //In case the 
-            if(ruleBoundData.lastEventUpdated !== event) {
+            if(ruleBoundData.lastEventUpdated !== ruleEffectKey) {
                 ruleBoundData.displayTextEffects = {};
                 ruleBoundData.displayKeyDataEffects = {};
-                ruleBoundData.lastEventUpdated = event;
+                ruleBoundData.lastEventUpdated = ruleEffectKey;
             }
             
-            if(ruleeffects && ruleeffects[event]){
-                angular.forEach(ruleeffects[event], function(effect) {
+            if(ruleeffects && ruleeffects[ruleEffectKey]){
+                angular.forEach(ruleeffects[ruleEffectKey], function(effect) {
                     var g= 1;
                     var u = g+1;
                     if(effect.location === location){

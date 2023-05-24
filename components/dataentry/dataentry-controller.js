@@ -991,7 +991,7 @@ trackerCapture.controller('DataEntryController',
             executeRules: $scope.executeRules
         });
     }
-    
+
     $scope.getEvents = function () {
 
         $scope.allEventsSorted = [];
@@ -2652,7 +2652,13 @@ trackerCapture.controller('DataEntryController',
                 $rootScope.$broadcast('tei-report-widget', {events: $scope.allEventsSorted});
             }, 200);
         }        
-        $scope.allEventsSorted = orderByFilter($scope.allEventsSorted, '-sortingDate').reverse();         
+        $scope.allEventsSorted = orderByFilter($scope.allEventsSorted, '-sortingDate').reverse();
+
+        CurrentSelection.setRuleEngineEvents({
+            programStages: $scope.programStages,
+            eventsByStage: $scope.eventsByStage,
+            prStDes: $scope.prStDes,
+        });
     };
 
     $scope.showLastEventInStage = function (stageId) {
