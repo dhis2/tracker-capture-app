@@ -4159,6 +4159,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
     this.frontPageData = null;
     this.trackedEntityTypes = null;
     this.optionGroupsById = null;
+    this.ruleEngineEvents = null;
 
     this.set = function(currentSelection){
         this.currentSelection = currentSelection;
@@ -4267,6 +4268,14 @@ var d2Services = angular.module('d2Services', ['ngResource'])
 
     this.setOptionGroupsById = function(optionGroupsById){
         this.optionGroupsById = optionGroupsById;
+    }
+
+    this.getRuleEngineEvents = function(){
+        return this.ruleEngineEvents;
+    }
+
+    this.setRuleEngineEvents = function(evs) {
+        this.ruleEngineEvents = evs;
     }
 })
 
