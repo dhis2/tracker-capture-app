@@ -1,3 +1,10 @@
+## [31.13.9](https://github.com/dhis2/tracker-capture-app/compare/v31.13.8...v31.13.9) (2023-05-24)
+
+
+### Bug Fixes
+
+* [DHIS2-15089] show data in feedback widget when no event is selected ([#1714](https://github.com/dhis2/tracker-capture-app/issues/1714)) ([cec70c8](https://github.com/dhis2/tracker-capture-app/commit/cec70c85dd7ac46c66eb9e17a630b696ca288454))
+
 ## [31.13.8](https://github.com/dhis2/tracker-capture-app/compare/v31.13.7...v31.13.8) (2023-05-23)
 
 
