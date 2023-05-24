@@ -3877,7 +3877,6 @@ var d2Services = angular.module('d2Services', ['ngResource'])
     this.attributesById = null;
     this.ouLevels = null;
     this.sortedTeiIds = [];
-    this.selectedTeiEvents = null;
     this.relationshipOwner = {};
     this.selectedTeiEvents = [];
     this.fileNames = {};
