@@ -1,3 +1,10 @@
+## [31.13.10](https://github.com/dhis2/tracker-capture-app/compare/v31.13.9...v31.13.10) (2023-05-24)
+
+
+### Bug Fixes
+
+* [DHI2-15089] program rule execution error during TEI registration ([#1725](https://github.com/dhis2/tracker-capture-app/issues/1725)) ([70b863a](https://github.com/dhis2/tracker-capture-app/commit/70b863ad0fc8782a01ef4c410309e16979c748c5))
+
 ## [31.13.9](https://github.com/dhis2/tracker-capture-app/compare/v31.13.8...v31.13.9) (2023-05-24)
 
 
