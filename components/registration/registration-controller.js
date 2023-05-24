@@ -797,17 +797,30 @@ trackerCapture.controller('RegistrationController',
             var eventExists = $scope.currentEvent && $scope.currentEvent.event;
             var enrollment = $scope.selectedEnrollment && $scope.selectedEnrollment.orgUnit ? $scope.selectedEnrollment : null;
             var evs = null;
+
+            const { programStages, eventsByStage, prStDes } = CurrentSelection.ruleEngineEvents;
+
             if( eventExists ){
                 evs = {all: [], byStage: {}};
                 evs.all = [$scope.currentEvent];
                 evs.byStage[$scope.currentStage.id] = [$scope.currentEvent];
+            } else if (enrollment) {
+                var allSorted = [];
+                for(var ps = 0; ps < programStages.length; ps++ ) {
+                    for(var e = 0; e < eventsByStage[programStages[ps].id].length; e++) {
+                        allSorted.push(eventsByStage[programStages[ps].id][e]);
+                    }
+                }
+                allSorted = orderByFilter(allSorted, '-sortingDate').reverse();
+
+                evs = {all: allSorted, byStage: eventsByStage};
             }
             if (eventExists || enrollment) {
                 TrackerRulesExecutionService.executeRules(
                 $scope.allProgramRules, 
                 eventExists ? $scope.currentEvent : 'registration', 
                 evs,
-                $scope.prStDes, 
+                enrollment ? prStDes : $scope.prStDes,
                 $scope.attributesById,
                 $scope.selectedTei, 
                 enrollment,
