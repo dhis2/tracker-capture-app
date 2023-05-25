@@ -160,7 +160,7 @@ trackerCapture.controller('DashboardController',
             if ($scope.selectedTeiId) {
 
                 TEIService.getPotentialDuplicatesForTei($scope.selectedTeiId).then(function(duplicates){
-                    $scope.potentialDuplicates = duplicates.potentialDuplicates;
+                    $scope.potentialDuplicates = duplicates.identifiableObjects;
                     $scope.duplicateExists = $scope.potentialDuplicates.length > 0;
                 });
                 
