@@ -3311,7 +3311,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
      * @param {*} flag execution flags
      */
     var internalFetchContextData = function(selectedEnrollment,executingEvent){
-        return OrgUnitFactory.getFromStoreOrServer( selectedEnrollment ? selectedEnrollment.orgUnit : executingEvent.orgUnit )
+        return OrgUnitFactory.getFromStoreOrServer(executingEvent && executingEvent.orgUnit ? executingEvent.orgUnit : selectedEnrollment.orgUnit)
             .then(function (orgUnit) {
                 var data = { selectedOrgUnit: orgUnit, selectedProgramStage: null};
                 if(executingEvent && executingEvent.program && executingEvent.programStage){
