@@ -1,3 +1,10 @@
+## [31.13.11](https://github.com/dhis2/tracker-capture-app/compare/v31.13.10...v31.13.11) (2023-05-25)
+
+
+### Bug Fixes
+
+* [DHIS2-15340] use orgunit of selected event before owning orgunit ([#1742](https://github.com/dhis2/tracker-capture-app/issues/1742)) ([82aee94](https://github.com/dhis2/tracker-capture-app/commit/82aee94202bb685343d437ecd3cdd0909e5bdc43))
+
 ## [31.13.10](https://github.com/dhis2/tracker-capture-app/compare/v31.13.9...v31.13.10) (2023-05-24)
 
 
