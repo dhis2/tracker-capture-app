@@ -815,8 +815,7 @@ trackerCapture.controller('RegistrationController',
 
                 evs = {all: allSorted, byStage: eventsByStage};
             }
-            if (evs) {
-                TrackerRulesExecutionService.executeRules(
+            TrackerRulesExecutionService.executeRules(
                 $scope.allProgramRules, 
                 eventExists ? $scope.currentEvent : 'registration', 
                 evs,
@@ -824,9 +823,9 @@ trackerCapture.controller('RegistrationController',
                 $scope.attributesById,
                 $scope.selectedTei, 
                 $scope.selectedEnrollment,
+                $scope.selectedOrgUnit.id,
                 $scope.optionSets, 
                 flag);
-            }
         }
     };
 
