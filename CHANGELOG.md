@@ -1,3 +1,10 @@
+## [31.13.20](https://github.com/dhis2/tracker-capture-app/compare/v31.13.19...v31.13.20) (2023-06-20)
+
+
+### Bug Fixes
+
+* [DHIS2-15453] show errors and warnings during TEI registration ([#1792](https://github.com/dhis2/tracker-capture-app/issues/1792)) ([8a83f71](https://github.com/dhis2/tracker-capture-app/commit/8a83f71690e77f09198c541b659cb42805133aad))
+
 ## [31.13.19](https://github.com/dhis2/tracker-capture-app/compare/v31.13.18...v31.13.19) (2023-06-18)
 
 
