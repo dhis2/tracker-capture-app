@@ -823,6 +823,7 @@ trackerCapture.controller('RegistrationController',
                 $scope.attributesById,
                 $scope.selectedTei, 
                 $scope.selectedEnrollment,
+                $scope.selectedOrgUnit.id,
                 $scope.optionSets, 
                 flag);
         }
