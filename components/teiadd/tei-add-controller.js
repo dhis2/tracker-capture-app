@@ -952,7 +952,7 @@ trackerCapture.controller('TEIAddController',
         });
         
         if($scope.base.selectedProgramForRelative && $scope.base.selectedProgramForRelative.id){
-            TrackerRulesExecutionService.executeRules($scope.allProgramRules, 'registrationRelationship', null, null, null, $scope.selectedTei, $scope.selectedEnrollment, null, flag);
+            TrackerRulesExecutionService.executeRules($scope.allProgramRules, 'registrationRelationship', null, null, null, $scope.selectedTei, $scope.selectedEnrollment, null, null, flag);
         }        
     };
     
