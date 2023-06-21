@@ -3474,8 +3474,16 @@ var d2Services = angular.module('d2Services', ['ngResource'])
      * @param {*} optionSets all optionsets(matedata)
      * @param {*} flag execution flags
      */
-    var internalFetchContextData = function(selectedEnrollment,executingEvent){
-        return OrgUnitFactory.getFromStoreOrServer(executingEvent && executingEvent.orgUnit ? executingEvent.orgUnit : selectedEnrollment.orgUnit)
+    var internalFetchContextData = function(selectedEnrollment, executingEvent, selectedOrgUnitId){
+        var orgUnitId = null;
+        if (executingEvent && executingEvent.orgUnit)
+            orgUnitId = executingEvent.orgUnit;
+        else if (selectedEnrollment.orgUnit)
+            orgUnitId = selectedEnrollment.orgUnit;
+        else
+            orgUnitId = selectedOrgUnitId;
+
+        return OrgUnitFactory.getFromStoreOrServer(orgUnitId)
             .then(function (orgUnit) {
                 var data = { selectedOrgUnit: orgUnit, selectedProgramStage: null};
                 if(executingEvent && executingEvent.program && executingEvent.programStage){
@@ -3491,7 +3499,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
     }
 
 
-    var internalExecuteRules = function(allProgramRules, executingEvent, evs, allDataElements, allTrackedEntityAttributes, selectedEntity, selectedEnrollment, optionSets, flag) {
+    var internalExecuteRules = function(allProgramRules, executingEvent, evs, allDataElements, allTrackedEntityAttributes, selectedEntity, selectedEnrollment, selectedOrgUnitId, optionSets, flag) {
         if(allProgramRules) {
             var variablesHash = {};
 
@@ -3514,7 +3522,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             //Run rules in priority - lowest number first(priority null is last)
             rules = orderByFilter(rules, 'priority');
 
-            return internalFetchContextData(selectedEnrollment, executingEvent).then(function (data) {
+            return internalFetchContextData(selectedEnrollment, executingEvent, selectedOrgUnitId).then(function (data) {
                 var selectedOrgUnit = data.selectedOrgUnit;
                 var selectedProgramStage = data.selectedProgramStage;
                 var variablesHash = VariableService.getVariables(allProgramRules, executingEvent, evs, allDataElements,
@@ -3851,8 +3859,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
     }
 
     return {
-        executeRules: function(allProgramRules, executingEvent, evs, allDataElements, allTrackedEntityAttributes, selectedEntity, selectedEnrollment, optionSets, flags) {
-            return internalExecuteRules(allProgramRules, executingEvent, evs, allDataElements, allTrackedEntityAttributes, selectedEntity, selectedEnrollment, optionSets, flags);
+        executeRules: function(allProgramRules, executingEvent, evs, allDataElements, allTrackedEntityAttributes, selectedEntity, selectedEnrollment, selectedOrgUnitId, optionSets, flags) {
+            return internalExecuteRules(allProgramRules, executingEvent, evs, allDataElements, allTrackedEntityAttributes, selectedEntity, selectedEnrollment, selectedOrgUnitId, optionSets, flags);
         },
         loadAndExecuteRulesScope: function(currentEvent, programId, programStageId, programStageDataElements, allTrackedEntityAttributes, optionSets, orgUnitId, flags){
             return internalGetOrLoadRules(programId).then(function(rules) {
