@@ -1779,21 +1779,21 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             variables = pushVariable(variables, 'environment', 'WebClient',null,'TEXT',true,'V','',false);
             variables = pushVariable(variables, 'current_date', DateUtils.getToday(), null, 'DATE', true, 'V', '', false );
 
-            variables = pushVariable(variables, 'event_date', executingEvent.eventDate, null, 'DATE', true, 'V', '', false );
-            variables = pushVariable(variables, 'due_date', executingEvent.dueDate, null, 'DATE', true, 'V', '' );
+            variables = pushVariable(variables, 'event_date', executingEvent.eventDate, null, 'DATE', !!executingEvent.eventDate, 'V', '', false );
+            variables = pushVariable(variables, 'due_date', executingEvent.dueDate, null, 'DATE', !!executingEvent.dueDate, 'V', '' );
             variables = pushVariable(variables, 'event_count', evs ? evs.all.length : 0, null, 'INTEGER', true, 'V', '', false );
 
-            variables = pushVariable(variables, 'enrollment_date', selectedEnrollment ? selectedEnrollment.enrollmentDate : '', null, 'DATE', selectedEnrollment ? selectedEnrollment.enrollmentDate ? true : false : false, 'V', '', false );
-            variables = pushVariable(variables, 'enrollment_id', selectedEnrollment ? selectedEnrollment.enrollment : '', null, 'TEXT',  selectedEnrollment ? true : false, 'V', '', false );
-            variables = pushVariable(variables, 'event_id', executingEvent ? executingEvent.event : '', null, 'TEXT',  executingEvent ? true : false, 'V', executingEvent ? executingEvent.eventDate : false, false);
-            variables = pushVariable(variables, 'event_status', executingEvent ? executingEvent.status : '', null, 'TEXT',  executingEvent ? true : false, 'V', executingEvent ? executingEvent.eventDate : false, false);
+            variables = pushVariable(variables, 'enrollment_date', selectedEnrollment ? selectedEnrollment.enrollmentDate : '', null, 'DATE', !!(selectedEnrollment && selectedEnrollment.enrollmentDate), 'V', '', false );
+            variables = pushVariable(variables, 'enrollment_id', selectedEnrollment ? selectedEnrollment.enrollment : '', null, 'TEXT',  !!selectedEnrollment, 'V', '', false );
+            variables = pushVariable(variables, 'event_id', executingEvent ? executingEvent.event : '', null, 'TEXT', !!executingEvent, 'V', executingEvent ? executingEvent.eventDate : false, false);
+            variables = pushVariable(variables, 'event_status', executingEvent ? executingEvent.status : '', null, 'TEXT', !!executingEvent, 'V', executingEvent ? executingEvent.eventDate : false, false);
 
-            variables = pushVariable(variables, 'incident_date', selectedEnrollment ? selectedEnrollment.incidentDate : '', null, 'DATE',  selectedEnrollment ? true : false, 'V', '', false);
+            variables = pushVariable(variables, 'incident_date', selectedEnrollment ? selectedEnrollment.incidentDate : '', null, 'DATE', !!selectedEnrollment, 'V', '', false);
             variables = pushVariable(variables, 'enrollment_count', selectedEnrollment ? 1 : 0, null, 'INTEGER', true, 'V', '', false);
             variables = pushVariable(variables, 'tei_count', selectedEnrollment ? 1 : 0, null, 'INTEGER', true, 'V', '', false);
             
-            variables = pushVariable(variables, 'program_stage_id',(selectedProgramStage && selectedProgramStage.id) || '', null, 'TEXT', selectedProgramStage && selectedProgramStage.id ? true : false, 'V', '', false);
-            variables = pushVariable(variables, 'program_stage_name',(selectedProgramStage && selectedProgramStage.name) || '', null, 'TEXT', selectedProgramStage && selectedProgramStage.name ? true : false, 'V', '', false);
+            variables = pushVariable(variables, 'program_stage_id',(selectedProgramStage && selectedProgramStage.id) || '', null, 'TEXT', !!(selectedProgramStage && selectedProgramStage.id), 'V', '', false);
+            variables = pushVariable(variables, 'program_stage_name',(selectedProgramStage && selectedProgramStage.name) || '', null, 'TEXT', !!(selectedProgramStage && selectedProgramStage.name), 'V', '', false);
 
 
             //Push all constant values:
@@ -1802,7 +1802,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             });
 
             if(selectedOrgUnit){
-                variables = pushVariable(variables, 'orgunit_code', selectedOrgUnit.code, null, 'TEXT', selectedOrgUnit.code ? true : false, 'V', '', false);
+                variables = pushVariable(variables, 'orgunit_code', selectedOrgUnit.code, null, 'TEXT', !!selectedOrgUnit.code, 'V', '', false);
             }
 
             return variables;
