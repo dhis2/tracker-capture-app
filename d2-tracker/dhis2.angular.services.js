@@ -2646,12 +2646,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         },
         "d2:concatenate": {
             execute: function(parameters) {
-                var returnString = "'";
-                for (var i = 0; i < parameters.length; i++) {
-                    returnString += parameters[i];
-                }
-                returnString += "'";
-                return returnString;
+                return parameters.join('');
             },
         },
         "d2:addDays": {
@@ -2659,9 +2654,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             execute: function(parameters) {
                 var date = $filter('trimquotes')(parameters[0]);
                 var daystoadd = $filter('trimquotes')(parameters[1]);
-                var newdate = DateUtils.format( moment(date, CalendarService.getSetting().momentFormat).add(daystoadd, 'days') );
-                var newdatestring = "'" + newdate + "'";
-                return newdatestring
+                return DateUtils.format( moment(date, CalendarService.getSetting().momentFormat).add(daystoadd, 'days') );
             },
         },
         "d2:zing": {
@@ -2822,7 +2815,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             execute: function(parameters, variablesHash) {
                 var variableName = parameters[0];
                 var variableObject = variablesHash[variableName];
-                var valueFound = "''";
+                var valueFound = "";
                 if(variableObject)
                 {
                     if(variableObject.variableEventDate){
@@ -2937,7 +2930,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 var startChar = string.length < parameters[1] - 1 ? -1 : parameters[1];
                 var endChar = string.length < parameters[2] ? -1 : parameters[2];
                 if(startChar < 0 || endChar < 0) {
-                    return "''";
+                    return "";
                 }
                 var returnString =  string.substring(startChar, endChar);
                 returnString = VariableService.processValue(returnString, 'TEXT');
