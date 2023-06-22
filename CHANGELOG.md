@@ -1,3 +1,10 @@
+## [31.13.23](https://github.com/dhis2/tracker-capture-app/compare/v31.13.22...v31.13.23) (2023-06-22)
+
+
+### Bug Fixes
+
+* [DHIS2-15464] d2:right on numerical strings ([#1809](https://github.com/dhis2/tracker-capture-app/issues/1809)) ([d422190](https://github.com/dhis2/tracker-capture-app/commit/d42219039b8095702d007056c7652f465c3a4fc0))
+
 ## [31.13.22](https://github.com/dhis2/tracker-capture-app/compare/v31.13.21...v31.13.22) (2023-06-22)
 
 
