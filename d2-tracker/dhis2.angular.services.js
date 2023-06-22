@@ -3138,7 +3138,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 accExpression += 'false';
             } else {
                 const dhisFunctionResult = dhisFunction.execute(evaluatedArguments, variablesHash, selectedOrgUnit);
-                accExpression += dhisFunctionResult;
+                accExpression += getInjectionValue(dhisFunctionResult);
             }
 
             return {
