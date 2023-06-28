@@ -25,11 +25,11 @@
                     trigger="click"
                     placement="right">
                     <a href ng-attr-title="{{'details'| translate}}" class="wrap-text" tabindex="-1">
-                        {{attribute.displayFormName ? attribute.displayFormName : attribute.displayName}}
+                        {{attribute.formName ? attribute.formName : attribute.displayFormName}}
                     </a>
                 </span>
                 <span class="not-for-screen">
-                    {{attribute.displayFormName ? attribute.displayFormName : attribute.displayName}}
+                    {{attribute.formName ? attribute.formName : attribute.displayFormName}}
                 </span>
                 <span ng-if="attributeIsRequired(attribute.id, attribute.mandatory)" class="required">*</span>
             </td>
