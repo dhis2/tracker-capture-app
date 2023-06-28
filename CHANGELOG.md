@@ -1,3 +1,10 @@
+## [31.13.24](https://github.com/dhis2/tracker-capture-app/compare/v31.13.23...v31.13.24) (2023-06-28)
+
+
+### Bug Fixes
+
+* [DHIS2-15500] use `displayFormName` instead of `formName` ([#1815](https://github.com/dhis2/tracker-capture-app/issues/1815)) ([559bf91](https://github.com/dhis2/tracker-capture-app/commit/559bf911007dca376206eeb270d923fc5111df6e))
+
 ## [31.13.23](https://github.com/dhis2/tracker-capture-app/compare/v31.13.22...v31.13.23) (2023-06-22)
 
 
