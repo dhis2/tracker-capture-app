@@ -205,13 +205,6 @@
                                                ng-disabled="true" 
                                                name="foo"/>
                                     </div>
-                                    <div ng-switch-when="MULTI_SELECT_GROUP">
-                                        <ul>
-                                            <li ng-repeat='event in otherEvent[prStDe.dataElement.id].selections'>
-                                                {{event.formName ? event.formName : event.name}}
-                                            </li>
-                                        </ul>
-                                    </div>
                                     <div ng-switch-default>
                                         <span>
                                             {{otherEvent[prStDe.dataElement.id]}}
@@ -249,13 +242,6 @@
                                            ng-required={{prStDe.compulsory}}                                        
                                            ng-disabled="true" 
                                            name="foo"/>
-                                </div>
-                                <div ng-switch-when="MULTI_SELECT_GROUP">
-                                    <ul>
-                                        <li ng-repeat='event in currentEvent[prStDe.dataElement.id].selections'>
-                                            {{event.formName ? event.formName : event.name}}
-                                        </li>
-                                    </ul>
                                 </div>
                                 <div ng-switch-default>
                                     <span>
@@ -378,13 +364,6 @@
                                                                ng-required={{prStDesInStage[currentStage.id][de.id].compulsory}}
                                                                ng-disabled="true" 
                                                                name="foo"/>
-                                                    </div>
-                                                    <div ng-switch-when="MULTI_SELECT_GROUP">
-                                                        <ul>
-                                                            <li ng-repeat='event in otherEvent[de.id].selections'>
-                                                                {{event.formName ? event.formName : event.name}}
-                                                            </li>
-                                                        </ul>
                                                     </div>
                                                     <div ng-switch-default>
                                                         <span>

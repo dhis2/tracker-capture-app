@@ -375,13 +375,6 @@
                                            ng-disabled="true"
                                            name="foo"/>
                                 </div>
-                                <div ng-switch-when="MULTI_SELECT_GROUP">
-                                    <ul>
-                                        <li ng-repeat='event in eventRow[prStDe.dataElement.id].selections' ng-attr-title="{{prStDe.dataElement.displayFormName ? prStDe.dataElement.displayFormName : prStDe.dataElement.displayName}}">
-                                            {{event.formName ? event.formName : event.name}}
-                                        </li>
-                                    </ul>
-                                </div>
                                 <div class="wrap-name" ng-switch-default>
                                     <span ng-attr-title="{{prStDe.dataElement.displayFormName ? prStDe.dataElement.displayFormName : prStDe.dataElement.displayName}}">
                                         {{eventRow[prStDe.dataElement.id]}}
