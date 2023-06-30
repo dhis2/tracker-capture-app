@@ -1,3 +1,10 @@
+## [31.13.27](https://github.com/dhis2/tracker-capture-app/compare/v31.13.26...v31.13.27) (2023-06-30)
+
+
+### Bug Fixes
+
+* [15521] translated form name on data elements ([#1828](https://github.com/dhis2/tracker-capture-app/issues/1828)) ([a6a1a08](https://github.com/dhis2/tracker-capture-app/commit/a6a1a08de1dfd9ce202cdb99c6122d3d67971a80))
+
 ## [31.13.26](https://github.com/dhis2/tracker-capture-app/compare/v31.13.25...v31.13.26) (2023-06-30)
 
 
