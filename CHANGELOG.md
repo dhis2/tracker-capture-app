@@ -1,3 +1,10 @@
+## [31.13.28](https://github.com/dhis2/tracker-capture-app/compare/v31.13.27...v31.13.28) (2023-07-03)
+
+
+### Bug Fixes
+
+* [DHIS2-15532] return proper booleans from `d2:inOrgUnitGroup` ([#1842](https://github.com/dhis2/tracker-capture-app/issues/1842)) ([aeddb4b](https://github.com/dhis2/tracker-capture-app/commit/aeddb4b32bd276b035e989f8927a2a4cb1af7259))
+
 ## [31.13.27](https://github.com/dhis2/tracker-capture-app/compare/v31.13.26...v31.13.27) (2023-06-30)
 
 
