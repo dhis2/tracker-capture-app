@@ -3144,14 +3144,8 @@ var d2Services = angular.module('d2Services', ['ngResource'])
             parameters: 1,
             execute: function(parameters, _, selectedOrgUnit) {
                 var group = parameters[0];
-                var isInGroup = "false";
                 var orgUnitGroups = (selectedOrgUnit && selectedOrgUnit.g) || [];
-                var foundGroup = orgUnitGroups.find(function(o) {return o.id === group || o.code === group});
-                if(foundGroup)
-                {
-                    isInGroup = "true"
-                }
-                return isInGroup;
+                return !!orgUnitGroups.find(function(o) {return o.id === group || o.code === group});
             },
         },
         "d2:hasUserRole": {
