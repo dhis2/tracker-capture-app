@@ -451,16 +451,13 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 const keyString = String(key);
 
                 // is key a name?
-                for(var i=0; i<options.length; i++){
-                    if( keyString === options[i].displayName){
-                        return options[i].code;
-                    }
+                const option = options.find(option => keyString === option.displayName);
+                if (option) {
+                    return option.code;
                 }
                 // is key a code?
-                for(var i=0; i<options.length; i++){
-                    if( keyString === options[i].code){
-                        return key;
-                    }
+                if (options.find(option => keyString === option.code)) {
+                    return key;
                 }
                 // not a part of the option set
                 return null;
@@ -474,16 +471,13 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                 const keyString = String(key);
 
                 // is key a code?
-                for(var i=0; i<options.length; i++){
-                    if( keyString === options[i].code){
-                        return options[i].displayName;
-                    }
+                const option = options.find(option => keyString === option.code);
+                if (option) {
+                    return option.displayName;
                 }
                 // is key a name?
-                for(var i=0; i<options.length; i++){
-                    if( keyString === options[i].displayName){
-                        return key;
-                    }
+                if (options.find(option => keyString === option.displayName)) {
+                    return key;
                 }
                 // not a part of the option set
                 return null;
