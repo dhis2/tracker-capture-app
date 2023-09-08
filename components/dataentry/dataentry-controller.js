@@ -34,7 +34,8 @@ trackerCapture.controller('DataEntryController',
                 AuthorityService,
                 AccessUtils,
                 TCOrgUnitService,
-                UsersService) {
+                UsersService,
+                AssignmentQueue) {
     
     //Unique instance id for the controller:
     $scope.APIURL = DHIS2URL;
@@ -1752,7 +1753,7 @@ trackerCapture.controller('DataEntryController',
                     }
                 ]
             };
-            return DHIS2EventFactory.updateForSingleValue(ev).then(function (response) {
+            return AssignmentQueue.insertAssignment(() => DHIS2EventFactory.updateForSingleValue(ev)).then(function (response) {
                 if(!response) {
                     if(!backgroundUpdate) {
                         $scope.currentElement.saved = false;
@@ -1789,7 +1790,6 @@ trackerCapture.controller('DataEntryController',
                 }
 
             });
-
         }
     };
 
