@@ -1,3 +1,10 @@
+## [31.13.29](https://github.com/dhis2/tracker-capture-app/compare/v31.13.28...v31.13.29) (2023-09-08)
+
+
+### Bug Fixes
+
+* [DHIS2-15102] assign data elements sequentially ([#1852](https://github.com/dhis2/tracker-capture-app/issues/1852)) ([e7194d2](https://github.com/dhis2/tracker-capture-app/commit/e7194d2a0b9611985e97ee3c069818a94c7a012a))
+
 ## [31.13.28](https://github.com/dhis2/tracker-capture-app/compare/v31.13.27...v31.13.28) (2023-07-03)
 
 
