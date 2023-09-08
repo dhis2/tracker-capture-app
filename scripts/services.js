@@ -3394,11 +3394,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
     var assignmentQueue = Promise.resolve();
 
     this.insertAssignment = function(assignment) {
-        assignmentQueue = new Promise((resolve, reject) => {
-            const runAssignment = () => assignment().then(resolve, reject);
-            assignmentQueue.then(runAssignment, runAssignment);
-        });
-
+        assignmentQueue = assignmentQueue.then(assignment, assignment);
         return assignmentQueue;
     }
 });
