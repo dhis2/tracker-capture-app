@@ -3414,4 +3414,12 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         });
         return promise;
     }
+})
+.service('AssignmentQueue', function() {
+    var assignmentQueue = Promise.resolve();
+
+    this.insertAssignment = function(assignment) {
+        assignmentQueue = assignmentQueue.then(assignment, assignment);
+        return assignmentQueue;
+    }
 });
