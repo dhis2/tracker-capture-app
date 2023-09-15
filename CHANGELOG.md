@@ -1,3 +1,10 @@
+## [31.13.31](https://github.com/dhis2/tracker-capture-app/compare/v31.13.30...v31.13.31) (2023-09-15)
+
+
+### Bug Fixes
+
+* [DHIS2-15844] allow multiple occurences of d2:hasValue in a single expression ([#1863](https://github.com/dhis2/tracker-capture-app/issues/1863)) ([ac8bb95](https://github.com/dhis2/tracker-capture-app/commit/ac8bb95e035d0aeec9446b03cde835ceb992acb7))
+
 ## [31.13.30](https://github.com/dhis2/tracker-capture-app/compare/v31.13.29...v31.13.30) (2023-09-14)
 
 
