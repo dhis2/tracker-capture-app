@@ -377,6 +377,21 @@ function getBatchPrograms( programs, batch )
                     
                     if( program.programStages ){
                         program.programStages = _.sortBy( program.programStages, 'sortOrder' );
+                        _.each( program.programStages, function ( prSt ) {
+                            if ( prSt.programStageDataElements ) {
+                                _.each( prSt.programStageDataElements, function ( prStDe ) {
+                                    if ( prStDe.renderType && prStDe.renderType.DESKTOP ) {
+                                        const renderType = prStDe.renderType.DESKTOP.type;
+                                        if (renderType === 'VERTICAL_RADIOBUTTONS' || renderType === 'HORIZONTAL_RADIOBUTTONS') {
+                                            prStDe.renderOptionsAsRadio = true;
+                                            prStDe.renderRadioHorizontally = renderType === 'HORIZONTAL_RADIOBUTTONS';
+                                        }
+                                    } else if ( prStDe.renderOptionsAsRadio ) {
+                                        prStDe.renderRadioHorizontally = false;
+                                    }
+                                });
+                            }
+                        });
                     }
 
                     if( program.categoryCombo && program.categoryCombo.categories ){
