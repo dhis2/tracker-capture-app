@@ -2005,7 +2005,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         //d2:hasValue('variableName') to avoid the further replacement, and make sure the correct input is fed into d2:hasValue.
         var avoidReplacementFunctions = ['d2:hasValue','d2:lastEventDate', 'd2:count', 'd2:countIfZeroPos', 'd2:countIfValue'];
         avoidReplacementFunctions.forEach(avoidReplaceFunction => {
-            expression = expression.replace( new RegExp("(" + avoidReplaceFunction + "\\() *[A#CV]\\{([\\w \\-\\_\\.]+)\\}(.*)\\)" ), "$1'$2'$3\)");
+            expression = expression.replaceAll( new RegExp("(" + avoidReplaceFunction + "\\() *[A#CV]\\{([\\w \\-\\_\\.]+)\\}", 'g'), "$1'$2'");
         });
 
         //Check if the expression contains program rule variables at all(any curly braces):
