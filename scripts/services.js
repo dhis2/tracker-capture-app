@@ -1418,9 +1418,18 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             att.mandatory = pAttribute.mandatory;
                             att.displayInListNoProgram = pAttribute.displayInList;
                             
-                            if(pAttribute.renderOptionsAsRadio){
-                                att.renderOptionsAsRadio = pAttribute.renderOptionsAsRadio;
+                            att.renderOptionsAsRadio = false;
+                            if (pAttribute.renderType && pAttribute.renderType.DESKTOP) {
+                                const renderType = pAttribute.renderType.DESKTOP.type;
+                                if (renderType === 'VERTICAL_RADIOBUTTONS' || renderType === 'HORIZONTAL_RADIOBUTTONS') {
+                                    att.renderOptionsAsRadio = true;
+                                    att.renderRadioHorizontally = renderType === 'HORIZONTAL_RADIOBUTTONS';
+                                }
+                            } else if (pAttribute.renderOptionsAsRadio) {
+                                att.renderOptionsAsRadio = true;
+                                att.renderRadioHorizontally = false;
                             }
+
                             if(pAttribute.searchable)
                             {
                                 att.searchable = pAttribute.searchable;

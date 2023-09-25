@@ -11,7 +11,8 @@
                                 d2-option-filter="optionVisibility[currentEvent.event]"
                                 d2-all-options="optionSets[prStDe.dataElement.optionSet.id].options"
                                 d2-use-notification="true"
-                                d2-element="currentElement">
+                                d2-element="currentElement"
+                                d2-render-horizontally="prStDe.renderRadioHorizontally">
                 </d2-option-list>
             </div>
             <div ng-if="prStDe.renderOptionsAsRadio && optionSets[prStDe.dataElement.optionSet.id].options.length < 7">
