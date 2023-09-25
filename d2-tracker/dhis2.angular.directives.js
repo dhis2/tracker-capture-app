@@ -1016,7 +1016,8 @@ var d2Directives = angular.module('d2Directives', [])
             d2Required: '=',
             d2Options: '=',
             d2CallbackFunction: '&d2Function',
-            d2OptionFilter: '='
+            d2OptionFilter: '=',
+            d2RenderHorizontally: '='
         },
         link: function (scope, element, attrs) {
             

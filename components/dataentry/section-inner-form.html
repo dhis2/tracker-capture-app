@@ -24,7 +24,8 @@
                     d2-options="optionSets[prStDes[de.id].dataElement.optionSet.id].options"
                     d2-required="prStDes[de.id].compulsory || mandatoryFields[currentEvent.event][de.id]"
                     d2-disabled="!dataElementEditable(prStDes[de.id])"
-                    d2-function="saveDataValueForRadio(prStDes[de.id], currentEvent, value)">
+                    d2-function="saveDataValueForRadio(prStDes[de.id], currentEvent, value)"
+                    d2-render-horizontally="prStDes[de.id]">
                 </d2-radio>                
             </div>
         </div>

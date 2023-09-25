@@ -64,7 +64,8 @@
                                 d2-option-filter="optionVisibility"
                                 d2-options="optionSets[attributesById[attribute.id].optionSet.id].options"
                                 d2-required="attributeIsRequired(attribute.id, attribute.mandatory)"
-                                d2-disabled="attributeFieldDisabled(attribute)">
+                                d2-disabled="attributeFieldDisabled(attribute)"
+                                d2-render-horizontally="attribute.renderRadioHorizontally">
                         </d2-radio>
                     </span>
                     <span class="not-for-screen">
