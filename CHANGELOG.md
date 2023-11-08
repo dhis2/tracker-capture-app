@@ -1,3 +1,10 @@
+## [31.13.34](https://github.com/dhis2/tracker-capture-app/compare/v31.13.33...v31.13.34) (2023-11-08)
+
+
+### Bug Fixes
+
+* [DHIS2-14190] make sure option is non-`null` ([#1885](https://github.com/dhis2/tracker-capture-app/issues/1885)) ([aca8bfb](https://github.com/dhis2/tracker-capture-app/commit/aca8bfbda4196789f5148a8c0baab75b4b3683e7))
+
 ## [31.13.33](https://github.com/dhis2/tracker-capture-app/compare/v31.13.32...v31.13.33) (2023-11-05)
 
 
