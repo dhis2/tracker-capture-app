@@ -1,3 +1,10 @@
+## [31.13.35](https://github.com/dhis2/tracker-capture-app/compare/v31.13.34...v31.13.35) (2023-11-24)
+
+
+### Bug Fixes
+
+* [DHIS2-16209] incorrect Arabic translation of month name ([88ca41a](https://github.com/dhis2/tracker-capture-app/commit/88ca41ad0be33282730a4df5ce645f8059c5843b))
+
 ## [31.13.34](https://github.com/dhis2/tracker-capture-app/compare/v31.13.33...v31.13.34) (2023-11-08)
 
 
