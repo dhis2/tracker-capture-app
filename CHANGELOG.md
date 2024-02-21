@@ -1,3 +1,10 @@
+## [31.13.37](https://github.com/dhis2/tracker-capture-app/compare/v31.13.36...v31.13.37) (2024-02-21)
+
+
+### Bug Fixes
+
+* [DHIS2-16877] filter duplicate widgets from `keyTrackerDashboardLayout` response ([03d4aa0](https://github.com/dhis2/tracker-capture-app/commit/03d4aa0187478daef908a242bf7df58d880cbebe))
+
 ## [31.13.36](https://github.com/dhis2/tracker-capture-app/compare/v31.13.35...v31.13.36) (2023-12-24)
 
 
