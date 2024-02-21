@@ -69,13 +69,27 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
 
     var programStageLayout = {};
 
+    var removeDuplicateWidgets = function(dashboardLayout){
+        angular.forEach(dashboardLayout.customLayout, function(layout){
+            const widgetTitles = new Set;
+            layout.widgets = layout.widgets.filter((widget) => {
+                if (widgetTitles.has(widget.title)) {
+                    return false;
+                }
+                widgetTitles.add(widget.title);
+                return true;
+            });
+        });
+        return dashboardLayout;
+    };
+
     var getDefaultLayout = function(customLayout){
         var dashboardLayout = {customLayout: customLayout, defaultLayout: defaultLayout};
         var promise = $http.get(  DHIS2URL + '/dataStore/tracker-capture/keyTrackerDashboardDefaultLayout' ).then(function(response){
             angular.extend(dashboardLayout.defaultLayout, response.data);
-            return dashboardLayout;
+            return removeDuplicateWidgets(dashboardLayout);
         }, function(){
-            return dashboardLayout;
+            return removeDuplicateWidgets(dashboardLayout);
         });
         return promise;
     };
@@ -138,7 +152,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         },
         get: function(){
             var promise = $http.get(  DHIS2URL + '/userSettings/keyTrackerDashboardLayout' ).then(function(response){
-                return getDefaultLayout(response.data);
+                return getDefaultLayout(response.data === 'null' ? null : response.data);
             }, function(){
                 return getDefaultLayout(null);
             });
