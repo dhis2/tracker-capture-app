@@ -2006,7 +2006,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     query.url = query.url + q;
                 }
                 else{
-                    query.url = q;
+                    query.url = q.substring(1);
                 }
             }
         }
@@ -2852,7 +2852,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
             searchParams.programUrl += "&followUp=true"
         }
         if(sortColumn){
-            searchParams.sortUrl = "&order="+sortColumn.id+':'+sortColumn.direction;
+            searchParams.sortUrl = "order="+sortColumn.id+':'+sortColumn.direction;
         }
         if(workingList.enrollmentCreatedPeriod){
             var enrollmentStartDate = moment().add(workingList.enrollmentCreatedPeriod.periodFrom, 'days').format("YYYY-MM-DD");
