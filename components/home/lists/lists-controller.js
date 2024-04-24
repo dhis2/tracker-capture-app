@@ -233,7 +233,7 @@ trackerCapture.controller('ListsController',function(
             if($scope.customWorkingListValues.assignedUserMode){
                 customConfig.assignUrl += "&assignedUserMode="+$scope.customWorkingListValues.assignedUserMode;
             }
-            if(!$scope.customWorkingListValues.assignedUserMode ||$scope.customWorkingListValues.assignedUserMode == "PROVIDED" 
+            if((!$scope.customWorkingListValues.assignedUserMode || $scope.customWorkingListValues.assignedUserMode == "PROVIDED")
             && $scope.customWorkingListValues.assignedUsers){
                 if(customConfig.assignUrl) customConfig.assignUrl+="&";
                 customConfig.assignUrl += "assignedUser="+$scope.customWorkingListValues.assignedUsers;
@@ -242,33 +242,22 @@ trackerCapture.controller('ListsController',function(
             customConfig.attributeUrl = EntityQueryFactory.getAttributesQuery($scope.customWorkingListValues.attributes, $scope.customWorkingListValues.enrollment);
 
             setCurrentTrackedEntityList($scope.trackedEntityListTypes.CUSTOM, customConfig, null);
-            $scope.fetchCustomWorkingList(customConfig);
+            $scope.fetchCustomWorkingList();
         }
-
-        var getOrderUrl = function(urlToExtend){
-            if($scope.currentTrackedEntityList.sortColumn){
-                var sortColumn = $scope.currentTrackedEntityList.sortColumn;
-                if(urlToExtend){
-                    return urlToExtend += "&order="+sortColumn.id+':'+sortColumn.direction;
-                }
-                return "order="+sortColumn.id+":"+sortColumn.direction;
-            }
-
-        }
-
 
         $scope.fetchCustomWorkingList= function(){
-            if(!$scope.currentTrackedEntityList.type == $scope.trackedEntityListTypes.CUSTOM) return;
+            if($scope.currentTrackedEntityList.type !== $scope.trackedEntityListTypes.CUSTOM) return;
             var customConfig = $scope.currentTrackedEntityList.config;
             var sortColumn = $scope.currentTrackedEntityList.sortColumn;
             $scope.currentTrackedEntityList.loading = true;
             customConfig.queryAndSortUrl = customConfig.queryUrl;
             if(sortColumn){
-                var order = '&order=' + sortColumn.id + ':' +sortColumn.direction;
-                customConfig.queryAndSortUrl = customConfig.queryAndSortUrl.concat(order);
+                if (customConfig.queryAndSortUrl) customConfig.queryAndSortUrl += "&";
+                customConfig.queryAndSortUrl += 'order=' + sortColumn.id + ':' +sortColumn.direction;
             }
             if(customConfig.assignUrl){
-                customConfig.queryAndSortUrl = customConfig.queryAndSortUrl.concat(customConfig.assignUrl);
+                if (customConfig.queryAndSortUrl) customConfig.queryAndSortUrl += "&";
+                customConfig.queryAndSortUrl += customConfig.assignUrl;
             }
             
             TEIService.search(customConfig.orgUnit.id,customConfig.ouMode.name, customConfig.queryAndSortUrl, customConfig.programUrl, customConfig.attributeUrl.url, $scope.pager, true)
