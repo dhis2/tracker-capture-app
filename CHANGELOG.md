@@ -1,3 +1,10 @@
+## [31.13.39](https://github.com/dhis2/tracker-capture-app/compare/v31.13.38...v31.13.39) (2024-04-24)
+
+
+### Bug Fixes
+
+* [BETA-157] custom working list query ([#1915](https://github.com/dhis2/tracker-capture-app/issues/1915)) ([0ee8a57](https://github.com/dhis2/tracker-capture-app/commit/0ee8a57c528cbe028242be811b8be1b57ae37b98))
+
 ## [31.13.38](https://github.com/dhis2/tracker-capture-app/compare/v31.13.37...v31.13.38) (2024-02-28)
 
 
