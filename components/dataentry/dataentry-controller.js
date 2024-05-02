@@ -330,20 +330,21 @@ trackerCapture.controller('DataEntryController',
 
     //Adds support for HIDEPROGRAMSTAGE even if no event exists in enrollment
     var processRegistrationRuleEffect = function(event, callerId){
+        $scope.stagesNotShowingInStageTasks = {};
+
         angular.forEach($rootScope.ruleeffects[event], function(effect){
             if (effect.action === "HIDEPROGRAMSTAGE") {
                 if (effect.programStage) {
-                    if($scope.stagesNotShowingInStageTasks[effect.programStage.id] !== effect.ineffect )
-                    {
-                        $scope.stagesNotShowingInStageTasks[effect.programStage.id] = effect.ineffect;
+                    if(effect.ineffect) {
+                        $scope.stagesNotShowingInStageTasks[effect.programStage.id] = true;
                     }
-                    updateTabularEntryStages();
                 }
                 else {
                     $log.warn("ProgramRuleAction " + effect.id + " is of type HIDEPROGRAMSTAGE, bot does not have a stage defined");
                 }
             }
         });
+        updateTabularEntryStages();
     }
 
     var processRuleEffect = function(event, callerId){
@@ -378,7 +379,8 @@ trackerCapture.controller('DataEntryController',
         $scope.errorMessages[event] = [];
         $scope.hiddenFields[event] = [];
         $scope.mandatoryFields[event] = [];
-        $scope.optionVisibility[event] = { showOnly: null, hidden: {}};;
+        $scope.optionVisibility[event] = { showOnly: null, hidden: {}};
+        $scope.stagesNotShowingInStageTasks = {};
         
         var dataElementOptionsChanged = [];
 
@@ -495,9 +497,8 @@ trackerCapture.controller('DataEntryController',
             }
             else if (effect.action === "HIDEPROGRAMSTAGE") {
                 if (effect.programStage) {
-                    if($scope.stagesNotShowingInStageTasks[effect.programStage.id] !== effect.ineffect )
-                    {
-                        $scope.stagesNotShowingInStageTasks[effect.programStage.id] = effect.ineffect;
+                    if(effect.ineffect) {
+                        $scope.stagesNotShowingInStageTasks[effect.programStage.id] = true;
                     }
                 }
                 else {
