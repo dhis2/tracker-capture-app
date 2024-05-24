@@ -555,7 +555,7 @@ var d2Services = angular.module('d2Services', ['ngResource'])
                     val = val === 'true' ? true : '';
                 }
                 else{
-                    val = val === true ? 'true' : 'false';
+                    val = val === true ? 'true' : '';
                 }
             }
             if( val && obj.valueType === 'ORGANISATION_UNIT' ){
