@@ -476,7 +476,7 @@ trackerCapture.controller('RegistrationController',
             $scope.apiFormattedTei = {};
             $scope.currentEvent = {};
             $timeout(function() {
-                $rootScope.$broadcast('registrationWidget', {registrationMode: 'REGISTRATION'});
+                $rootScope.$broadcast('registrationWidget', {registrationMode: 'REGISTRATION', generateAttributes: true});
             });
         }
     };
