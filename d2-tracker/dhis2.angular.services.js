@@ -495,10 +495,10 @@ var d2Services = angular.module('d2Services', ['ngResource'])
         var fileNames = CurrentSelection.getFileNames() || {};
         FileService.get(valueId).then(function(response){
             if(response && response.displayName){
-                if(!fileNames[event.event]){
-                    fileNames[event.event] = {};
+                if(!fileNames[event]){
+                    fileNames[event] = {};
                 }
-                fileNames[event.event][dataElementId] = response.displayName;
+                fileNames[event][dataElementId] = response.displayName;
                 CurrentSelection.setFileNames( fileNames );
             }
         });
