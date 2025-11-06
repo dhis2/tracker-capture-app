@@ -52,7 +52,7 @@ jobs:
             - name: Build
               run: yarn build
 
-            - uses: actions/upload-artifact@v2
+            - uses: actions/upload-artifact@v4
               with:
                   name: app-build
                   path: |
@@ -69,11 +69,11 @@ jobs:
               with:
                   token: ${{env.GH_TOKEN}}
 
-            - uses: actions/setup-node@v1
+            - uses: actions/setup-node@v3
               with:
                   node-version: 12.x
 
-            - uses: actions/download-artifact@v2
+            - uses: actions/download-artifact@v4
               with:
                   name: app-build
 
@@ -91,7 +91,7 @@ jobs:
               with:
                   token: ${{env.GH_TOKEN}}
 
-            - uses: actions/setup-node@v1
+            - uses: actions/setup-node@v3
               with:
                   node-version: 12.x
 
