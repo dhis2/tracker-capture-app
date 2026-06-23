@@ -2746,7 +2746,7 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
         }
         return eventUrl;
     }
-    var getCachedMultipleEventFiltersData = function(workingList, pager, sortColumn){
+    var getCachedMultipleEventFiltersData = function(workingList, pager){
         var cachedData = cachedMultipleEventFiltersData[workingList.name];
         if(!pager) pager = { page: 1, pageSize: 50, pageCount: Math.ceil(cachedData.rows.length/50)};
         var pageEnd = (pager.pageSize*pager.page);
@@ -2793,13 +2793,15 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                     existing[d[0]] = true;
                     return true;
                 });
-                var sortColumnIndex = data.headers.findIndex(function(h){ return h.name === sortColumn.id});
-                if(sortColumnIndex) data.rows = orderByKeyFilter(data.rows, sortColumnIndex, sortColumn.direction);
+                if (sortColumn) {
+                    var sortColumnIndex = data.headers.findIndex(function(h){ return h.name === sortColumn.id});
+                    if(sortColumnIndex) data.rows = orderByKeyFilter(data.rows, sortColumnIndex, sortColumn.direction);
+                }
                 //order list
                 cachedMultipleEventFiltersData[workingList.name] = data;
                 workingList.cachedSorting = searchParams.sortUrl;
                 workingList.cachedOrgUnit = searchParams.orgUnitId;
-                var data = getCachedMultipleEventFiltersData(workingList, pager, sortColumn);
+                var data = getCachedMultipleEventFiltersData(workingList, pager);
                 def.resolve(data);
             });
         }
@@ -3011,25 +3013,13 @@ var trackerCaptureServices = angular.module('trackerCaptureServices', ['ngResour
                             }
                         }
                         else{
+                            numberOfSetAttributes++;
+                            filteredAttributes[attr.id] = true;
                             if(query.url){
-                                numberOfSetAttributes++;
-                                filteredAttributes[attr.id] = true;
-                                if(attr.operator === textOperators[0]){
-                                    query.url = query.url + '&attribute=' + attr.id + ':EQ:' + value;
-                                }else{
-                                    query.url = query.url + '&attribute=' + attr.id + ':LIKE:' + value;
-                                }
-                                
+                                query.url = query.url + '&attribute=' + attr.id + ':EQ:' + value;                                
                             }
                             else{
-                                numberOfSetAttributes++;
-                                filteredAttributes[attr.id] = true;
-                                if(attr.operator === textOperators[0]){
-                                    query.url = 'attribute=' + attr.id + ':EQ:' + value;
-                                }else{
-                                    query.url = 'attribute=' + attr.id + ':LIKE:' + value;
-                                }
-                                
+                                query.url = 'attribute=' + attr.id + ':EQ:' + value;
                             }
                         }
                     }
